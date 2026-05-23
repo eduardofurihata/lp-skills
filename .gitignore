@@ -59,3 +59,4 @@ next-env.d.ts
 # Python compiled files (from skills/ui-ux-pro-max/scripts/)
 __pycache__/
 *.pyc
+/prod-*.png
