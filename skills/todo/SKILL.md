@@ -1,17 +1,19 @@
 ---
-name: test
-description: Use when ready to run quality control on features developed with /fast — scans docs/todo/ for pending features, executes code review (step 8), testing via front (step 9), and done (step 10) from /method
+name: todo
+description: Use when ready to run QA on features in docs/todo/ (created by /fast) — scans tracking files with `tests: pending` (or legacy `status: pending-test`), executes testing via front (step 9), and moves tracking to docs/done/ with `tests: passed`
 effort: max
 argument-hint: "[feature-name or 'all']"
 ---
 
-Executa as fases finais do /method (steps 8-10) para features pendentes em `docs/todo/`.
-Code review critico em loop, executa TODOS os test cases via front, finaliza com done.
+Executa a fase de QA (step 9 do /method) para features pendentes em `docs/todo/`.
+/fast já entregou o kanban em `kanban/10-done/`; o /todo apenas valida via front e move o tracking para `docs/done/` com `tests: passed`.
+
+Para features legacy (`status: pending-test`, criadas pelo /fast antigo), /todo também roda Step 8 (Code Review) e cria `kanban/10-done/` — esses steps não foram executados pelo /fast antigo.
 
 <HARD-GATE>
-NÃO pule o code review. NÃO marque test cases como PASSED sem executar via front.
-NÃO avance do step 9 para 10 sem 100% PASSED com ZERO mudanças de código.
-QUALQUER fix de código invalida o ciclo: volta ao step 8 (code review) e retesta TUDO.
+NÃO marque test cases como PASSED sem executar via front.
+NÃO avance da execução para Done sem 100% PASSED com ZERO mudanças de código.
+QUALQUER fix de código invalida o ciclo: volta ao Code Review (se legacy) ou re-executa TCs e retesta TUDO.
 </HARD-GATE>
 
 ## REGRA FUNDAMENTAL: Precisão > Economia de Tempo ou Tokens
@@ -35,7 +37,7 @@ Crie tasks via TaskCreate para cada item:
 ## Fluxo
 
 ```dot
-digraph test {
+digraph todo {
     rankdir=TB;
     node [fontname="Helvetica"];
 
@@ -43,11 +45,12 @@ digraph test {
     has_features [label="Features pendentes?" shape=diamond];
     none [label="Nenhuma feature\npendente" shape=box];
     select [label="Selecionar feature" shape=box];
+    is_legacy [label="Frontmatter legacy?\n(status: pending-test)" shape=diamond];
     context [label="Ler referências\n(steps 1-7)" shape=box];
-    review [label="Step 8 — Code Review\n(loop até limpo)" shape=box];
+    review [label="Step 8 — Code Review\n(legacy only — loop até limpo)" shape=box];
     testing [label="Step 9 — Run Test\n(TODOS os TCs via front)" shape=box];
     passed [label="100% PASSED\nsem mudanças?" shape=diamond];
-    done [label="Step 10 — Done" shape=box];
+    done [label="Phase 4 — Done\n(tests: passed)" shape=box];
     move [label="Mover\ntodo/ → done/" shape=box];
     more [label="Mais features?" shape=diamond];
     fim [label="FIM" shape=doublecircle];
@@ -56,10 +59,12 @@ digraph test {
     has_features -> none [label="não"];
     has_features -> select [label="sim"];
     select -> context;
-    context -> review;
+    context -> is_legacy;
+    is_legacy -> review [label="sim — legacy"];
+    is_legacy -> testing [label="não — novo /fast"];
     review -> testing;
     testing -> passed;
-    passed -> review [label="não — fix → re-review"];
+    passed -> review [label="não — fix → re-review (se legacy)"];
     passed -> done [label="sim"];
     done -> move;
     move -> more;
@@ -73,25 +78,40 @@ digraph test {
 ## Phase 1 — Scan e Seleção
 
 1. `Glob docs/todo/*.md`
-2. Ler frontmatter de cada arquivo (`feature`, `status`, `branch`, `created`)
-3. Apresentar lista:
+2. Ler frontmatter de cada arquivo (`feature`, `status`, `tests`, `branch`, `created`)
+3. **Filtro:** entra no scan o arquivo que satisfaça QUALQUER um:
+   - `tests: pending` (novo, criado pelo /fast pós-refactor)
+   - `status: pending-test` (legacy, criado pelo /fast pré-refactor)
+4. Marcar cada arquivo como `[novo]` ou `[legacy]` conforme frontmatter
+5. Apresentar lista:
 
 ```
-Features pendentes de quality control:
+Features pendentes de QA:
 
-1. <feature-A> (branch: X, criado: YYYY-MM-DD)
-2. <feature-B> (branch: Y, criado: YYYY-MM-DD)
+1. <feature-A> (branch: X, criado: YYYY-MM-DD) [novo]
+2. <feature-B> (branch: Y, criado: YYYY-MM-DD) [legacy]
 
-Qual feature deseja testar? (número, nome, ou "all")
+Qual feature deseja validar? (número, nome, ou "all")
 ```
 
-4. Se `$ARGUMENTS` fornecido → usar como seleção
-5. Se apenas 1 feature → selecionar automaticamente
-6. Se "all" → processar uma por vez na ordem do tracking
+6. Se `$ARGUMENTS` fornecido → usar como seleção
+7. Se apenas 1 feature → selecionar automaticamente
+8. Se "all" → processar uma por vez na ordem do tracking
 
 ---
 
 ## Phase 2 — Code Review (Step 8 do /method)
+
+### Quando rodar Code Review
+
+| Frontmatter da feature | Code Review? | Por quê |
+|------------------------|--------------|---------|
+| `tests: pending` (novo, /fast pós-refactor) | ❌ **NÃO** rodar — já rodou no /fast | Step 8 já foi executado pelo /fast. Há relatório em `kanban/08-code-review/<feature>.md`. /todo só lê o relatório como contexto antes da execução. |
+| `status: pending-test` (legacy, /fast pré-refactor) | ✅ **SIM** rodar | /fast antigo parava em 7b; Step 8 nunca rodou. /todo precisa fazê-lo agora. |
+
+**Regra inviolável:** features novas NÃO repetem code review. Features legacy SEMPRE rodam. Sem exceção. Se o frontmatter for ambíguo (sem `tests:` e sem `status: pending-test`), default para legacy (rodar review).
+
+**Se a feature for `[novo]`, pule para Phase 3.** As subseções abaixo (Preparação, Revisão em Loop, Relatório) aplicam-se APENAS a features `[legacy]`.
 
 ### Preparação
 
@@ -253,7 +273,9 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
         - Screenshot como prova de cada PASSED
      c. PASSED (com screenshot) ou FAILED (motivo detalhado)
      d. Bug encontrado → corrigir IMEDIATAMENTE → ATENÇÃO:
-        QUALQUER fix invalida o ciclo → volta ao Phase 2 (Code Review) → retesta TUDO
+        QUALQUER fix invalida o ciclo:
+        - `[legacy]`: volta ao Phase 2 (Code Review) → retesta TUDO
+        - `[novo]`: volta ao Phase 3 (re-executa TODOS os TCs do zero — code review do /fast cobre apenas o código original, fixes do /todo são código novo não revisado; se fix for não-trivial, considere escalar de volta para /fast e re-rodar Step 8)
      e. Todos TCs do batch PASSED → TaskUpdate → completed
   4. Todos PASSED sem mudança → Phase 4
 ```
@@ -329,14 +351,47 @@ Por que: o teste front é exponencialmente mais forte que análise de código. C
 NUNCA SKIP ou BLOCKED — resolva o impedimento
 NUNCA "Ran tsc, no errors" — tsc é pré-requisito, não teste
 NUNCA "Verified via code" — execute via FRONT com screenshot
-NUNCA "Fix was trivial, doesn't need re-review" — QUALQUER fix volta ao Phase 2
+NUNCA "Fix was trivial, doesn't need re-test" — QUALQUER fix invalida o ciclo (legacy: volta Phase 2; novo: re-executa Phase 3)
 NUNCA batch fixes — corrija CADA bug IMEDIATAMENTE ao encontrar
 NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 ```
 
 ---
 
-## Phase 4 — Done (Step 10 do /method)
+## Phase 4 — Done
+
+### Para features `[novo]` (`tests: pending` → `tests: passed`)
+
+`/fast` já criou `kanban/10-done/<tópico>.md`. /todo apenas:
+
+1. **Mover** tracking file:
+   ```bash
+   mkdir -p docs/done
+   mv docs/todo/<feature>.md docs/done/<feature>.md
+   ```
+
+2. **Atualizar frontmatter** do arquivo movido:
+   ```yaml
+   ---
+   feature: <nome>
+   status: done
+   tests: passed       # era 'pending'
+   branch: <branch>
+   created: <YYYY-MM-DD>
+   tested: <YYYY-MM-DD>  # nova chave: dia que /todo rodou
+   ---
+   ```
+
+3. **Anexar resumo** ao kanban/10-done existente, sob nova seção:
+   ```markdown
+   ## QA (rodado por /todo em <data>)
+   - Total TCs: X | PASSED: X | FAILED: 0
+   - Evidências: kanban/09-run-test/<feature>.md
+   ```
+
+### Para features `[legacy]` (`status: pending-test`)
+
+/fast antigo NÃO criou kanban/10-done. /todo precisa criar:
 
 1. **Criar** `kanban/10-done/<tópico>.md`:
    - Links para todos os docs (steps 1-9)
@@ -344,19 +399,30 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
    - Status final dos TCs (todos PASSED)
    - Tasks completadas do to-do
 
-2. **Mover** tracking file:
+2. **Mover e reescrever frontmatter** do tracking:
+   ```yaml
+   ---
+   feature: <nome>
+   status: done
+   tests: passed
+   branch: <branch>
+   created: <YYYY-MM-DD original>
+   tested: <YYYY-MM-DD>
+   ---
+   ```
    ```bash
    mkdir -p docs/done
    mv docs/todo/<feature>.md docs/done/<feature>.md
    ```
-   - Atualizar frontmatter: `status: done`
 
-3. **Deletar** todo da feature: `rm kanban/06-todo/<tópico>.md`
+3. **Deletar** todo da feature se existir: `rm kanban/06-todo/<tópico>.md`
+
+### Comum a ambos
 
 4. **Informar**:
    ```
-   Feature "<nome>" — Quality control completo.
-   Code review: APROVADO | Test cases: X/X PASSED | Status: DONE
+   Feature "<nome>" — QA completo.
+   TCs: X/X PASSED | Status: done, tests: passed
    Tracking movido para docs/done/<feature>.md
    ```
 
@@ -376,9 +442,10 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 
 ## Red Flags — STOP e Revise
 
-- "Code review não é necessário, já testei durante o /fast" → NECESSÁRIO. Sempre.
+- "Feature é `[legacy]`, code review é desnecessário" → NÃO. Para `[legacy]`, Step 8 é obrigatório (não foi rodado pelo /fast antigo).
+- "Feature é `[novo]`, vou rodar code review pra garantir" → NÃO. Para `[novo]`, /fast já rodou Step 8. Re-rodar é desperdício e contradiz o contrato.
 - "Esse TC é trivial, posso pular" → NÃO. TODOS os TCs.
 - "Vou marcar como PASSED sem screenshot" → NÃO. Screenshot = prova.
-- "O fix foi pequeno, não precisa re-review" → PRECISA. QUALQUER fix volta ao Phase 2.
+- "O fix foi pequeno, não precisa re-test" → PRECISA. QUALQUER fix volta à execução completa.
 - "tsc passou, está testado" → tsc verifica tipos, não comportamento.
 - "BLOCKED — não consigo acessar" → Resolva o impedimento. Pergunte ao usuário se necessário.
