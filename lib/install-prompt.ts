@@ -14,7 +14,7 @@ export const SCOPE_DESCRIPTIONS: Record<Scope, string> = {
     "Instala em <projeto>/.claude/skills/ + adiciona ao .gitignore. Só pra você.",
 };
 
-const REPO_URL = "https://github.com/furihata/lp-skills";
+const REPO_URL = "https://github.com/eduardofurihata/lp-skills";
 const SOURCE_DIR = "~/.claude/lp-skills-source";
 
 export function generatePrompt({
