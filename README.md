@@ -12,12 +12,10 @@ Cada nova sessão do Claude Code roda `git pull` no diretório fonte automaticam
 
 ```
 lp-skills/
-├── skills/             # source of truth — clonado pelos usuários
+├── skills/             # source of truth — symlinkado em ~/.claude/skills/
 ├── app/                # Next.js App Router (a LP)
 ├── components/         # React components
-├── lib/                # utilitários (skill reader + prompt generator)
-└── scripts/
-    └── sync-from-local.sh   # hook do autor: ~/.claude/skills → repo
+└── lib/                # utilitários (skill reader + prompt generator)
 ```
 
 ## Stack
@@ -33,17 +31,15 @@ pnpm dev
 
 Acesse http://localhost:3000.
 
-## Sync do autor
+## Workflow do autor
 
-O script `scripts/sync-from-local.sh` é disparado via hook `SessionStart` do Claude Code. A cada nova sessão, ele:
+As skills moram aqui no repo. Em `~/.claude/skills/<nome>` há um symlink apontando para `skills/<nome>/` deste repositório. Editar aqui = mudança imediata no Claude Code local, sem sync.
 
-1. Adquire lockfile + debounce de 30s.
-2. `git pull --rebase --autostash` (se houver remote).
-3. `rsync -aL --delete --safe-links` de `~/.claude/skills/` para `./skills/` (resolvendo symlinks).
-4. Mascara credenciais de teste conhecidas.
-5. Commit + push se houver diff.
+```bash
+ln -s ~/GitHub/lp-skills/skills/<nome> ~/.claude/skills/<nome>
+```
 
-Logs em `/tmp/lp-skills-sync.log`.
+Skills de outros repos (`make-dev`, `ui-ux-pro-max`) permanecem instaladas no global por outros meios e não vivem aqui.
 
 ## Licença
 

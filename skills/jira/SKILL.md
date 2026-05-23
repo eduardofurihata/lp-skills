@@ -111,7 +111,7 @@ TaskCreate: "Step 19 — Ship | [CARD-CODE]"                            (addBloc
 
 ```
 environment: LOCAL DEV
-test user: <test-user-email> / <test-user-password>
+test user: test2@test.com / Test123!@#
 can create users: yes
 can commit: yes
 NEVER push (only in step 19)

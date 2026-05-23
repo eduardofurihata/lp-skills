@@ -11,7 +11,7 @@ Reproduzir o ambiente e condições exatas do card e acionar o comportamento des
 ### 7.1 — Preparar ambiente completo
 Criar ou configurar tudo necessário antes de abrir o browser:
 ```
-- Criar usuário do tipo correto (se necessário): <test-user-email> / <test-user-password> ou criar novo
+- Criar usuário do tipo correto (se necessário): test2@test.com / Test123!@# ou criar novo
 - Injetar dados necessários via API/banco/seed
 - Configurar integrações necessárias
 - Identificar URL/fluxo exato descrito no card
