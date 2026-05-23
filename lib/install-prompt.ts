@@ -1,0 +1,135 @@
+export type Scope = "global" | "project-shared" | "project-local";
+
+export const SCOPE_LABELS: Record<Scope, string> = {
+  global: "Global",
+  "project-shared": "Projeto (compartilhado)",
+  "project-local": "Projeto (local — só pra mim)",
+};
+
+export const SCOPE_DESCRIPTIONS: Record<Scope, string> = {
+  global: "Instala em ~/.claude/skills/. Disponível em todos os projetos.",
+  "project-shared":
+    "Instala em <projeto>/.claude/skills/. Vai pro git do projeto, todo o time tem.",
+  "project-local":
+    "Instala em <projeto>/.claude/skills/ + adiciona ao .gitignore. Só pra você.",
+};
+
+const REPO_URL = "https://github.com/furihata/lp-skills";
+const SOURCE_DIR = "~/.claude/lp-skills-source";
+
+export function generatePrompt({
+  skills,
+  scope,
+}: {
+  skills: string[];
+  scope: Scope;
+}): string {
+  if (skills.length === 0) {
+    return "Selecione ao menos 1 skill para gerar o prompt.";
+  }
+
+  const skillList = skills.join(", ");
+  const header = headerFor(scope, skillList);
+  const steps = stepsFor(scope, skills);
+
+  return `${header}\n\n${steps}`.trim();
+}
+
+function headerFor(scope: Scope, skillList: string): string {
+  return `Por favor, instale estas skills do Claude Code do repositório público de Furihata.
+
+- Repositório: ${REPO_URL}
+- Skills selecionadas: ${skillList}
+- Escopo: ${SCOPE_LABELS[scope]}
+
+Execute todos os passos abaixo. Reporte sucesso ou erros ao final.`;
+}
+
+function stepsFor(scope: Scope, skills: string[]): string {
+  const targetBaseExpr = targetBaseFor(scope);
+  const preSteps = preStepsFor(scope);
+  const symlinkBlock = symlinkBlockFor(scope, skills, targetBaseExpr);
+
+  return [
+    preSteps,
+    `1. Clone ou atualize o repositório fonte (uma única vez por máquina):
+
+   if [ ! -d ${SOURCE_DIR} ]; then
+     git clone ${REPO_URL} ${SOURCE_DIR}
+   else
+     git -C ${SOURCE_DIR} pull --ff-only
+   fi`,
+    symlinkBlock,
+    `3. Configure auto-update em ~/.claude/settings.json:
+
+   - No bloco hooks.SessionStart, adicione o hook abaixo (se ainda não existir):
+
+   {
+     "matcher": "",
+     "hooks": [
+       {
+         "type": "command",
+         "command": "git -C ${SOURCE_DIR} pull --ff-only -q 2>/dev/null &"
+       }
+     ]
+   }
+
+   - Não duplicar se já houver hook idêntico.`,
+    `4. Verifique a instalação:
+
+   ls -la ${targetBaseExpr}/ | grep lp-skills-source
+
+5. Reporte ao usuário: skills instaladas, conflitos resolvidos, hook adicionado.`,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function targetBaseFor(scope: Scope): string {
+  switch (scope) {
+    case "global":
+      return "~/.claude/skills";
+    case "project-shared":
+    case "project-local":
+      return "$(pwd)/.claude/skills";
+  }
+}
+
+function preStepsFor(scope: Scope): string {
+  if (scope === "global") return "";
+  const projectSteps = [
+    `0. Garanta que você está na raiz do projeto e que o diretório .claude/skills/ existe:
+
+   mkdir -p .claude/skills`,
+  ];
+  if (scope === "project-local") {
+    projectSteps.push(
+      `0a. Adicione .claude/skills/ ao .gitignore (se ainda não estiver), para que essas skills fiquem só pra você:
+
+   if [ -f .gitignore ] && ! grep -qxF '.claude/skills/' .gitignore; then
+     echo '.claude/skills/' >> .gitignore
+   fi`,
+    );
+  }
+  return projectSteps.join("\n\n");
+}
+
+function symlinkBlockFor(
+  scope: Scope,
+  skills: string[],
+  targetBase: string,
+): string {
+  const lines = skills
+    .map(
+      (s) =>
+        `   - Se ${targetBase}/${s} já é um diretório real (não symlink), faça:
+       mv ${targetBase}/${s} ${targetBase}/${s}.backup-$(date +%s)
+     Em seguida (sempre):
+       ln -sfn ${SOURCE_DIR}/skills/${s} ${targetBase}/${s}`,
+    )
+    .join("\n\n");
+
+  return `2. Para cada skill selecionada, crie um symlink em ${targetBase}/:
+
+${lines}`;
+}
