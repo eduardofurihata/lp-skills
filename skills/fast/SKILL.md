@@ -1,6 +1,6 @@
 ---
 name: fast
-description: Use when developing features rapidly — runs /method steps 1-8 + 10 (planning, coding, code review, done), writes test cases but leaves them PENDING (`tests: pending` in `docs/todo/<feature>.md`) for optional later validation via /todo. Skips only step 9 (testing via front) and step 11 (ship).
+description: 'Use when developing features rapidly — runs /method steps 1-8 + 10 (planning, coding, code review, done), writes test cases but leaves them PENDING (`tests: pending` in `docs/todo/<feature>.md`) for optional later validation via /todo. Skips only step 9 (testing via front) and step 11 (ship).'
 effort: max
 argument-hint: "[feature-name]"
 ---
