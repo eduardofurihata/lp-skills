@@ -40,10 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# /method artifacts (internal to LP development — not for public repo)
-/docs/
-/kanban/
-
 # Backups (local skill backups should never reach the repo)
 *.bak
 *.bak*
