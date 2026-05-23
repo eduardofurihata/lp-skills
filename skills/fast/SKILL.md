@@ -1,20 +1,22 @@
 ---
 name: fast
-description: Use when developing features in parallel mode — runs /method steps 1-7b (planning through coding), writes test cases but leaves them PENDING, saves tracking to docs/todo/ for later /test execution
+description: Use when developing features rapidly — runs /method steps 1-8 + 10 (planning, coding, code review, done), writes test cases but leaves them PENDING (`tests: pending` in `docs/todo/<feature>.md`) for optional later validation via /todo. Skips only step 9 (testing via front) and step 11 (ship).
 effort: max
 argument-hint: "[feature-name]"
 ---
 
-Roda o /method até a codificação (steps 1-7b), deixando test cases ESCRITOS mas PENDENTES de execução. Cria arquivo de tracking em `docs/todo/` para posterior `/test`.
+Roda o /method em ritmo rápido — steps 1-8 + 10 (planejamento, codificação, code review, done) — pulando apenas step 9 (testing via front) e step 11 (ship). Test cases ESCRITOS no step 5 ficam PENDENTES de execução; usuário pode rodar `/todo` depois para validar via front, ou validar manualmente. Cria tracking em `docs/todo/<feature>.md` com `status: done` + `tests: pending`.
 
 <HARD-GATE>
-NÃO execute steps 8-10 (code review, testing, done). O /fast PARA após codificar.
-Ao finalizar, SEMPRE crie o arquivo de tracking em docs/todo/.
+EXECUTE step 8 (code review) e step 10 (done). Sem code review limpo, /fast não termina.
+NÃO execute step 9 (testing via front) — isso é função do /todo (chamado opcionalmente depois).
+NÃO execute step 11 (ship) — isso continua só no /method completo.
+Ao finalizar, SEMPRE crie o arquivo de tracking em `docs/todo/` com `tests: pending`.
 </HARD-GATE>
 
 ## REGRA FUNDAMENTAL: Precisão > Economia de Tempo ou Tokens
 
-**Vale para todos os steps que /fast roda (1-7b), não apenas para escrever TCs.**
+**Vale para todos os steps que /fast roda (1-8 + 10), não apenas para escrever TCs.**
 
 - Fazer rápido e errado = retrabalho. Fazer devagar e certo = entregue.
 - NUNCA pule passos para "economizar tokens". Tokens são baratos comparados a bug em produção e perda de confiança.
@@ -31,7 +33,7 @@ Crie tasks via TaskCreate para cada item abaixo.
 - ❌ ERRADO: bundling "Steps 1-4 — Planning" em uma única task
 - ❌ ERRADO: TaskCreate com array de N tasks numa única chamada
 - ✅ CERTO: cada linha abaixo = 1 invocação TaskCreate separada e atômica
-- Quando chegar no Step 5 (Test Cases), regra continua: no /test, cada GRUPO de TCs = 1 TaskCreate + cada TC individual dentro do grupo = 1 TaskCreate SEPARADO (duas camadas obrigatórias). /fast só ESCREVE os TCs aqui.
+- Quando chegar no Step 5 (Test Cases), regra continua: no /todo, cada GRUPO de TCs = 1 TaskCreate + cada TC individual dentro do grupo = 1 TaskCreate SEPARADO (duas camadas obrigatórias). /fast só ESCREVE os TCs aqui.
 
 
 1. **Gate Check** — docs/01-problem/ a docs/04-spec/ existem para esta feature? Se não → executar steps faltantes
@@ -39,11 +41,13 @@ Crie tasks via TaskCreate para cada item abaixo.
 3. **Step 2 — User Stories** — "Como X, eu quero Y para Z" em `docs/02-user-stories/<tópico>.md`
 4. **Step 3 — Use Cases** — Happy path + erros em `docs/03-use-cases/<tópico>.md`
 5. **Step 4 — Spec** — Questioning Loop até zero gaps em `docs/04-spec/<tópico>.md`
-6. **Step 5 — Test Cases** — TCs escritos ANTES de codar em `docs/05-test-cases/<tópico>.md` (PENDENTES de execução)
+6. **Step 5 — Test Cases** — TCs escritos ANTES de codar em `docs/05-test-cases/<tópico>.md` (PENDENTES de execução pelo /todo)
 7. **Step 6 — To Do** — Tasks quebradas em `kanban/06-todo/<tópico>.md`
 8. **Step 7a — Plano** — Plano autocontido em `kanban/07-implementation/<tópico>.md`
 9. **Step 7b — Codificar** — Implementar seguindo o plano
-10. **Tracking** — Criar `docs/todo/<feature>.md` com referências pendentes
+10. **Step 8 — Code Review** — Loop até 100% limpo + relatório em `kanban/08-code-review/<tópico>.md`. QUALQUER mudança de código volta ao 7b. Sai do loop com ZERO mudanças no último passe.
+11. **Step 10 — Done** — Criar `kanban/10-done/<tópico>.md` com resumo + links. Deletar `kanban/06-todo/<tópico>.md`.
+12. **Tracking** — Criar `docs/todo/<feature>.md` com `status: done` + `tests: pending` para validação opcional via /todo
 
 ## Fluxo
 
@@ -58,8 +62,11 @@ digraph fast {
     step6 [label="Step 6 — To Do" shape=box];
     step7a [label="Step 7a — Plano" shape=box];
     step7b [label="Step 7b — Codificar" shape=box];
-    tracking [label="Criar docs/todo/<feature>.md" shape=box];
-    stop [label="STOP\n(aguarda /test)" shape=doublecircle];
+    step8 [label="Step 8 — Code Review\n(loop até limpo)" shape=box];
+    clean [label="ZERO mudanças no\núltimo passe?" shape=diamond];
+    step10 [label="Step 10 — Done\n(kanban/10-done)" shape=box];
+    tracking [label="docs/todo/<feature>.md\n(status: done, tests: pending)" shape=box];
+    stop [label="STOP\n(/todo opcional)" shape=doublecircle];
 
     gate -> steps14 [label="faltam docs"];
     gate -> step5 [label="docs existem"];
@@ -67,7 +74,11 @@ digraph fast {
     step5 -> step6;
     step6 -> step7a;
     step7a -> step7b;
-    step7b -> tracking;
+    step7b -> step8;
+    step8 -> clean;
+    clean -> step7b [label="não — fix → re-review"];
+    clean -> step10 [label="sim"];
+    step10 -> tracking;
     tracking -> stop;
 }
 ```
@@ -100,16 +111,35 @@ Cada step segue EXATAMENTE as mesmas regras do /method:
 - **Plataformas:** Web (desktop/tablet/mobile viewport) E **Mobile = Android E iOS sempre** (toda feature mobile = TCs nas duas plataformas)
 - Cross-cutting: analytics, logging, permissões, regressão, a11y
 
-**REFERÊNCIA COMPLETA:** Invoke /method para detalhamento de cada step (incluindo as tabelas de pontuação de complexidade). /fast não repete — apenas delimita o escopo (steps 1-7b).
+**REFERÊNCIA COMPLETA:** Invoke /method para detalhamento de cada step (incluindo as tabelas de pontuação de complexidade). /fast não repete — apenas delimita o escopo (steps 1-8 + 10).
+
+## Loop Step 7b → Step 8 — Obrigatório
+
+```
+Codificar (7b) → Code Review (8)
+  ↳ Tudo PASSED sem mudanças de código → Step 10
+  ↳ FAILED ou fix necessário → Fix em 7b → volta ao Code Review (8)
+```
+
+**QUALQUER mudança de código (fix de bug, correção de review) invalida o Code Review anterior.** O ciclo SÓ encerra com Code Review 100% limpo e ZERO mudanças no último passe.
+
+**Diferença vs /method:** o /method tem loop 7-8-9 (inclui re-test). O /fast tem loop 7-8 (não há re-test no /fast — testing é função do /todo).
+
+| Racionalização | Realidade |
+|----------------|-----------|
+| "Fix é trivial, não precisa re-review" | Re-review obrigatório. Qualquer mudança = nova validação. |
+| "Já validei mentalmente" | Não. Step 8 = relatório formal em `kanban/08-code-review/`. |
+| "Vou bundlar fixes e revisar tudo no fim" | Não. Cada fix = re-review. |
 
 ## Arquivo de Tracking (OBRIGATÓRIO ao finalizar)
 
-Ao concluir step 7b, crie `docs/todo/<feature>.md`:
+Ao concluir step 10, crie `docs/todo/<feature>.md`:
 
 ```markdown
 ---
 feature: <nome-da-feature>
-status: pending-test
+status: done
+tests: pending
 branch: <branch-atual>
 created: <YYYY-MM-DD>
 ---
@@ -127,59 +157,68 @@ created: <YYYY-MM-DD>
 | 3 — Use Cases | docs/03-use-cases/<tópico>.md |
 | 4 — Spec | docs/04-spec/<tópico>.md |
 | 5 — Test Cases | docs/05-test-cases/<tópico>.md |
-| 6 — To Do | kanban/06-todo/<tópico>.md |
+| 6 — To Do | kanban/06-todo/<tópico>.md (deletado no Step 10) |
 | 7 — Plano | kanban/07-implementation/<tópico>.md |
+| 8 — Code Review | kanban/08-code-review/<tópico>.md |
+| 10 — Done | kanban/10-done/<tópico>.md |
 
 ## Test Cases Pendentes
-<Copie os NOMES dos TCs do step 6 com status PENDING — referência completa em docs/05-test-cases/>
+<Copie os NOMES dos TCs do step 5 com status PENDING — referência completa em docs/05-test-cases/>
 
-## Notas para Review
-<Pontos de atenção, decisões tomadas, riscos identificados durante a implementação>
+## Notas para QA
+<Pontos de atenção, decisões tomadas, riscos identificados durante a implementação. O /todo lê isso antes de validar.>
 ```
 
 ### Regras do Tracking
 
-- **Nunca crie tracking sem ter codificado** — tracking = prova de que steps 1-7b estão completos
-- **Branch obrigatório** — registre a branch atual para o /test saber onde encontrar o código
-- **Test Cases Pendentes** — liste TODOS os TCs por nome. /test usa esta lista como checklist
-- **Notas para Review** — tudo que o revisor precisa saber (decisões polêmicas, workarounds, riscos)
+- **Nunca crie tracking sem ter feito Steps 8 e 10** — tracking = prova de que feature está done (kanban em `kanban/10-done/`) com TCs pendentes para /todo opcional
+- **Frontmatter dual-field obrigatório**: `status: done` (dev done) + `tests: pending` (QA pendente)
+- **Branch obrigatório** — registre a branch atual para o /todo encontrar o código
+- **Test Cases Pendentes** — liste TODOS os TCs por nome. /todo usa esta lista como checklist
+- **Notas para QA** — tudo que o validador precisa saber (decisões polêmicas, workarounds, riscos)
 
 ## Finalizando
 
-Ao criar o tracking file, informe ao usuário:
+Ao concluir Step 10 e criar o tracking file, informe ao usuário:
 
 ```
-Feature "<nome>" implementada e documentada.
-Tracking: docs/todo/<feature>.md
+Feature "<nome>" — Dev completo.
+Code Review: APROVADO | Kanban: kanban/10-done/<feature>.md
+Tracking: docs/todo/<feature>.md (status: done, tests: pending)
 Test cases: X escritos, PENDENTES de execução.
 
-Quando pronto para quality control, rode /test.
+Para validar QA via front depois, rode /todo. Caso contrário, valide manualmente.
 ```
 
-## Testing Gateway — /fast NÃO roda Step 9, mas tests permanecem OBRIGATÓRIAS para /test
+## QA Gateway — /fast roda Steps 8 + 10, mas Step 9 (testing via front) é OPCIONAL via /todo
 
-**`pending-test` ≠ skipped. Feature SÓ é "done" depois que /test rodar TODAS as TCs com evidência.**
+**`tests: pending` ≠ blocking. Feature está "done" no sentido de dev encerrado (Steps 8 + 10 rodaram). QA via front é responsabilidade do /todo, opcional.**
 
-O tracking file (`docs/todo/<feature>.md`) é um CONTRATO:
-- Prova que steps 1-7b estão completos
-- Compromete que /test será rodado com: (a) duas camadas de TaskCreate (1 por grupo + 1 por TC individual); (b) **Audit Pré-Execução** bloqueante (ratio M==N publicado no chat antes do primeiro TC); (c) **Audit Pós-Execução** bloqueante (ratio C==N e E==N antes de Phase 4 / Done)
-- Bloqueia claims de "feature done" enquanto status = `pending-test`
+O tracking file (`docs/todo/<feature>.md`) é um RESUMO:
+- Prova que steps 1-8 + 10 estão completos
+- Lista TCs escritos que ainda não rodaram via front
+- /todo pode usar esta lista depois para validação
 
 **Proibido em /fast:**
-- ❌ Claim de que "feature is done" após codificar — só /test encerra
-- ❌ Deletar tracking file antes de /test rodar
-- ❌ Marcar TCs como PASSED sem execução via front (isso é /test, não /fast)
+- ❌ Skippar Step 8 (code review) alegando "vou rodar /todo depois" — code review é gate interno do /fast
+- ❌ Marcar Step 10 (done) sem ter rodado Step 8 limpo (zero mudanças no último passe)
+- ❌ Marcar TCs como PASSED sem execução via front (isso é /todo, não /fast — /fast só ESCREVE TCs)
 - ❌ Skippar Step 5 alegando "escrevo TCs quando for testar"
-- ❌ Pular Step 7a (plano) — precisa estar pronto para que /test entenda contexto
+- ❌ Pular Step 7a (plano) — necessário para Step 8 (code review) ter referência
+- ❌ Rodar Step 9 (testing via front) — isso é /todo, não /fast
+- ❌ Rodar Step 11 (ship) — isso é /method completo
 
 ## Red Flags — STOP e Revise
 
 - "Vou pular o step 4 porque é simples" → NÃO. Questioning Loop sempre.
 - "Não precisa de test cases para isso" → PRECISA. Step 5 é obrigatório.
-- "Vou já fazer o code review" → NÃO. /fast PARA no 7b. Use /test depois.
-- "O tracking é opcional" → NÃO. Sem tracking, /test não sabe o que testar.
+- "Vou pular o code review (step 8) — feature é trivial / urgente / CEO pediu" → NÃO. Step 8 é gate interno do /fast. Sem ele, /fast não termina.
+- "Vou marcar Step 10 (done) sem Step 8 limpo" → NÃO. Step 10 só após Step 8 com ZERO mudanças no último passe.
+- "Vou rodar /todo agora porque feature é importante" → NÃO. /fast PARA no Step 10. /todo é INVOCADO pelo usuário, não pelo /fast.
+- "Vou tentar rodar Step 11 (ship) também" → NÃO. /fast termina no Step 10. Ship só no /method.
+- "O tracking é opcional" → NÃO. Sem tracking, /todo não sabe o que validar.
 - "Vou codar sem plano" → NÃO. Step 7a antes de 7b. Sempre.
-- "Feature tá done, testing depois é detalhe" → NÃO. Done requer evidência. Status `pending-test` impede claim de done.
 - "Vou bundle as tasks pra não poluir" → NÃO. 1 TaskCreate = 1 task. Bundling proibido.
 - "Vou escrever TCs depois, na hora de testar" → NÃO. Step 5 ANTES de codar. Sem exceções.
-- "Vou marcar como done e o /test confirma depois" → NÃO. /fast SEMPRE termina em `pending-test`. Done é função do /test.
+- "Step 8 sem TCs executados é review de fachada" → NÃO. Step 8 valida lógica/segurança/padrões contra os TCs escritos (mesmo que pendentes de execução).
+- "Vou fazer Step 8 mental, sem relatório" → NÃO. Step 8 = relatório formal em `kanban/08-code-review/`. Mental ≠ documentado ≠ feito.
