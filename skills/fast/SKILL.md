@@ -8,6 +8,7 @@ argument-hint: "[feature-name]"
 Roda o /method em ritmo rápido — steps 1-8 + 10 (planejamento, codificação, code review, done) — pulando apenas step 9 (testing via front) e step 11 (ship). Test cases ESCRITOS no step 5 ficam PENDENTES de execução; usuário pode rodar `/todo` depois para validar via front, ou validar manualmente. Cria tracking em `docs/todo/<feature>.md` com `status: done` + `tests: pending`.
 
 <HARD-GATE>
+NÃO crie branch. Trabalhe SEMPRE na branch atual — proibido `git checkout -b`, `git switch -c`, `git branch <nome>` ou qualquer criação/troca de branch.
 EXECUTE step 8 (code review) e step 10 (done). Sem code review limpo, /fast não termina.
 NÃO execute step 9 (testing via front) — isso é função do /todo (chamado opcionalmente depois).
 NÃO execute step 11 (ship) — isso continua só no /method completo.

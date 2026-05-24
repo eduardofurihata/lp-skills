@@ -7,6 +7,8 @@ argument-hint: "[feature-name]"
 
 # /method — Protocolo de Engenharia Rigorosa
 
+> 🚫 **NÃO crie branch.** Trabalhe SEMPRE na branch atual. Proibido `git checkout -b`, `git switch -c`, `git branch <nome>` ou qualquer criação/troca de branch. Toda a implementação acontece na branch em que a conversa começou.
+
 **Esta skill é FERRO.** Uma vez ativada, vale para TODA a conversa. Transições entre steps são AUTOMÁTICAS — não pergunte "posso prosseguir?". Siga do Step 1 ao Step 11 sem parar, exceto na única pausa legítima (decisão IRREVERSÍVEL + 2 caminhos radicalmente opostos + só usuário pode julgar).
 
 ## Iron Law
