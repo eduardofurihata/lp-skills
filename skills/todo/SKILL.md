@@ -1,14 +1,16 @@
 ---
 name: todo
-description: 'Use when ready to run QA on features in docs/todo/ (created by /fast) — scans tracking files with `tests: pending` (or legacy `status: pending-test`), executes testing via front (step 9), and moves tracking to docs/done/ with `tests: passed`'
+description: 'Use when ready to run QA on features queued in kanban/06-todo/ (cards created by /fast, pending front-validation). Executes testing via front (step 9) and promotes passing features to kanban/10-done/ with `tests: passed`'
 effort: max
 argument-hint: "[feature-name or 'all']"
 ---
 
-Executa a fase de QA (step 9 do /method) para features pendentes em `docs/todo/`.
-/fast já entregou o kanban em `kanban/10-done/`; o /todo apenas valida via front e move o tracking para `docs/done/` com `tests: passed`.
+Executa a fase de QA (step 9 do /method) para features pendentes na coluna `kanban/06-todo/`.
+**No kanban, a COLUNA é o status:** todo card em `kanban/06-todo/` é uma feature pendente de QA — não há filtro de frontmatter. O /todo valida via front e, ao passar 100%, **promove** a feature para `kanban/10-done/<feature>.md` com `tests: passed` e **deleta** o card de `kanban/06-todo/`.
 
-Para features legacy (`status: pending-test`, criadas pelo /fast antigo), /todo também roda Step 8 (Code Review) e cria `kanban/10-done/` — esses steps não foram executados pelo /fast antigo.
+Distinção `[novo]` vs `[legacy]` (decide se roda Step 8 — Code Review):
+- `[novo]` — já existe `kanban/08-code-review/<feature>.md` (o /fast já rodou o code review). /todo NÃO repete o Step 8.
+- `[legacy]` — não há relatório de code review. /todo roda o Step 8 agora (o /fast antigo não rodava).
 
 <HARD-GATE>
 NÃO marque test cases como PASSED sem executar via front.
@@ -27,12 +29,12 @@ QUALQUER fix de código invalida o ciclo: volta ao Code Review (se legacy) ou re
 
 Crie tasks via TaskCreate para cada item:
 
-1. **Scan** — Listar features pendentes em `docs/todo/`
+1. **Scan** — Listar features pendentes na coluna `kanban/06-todo/`
 2. **Selecionar** — User escolhe qual feature (ou todas)
 3. **Carregar contexto** — Ler TODOS os docs de referência (steps 1-7)
 4. **Step 8 — Code Review** — Loop até 100% limpo + relatório
 5. **Step 9 — Run Test** — TODOS os TCs via front com screenshot
-6. **Step 10 — Done** — Resumo + mover para `docs/done/`
+6. **Step 10 — Done** — Promover para `kanban/10-done/` (tests: passed) + deletar o card de `kanban/06-todo/`
 
 ## Fluxo
 
@@ -41,17 +43,17 @@ digraph todo {
     rankdir=TB;
     node [fontname="Helvetica"];
 
-    scan [label="Scan docs/todo/" shape=box];
+    scan [label="Scan kanban/06-todo/" shape=box];
     has_features [label="Features pendentes?" shape=diamond];
     none [label="Nenhuma feature\npendente" shape=box];
     select [label="Selecionar feature" shape=box];
-    is_legacy [label="Frontmatter legacy?\n(status: pending-test)" shape=diamond];
+    is_legacy [label="É legacy?\n(sem kanban/08-code-review)" shape=diamond];
     context [label="Ler referências\n(steps 1-7)" shape=box];
     review [label="Step 8 — Code Review\n(legacy only — loop até limpo)" shape=box];
     testing [label="Step 9 — Run Test\n(TODOS os TCs via front)" shape=box];
     passed [label="100% PASSED\nsem mudanças?" shape=diamond];
     done [label="Phase 4 — Done\n(tests: passed)" shape=box];
-    move [label="Mover\ntodo/ → done/" shape=box];
+    move [label="Promover\n06-todo → 10-done" shape=box];
     more [label="Mais features?" shape=diamond];
     fim [label="FIM" shape=doublecircle];
 
@@ -77,12 +79,12 @@ digraph todo {
 
 ## Phase 1 — Scan e Seleção
 
-1. `Glob docs/todo/*.md`
-2. Ler frontmatter de cada arquivo (`feature`, `status`, `tests`, `branch`, `created`)
-3. **Filtro:** entra no scan o arquivo que satisfaça QUALQUER um:
-   - `tests: pending` (novo, criado pelo /fast pós-refactor)
-   - `status: pending-test` (legacy, criado pelo /fast pré-refactor)
-4. Marcar cada arquivo como `[novo]` ou `[legacy]` conforme frontmatter
+1. `Glob kanban/06-todo/*.md`
+2. **Todo card aqui é pendente de QA** — no kanban, a coluna É o status. NÃO há filtro de frontmatter (cards de `06-todo` são task-breakdowns, normalmente sem frontmatter).
+3. Para cada card, o nome da feature = nome do arquivo. Ler o conteúdo (task-breakdown / notas).
+4. Marcar cada feature como `[novo]` ou `[legacy]`:
+   - `[novo]` — existe `kanban/08-code-review/<feature>.md` → /fast já rodou Step 8.
+   - `[legacy]` — não existe relatório de code review → /todo roda Step 8.
 5. Apresentar lista:
 
 ```
@@ -96,7 +98,7 @@ Qual feature deseja validar? (número, nome, ou "all")
 
 6. Se `$ARGUMENTS` fornecido → usar como seleção
 7. Se apenas 1 feature → selecionar automaticamente
-8. Se "all" → processar uma por vez na ordem do tracking
+8. Se "all" → processar uma por vez na ordem da listagem
 
 ---
 
@@ -104,19 +106,19 @@ Qual feature deseja validar? (número, nome, ou "all")
 
 ### Quando rodar Code Review
 
-| Frontmatter da feature | Code Review? | Por quê |
+| Tipo da feature | Code Review? | Por quê |
 |------------------------|--------------|---------|
-| `tests: pending` (novo, /fast pós-refactor) | ❌ **NÃO** rodar — já rodou no /fast | Step 8 já foi executado pelo /fast. Há relatório em `kanban/08-code-review/<feature>.md`. /todo só lê o relatório como contexto antes da execução. |
-| `status: pending-test` (legacy, /fast pré-refactor) | ✅ **SIM** rodar | /fast antigo parava em 7b; Step 8 nunca rodou. /todo precisa fazê-lo agora. |
+| `[novo]` — existe `kanban/08-code-review/<feature>.md` | ❌ **NÃO** rodar — já rodou no /fast | Step 8 já foi executado pelo /fast. /todo só lê o relatório como contexto antes da execução. |
+| `[legacy]` — sem relatório de code review | ✅ **SIM** rodar | /fast antigo parava em 7b; Step 8 nunca rodou. /todo precisa fazê-lo agora. |
 
-**Regra inviolável:** features novas NÃO repetem code review. Features legacy SEMPRE rodam. Sem exceção. Se o frontmatter for ambíguo (sem `tests:` e sem `status: pending-test`), default para legacy (rodar review).
+**Regra inviolável:** features `[novo]` NÃO repetem code review. Features `[legacy]` SEMPRE rodam. Sem exceção. Na dúvida (sem relatório em `kanban/08-code-review/`), default para legacy (rodar review).
 
 **Se a feature for `[novo]`, pule para Phase 3.** As subseções abaixo (Preparação, Revisão em Loop, Relatório) aplicam-se APENAS a features `[legacy]`.
 
 ### Preparação
 
-Antes de revisar, ler TODOS os docs da feature (tabela de referências do tracking file):
-- Problema (1), User Stories (2), Use Cases (3), Spec (4), To Do (5), Test Cases (6), Plano (7)
+Antes de revisar, ler TODOS os docs da feature (`docs/01-problem` → `docs/05-test-cases` + `kanban/06-todo` + `kanban/07-implementation`):
+- Problema (1), User Stories (2), Use Cases (3), Spec (4), Test Cases (5), To Do (6), Plano (7)
 
 ### Revisão em Loop
 
@@ -172,7 +174,7 @@ Input validation | Auth | Dados sensíveis | Injection vectors
 
 ## Phase 3 — Testing (Step 9 do /method)
 
-Executar TODOS os test cases listados no tracking file + `docs/05-test-cases/`.
+Executar TODOS os test cases listados em `docs/05-test-cases/<feature>.md` (+ a lista "Test Cases Pendentes" do card `kanban/10-done/<feature>.md`, se `[novo]`).
 
 ### Pre-Flight Blocker Contract (OBRIGATÓRIO — ANTES de tudo)
 
@@ -180,7 +182,7 @@ Executar TODOS os test cases listados no tracking file + `docs/05-test-cases/`.
 
 ```
 PRE-FLIGHT:
-  1. Listar TODOS os N TCs (tracking file + docs/05-test-cases/)
+  1. Listar TODOS os N TCs (docs/05-test-cases/<feature>.md + lista do card kanban/10-done/, se [novo])
   2. Para CADA TC: qual tenant/seed/user/hardware/flag precisa?
   3. Classificar: READY / NEEDS SETUP / BLOCKED
   4. Reportar: "Pre-flight: X READY, Y NEEDS SETUP, Z BLOCKED por: [lista]"
@@ -210,7 +212,7 @@ Fim (ANTES de qualquer report): `"Reconciliação: Predicted N, Evidence M, Delt
 
 ```
 PROCEDIMENTO (executar PRIMEIRO, antes de qualquer TC):
-  1. Ler TODOS os TCs do tracking file + docs/05-test-cases/ (feature + regressão)
+  1. Ler TODOS os TCs de docs/05-test-cases/<feature>.md (+ card kanban/10-done/ se [novo]) (feature + regressão)
   2. Contar total de TCs (N)
   3. Agrupar em batches de ~10 TCs por afinidade temática (área, tela, fluxo)
   4. CAMADA 1 — Para CADA grupo, criar 1 TaskCreate:
@@ -239,7 +241,7 @@ PROCEDIMENTO (executar PRIMEIRO, antes de qualquer TC):
 
 ```markdown
 ## Audit Pré-Execução — TaskCreate 1:1
-- TCs totais (tracking + docs/05-test-cases/): **N**
+- TCs totais (docs/05-test-cases/ + card kanban/10-done/ se [novo]): **N**
 - TaskCreate de grupo criados: **G** — listar (TaskID → grupo)
 - TaskCreate individuais criados: **M** — listar (TaskID → TC-ID)
 - Ratio M == N? ✅ SIM / ❌ NÃO — TCs sem task individual: [listar TC-IDs]
@@ -296,7 +298,7 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
 - **Veredicto:** ✅ LIBERADO para Phase 4 (Done) / ❌ BLOQUEADO — voltar ao Loop
 ```
 
-**❌ BLOQUEADO = PROIBIDO avançar para Phase 4, PROIBIDO resumo de conclusão, PROIBIDO mover tracking para `docs/done/`.** Volte ao Loop, execute pendentes, produza evidência, republique o audit.
+**❌ BLOQUEADO = PROIBIDO avançar para Phase 4, PROIBIDO resumo de conclusão, PROIBIDO promover a feature para `kanban/10-done/`.** Volte ao Loop, execute pendentes, produza evidência, republique o audit.
 
 | Racionalização proibida | Realidade |
 |------------------------|-----------|
@@ -360,17 +362,11 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 
 ## Phase 4 — Done
 
-### Para features `[novo]` (`tests: pending` → `tests: passed`)
+Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de `kanban/06-todo/` para `kanban/10-done/`.
 
-`/fast` já criou `kanban/10-done/<tópico>.md`. /todo apenas:
+### Para features `[novo]` (já têm `kanban/10-done/<feature>.md`, criado pelo /fast)
 
-1. **Mover** tracking file:
-   ```bash
-   mkdir -p docs/done
-   mv docs/todo/<feature>.md docs/done/<feature>.md
-   ```
-
-2. **Atualizar frontmatter** do arquivo movido:
+1. **Atualizar o frontmatter** de `kanban/10-done/<feature>.md`:
    ```yaml
    ---
    feature: <nome>
@@ -382,51 +378,43 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
    ---
    ```
 
-3. **Anexar resumo** ao kanban/10-done existente, sob nova seção:
+2. **Anexar resumo de QA** ao `kanban/10-done/<feature>.md`, sob nova seção:
    ```markdown
    ## QA (rodado por /todo em <data>)
    - Total TCs: X | PASSED: X | FAILED: 0
    - Evidências: kanban/09-run-test/<feature>.md
    ```
 
-### Para features `[legacy]` (`status: pending-test`)
+3. **Deletar o card da coluna to-do:** `rm kanban/06-todo/<feature>.md`
 
-/fast antigo NÃO criou kanban/10-done. /todo precisa criar:
+### Para features `[legacy]` (sem `kanban/10-done/<feature>.md`)
 
-1. **Criar** `kanban/10-done/<tópico>.md`:
-   - Links para todos os docs (steps 1-9)
-   - Arquivos de código alterados
-   - Status final dos TCs (todos PASSED)
-   - Tasks completadas do to-do
+/todo precisa criar o card de done:
 
-2. **Mover e reescrever frontmatter** do tracking:
+1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados e status final dos TCs (todos PASSED):
    ```yaml
    ---
    feature: <nome>
    status: done
    tests: passed
    branch: <branch>
-   created: <YYYY-MM-DD original>
+   created: <YYYY-MM-DD>   # data original se conhecida; senão a de hoje
    tested: <YYYY-MM-DD>
    ---
    ```
-   ```bash
-   mkdir -p docs/done
-   mv docs/todo/<feature>.md docs/done/<feature>.md
-   ```
 
-3. **Deletar** todo da feature se existir: `rm kanban/06-todo/<tópico>.md`
+2. **Deletar o card da coluna to-do:** `rm kanban/06-todo/<feature>.md`
 
 ### Comum a ambos
 
-4. **Informar**:
-   ```
-   Feature "<nome>" — QA completo.
-   TCs: X/X PASSED | Status: done, tests: passed
-   Tracking movido para docs/done/<feature>.md
-   ```
+- **Informar**:
+  ```
+  Feature "<nome>" — QA completo.
+  TCs: X/X PASSED | Status: done, tests: passed
+  Promovida para kanban/10-done/<feature>.md (card de kanban/06-todo/ removido)
+  ```
 
-5. **Mais features?** → voltar ao Phase 1 (Seleção) para a próxima
+- **Mais features?** → voltar ao Phase 1 (Seleção) para a próxima
 
 ---
 
