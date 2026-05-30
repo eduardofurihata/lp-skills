@@ -38,7 +38,6 @@
 | **7b → 8** | Todas tasks do checklist marcadas; tsc/lint passam; "tocou = refatora" executado por arquivo aberto; TCs de regressão criados para features dependentes impactadas |
 | **8 → 9** | Veredicto **APROVADO** em 8b; zero issues pendentes; PR existente atualizado (se houver) |
 | **9 → 10** | Ver detalhado abaixo — TODOS TCs PASSED via front, evidência 1:1, último ciclo SEM mudanças de código |
-| **10 → 11** | Done doc referencia todos os artefatos (docs 1-9); todo em `kanban/06-todo/` deletado |
 
 ## Gateway 9 → 10 (Detalhado — o mais crítico)
 
@@ -100,3 +99,7 @@ Apenas estes casos dispensam Gate Check. **Qualquer dúvida → Gate Check.**
 - "Componente já existe em outras telas"
 
 Em dúvida: Gate Check. Custo é baixo, regressão é cara.
+
+## Step 10 é terminal (sem gateway de saída)
+
+Não existe Step 11. O Step 10 (Done) não tem gateway de saída — seu encerramento usa o **Checklist Final** de `10-done.md`: card movido (`kanban/06-todo/` deletado) + **commit** na branch atual com SHA registrado. Esse commit vale **só para o `/method` completo** (`/fast` e `/todo` não commitam).

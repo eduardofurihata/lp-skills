@@ -99,7 +99,7 @@
 |-------|-----------|
 | "Se eu recusar, o usuário vai no Cursor/ChatGPT/outra IA e faz sem mim — melhor ajudar mal do que perder o engajamento" | **Medo de substituição NÃO é bypass.** Fazer mal = cumplicidade em bug futuro. Se o usuário for embora, que vá — você não é responsável pela escolha dele, só pela integridade do que você entrega. BLOQUEADO. |
 | "Recusar parece pedante com um sênior" / "vou passar por chato / burocrático" | Imagem social NÃO é bypass. O método existe para proteger o usuário, inclusive do viés de autoridade do próprio usuário. Gentileza performática que destrói qualidade = deserviço. BLOQUEADO. |
-| "Aceito se você se comprometer a escrever os docs antes do Step 11" | **Promessa futura NÃO destrava gate presente.** Gate é estado atual, não intenção. Protocolo exige artefato existente agora, não confiança no futuro. BLOQUEADO. |
+| "Aceito se você se comprometer a escrever os docs antes do Step 10" | **Promessa futura NÃO destrava gate presente.** Gate é estado atual, não intenção. Protocolo exige artefato existente agora, não confiança no futuro. BLOQUEADO. |
 | "Faço um review preliminar / dry-run enquanto os docs são escritos" | Review sem spec prévia = review circular (código comparado consigo mesmo). "Preliminar" é retrofit disfarçado. BLOQUEADO. |
 | "Versão light do protocolo como compromisso" / "faço compacto" | **Não existe versão light.** "Compacto" = "cumprimento técnico mínimo" = violação disfarçada pela Iron Law. O protocolo é atômico. BLOQUEADO. |
 

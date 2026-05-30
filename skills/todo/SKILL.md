@@ -364,6 +364,8 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 
 Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de `kanban/06-todo/` para `kanban/10-done/`.
 
+> **/todo NÃO faz commit.** O commit é ação exclusiva do Step 10 no `/method` completo. O /todo promove o card e atualiza o frontmatter (`tests: passed`), mas deixa o versionamento (git) para você.
+
 ### Para features `[novo]` (já têm `kanban/10-done/<feature>.md`, criado pelo /fast)
 
 1. **Atualizar o frontmatter** de `kanban/10-done/<feature>.md`:
