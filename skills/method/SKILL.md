@@ -9,7 +9,7 @@ argument-hint: "[feature-name]"
 
 > 🚫 **NÃO crie branch.** Trabalhe SEMPRE na branch atual. Proibido `git checkout -b`, `git switch -c`, `git branch <nome>` ou qualquer criação/troca de branch. Toda a implementação acontece na branch em que a conversa começou.
 
-**Esta skill é FERRO.** Uma vez ativada, vale para TODA a conversa. Transições entre steps são AUTOMÁTICAS — não pergunte "posso prosseguir?". Siga do Step 1 ao Step 11 sem parar, exceto na única pausa legítima (decisão IRREVERSÍVEL + 2 caminhos radicalmente opostos + só usuário pode julgar).
+**Esta skill é FERRO.** Uma vez ativada, vale para TODA a conversa. Transições entre steps são AUTOMÁTICAS — não pergunte "posso prosseguir?". Siga do Step 1 ao Step 10 sem parar, exceto na única pausa legítima (decisão IRREVERSÍVEL + 2 caminhos radicalmente opostos + só usuário pode julgar).
 
 ## Iron Law
 
@@ -30,7 +30,7 @@ argument-hint: "[feature-name]"
 
 Lista completa de racionalizações + contra-argumentos: ver `references/rationalizations.md`.
 
-## Os 11 Steps (nomes, pastas e arquivos são contrato — NÃO alterar)
+## Os 10 Steps (nomes, pastas e arquivos são contrato — NÃO alterar)
 
 | # | Step | Pasta | Arquivo | Reler | Detalhe |
 |---|------|-------|---------|-------|---------|
@@ -45,7 +45,6 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 | 8 | Code Review | `kanban/08-code-review/` | `<tópico>.md` | Plano + TCs + Use Cases | `references/08-code-review.md` |
 | 9 | Run Test | `kanban/09-run-test/` | `<tópico>.md` | TCs (5) + Review (8b) | `references/09-testing.md` |
 | 10 | Done | `kanban/10-done/` | `<tópico>.md` | — | `references/10-done.md` |
-| 11 | Ship | `kanban/11-ship/` | `<tópico>.md` | — | `references/11-ship.md` |
 
 **Abra o reference do step ANTES de executar.** Releia docs anteriores do step atual antes de começar.
 
@@ -78,12 +77,12 @@ Antes de qualquer código:
 
 - **1 TaskCreate cobrindo Discovery (Steps 1-5):** "Discovery — <feature>"
 - **1 TaskCreate por step de 6 a 9:** To Do, Plano (7a), Codificar (7b), Code Review, Run Test
-- **1 TaskCreate cobrindo Closeout (Steps 10-11):** "Closeout — <feature>"
+- **1 TaskCreate cobrindo Closeout (Step 10):** "Closeout — <feature>"
 
 `TaskUpdate → in_progress` ao começar cada um, `→ completed` somente quando:
 - **Discovery:** os 5 artefatos existirem e gateways 1→2…4→5 estiverem ✅
 - **Steps 6-9:** artefato do step existir e gateway respectivo ✅
-- **Closeout:** artefatos `kanban/10-done/` e `kanban/11-ship/` existirem, gateway 10→11 ✅, smoke test em produção executado com evidência
+- **Closeout:** artefato `kanban/10-done/` existir, card de `kanban/06-todo/` deletado (card movido) e **commit** criado na branch atual com SHA registrado no done doc
 
 A partir do Step 6 até o 9: 1 TaskCreate = 1 task. Nunca agrupe entre 6 e 9.
 
@@ -146,7 +145,7 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 - `references/rationalizations.md` — tabela única consolidada de todas as racionalizações proibidas + Red Flags completo
 - `references/gateways.md` — todos os critérios de gateway + Gateway 9→10 detalhado
 - `references/inventario-docs.md` — protocolo do inventário inicial
-- `references/01-problema.md` até `references/11-ship.md` — detalhamento por step
+- `references/01-problema.md` até `references/10-done.md` — detalhamento por step
 
 **Abra o reference relevante ao iniciar cada step. Não tente executar de memória.**
 

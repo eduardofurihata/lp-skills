@@ -1,17 +1,17 @@
 ---
 name: fast
-description: 'Use when developing features rapidly — runs /method steps 1-8 + 10 (planning, coding, code review, done), writes test cases but leaves them PENDING — the feature card stays in `kanban/06-todo/` and `kanban/10-done/<feature>.md` carries `tests: pending` for optional later validation via /todo. Skips only step 9 (testing via front) and step 11 (ship).'
+description: 'Use when developing features rapidly — runs /method steps 1-8 + 10 (planning, coding, code review, done), writes test cases but leaves them PENDING — the feature card stays in `kanban/06-todo/` and `kanban/10-done/<feature>.md` carries `tests: pending` for optional later validation via /todo. Skips step 9 (testing via front) and does not commit (commit belongs to the full /method step 10).'
 effort: max
 argument-hint: "[feature-name]"
 ---
 
-Roda o /method em ritmo rápido — steps 1-8 + 10 (planejamento, codificação, code review, done) — pulando apenas step 9 (testing via front) e step 11 (ship). Test cases ESCRITOS no step 5 ficam PENDENTES de execução; usuário pode rodar `/todo` depois para validar via front, ou validar manualmente. Deixa o card em `kanban/06-todo/<feature>.md` (fila de QA) e cria `kanban/10-done/<feature>.md` com `status: done` + `tests: pending`.
+Roda o /method em ritmo rápido — steps 1-8 + 10 (planejamento, codificação, code review, done) — pulando o step 9 (testing via front) e sem fazer commit (commit é do step 10 no /method completo). Test cases ESCRITOS no step 5 ficam PENDENTES de execução; usuário pode rodar `/todo` depois para validar via front, ou validar manualmente. Deixa o card em `kanban/06-todo/<feature>.md` (fila de QA) e cria `kanban/10-done/<feature>.md` com `status: done` + `tests: pending`.
 
 <HARD-GATE>
 NÃO crie branch. Trabalhe SEMPRE na branch atual — proibido `git checkout -b`, `git switch -c`, `git branch <nome>` ou qualquer criação/troca de branch.
 EXECUTE step 8 (code review) e step 10 (done). Sem code review limpo, /fast não termina.
 NÃO execute step 9 (testing via front) — isso é função do /todo (chamado opcionalmente depois).
-NÃO execute step 11 (ship) — isso continua só no /method completo.
+NÃO faça commit — o commit é ação do Step 10 no /method completo; no /fast o código fica não-commitado (o /todo valida antes).
 Ao finalizar, NÃO delete o card de `kanban/06-todo/` (deixe-o como sinal de "pendente de QA" para o /todo). Crie `kanban/10-done/<feature>.md` com `tests: pending`.
 </HARD-GATE>
 
@@ -47,7 +47,7 @@ Crie tasks via TaskCreate para cada item abaixo.
 8. **Step 7a — Plano** — Plano autocontido em `kanban/07-implementation/<tópico>.md`
 9. **Step 7b — Codificar** — Implementar seguindo o plano
 10. **Step 8 — Code Review** — Loop até 100% limpo + relatório em `kanban/08-code-review/<tópico>.md`. QUALQUER mudança de código volta ao 7b. Sai do loop com ZERO mudanças no último passe.
-11. **Step 10 — Done** — Criar `kanban/10-done/<tópico>.md` com resumo + links + frontmatter (`status: done`, `tests: pending`). **NÃO delete** `kanban/06-todo/<tópico>.md` — ele fica como fila de QA para o /todo (que o deleta ao validar).
+11. **Step 10 — Done** — Criar `kanban/10-done/<tópico>.md` com resumo + links + frontmatter (`status: done`, `tests: pending`). **NÃO delete** `kanban/06-todo/<tópico>.md` — ele fica como fila de QA para o /todo (que o deleta ao validar). **Sem commit** — /fast não commita (ver HARD-GATE).
 12. **Frontmatter de QA** — O card `kanban/10-done/<feature>.md` carrega `status: done` + `tests: pending` (+ lista "Test Cases Pendentes" e "Notas para QA") para o /todo validar depois.
 
 ## Fluxo
@@ -208,7 +208,7 @@ O card de done (`kanban/10-done/<feature>.md`) é um RESUMO:
 - ❌ Skippar Step 5 alegando "escrevo TCs quando for testar"
 - ❌ Pular Step 7a (plano) — necessário para Step 8 (code review) ter referência
 - ❌ Rodar Step 9 (testing via front) — isso é /todo, não /fast
-- ❌ Rodar Step 11 (ship) — isso é /method completo
+- ❌ Fazer commit — o commit é do Step 10 no /method completo; /fast deixa o código não-commitado
 
 ## Red Flags — STOP e Revise
 
@@ -217,7 +217,7 @@ O card de done (`kanban/10-done/<feature>.md`) é um RESUMO:
 - "Vou pular o code review (step 8) — feature é trivial / urgente / CEO pediu" → NÃO. Step 8 é gate interno do /fast. Sem ele, /fast não termina.
 - "Vou marcar Step 10 (done) sem Step 8 limpo" → NÃO. Step 10 só após Step 8 com ZERO mudanças no último passe.
 - "Vou rodar /todo agora porque feature é importante" → NÃO. /fast PARA no Step 10. /todo é INVOCADO pelo usuário, não pelo /fast.
-- "Vou tentar rodar Step 11 (ship) também" → NÃO. /fast termina no Step 10. Ship só no /method.
+- "Vou commitar ao terminar" → NÃO. /fast não commita. O commit é do Step 10 no /method completo.
 - "O tracking é opcional" → NÃO. Sem tracking, /todo não sabe o que validar.
 - "Vou codar sem plano" → NÃO. Step 7a antes de 7b. Sempre.
 - "Vou bundle as tasks pra não poluir" → NÃO. 1 TaskCreate = 1 task. Bundling proibido.
