@@ -274,8 +274,10 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
         - Seguir CADA passo do TC
         - Screenshot como prova de cada PASSED
      c. PASSED (com screenshot) ou FAILED (motivo detalhado)
+        → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<feature>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota.
      d. Bug encontrado → corrigir IMEDIATAMENTE → ATENÇÃO:
         QUALQUER fix invalida o ciclo:
+        - RESETE todos os `- [x]` do checklist de QA (`kanban/06-todo/`) para `- [ ]` — vai retestar TUDO
         - `[legacy]`: volta ao Phase 2 (Code Review) → retesta TUDO
         - `[novo]`: volta ao Phase 3 (re-executa TODOS os TCs do zero — code review do /fast cobre apenas o código original, fixes do /todo são código novo não revisado; se fix for não-trivial, considere escalar de volta para /fast e re-rodar Step 8)
      e. Todos TCs do batch PASSED → TaskUpdate → completed
@@ -364,6 +366,8 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 
 Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de `kanban/06-todo/` para `kanban/10-done/`.
 
+> **Antes de qualquer `rm` do card de to-do:** copie a seção `## Test Cases (QA)` (checklist final, tudo `- [x] TC-N`) para o card de done. O to-do some no `rm`, mas o registro do que foi testado fica no done.
+
 > **/todo NÃO faz commit.** O commit é ação exclusiva do Step 10 no `/method` completo. O /todo promove o card e atualiza o frontmatter (`tests: passed`), mas deixa o versionamento (git) para você.
 
 ### Para features `[novo]` (já têm `kanban/10-done/<feature>.md`, criado pelo /fast)
@@ -385,6 +389,9 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
    ## QA (rodado por /todo em <data>)
    - Total TCs: X | PASSED: X | FAILED: 0
    - Evidências: kanban/09-run-test/<feature>.md
+
+   ## Test Cases (QA) — status final
+   <Cole aqui o checklist `## Test Cases (QA)` do card `kanban/06-todo/`, tudo `- [x] TC-N: <nome>`, ANTES de apagar o card.>
    ```
 
 3. **Deletar o card da coluna to-do:** `rm kanban/06-todo/<feature>.md`
@@ -393,7 +400,7 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
 
 /todo precisa criar o card de done:
 
-1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados e status final dos TCs (todos PASSED):
+1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados e **checklist `## Test Cases (QA)` com tudo `- [x] TC-N`** (status final dos TCs, todos PASSED — copiado do card `kanban/06-todo/` antes do `rm`):
    ```yaml
    ---
    feature: <nome>

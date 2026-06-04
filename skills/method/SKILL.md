@@ -82,7 +82,7 @@ Antes de qualquer código:
 `TaskUpdate → in_progress` ao começar cada um, `→ completed` somente quando:
 - **Discovery:** os 5 artefatos existirem e gateways 1→2…4→5 estiverem ✅
 - **Steps 6-9:** artefato do step existir e gateway respectivo ✅
-- **Closeout:** artefato `kanban/10-done/` existir, card de `kanban/06-todo/` deletado (card movido) e **commit** criado na branch atual com SHA registrado no done doc
+- **Closeout:** artefato `kanban/10-done/` existir, card de `kanban/06-todo/` **movido (deletado) ANTES do commit**, e **um único commit** na branch atual capturando código + docs + card de done + remoção do todo (mover primeiro, commitar por último — nunca commit → move → commit de novo)
 
 A partir do Step 6 até o 9: 1 TaskCreate = 1 task. Nunca agrupe entre 6 e 9.
 

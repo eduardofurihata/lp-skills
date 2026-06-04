@@ -167,12 +167,17 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
      a. TaskUpdate grupo → in_progress
      b. CADA TC do batch: executar DO ZERO via ferramenta apropriada
      c. PASSED (com screenshot/evidência) ou FAILED (motivo)
-     d. Bug → corrigir → ATENÇÃO: qualquer fix invalida o ciclo
+        → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota do motivo.
+     d. Bug → corrigir → ATENÇÃO: qualquer fix invalida o ciclo → RESETE todos os `- [x]` do checklist de QA para `- [ ]` (vai retestar TUDO do zero)
      e. Todos TCs do batch PASSED → TaskUpdate grupo → completed
   4. Organizar kanban/09-run-test/<tópico>.md
   5. Algum FAILED com fix → volta ao Step 8 (Code Review) → retesta TUDO
   6. Todos PASSED sem nenhuma mudança de código → Step 10
 ```
+
+### Checklist de QA no card de to-do — atualizar ao vivo (retomada)
+
+O card `kanban/06-todo/<tópico>.md` tem a seção `## Test Cases (QA)` com um `- [ ]` por TC (semeada no Step 6). **Atualize-a em tempo real:** TC PASSED → `- [x]`; fix de código → reset tudo para `- [ ]`. É o que permite **parar e retomar** — ao voltar, abra o card e os `- [ ]` restantes são exatamente o que falta rodar. O `kanban/09-run-test/` guarda a evidência (screenshot/motivo); o checklist guarda o status de bate-pronto. No Step 10 este checklist final é copiado para o done.
 
 ## Ferramenta por Contexto
 
@@ -180,10 +185,29 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
 |----------|-----------|------|
 | Mobile Android | Android emulator via AVD | Boot → instalar app → executar TC como usuário |
 | Mobile iOS | iOS simulator (Xcode) ou device físico | Boot → instalar app → executar TC como usuário |
-| Web (Next.js/frontend) | MCP Playwright | `mcp__playwright-*` (navigate, click, snapshot, screenshot) |
+| Web (Next.js/frontend) | MCP Playwright (default `pw4`, pool `pw#` p/ fallback) | `mcp__playwright-4__*` por padrão (navigate, click, snapshot, screenshot) — ver "Pool Playwright" abaixo |
 | API/Backend | curl/httpie ou test suite | Endpoints reais ou suite existente |
 
 **OBRIGATÓRIO: Mobile = Android E iOS, sempre.** Toda feature mobile gera execução nas duas. Se iOS indisponível na máquina, peça ao usuário antes de marcar PASSED.
+
+### Pool Playwright — Fallback Automático (`pw#`)
+
+Existem **múltiplas instâncias** do MCP Playwright disponíveis: `mcp__playwright-0__*`, `mcp__playwright-1__*`, … até `mcp__playwright-5__*`. Cada uma controla um browser próprio e **só atende uma instância do Claude por vez** (outra sessão rodando em paralelo pode estar usando a mesma).
+
+O **/method usa `mcp__playwright-4__*` como instância designada** (default). Os outros índices são apenas fallback quando o pw4 estiver ocupado.
+
+**Regra:** se o `pw#` que você tentar usar já estiver **ocupado por outra instância** (erro tipo "browser already in use" / "session busy" / "target closed", a chamada falha, ou o `browser_snapshot` mostra uma página que não é a sua), **passe automaticamente para o próximo índice livre** — sem perguntar ao usuário e sem marcar o TC como BLOCKED/SKIP.
+
+```
+PROCEDIMENTO (ao iniciar testes via front):
+  1. Use a instância designada do /method: mcp__playwright-4__browser_navigate
+  2. pw4 ocupado / erro de sessão? → passe para o próximo índice livre do pool: -5, -3, -2, -1, -0
+  3. Achou uma livre → fixe-a para TODOS os TCs desta rodada (não troque no meio)
+  4. SÓ se as 6 estiverem ocupadas → pare e avise o usuário
+  5. Registre qual pw# você usou em `## Test Environment Setup`
+```
+
+"Playwright ocupado" **NUNCA** vira SKIP/BLOCKED enquanto houver outro índice livre no pool — buscar a instância livre é fallback automático, parte do "CRIE AS CONDIÇÕES".
 
 ## Regras Rígidas
 
