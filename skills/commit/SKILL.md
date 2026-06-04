@@ -37,7 +37,7 @@ Commit autônomo de tudo que está no repo. Lida com lixo (delete) e arquivos qu
    - Body opcional (linha em branco antes) explicando o WHY para mudanças não-triviais.
    - Sempre termina com:
      ```
-     Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+     Co-Authored-By: Claude <noreply@anthropic.com>
      ```
 
 5. **Commit.** Use heredoc para preservar formatação:

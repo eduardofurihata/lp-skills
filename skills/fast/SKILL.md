@@ -43,12 +43,12 @@ Crie tasks via TaskCreate para cada item abaixo.
 4. **Step 3 — Use Cases** — Happy path + erros em `docs/03-use-cases/<tópico>.md`
 5. **Step 4 — Spec** — Questioning Loop até zero gaps em `docs/04-spec/<tópico>.md`
 6. **Step 5 — Test Cases** — TCs escritos ANTES de codar em `docs/05-test-cases/<tópico>.md` (PENDENTES de execução pelo /todo)
-7. **Step 6 — To Do** — Tasks quebradas em `kanban/06-todo/<tópico>.md`
+7. **Step 6 — To Do** — Tasks quebradas em `kanban/06-todo/<tópico>.md` + seção `## Test Cases (QA)` com `- [ ]` por TC do step 5 (todos pendentes — /fast não roda o step 9; o /todo flipa pra `- [x]` depois)
 8. **Step 7a — Plano** — Plano autocontido em `kanban/07-implementation/<tópico>.md`
 9. **Step 7b — Codificar** — Implementar seguindo o plano
 10. **Step 8 — Code Review** — Loop até 100% limpo + relatório em `kanban/08-code-review/<tópico>.md`. QUALQUER mudança de código volta ao 7b. Sai do loop com ZERO mudanças no último passe.
 11. **Step 10 — Done** — Criar `kanban/10-done/<tópico>.md` com resumo + links + frontmatter (`status: done`, `tests: pending`). **NÃO delete** `kanban/06-todo/<tópico>.md` — ele fica como fila de QA para o /todo (que o deleta ao validar). **Sem commit** — /fast não commita (ver HARD-GATE).
-12. **Frontmatter de QA** — O card `kanban/10-done/<feature>.md` carrega `status: done` + `tests: pending` (+ lista "Test Cases Pendentes" e "Notas para QA") para o /todo validar depois.
+12. **Frontmatter de QA** — O card `kanban/10-done/<feature>.md` carrega `status: done` + `tests: pending` (+ checklist `## Test Cases (QA)` com tudo `- [ ]` e "Notas para QA") para o /todo validar depois.
 
 ## Fluxo
 
@@ -163,8 +163,8 @@ created: <YYYY-MM-DD>
 | 8 — Code Review | kanban/08-code-review/<tópico>.md |
 | 10 — Done | kanban/10-done/<tópico>.md |
 
-## Test Cases Pendentes
-<Copie os NOMES dos TCs do step 5 com status PENDING — referência completa em docs/05-test-cases/>
+## Test Cases (QA)
+<Checklist `- [ ] TC-N: <nome>` por TC do step 5 — TODOS pendentes (/fast não roda o step 9). É a MESMA lista da seção `## Test Cases (QA)` do card `kanban/06-todo/`. O /todo flipa pra `- [x]` ao validar via front. Referência completa em docs/05-test-cases/.>
 
 ## Notas para QA
 <Pontos de atenção, decisões tomadas, riscos identificados durante a implementação. O /todo lê isso antes de validar.>
@@ -175,7 +175,7 @@ created: <YYYY-MM-DD>
 - **Nunca crie tracking sem ter feito Steps 8 e 10** — tracking = prova de que feature está done (kanban em `kanban/10-done/`) com TCs pendentes para /todo opcional
 - **Frontmatter dual-field obrigatório**: `status: done` (dev done) + `tests: pending` (QA pendente)
 - **Branch obrigatório** — registre a branch atual para o /todo encontrar o código
-- **Test Cases Pendentes** — liste TODOS os TCs por nome. /todo usa esta lista como checklist
+- **Test Cases (QA)** — liste TODOS os TCs como `- [ ] TC-N: <nome>` (mesma lista do card `kanban/06-todo/`). /todo flipa pra `- [x]` conforme valida via front
 - **Notas para QA** — tudo que o validador precisa saber (decisões polêmicas, workarounds, riscos)
 
 ## Finalizando
