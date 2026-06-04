@@ -32,7 +32,7 @@
 | **2 → 3** | Stories cobrem todas as personas; formato "Como X, quero Y para Z" |
 | **3 → 4** | Use Cases derivados (ator × fluxo × estado); tabela de assinaturas única (sem duplicata); seção `## Verificação de Realidade` com cada passo do happy path mapeado a arquivo:linha OU 🔨 gap |
 | **4 → 5** | Autonomous Decision Loop fechou com **zero gaps**; cada decisão tem justificativa + referência (padrão do projeto > big app > boa prática); escopo de plataforma (web/android/ios) **derivado** aqui, não declarado |
-| **5 → 6** | Análise de complexidade publicada; 1-10 TCs derivados; cada TC com **Bug único** explícito; filtro de significância aplicado (sem filler); features mobile cobrem Android E iOS onde aplicável |
+| **5 → 6** | Nota de complexidade (1-10) publicada e derivada dos Steps 3-4; **nº de TCs == nota e ≤ 10** (diverge → BLOQUEADO); **os TCs contemplam 100% dos UCs (Step 3) + detalhes do Step 4** (somatório das linhas `Cobre`, nada descoberto); nenhum TC redundante (significância); cada TC com **Bug único** + observável no front; Android E iOS = execução no Step 9, não TCs extras |
 | **6 → 7a** | Tasks atômicas (1 prompt cada); cada task rastreável; dependências mapeadas |
 | **7a → 7b** | Plano autocontido (contexto + estratégia + mapa TC→código + checklist); i18n planejado se projeto tem i18n; referência de big apps citada para decisões UI/UX |
 | **7b → 8** | Todas tasks do checklist marcadas; tsc/lint passam; "tocou = refatora" executado por arquivo aberto; TCs de regressão criados para features dependentes impactadas |
