@@ -59,7 +59,7 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - **NUNCA commite antes de mover o card.** Commitar o código primeiro e só depois mover o card força um segundo commit — exatamente o erro que esta ordem evita.
 - **SHA é nota de bastidor:** o commit já É o registro (está no `git log`). Anotar o SHA no done doc é opcional e **não justifica um segundo commit** só para gravá-lo.
 
-> **Escopo do commit:** vale para o `/method` completo. **`/fast` e `/todo` NÃO commitam** (ver suas skills) — neles o código fica não-commitado para você decidir quando versionar.
+> **Escopo do commit:** só o `/method` completo commita. **`/fast` para no Step 8 (Code Review) — nem chega aqui.** O **`/todo`** faz a promoção do card (`06`→`10`) e grava `tests: passed`, mas **NÃO commita**. Em ambos, o código fica não-commitado para você versionar quando quiser.
 
 ## Red Flags — PARE (cada uma gera o segundo commit que queremos evitar)
 

@@ -174,7 +174,7 @@ Input validation | Auth | Dados sensíveis | Injection vectors
 
 ## Phase 3 — Testing (Step 9 do /method)
 
-Executar TODOS os test cases listados em `docs/05-test-cases/<feature>.md` (+ a lista "Test Cases Pendentes" do card `kanban/10-done/<feature>.md`, se `[novo]`).
+Executar TODOS os test cases listados em `docs/05-test-cases/<feature>.md`. (O status ao vivo fica na seção `## Test Cases (QA)` do card `kanban/06-todo/<feature>.md`, semeada no Step 6 — é onde você marca `- [x]`.)
 
 ### Pre-Flight Blocker Contract (OBRIGATÓRIO — ANTES de tudo)
 
@@ -182,7 +182,7 @@ Executar TODOS os test cases listados em `docs/05-test-cases/<feature>.md` (+ a 
 
 ```
 PRE-FLIGHT:
-  1. Listar TODOS os N TCs (docs/05-test-cases/<feature>.md + lista do card kanban/10-done/, se [novo])
+  1. Listar TODOS os N TCs (docs/05-test-cases/<feature>.md)
   2. Para CADA TC: qual tenant/seed/user/hardware/flag precisa?
   3. Classificar: READY / NEEDS SETUP / BLOCKED
   4. Reportar: "Pre-flight: X READY, Y NEEDS SETUP, Z BLOCKED por: [lista]"
@@ -212,9 +212,9 @@ Fim (ANTES de qualquer report): `"Reconciliação: Predicted N, Evidence M, Delt
 
 ```
 PROCEDIMENTO (executar PRIMEIRO, antes de qualquer TC):
-  1. Ler TODOS os TCs de docs/05-test-cases/<feature>.md (+ card kanban/10-done/ se [novo]) (feature + regressão)
+  1. Ler TODOS os TCs de docs/05-test-cases/<feature>.md (feature + regressão)
   2. Contar total de TCs (N)
-  3. Agrupar em batches de ~10 TCs por afinidade temática (área, tela, fluxo)
+  3. Agrupar em batches de até 10 TCs por afinidade temática (área, tela, fluxo) — com o teto de 10 do Step 5, normalmente 1 batch só
   4. CAMADA 1 — Para CADA grupo, criar 1 TaskCreate:
      - TaskCreate: "Grupo 01: TC-001 a TC-010 — [área/tema]"
      - TaskCreate: "Grupo 02: TC-011 a TC-020 — [área/tema]"
@@ -241,7 +241,7 @@ PROCEDIMENTO (executar PRIMEIRO, antes de qualquer TC):
 
 ```markdown
 ## Audit Pré-Execução — TaskCreate 1:1
-- TCs totais (docs/05-test-cases/ + card kanban/10-done/ se [novo]): **N**
+- TCs totais (docs/05-test-cases/<feature>.md): **N**
 - TaskCreate de grupo criados: **G** — listar (TaskID → grupo)
 - TaskCreate individuais criados: **M** — listar (TaskID → TC-ID)
 - Ratio M == N? ✅ SIM / ❌ NÃO — TCs sem task individual: [listar TC-IDs]
@@ -368,53 +368,34 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
 
 > **Antes de qualquer `rm` do card de to-do:** copie a seção `## Test Cases (QA)` (checklist final, tudo `- [x] TC-N`) para o card de done. O to-do some no `rm`, mas o registro do que foi testado fica no done.
 
-> **/todo NÃO faz commit.** O commit é ação exclusiva do Step 10 no `/method` completo. O /todo promove o card e atualiza o frontmatter (`tests: passed`), mas deixa o versionamento (git) para você.
+> **/todo NÃO faz commit.** O commit é ação exclusiva do Step 10 no `/method` completo. O /todo promove o card (cria `kanban/10-done/<feature>.md` com `tests: passed`), mas deixa o versionamento (git) para você.
 
-### Para features `[novo]` (já têm `kanban/10-done/<feature>.md`, criado pelo /fast)
+### Criar o card de done
 
-1. **Atualizar o frontmatter** de `kanban/10-done/<feature>.md`:
-   ```yaml
-   ---
-   feature: <nome>
-   status: done
-   tests: passed       # era 'pending'
-   branch: <branch>
-   created: <YYYY-MM-DD>
-   tested: <YYYY-MM-DD>  # nova chave: dia que /todo rodou
-   ---
-   ```
+**`/fast` não cria card de done** (ele para no Step 8). Quem cria `kanban/10-done/<feature>.md` é o `/todo`, agora — após a QA passar. (Antes o /fast criava um done com `tests: pending`; não mais. Por isso o /todo sempre CRIA o done aqui.)
 
-2. **Anexar resumo de QA** ao `kanban/10-done/<feature>.md`, sob nova seção:
-   ```markdown
-   ## QA (rodado por /todo em <data>)
-   - Total TCs: X | PASSED: X | FAILED: 0
-   - Evidências: kanban/09-run-test/<feature>.md
-
-   ## Test Cases (QA) — status final
-   <Cole aqui o checklist `## Test Cases (QA)` do card `kanban/06-todo/`, tudo `- [x] TC-N: <nome>`, ANTES de apagar o card.>
-   ```
-
-3. **Deletar o card da coluna to-do:** `rm kanban/06-todo/<feature>.md`
-
-### Para features `[legacy]` (sem `kanban/10-done/<feature>.md`)
-
-/todo precisa criar o card de done:
-
-1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados e **checklist `## Test Cases (QA)` com tudo `- [x] TC-N`** (status final dos TCs, todos PASSED — copiado do card `kanban/06-todo/` antes do `rm`):
+1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados e **checklist `## Test Cases (QA)` com tudo `- [x] TC-N`** (status final, todos PASSED — copiado do card `kanban/06-todo/` ANTES do `rm`):
    ```yaml
    ---
    feature: <nome>
    status: done
    tests: passed
-   branch: <branch>
+   branch: <branch-atual>
    created: <YYYY-MM-DD>   # data original se conhecida; senão a de hoje
-   tested: <YYYY-MM-DD>
+   tested: <YYYY-MM-DD>    # dia que /todo rodou
    ---
    ```
 
-2. **Deletar o card da coluna to-do:** `rm kanban/06-todo/<feature>.md`
+2. **Anexar resumo de QA**:
+   ```markdown
+   ## QA (rodado por /todo em <data>)
+   - Total TCs: X | PASSED: X | FAILED: 0
+   - Evidências: kanban/09-run-test/<feature>.md
+   ```
 
-### Comum a ambos
+3. **Deletar o card da coluna to-do:** `rm kanban/06-todo/<feature>.md`
+
+### Finalizar
 
 - **Informar**:
   ```
