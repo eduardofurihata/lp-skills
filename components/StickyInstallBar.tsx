@@ -15,20 +15,23 @@ import { InstallPromptViewer } from "@/components/InstallPromptViewer";
 import { SCOPE_LABELS, type Scope, type InstallSkill } from "@/lib/install-prompt";
 
 interface StickyInstallBarProps {
-  selectedSkills: InstallSkill[];
+  installSkills: InstallSkill[];
+  selectedCount: number;
+  autoAddedSlugs: string[];
   scope: Scope;
   onScopeChange: (scope: Scope) => void;
   onClear: () => void;
 }
 
 export function StickyInstallBar({
-  selectedSkills,
+  installSkills,
+  selectedCount,
+  autoAddedSlugs,
   scope,
   onScopeChange,
   onClear,
 }: StickyInstallBarProps) {
-  const count = selectedSkills.length;
-  const hasSelection = count > 0;
+  const hasSelection = selectedCount > 0;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[color:var(--color-border-strong)] bg-[color:var(--color-surface)]/95 backdrop-blur">
@@ -41,8 +44,15 @@ export function StickyInstallBar({
           <p className="text-sm text-[color:var(--color-text)]">
             {hasSelection ? (
               <>
-                <span className="font-semibold">{count}</span> skill
-                {count > 1 ? "s" : ""} selecionada{count > 1 ? "s" : ""}
+                <span className="font-semibold">{selectedCount}</span> skill
+                {selectedCount > 1 ? "s" : ""} selecionada
+                {selectedCount > 1 ? "s" : ""}
+                {autoAddedSlugs.length > 0 && (
+                  <span className="ml-2 text-[color:var(--color-text-muted)]">
+                    + {autoAddedSlugs.join(", ")} (dependência
+                    {autoAddedSlugs.length > 1 ? "s" : ""})
+                  </span>
+                )}
                 <span className="ml-2 text-[color:var(--color-text-muted)]">
                   · escopo {SCOPE_LABELS[scope]}
                 </span>
@@ -77,12 +87,12 @@ export function StickyInstallBar({
                 <DialogTitle>Prompt de instalação</DialogTitle>
                 <DialogDescription>
                   Escolha o escopo e copie o prompt para colar no seu Claude
-                  Code.
+                  Code. Dependências (ex.: o /method) entram automaticamente.
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-col gap-4">
                 <ScopeSelector value={scope} onChange={onScopeChange} />
-                <InstallPromptViewer skills={selectedSkills} scope={scope} />
+                <InstallPromptViewer skills={installSkills} scope={scope} />
               </div>
             </DialogContent>
           </Dialog>

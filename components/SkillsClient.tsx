@@ -9,7 +9,7 @@ import {
 import { SkillGrid } from "@/components/SkillGrid";
 import { StickyInstallBar } from "@/components/StickyInstallBar";
 import type { Skill } from "@/lib/skills";
-import type { Scope, InstallSkill } from "@/lib/install-prompt";
+import { expandDeps, type Scope } from "@/lib/install-prompt";
 
 interface SkillsClientProps {
   skills: Skill[];
@@ -50,14 +50,18 @@ export function SkillsClient({ skills }: SkillsClientProps) {
     [skills, categoryFilter],
   );
 
-  // Seleção deriva de TODAS as skills (não só as visíveis): trocar o filtro
-  // não descarta uma skill selecionada que ficou oculta.
-  const selectedSkills = useMemo<InstallSkill[]>(
-    () =>
-      skills
-        .filter((s) => selected.has(s.slug))
-        .map((s) => ({ slug: s.slug, category: s.category })),
+  // Seleção expandida com dependências (jira → method, afl → jira → method…),
+  // sobre TODAS as skills (não só as visíveis): trocar o filtro não descarta
+  // seleção oculta, e dependências entram automaticamente no prompt.
+  const installSkills = useMemo(
+    () => expandDeps([...selected], skills),
     [skills, selected],
+  );
+
+  // Slugs que entraram só por dependência (não foram clicados pelo usuário).
+  const autoAddedSlugs = useMemo(
+    () => installSkills.filter((s) => !selected.has(s.slug)).map((s) => s.slug),
+    [installSkills, selected],
   );
 
   return (
@@ -73,7 +77,9 @@ export function SkillsClient({ skills }: SkillsClientProps) {
         <SkillGrid skills={visible} selected={selected} onToggle={toggle} />
       </main>
       <StickyInstallBar
-        selectedSkills={selectedSkills}
+        installSkills={installSkills}
+        selectedCount={selected.size}
+        autoAddedSlugs={autoAddedSlugs}
         scope={scope}
         onScopeChange={setScope}
         onClear={clear}

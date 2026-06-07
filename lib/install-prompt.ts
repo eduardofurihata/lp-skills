@@ -7,6 +7,13 @@ export interface InstallSkill {
   category: Category;
 }
 
+// Nó do catálogo usado para resolver dependências (subconjunto de Skill).
+export interface SkillNode {
+  slug: string;
+  category: Category;
+  requires: string[];
+}
+
 export const SCOPE_LABELS: Record<Scope, string> = {
   global: "Global",
   "project-shared": "Projeto (compartilhado)",
@@ -23,6 +30,28 @@ export const SCOPE_DESCRIPTIONS: Record<Scope, string> = {
 
 const REPO_URL = "https://github.com/eduardofurihata/lp-skills";
 const SOURCE_DIR = "~/.claude/lp-skills-source";
+
+// Fecho transitivo das dependências: dado o que o usuário selecionou, retorna
+// a lista (deduplicada) de skills a instalar — cada uma com seu bucket — já
+// incluindo as `requires` (ex.: jira puxa method; afl puxa jira → method).
+export function expandDeps(
+  selectedSlugs: string[],
+  catalog: SkillNode[],
+): InstallSkill[] {
+  const bySlug = new Map(catalog.map((s) => [s.slug, s]));
+  const out = new Map<string, InstallSkill>();
+
+  const visit = (slug: string) => {
+    if (out.has(slug)) return;
+    const node = bySlug.get(slug);
+    if (!node) return; // dependência fora do catálogo — ignora
+    out.set(slug, { slug: node.slug, category: node.category });
+    for (const dep of node.requires) visit(dep);
+  };
+
+  for (const slug of selectedSlugs) visit(slug);
+  return [...out.values()];
+}
 
 export function generatePrompt({
   skills,
@@ -46,7 +75,7 @@ function headerFor(scope: Scope, skillList: string): string {
   return `Por favor, instale estas skills do Claude Code do repositório público de Furihata.
 
 - Repositório: ${REPO_URL}
-- Skills selecionadas: ${skillList}
+- Skills a instalar (dependências já resolvidas): ${skillList}
 - Escopo: ${SCOPE_LABELS[scope]}
 
 Execute todos os passos abaixo. Reporte sucesso ou erros ao final.`;
@@ -134,7 +163,7 @@ function symlinkBlockFor(skills: InstallSkill[], targetBase: string): string {
     )
     .join("\n\n");
 
-  return `2. Para cada skill selecionada, crie um symlink em ${targetBase}/:
+  return `2. Para cada skill a instalar (incluindo dependências), crie um symlink em ${targetBase}/:
 
 ${lines}`;
 }
