@@ -38,9 +38,8 @@ Consolidação das skills do `labzz-skillzz` no `lp-skills`, separadas em bucket
 
 ## Descontinuação do labzz-skillzz (executada pós-commit/push)
 Gate: só após commit + push + build verde do lp-skills (todos ✅).
-- Pasta local `/home/furihata/GitHub/labzz-skillzz` — removida
-- Repo GitHub `eduardofurihata/labzz-skillzz` — removido
-- Projeto Vercel `frontend` (`prj_Y1xohZfv6qszTYLNHwC2aelebOw1`) — removido
+- Pasta local `/home/furihata/GitHub/labzz-skillzz` — ✅ removida
+- Projeto Vercel `labzz-skillzz` (URL `frontend-kappa-orpin-83.vercel.app`) — ✅ removido (`lp-skills` preservado)
+- Repo GitHub `eduardofurihata/labzz-skillzz` — ⏳ **PENDENTE (ação do usuário)**: o token `gh` não tem o escopo `delete_repo`. Para concluir: `gh auth refresh -h github.com -s delete_repo` e então `gh repo delete eduardofurihata/labzz-skillzz --yes` (ou deletar pela UI do GitHub).
 - `~/.claude/settings.json` não referencia labzz → nada a limpar (UC-25)
-
-(Confirmação das remoções registrada na sessão; ver bloco de descontinuação ao fim do Step 10.)
+- Symlinks locais `~/.claude/skills/*` re-apontados para `skills/personal/<slug>` (Issue #1 do review).
