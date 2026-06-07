@@ -2,6 +2,7 @@
 
 import { Check, FileCode, BookOpen, Database } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { CategoryBadge } from "@/components/CategoryBadge";
 import {
   Tooltip,
   TooltipContent,
@@ -43,6 +44,7 @@ export function SkillCard({ skill, selected, onToggle }: SkillCardProps) {
             /{skill.name}
           </h3>
           <div className="flex flex-wrap items-center gap-1.5">
+            <CategoryBadge category={skill.category} />
             {skill.effort && (
               <Badge variant="accent" className="font-mono">
                 effort: {skill.effort}

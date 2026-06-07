@@ -1,4 +1,11 @@
+import type { Category } from "./categories";
+
 export type Scope = "global" | "project-shared" | "project-local";
+
+export interface InstallSkill {
+  slug: string;
+  category: Category;
+}
 
 export const SCOPE_LABELS: Record<Scope, string> = {
   global: "Global",
@@ -21,14 +28,14 @@ export function generatePrompt({
   skills,
   scope,
 }: {
-  skills: string[];
+  skills: InstallSkill[];
   scope: Scope;
 }): string {
   if (skills.length === 0) {
     return "Selecione ao menos 1 skill para gerar o prompt.";
   }
 
-  const skillList = skills.join(", ");
+  const skillList = skills.map((s) => s.slug).join(", ");
   const header = headerFor(scope, skillList);
   const steps = stepsFor(scope, skills);
 
@@ -45,10 +52,10 @@ function headerFor(scope: Scope, skillList: string): string {
 Execute todos os passos abaixo. Reporte sucesso ou erros ao final.`;
 }
 
-function stepsFor(scope: Scope, skills: string[]): string {
+function stepsFor(scope: Scope, skills: InstallSkill[]): string {
   const targetBaseExpr = targetBaseFor(scope);
   const preSteps = preStepsFor(scope);
-  const symlinkBlock = symlinkBlockFor(scope, skills, targetBaseExpr);
+  const symlinkBlock = symlinkBlockFor(skills, targetBaseExpr);
 
   return [
     preSteps,
@@ -114,18 +121,16 @@ function preStepsFor(scope: Scope): string {
   return projectSteps.join("\n\n");
 }
 
-function symlinkBlockFor(
-  scope: Scope,
-  skills: string[],
-  targetBase: string,
-): string {
+// Source-path inclui o bucket da categoria; destino do symlink continua plano
+// (~/.claude/skills/<slug>), pois o Claude Code carrega skills de um nível só.
+function symlinkBlockFor(skills: InstallSkill[], targetBase: string): string {
   const lines = skills
     .map(
-      (s) =>
-        `   - Se ${targetBase}/${s} já é um diretório real (não symlink), faça:
-       mv ${targetBase}/${s} ${targetBase}/${s}.backup-$(date +%s)
+      ({ slug, category }) =>
+        `   - Se ${targetBase}/${slug} já é um diretório real (não symlink), faça:
+       mv ${targetBase}/${slug} ${targetBase}/${slug}.backup-$(date +%s)
      Em seguida (sempre):
-       ln -sfn ${SOURCE_DIR}/skills/${s} ${targetBase}/${s}`,
+       ln -sfn ${SOURCE_DIR}/skills/${category}/${slug} ${targetBase}/${slug}`,
     )
     .join("\n\n");
 

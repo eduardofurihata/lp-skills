@@ -4,10 +4,14 @@ import { useMemo, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { generatePrompt, type Scope } from "@/lib/install-prompt";
+import {
+  generatePrompt,
+  type Scope,
+  type InstallSkill,
+} from "@/lib/install-prompt";
 
 interface InstallPromptViewerProps {
-  skills: string[];
+  skills: InstallSkill[];
   scope: Scope;
 }
 

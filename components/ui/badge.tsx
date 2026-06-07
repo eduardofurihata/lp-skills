@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-type Variant = "default" | "accent" | "outline";
+type Variant = "default" | "accent" | "outline" | "none";
 
 const variantClasses: Record<Variant, string> = {
   default:
@@ -10,6 +10,7 @@ const variantClasses: Record<Variant, string> = {
     "bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent)]",
   outline:
     "border border-[color:var(--color-border-strong)] text-[color:var(--color-text-muted)]",
+  none: "",
 };
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
