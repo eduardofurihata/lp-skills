@@ -12,22 +12,22 @@ import {
 } from "@/components/ui/dialog";
 import { ScopeSelector } from "@/components/ScopeSelector";
 import { InstallPromptViewer } from "@/components/InstallPromptViewer";
-import { SCOPE_LABELS, type Scope } from "@/lib/install-prompt";
+import { SCOPE_LABELS, type Scope, type InstallSkill } from "@/lib/install-prompt";
 
 interface StickyInstallBarProps {
-  selectedSlugs: string[];
+  selectedSkills: InstallSkill[];
   scope: Scope;
   onScopeChange: (scope: Scope) => void;
   onClear: () => void;
 }
 
 export function StickyInstallBar({
-  selectedSlugs,
+  selectedSkills,
   scope,
   onScopeChange,
   onClear,
 }: StickyInstallBarProps) {
-  const count = selectedSlugs.length;
+  const count = selectedSkills.length;
   const hasSelection = count > 0;
 
   return (
@@ -82,7 +82,7 @@ export function StickyInstallBar({
               </DialogHeader>
               <div className="flex flex-col gap-4">
                 <ScopeSelector value={scope} onChange={onScopeChange} />
-                <InstallPromptViewer skills={selectedSlugs} scope={scope} />
+                <InstallPromptViewer skills={selectedSkills} scope={scope} />
               </div>
             </DialogContent>
           </Dialog>

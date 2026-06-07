@@ -17,9 +17,9 @@ export function Hero({ count }: HeroProps) {
           <span className="text-[color:var(--color-text-muted)]">curadas.</span>
         </h1>
         <p className="max-w-2xl text-base text-[color:var(--color-text-muted)] sm:text-lg">
-          Skills do meu setup pessoal do Claude Code. Selecione as que você
-          quer, escolha o escopo, copie o prompt e cole no seu Claude Code.
-          Atualizações chegam automaticamente.
+          Skills do meu setup do Claude Code — pessoais e de trabalho (Eduzz).
+          Selecione as que você quer, escolha o escopo, copie o prompt e cole no
+          seu Claude Code. Atualizações chegam automaticamente.
         </p>
       </div>
     </section>
