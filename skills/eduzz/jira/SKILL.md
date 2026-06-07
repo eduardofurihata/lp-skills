@@ -1,6 +1,6 @@
 ---
 name: jira
-description: Use when working on a Jira card — single entry point for the full 19-step workflow, handles /jira finish for autonomous mode
+description: Use when working on a Jira card — Step 0 (investigação + reprodução) → protocolo /method (vendorizado, standalone) → human check → ship. Handles /jira finish para modo autônomo.
 argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active card)"
 ---
 
@@ -10,100 +10,99 @@ argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active car
 **Violating the letter of the rules is violating the spirit of the rules.**
 **Precisão > tokens > velocidade.** Tokens são baratos. Bug em produção é caro.
 
+> **Standalone:** o protocolo de engenharia vem **vendorizado** em `references/method/` (cópia do `/method`). NÃO depende do `/method` estar instalado, e a Eduzz pode personalizá-lo aqui sem afetar o `/method` original.
+
 ---
 
-## Step 0 — Argument Parsing (PRIMEIRO — antes de qualquer ação)
+## Argument Parsing (PRIMEIRO — antes de qualquer ação)
 
 | Argumento | Modo | Ação |
 |-----------|------|------|
-| `finish [CARD-CODE]` ou `finish` | **FINISH MODE** | Rodar todos os steps (1→19) de forma autônoma |
-| `PROJ-N` ou URL Jira | **START MODE** | Criar card file + rodar steps 1→11, parar |
-| vazio | **CONTINUE MODE** | Detectar card ativo → continuar do step atual |
+| `finish [CARD-CODE]` ou `finish` | **FINISH** | Roda tudo (Step 0 → /method → human check → ship) sem parar — exceto as 2 validações humanas, que continuam obrigatórias |
+| `[CARD-CODE]` (ex. `PROJ-36`) ou URL Jira | **START** | Roda o Step 0 e PARA na validação humana do bug (0.8) |
+| vazio | **CONTINUE** | Detecta o card ativo e continua de onde parou |
 
-**CONTINUE MODE — routing:**
+**CONTINUE — routing** (lê o frontmatter `phase:` do card em `docs/jira/todo/`):
 
-| Card State | Ação |
-|------------|------|
-| `step: N, step-status: in-progress` | Retomar step N — ler card .md para progresso |
-| `step: N, step-status: done` | Executar step N+1 — ler reference correspondente |
-| `step: 19, step-status: done` | Card completo — mover para `docs/jira/done/` |
-| nenhum card | Informar: "Nenhum card ativo. Use `/jira PROJ-N` para começar." |
-
----
-
-## Os Steps (contrato — NÃO alterar numeração ou arquivos)
-
-| # | Step | Effort | Reference |
-|---|------|--------|-----------|
-| 1 | Update main do GH para local | max | `references/01-update-main.md` |
-| 2 | Criar branch (nomenclatura multi-card) | max | `references/02-branch.md` |
-| 3 | Criar .md com card info | max | `references/03-card-info.md` |
-| 4 | Jira ownership + status → Em andamento | max | `references/04-jira-ownership.md` |
-| 5 | Classificar o card | max | `references/05-classify.md` |
-| 6 | Entender o card | max | `references/06-understand.md` |
-| 7 | Investigação: simular no front | max | `references/07-investigation.md` |
-| 8 | Avaliar % de correspondência | max | `references/08-evaluate.md` |
-| 9 | Loop se % < 90% → voltar ao step 7 | max | `references/09-loop.md` |
-| 10 | Registrar como reproduzir | max | `references/10-register.md` |
-| 11 | Reproduzir no front + PARAR para validação | max | `references/11-reproduce-stop.md` |
-| 12 | Estratégia de solução | max | `references/12-strategy.md` |
-| 13 | Analisar complexidade | max | `references/13-complexity.md` |
-| 14 | Criar test cases (N por complexidade) | max | `references/14-test-cases.md` |
-| 15 | Implementação | max | `references/15-implementation.md` |
-| 16 | Code review | max | `references/16-code-review.md` |
-| 17a | Rodar TCs via front | max | `references/17a-run-tests.md` |
-| 17b | Correção (loop: volta ao step 16) | max | `references/17b-correction.md` |
-| 18 | Human check no front (sem bug) | max | `references/18-human-check.md` |
-| 19 | Ship | max | `references/19-ship.md` |
-
-**Abra o reference do step ANTES de executar. Não execute de memória.**
+| `phase` | Ação |
+|---------|------|
+| `investigation` | retomar o Step 0 |
+| `method` | continuar o protocolo `/method` (ver `references/method/SKILL.md`) |
+| `human-check` | rodar o human check |
+| `ship` | rodar o ship (após confirmação do usuário) |
+| nenhum card | "Nenhum card ativo. Use `/jira [CARD-CODE]` para começar." |
 
 ---
 
-## START MODE Flow
+## Step 0 — Investigação (antes do /method)
 
-Criar card file + pipeline tasks → executar steps 1→11 → PARAR para validação humana no step 11.
+**Objetivo:** entender e reproduzir o problema do card ANTES de implementar. Cada sub-step é bloqueante. Texto objetivo — sem cerimônia.
 
-Após step 11: aguardar usuário rodar `/jira` para continuar com step 12.
+### 0.1 — Atualizar main
+Trazer a `main` do GitHub para a local: `git checkout main && git pull --ff-only`.
 
----
+### 0.2 — Criar branch
+Nomenclatura: card único `PROJ-N`; multi-card `PROJ-N-M-...` (números em ordem crescente, prefixo do projeto). Se a branch já existe → `checkout`; senão → `git checkout -b <nome>`. Confirmar com `git branch --show-current`.
 
-## Phase Pipeline (MANDATORY — somente na primeira invocação do card)
+### 0.3 — Registrar o card
+Criar `docs/jira/todo/[CARD-CODE].md` (criar `docs/jira/todo/` e `docs/jira/done/` se não existirem). Buscar os dados via `mcp__atlassian__jira_get → /rest/api/3/issue/[CARD-CODE]` (título, descrição, tipo `BUG`|`FEATURE`, assignee). Frontmatter mínimo:
 
-Verificar se pipeline tasks já existem. Se NÃO, criar UMA task por step (20 tasks, cada uma bloqueada pela anterior):
-
-```
-TaskCreate: "Step 1 — Update main | [CARD-CODE]"                      (addBlockedBy: anterior)
-TaskCreate: "Step 2 — Criar branch | [CARD-CODE]"                     (addBlockedBy: anterior)
-TaskCreate: "Step 3 — Criar card .md | [CARD-CODE]"                   (addBlockedBy: anterior)
-TaskCreate: "Step 4 — Jira ownership + status | [CARD-CODE]"          (addBlockedBy: anterior)
-TaskCreate: "Step 5 — Classificar card | [CARD-CODE]"                 (addBlockedBy: anterior)
-TaskCreate: "Step 6 — Entender card | [CARD-CODE]"                    (addBlockedBy: anterior)
-TaskCreate: "Step 7 — Investigação: simular no front | [CARD-CODE]"   (addBlockedBy: anterior)
-TaskCreate: "Step 8 — Avaliar % correspondência | [CARD-CODE]"        (addBlockedBy: anterior)
-TaskCreate: "Step 9 — Loop se % < 90% | [CARD-CODE]"                  (addBlockedBy: anterior)
-TaskCreate: "Step 10 — Registrar reprodução | [CARD-CODE]"            (addBlockedBy: anterior)
-TaskCreate: "Step 11 — Reproduzir no front + PARAR | [CARD-CODE]"     (addBlockedBy: anterior)
-TaskCreate: "Step 12 — Estratégia de solução | [CARD-CODE]"           (addBlockedBy: anterior)
-TaskCreate: "Step 13 — Analisar complexidade | [CARD-CODE]"           (addBlockedBy: anterior)
-TaskCreate: "Step 14 — Criar test cases | [CARD-CODE]"                (addBlockedBy: anterior)
-TaskCreate: "Step 15 — Implementação | [CARD-CODE]"                   (addBlockedBy: anterior)
-TaskCreate: "Step 16 — Code review | [CARD-CODE]"                     (addBlockedBy: anterior)
-TaskCreate: "Step 17a — Rodar TCs via front | [CARD-CODE]"            (addBlockedBy: anterior)
-TaskCreate: "Step 17b — Correção (se falhar) | [CARD-CODE]"           (addBlockedBy: anterior)
-TaskCreate: "Step 18 — Human check no front | [CARD-CODE]"            (addBlockedBy: anterior)
-TaskCreate: "Step 19 — Ship | [CARD-CODE]"                            (addBlockedBy: anterior)
+```yaml
+card: [CARD-CODE]
+title: [título do Jira]
+type: BUG | FEATURE
+branch: [nome da branch]
+phase: investigation
 ```
 
+Colar a **descrição real** do card e listar ao menos 2 interpretações.
+
+### 0.4 — Atribuir o card (Jira ownership)
+- Assignee (se ainda não for o executor): `mcp__atlassian__jira_put → /rest/api/3/issue/[CARD-CODE]/assignee` com `{ "accountId": "[executor]" }`.
+- Status → "Em andamento": `jira_get .../transitions` para achar o `id` da transição, depois `jira_post .../transitions`.
+
+### 0.5 — Entender o problema (nota ≥ 90)
+Ler o **código** relevante e entender o problema descrito no card. Dar uma **nota 0–100** à precisão do seu entendimento. **`< 90` → revisar** (ler mais código/contexto) e repontuar, **em loop até `≥ 90`**. Registrar o entendimento no card `.md`.
+
+### 0.6 — Reproduzir no front (Playwright MCP) (nota ≥ 90)
+Abrir o **pw MCP** (instância `pw4`, fallback no pool) e reproduzir o cenário real no front. Dar uma **nota 0–100** à precisão da reprodução vs. **o que realmente está escrito no card**. **`< 90` → ajustar** e repontuar, **em loop até `≥ 90`**. Ao atingir `≥ 90`:
+- **BUG:** registrar no card `.md` exatamente **como** o cenário foi reproduzido (usuário, dados, URL, passos, trigger).
+- **FEATURE/implementação:** identificar e registrar **onde** vamos implementar (arquivo / fluxo / tela).
+
+### 0.7 — Preparar a validação humana do bug
+Rodar o fluxo de novo e **parar 1 passo antes do trigger**, deixando o gatilho visível na tela. Screenshot do estado pré-trigger.
+
+### 0.8 — PARAR para validação humana (pré-fix)
+Publicar no chat: ambiente pronto + "👉 Clique em **[elemento exato]**" + comportamento atual (o bug) + screenshot. **PARAR** e aguardar o dev confirmar que **viu o bug**.
+- **FINISH MODE:** auto-confirmar (registrar no card que foi aceito) e seguir.
+- Atualizar o card: `phase: method`.
+
 ---
 
-## FINISH MODE (`/jira finish`)
+## Rodar o /method (vendorizado, standalone)
 
-**Run ALL steps (1→19) straight through. NO stopping.**
+Com o problema **entendido e reproduzido**, rode o protocolo de engenharia **igual ao `/method`**, usando os arquivos bundled em **`references/method/`** (NÃO invocar a skill `/method` externa):
 
-- Step 11 (validação humana): **AUTO-CONFIRMED** — registrar no card .md que usuário aceitou ao usar finish mode
-- Step 18 (human check): **OBRIGATÓRIO — NÃO pular.** Executar navegação completa e PARAR para confirmação real
-- Todos os outros gateways continuam rígidos
+1. Abra `references/method/SKILL.md` e siga os **10 steps** (Problema → … → Done), com os mesmos gateways, audits e regras. As referências de cada step estão em `references/method/references/`.
+2. O `/method` cobre discovery → implementação → code review → testes → done (commit local). **Trabalhe na branch já criada no 0.2** — o `/method` nunca cria branch.
+3. Quando o `/method` chegar ao Step 10 (Done) e fizer o **commit**, volte aqui para o human check. Atualizar o card: `phase: human-check`.
+
+---
+
+## Human Check (pós-fix)
+
+Rode `references/human-check.md`: reproduza o **mesmo fluxo do 0.7**, pare 1 passo antes do trigger e deixe o dev clicar para confirmar que **o bug não acontece mais**. **PARAR** para confirmação humana real — **obrigatório, mesmo em FINISH MODE**. Ao confirmar, atualizar o card: `phase: ship`.
+
+---
+
+## Ship (PERGUNTAR antes)
+
+Após o human check confirmado, **pergunte ao usuário**:
+
+> "Bug validado. Quer que eu rode o **ship** (push + PR + atualizar o Jira)?"
+
+- **Sim** → siga `references/ship.md` (push, PR, comentário + transição no Jira, mover o card `.md` para `docs/jira/done/`).
+- **Não** → pare. O card fica pronto para o ship quando você quiser (`/jira` retoma na `phase: ship`).
 
 ---
 
@@ -112,24 +111,14 @@ TaskCreate: "Step 19 — Ship | [CARD-CODE]"                            (addBloc
 ```
 environment: LOCAL DEV
 can create users: yes
-can commit: yes
-NEVER push (only in step 19)
+can commit: yes   (o /method commita no Step 10; push só no ship)
+NEVER push fora do ship
 ```
 
-## Branch Naming
-
-- Single card: `PROJ-36`
-- Multi-card: `PROJ-36-40` / `PROJ-36-40-55` / `PROJ-36-40-55-72`
-
----
-
 ## Arquivos de Referência
+- `references/method/` — protocolo `/method` **vendorizado** (standalone)
+- `references/human-check.md` — validação humana pós-fix
+- `references/ship.md` — push + PR + Jira (somente após confirmação)
+- `references/rationalizations.md` — racionalizações proibidas
 
-- `references/01` a `references/11` — steps 1-11
-- `references/12` a `references/16` — steps 12-16
-- `references/17a`, `references/17b` — step 17
-- `references/18`, `references/19` — steps 18-19
-- `references/gateways.md` — critérios bloqueantes (RÍGIDOS)
-- `references/rationalizations.md` — tabela de racionalizações proibidas
-
-**Abra o reference relevante ao iniciar cada step. Não execute de memória.**
+**Abra o reference relevante ao iniciar cada fase. Não execute de memória.**
