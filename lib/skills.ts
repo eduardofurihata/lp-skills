@@ -14,6 +14,7 @@ export interface Skill {
   hasScripts: boolean;
   hasData: boolean;
   category: Category;
+  requires: string[];
 }
 
 const SKILLS_DIR = path.resolve(process.cwd(), "skills");
@@ -68,8 +69,17 @@ async function readSkill(
       hasScripts: hasDir("scripts"),
       hasData: hasDir("data"),
       category,
+      requires: parseRequires(data.requires),
     };
   } catch {
     return null;
   }
+}
+
+// `requires` no frontmatter pode ser string ("method") ou lista (["a","b"]).
+function parseRequires(value: unknown): string[] {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value))
+    return value.filter((v): v is string => typeof v === "string");
+  return [];
 }

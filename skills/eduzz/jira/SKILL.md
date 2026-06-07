@@ -1,7 +1,8 @@
 ---
 name: jira
-description: Use when working on a Jira card — Step 0 (investigação + reprodução) → protocolo /method (vendorizado, standalone) → human check → ship. Handles /jira finish para modo autônomo.
+description: Use when working on a Jira card — Step 0 (investigação + reprodução) → /method (implementação) → human check → ship. Instala o /method junto (dependência). Handles /jira finish para modo autônomo.
 argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active card)"
+requires: method
 ---
 
 # Jira — Card Workflow
@@ -9,8 +10,9 @@ argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active car
 **Esta skill é FERRO.** Vale para TODA a conversa.
 **Violating the letter of the rules is violating the spirit of the rules.**
 **Precisão > tokens > velocidade.** Tokens são baratos. Bug em produção é caro.
+**Padrão de qualidade #1:** mire ser a referência #1 do mercado — o padrão das big pop tech apps / líderes do domínio é a baseline (o piso, não o teto). Complexidade pra atingir esse nível é requisito, não obstáculo.
 
-> **Standalone:** o protocolo de engenharia vem **vendorizado** em `references/method/` (cópia do `/method`). NÃO depende do `/method` estar instalado, e a Eduzz pode personalizá-lo aqui sem afetar o `/method` original.
+> O protocolo de engenharia é o **`/method`**, instalado junto com o `/jira` (dependência). O `/jira` cuida da investigação (Step 0), aciona o `/method` para implementar, e fecha com human check + ship.
 
 ---
 
@@ -27,7 +29,7 @@ argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active car
 | `phase` | Ação |
 |---------|------|
 | `investigation` | retomar o Step 0 |
-| `method` | continuar o protocolo `/method` (ver `references/method/SKILL.md`) |
+| `method` | continuar o `/method` |
 | `human-check` | rodar o human check |
 | `ship` | rodar o ship (após confirmação do usuário) |
 | nenhum card | "Nenhum card ativo. Use `/jira [CARD-CODE]` para começar." |
@@ -79,13 +81,13 @@ Publicar no chat: ambiente pronto + "👉 Clique em **[elemento exato]**" + comp
 
 ---
 
-## Rodar o /method (vendorizado, standalone)
+## Rodar o /method
 
-Com o problema **entendido e reproduzido**, rode o protocolo de engenharia **igual ao `/method`**, usando os arquivos bundled em **`references/method/`** (NÃO invocar a skill `/method` externa):
+Com o problema **entendido e reproduzido**, rode o **`/method`** (instalado junto com o `/jira` — dependência obrigatória) para implementar:
 
-1. Abra `references/method/SKILL.md` e siga os **10 steps** (Problema → … → Done), com os mesmos gateways, audits e regras. As referências de cada step estão em `references/method/references/`.
-2. O `/method` cobre discovery → implementação → code review → testes → done (commit local). **Trabalhe na branch já criada no 0.2** — o `/method` nunca cria branch.
-3. Quando o `/method` chegar ao Step 10 (Done) e fizer o **commit**, volte aqui para o human check. Atualizar o card: `phase: human-check`.
+1. **Invoque o `/method`.** Ele roda discovery → implementação → code review → testes → done (commit local), com seus próprios gateways e audits.
+2. **Trabalhe na branch já criada no 0.2** — o `/method` nunca cria branch.
+3. Quando o `/method` finalizar (Step 10 — commit), volte aqui para o human check. Atualizar o card: `phase: human-check`.
 
 ---
 
@@ -116,7 +118,7 @@ NEVER push fora do ship
 ```
 
 ## Arquivos de Referência
-- `references/method/` — protocolo `/method` **vendorizado** (standalone)
+- O protocolo de implementação é o **`/method`** (skill separada, instalada junto — dependência)
 - `references/human-check.md` — validação humana pós-fix
 - `references/ship.md` — push + PR + Jira (somente após confirmação)
 - `references/rationalizations.md` — racionalizações proibidas

@@ -2,6 +2,7 @@
 name: fast
 description: 'Use when developing features rapidly — /fast É o /method rodando do Step 1 ao Step 8 e PARANDO no Code Review. Mesmas regras, mesmos references, mesmos gateways do /method; a única diferença é ONDE para. Escreve os Test Cases (Step 5) mas NÃO os executa (Step 9 é do /todo). NÃO faz Step 10 (Done/commit). O card em kanban/06-todo/ + o relatório em kanban/08-code-review/ ficam como handoff para o /todo rodar a QA depois.'
 effort: max
+requires: method
 argument-hint: "[feature-name]"
 ---
 

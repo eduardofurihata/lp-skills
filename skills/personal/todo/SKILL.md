@@ -2,6 +2,7 @@
 name: todo
 description: 'Use when ready to run QA on features queued in kanban/06-todo/ (cards created by /fast, pending front-validation). Executes testing via front (step 9) and promotes passing features to kanban/10-done/ with `tests: passed`'
 effort: max
+requires: method
 argument-hint: "[feature-name or 'all']"
 ---
 
