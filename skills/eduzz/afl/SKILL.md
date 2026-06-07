@@ -1,6 +1,6 @@
 ---
 name: afl
-description: Use when working on an AFL (Agents for Life) Jira card — runs the full /jira 19-step workflow PLUS a mandatory text-quality gate that reads the actual agent response and scores it against a world-class rubric (would it beat ChatGPT/Claude/Gemini/Perplexity?). Use this instead of /jira on the AFL repo whenever the change can affect any user-facing agent output (chat, summaries, prompts, LLM swap, RAG, persona).
+description: Use when working on an AFL (Agents for Life) Jira card — runs the full /jira workflow (Step 0 investigação → /method → human check → ship) PLUS a mandatory text-quality gate that reads the actual agent response and scores it against a world-class rubric (would it beat ChatGPT/Claude/Gemini/Perplexity?). Use this instead of /jira on the AFL repo whenever the change can affect any user-facing agent output (chat, summaries, prompts, LLM swap, RAG, persona).
 argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active card)"
 ---
 
@@ -14,61 +14,61 @@ argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active car
 
 ## What this skill is
 
-`/afl` = `/jira` + mandatory **Agent Response Quality Gate** during validation steps.
+`/afl` = `/jira` + mandatory **Agent Response Quality Gate** durante os testes e a validação.
 
-- Same 19 steps. Same gateways. Same audits. Same arguments.
-- One difference: in steps **17a, 17b, and 18**, you MUST evaluate the **actual text the agent produced** against a world-class rubric — not just verify the feature works.
+- Mesmo workflow do `/jira`: **Step 0 (investigação) → `/method` (vendorizado) → human check → ship**. Mesmos gateways, mesmos audits, mesmos argumentos.
+- Uma diferença: durante o **Step 9 (Testing) do `/method`** e o **human-check do `/jira`**, você DEVE avaliar **o texto real que o agente produziu** contra uma rubrica de classe mundial — não só verificar que a feature funciona.
 
-**Why this exists:** AFL competes head-to-head with ChatGPT, Claude, Perplexity, Gemini. A user who reads a mediocre answer churns to the competitor. The bar is "would beat or tie a top-tier AI app on this prompt," not "feature exists and didn't crash."
+**Why this exists:** AFL competes head-to-head com ChatGPT, Claude, Perplexity, Gemini. Um usuário que lê uma resposta medíocre troca pelo concorrente. A régua é "empata ou ganha de um app top-tier neste prompt", não "a feature existe e não quebrou".
 
 ## How to run it
 
-1. Invoke the `/jira` skill with the same arguments you received (`AV-N`, `finish AV-N`, or empty). Follow the 19-step contract in `~/.claude/skills/jira/SKILL.md` exactly — numbering, files, gateways, audits.
-2. **At steps 17a / 17b / 18**, additionally apply the Agent Response Quality Gate below. Do NOT replace /jira criteria — ADD to them.
-3. Record gate results in the same TC log + audit blocks /jira already requires.
+1. Invoque o `/jira` com os mesmos argumentos (`AV-N`, `finish AV-N`, ou vazio). Siga o workflow do `/jira` em `~/.claude/skills/jira/SKILL.md`: **Step 0 → `/method` vendorizado (`references/method/`) → human check → ship**.
+2. **No Step 9 (Testing) do `/method` e no human-check**, aplique adicionalmente o Agent Response Quality Gate abaixo. NÃO substitua os critérios do `/method`/`/jira` — SOME a eles.
+3. Registre os resultados do gate no mesmo TC log + audit que o Step 9 do `/method` já exige.
 
-Do NOT fork or rename steps. The /afl overlay is purely additive.
+NÃO bifurque nem renomeie steps. O overlay `/afl` é puramente aditivo.
 
 ---
 
 ## When the Quality Gate Applies
 
-Apply whenever the card can affect any user-facing agent output:
-- Agent reply text (chat, channel, message)
-- Agent tool-use summaries / final answers
-- Prompt changes (system prompt, persona, instructions, RAG)
-- LLM provider / model swap (Bedrock, OpenAI, …)
-- Datasource read that feeds an answer
-- Any feature whose output the end user reads as agent text
+Aplique sempre que o card puder afetar qualquer saída de texto do agente para o usuário:
+- Texto de resposta do agente (chat, canal, mensagem)
+- Resumos de tool-use / respostas finais do agente
+- Mudanças de prompt (system prompt, persona, instruções, RAG)
+- Troca de LLM / modelo (Bedrock, OpenAI, …)
+- Leitura de datasource que alimenta uma resposta
+- Qualquer feature cuja saída o usuário final lê como texto do agente
 
-If the card is purely backend with NO agent-text impact (e.g. Redis cache race, OAuth 500, infra config), declare `Quality Gate: N/A — no agent-text impact` in the step 17a audit and skip the gate.
+Se o card for puramente backend SEM impacto em texto de agente (ex.: race de cache Redis, OAuth 500, config de infra), declare `Quality Gate: N/A — no agent-text impact` no audit do Step 9 e pule o gate.
 
-**Default is APPLY. Skipping requires explicit justification in the audit.**
+**Default é APLICAR. Pular exige justificativa explícita no audit.**
 
 ---
 
 ## The Quality Gate — runs at the END of EVERY TC
 
-**The gate is the FINAL step inside each TC's execution.** Without it, a TC **cannot** be marked PASSED — even if the feature behaved correctly. The functional pass and the quality pass are AND, not OR.
+**O gate é o passo FINAL dentro da execução de cada TC** (no Step 9 do `/method`). Sem ele, um TC **não pode** ser marcado PASSED — mesmo que a feature funcione. O pass funcional e o pass de qualidade são AND, não OR.
 
-### Per-TC flow (extends /jira step 17a.1 for any TC that produces agent text)
+### Per-TC flow (estende o loop de Testing do /method Step 9, para TC que produz texto de agente)
 
-For each TC-N.a, execute in this exact order:
+Para cada TC que gera texto de agente, execute nesta ordem exata:
 
-1. Prepare environment (per /jira)
-2. Execute the test steps (per /jira)
-3. Capture the screenshot (per /jira)
-4. **Capture the full agent response text verbatim** ← AFL gate begins
-5. **Score the response on all 5 rubric dimensions, each with a quoted evidence line**
-6. **Verdict:** PASSED only if `functional == ✅ AND every dim ≥ 4/5`. Otherwise FAILED.
+1. Preparar ambiente (per /method Step 9)
+2. Executar os passos do teste via front (per /method Step 9)
+3. Capturar o screenshot (per /method Step 9)
+4. **Capturar o texto completo da resposta do agente, verbatim** ← AFL gate começa
+5. **Pontuar a resposta nas 5 dimensões da rubrica, cada uma com uma linha de evidência citada**
+6. **Veredito:** PASSED só se `functional == ✅ AND toda dim ≥ 4/5`. Senão FAILED.
 
 ### Gate outcomes
 
-- **All dims ≥ 4 AND functional ✅** → TC-N.a PASSED → mark TC-N.b N/A → next TC
-- **Any dim < 4 (even if functional ✅)** → TC-N.a FAILED → publish `TC-N FAILED — quality gate: [dim]=score` → escalate to TC-N.b (tune prompt / RAG / model / persona) → re-run TC-N.a from step 1
-- **Functional ❌** → TC-N.a FAILED (per /jira) — quality gate not required to score, but capture transcript anyway for the correction context
+- **Todas dims ≥ 4 AND functional ✅** → TC PASSED → próximo TC
+- **Qualquer dim < 4 (mesmo com functional ✅)** → TC FAILED → publicar `TC-N FAILED — quality gate: [dim]=score` → corrigir (tunar prompt / RAG / modelo / persona). **Per /method, qualquer fix invalida a validação: volta ao Code Review (Step 8) e re-testa TUDO (Step 9).**
+- **Functional ❌** → TC FAILED (per /method) — o gate de qualidade não precisa pontuar, mas capture o transcript mesmo assim para o contexto da correção.
 
-The same loop /jira already enforces. Quality is just another way the TC can fail.
+A qualidade é só mais uma forma do TC falhar dentro do loop que o `/method` já impõe.
 
 ### Rubric (5 dimensions, 1–5 each)
 
@@ -80,7 +80,7 @@ The same loop /jira already enforces. Quality is just another way the TC can fai
 | Usefulness | User can act on this; actually answers what was asked | ≥ 4 |
 | Competitive Quality | Beats or matches ChatGPT/Claude/Gemini/Perplexity for the same prompt | ≥ 4 |
 
-**Read the full rubric with anchors and examples in `quality-rubric.md` BEFORE scoring. Do NOT score from memory.**
+**Leia a rubrica completa com âncoras e exemplos em `quality-rubric.md` ANTES de pontuar. NÃO pontue de memória.**
 
 ### Required capture per agent-text TC
 
@@ -101,7 +101,7 @@ The same loop /jira already enforces. Quality is just another way the TC can fai
 
 ### Audit additions
 
-**Step 17a — Audit Pós-Execução** (append to existing block):
+**/method Step 9 — Audit Pós-Execução** (acrescentar ao bloco existente):
 ```
 - TCs with agent text output: M (of N)
 - Transcripts captured: M
@@ -110,12 +110,12 @@ The same loop /jira already enforces. Quality is just another way the TC can fai
 - Quality Gate verdict: ✅ ALL PASS  /  ❌ FAILED — re-running
 ```
 
-**Step 18 — Pre-trigger message** (add before "browser positioned"):
+**jira human-check — Pre-trigger message** (adicionar antes do "browser posicionado"):
 ```
-**Agent quality verdict (from 17a):** ✅ all agent-text TCs ≥ 4/5 every dimension
+**Agent quality verdict (do Step 9):** ✅ all agent-text TCs ≥ 4/5 every dimension
 ```
 
-If quality FAILED, you do NOT reach step 18 — you loop back to 17b.
+Se a qualidade FALHOU, você **não chega ao human-check** — volta ao fix + Code Review (Step 8) + re-teste (Step 9).
 
 ---
 
@@ -151,14 +151,16 @@ If quality FAILED, you do NOT reach step 18 — you loop back to 17b.
 O `/jira` é genérico (project key `PROJ-`). O `/afl` é o overlay Eduzz e injeta a especificidade real ao acionar o `/jira`:
 
 - **Project key — `AV-*`:** os cards seguem o padrão `AV-*` — card único `AV-36`; multi-card `AV-36-40`, `AV-36-40-55`, `AV-36-40-55-72` (números em ordem crescente, prefixo `AV-`). Sempre que o `/jira` pedir um `[CARD-CODE]`, considere o `AV-*`.
-- **Environment:** LOCAL DEV. `can create users: yes`, `can commit: yes`, NUNCA push (só no step 19).
+- **Environment:** LOCAL DEV. `can create users: yes`, `can commit: yes`, NUNCA push fora do ship.
 - **Test user:** criar sob demanda — `can create users: yes` cobre; não há credencial fixa.
 
-Demais regras (branching, gateways, steps) idênticas ao `/jira`. See `~/.claude/skills/jira/SKILL.md`.
+Demais regras (branching, fases, gateways) idênticas ao `/jira`. See `~/.claude/skills/jira/SKILL.md`.
 
 ## Reference files
 
-- `quality-rubric.md` — full 5-dimension rubric with scoring anchors and examples (READ before step 17a)
-- All step references — `~/.claude/skills/jira/references/`
+- `quality-rubric.md` — rubrica completa de 5 dimensões com âncoras e exemplos (LER antes do Step 9 / Testing)
+- Workflow do `/jira` — `~/.claude/skills/jira/SKILL.md`
+- Protocolo de testes — `~/.claude/skills/jira/references/method/references/09-testing.md`
+- Human check — `~/.claude/skills/jira/references/human-check.md`
 
 **Abra `quality-rubric.md` ANTES de pontuar qualquer TC. Não pontuar de memória.**
