@@ -18,7 +18,7 @@
 A AI resolve cada decisão usando (em ordem de prioridade):
 
 1. **Padrões do projeto** — código existente, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
-2. **Big apps como referência** — Instagram, Spotify, Gmail, Notion, Meta, iFood, Uber, Airbnb, LinkedIn, Twitter/X
+2. **Big apps como referência** — big pop tech apps / líderes do mesmo domínio
 3. **Boas práticas de mercado** — padrões consagrados de engenharia de alto nível
 4. **Princípios de engenharia** — SOLID, Clean Architecture, OWASP, performance, acessibilidade, escalabilidade
 
