@@ -27,7 +27,7 @@
 
 ## 3. Estratégia de Implementação
 - Ordem de tasks (de 06-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
-- **Referência big apps:** como Instagram, Spotify, Gmail, Notion, Meta, iFood, Uber, Airbnb resolvem este problema de UX?
+- **Referência big apps:** como as big pop tech apps / líderes do domínio resolvem este problema de UX?
 - **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? Linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é LEI.
 
 ## 4. Mapa de Test Cases → Código
@@ -72,7 +72,7 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 
 **Refatoração Obrigatória (tocou = refatora):**
 
-Para CADA arquivo aberto para edição, escaneie:
+Aplique os princípios acima (SOLID/SRP, DRY, KISS, YAGNI, Law of Demeter) ao código que **encontra**, não só ao que escreve. Para CADA arquivo aberto para edição, escaneie e eleve ao nível #1:
 - **Tamanho:** services >400 linhas, componentes >300 → avalie divisão
 - **Imports mortos / variáveis não usadas** → remova
 - **Lógica duplicada** → extraia helper/util

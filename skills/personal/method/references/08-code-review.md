@@ -20,6 +20,7 @@ REPETIR até 100% limpo:
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - Regra "tocou = refatora" do 7b seguida?
+     - **Nível referência #1:** está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"? ("Um líder do domínio assinaria isto?")
   6. Problema encontrado → corrigir IMEDIATAMENTE → voltar ao 1
   7. PR existente → atualizar comentários/descrição
   8. Loop até ZERO issues — NÃO aceitar "bom o suficiente"
@@ -50,7 +51,7 @@ REPETIR até 100% limpo:
 Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 
 ## Análise de Qualidade
-Duplicação | Complexidade | Naming | Consistência
+Duplicação | Complexidade | Naming | Consistência | Nível vs. referência #1 do mercado (big pop tech apps)
 
 ## Veredicto Final
 - Status: ✅ APROVADO / ❌ REQUER correções

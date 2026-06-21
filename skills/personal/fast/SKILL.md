@@ -26,7 +26,7 @@ argument-hint: "[feature-name]"
 
 ## Como rodar
 
-Siga a **Ordem de Operações do `/method`** (ver `method/SKILL.md`): Inventário de Docs → Gate Check → TaskCreate → executar os steps em sequência, publicando o **Gateway Check** de cada um no chat. **A diferença é só parar no Step 8.**
+Siga a **Ordem de Operações do `/method`** (ver `method/SKILL.md`): **invoque o `/solve`** (padrão de qualidade — referência #1 do mercado) → Inventário de Docs → Gate Check → TaskCreate → executar os steps em sequência, publicando o **Gateway Check** de cada um no chat. **A diferença é só parar no Step 8.**
 
 | Step | Reference | /fast roda? |
 |------|-----------|-------------|

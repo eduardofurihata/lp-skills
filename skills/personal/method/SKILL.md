@@ -3,6 +3,7 @@ name: method
 description: Use when user invokes /method, when starting feature work, or before any code change and `docs/01-problem/` through `docs/04-spec/` lacks artifact for the feature. Triggers on phrases like "implementa X", "novo feature", "fix não trivial". Not for typos, config tweaks, or read-only questions.
 effort: max
 argument-hint: "[feature-name]"
+requires: solve
 ---
 
 # /method — Protocolo de Engenharia Rigorosa
@@ -20,6 +21,18 @@ argument-hint: "[feature-name]"
 > Violar a letra das regras = violar o espírito das regras. Cumprimento "técnico" (1 parágrafo por step, docs após código, skip granular) é violação disfarçada.
 
 **Tokens são baratos.** Bug em produção, retrabalho, bronca do usuário, perda de confiança — caros. Trade-off explícito: prefira gastar 10× mais tokens e acertar do que 1× token e errar.
+
+## Padrão de Qualidade — Referência #1 do Mercado
+
+> O padrão é o do **`/solve`** (invocado na ativação): ser o **#1 do mercado**, no calibre dos **big pop tech apps** — nunca o "bom o suficiente". O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
+
+**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual e sem merge para `main` sem autorização (regras acima).
+
+Os princípios de engenharia (**SOLID/SRP, DRY, KISS, YAGNI**, Law of Demeter) são inegociáveis e estão detalhados no Step 7b (`references/07-implementation.md`) — não duplicados aqui. Valem para o código que você **escreve E o que toca**: identificou onde um princípio cabe melhor → aplique ali mesmo ("tocou = refatora", Step 7b), elevando o que encontra ao nível #1. KISS/YAGNI matam a complexidade *desnecessária*; a complexidade *necessária* para o nível #1 continua sendo requisito.
+
+Auto-check em cada gateway: *"Um líder do domínio assinaria isto?"* Se não → não está pronto.
+
+**PARE se pensar:** "é só um MVP" · "depois a gente melhora" · "tá bom o suficiente" · "deixa o legado como está pra não refazer".
 
 ## Regras Invioláveis (fecham brechas conhecidas)
 
@@ -51,6 +64,8 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 **Abra o reference do step ANTES de executar.** Releia docs anteriores do step atual antes de começar.
 
 ## Ordem de Operações ao Ativar
+
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é chamar a skill `/solve` (Skill tool) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. O `/solve` define o nível; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
 
 ### 1. Inventário de Docs (UMA vez, antes de qualquer step)
 
