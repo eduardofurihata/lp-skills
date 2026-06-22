@@ -51,9 +51,11 @@ EOF
 ```
 
 ### 4 — Atualizar o Jira
-Comentário no card:
+Comentário no card — tool `mcp__atlassian__jira_add_comment`:
 ```
-mcp__atlassian__jira_post → /rest/api/3/issue/[CARD-CODE]/comments
+mcp__atlassian__jira_add_comment
+  issue_key: [CARD-CODE]
+  comment: <o corpo abaixo, em markdown>
 ```
 ```
 ## O que foi feito
@@ -64,9 +66,11 @@ PR: [URL]
 Branch: [branch]
 Status: Em revisão
 ```
-Depois mover o status:
+Depois mover o status — `mcp__atlassian__jira_get_transitions` (`issue_key: [CARD-CODE]`) para achar o `id`, depois:
 ```
-mcp__atlassian__jira_post → /rest/api/3/issue/[CARD-CODE]/transitions
+mcp__atlassian__jira_transition_issue
+  issue_key: [CARD-CODE]
+  transition_id: <id da transição>
 ```
 Status: "Em revisão" / "Code Review" (conforme o workflow do projeto).
 

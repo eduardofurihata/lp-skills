@@ -47,7 +47,7 @@ Trazer a `main` do GitHub para a local: `git checkout main && git pull --ff-only
 Nomenclatura: card único `PROJ-N`; multi-card `PROJ-N-M-...` (números em ordem crescente, prefixo do projeto). Se a branch já existe → `checkout`; senão → `git checkout -b <nome>`. Confirmar com `git branch --show-current`.
 
 ### 0.3 — Registrar o card
-Criar `docs/jira/todo/[CARD-CODE].md` (criar `docs/jira/todo/` e `docs/jira/done/` se não existirem). Buscar os dados via `mcp__atlassian__jira_get → /rest/api/3/issue/[CARD-CODE]` (título, descrição, tipo `BUG`|`FEATURE`, assignee). Frontmatter mínimo:
+Criar `docs/jira/todo/[CARD-CODE].md` (criar `docs/jira/todo/` e `docs/jira/done/` se não existirem). Buscar os dados via `mcp__atlassian__jira_get_issue` (`issue_key: [CARD-CODE]`) — título, descrição, tipo `BUG`|`FEATURE`, assignee. Frontmatter mínimo:
 
 ```yaml
 card: [CARD-CODE]
@@ -60,8 +60,8 @@ phase: investigation
 Colar a **descrição real** do card e listar ao menos 2 interpretações.
 
 ### 0.4 — Atribuir o card (Jira ownership)
-- Assignee (se ainda não for o executor): `mcp__atlassian__jira_put → /rest/api/3/issue/[CARD-CODE]/assignee` com `{ "accountId": "[executor]" }`.
-- Status → "Em andamento": `jira_get .../transitions` para achar o `id` da transição, depois `jira_post .../transitions`.
+- Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue` (`issue_key: [CARD-CODE]`, `fields: { "assignee": { "accountId": "[executor]" } }`).
+- Status → "Em andamento": `mcp__atlassian__jira_get_transitions` (`issue_key: [CARD-CODE]`) para achar o `id` da transição, depois `mcp__atlassian__jira_transition_issue` (`issue_key`, `transition_id`).
 
 ### 0.5 — Entender o problema (nota ≥ 90)
 Ler o **código** relevante e entender o problema descrito no card. Dar uma **nota 0–100** à precisão do seu entendimento. **`< 90` → revisar** (ler mais código/contexto) e repontuar, **em loop até `≥ 90`**. Registrar o entendimento no card `.md`.
