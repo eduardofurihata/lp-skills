@@ -35,15 +35,17 @@ Pega um card do board **NIVEE** e leva até o **commit local** na feature branch
 `mcp__atlassian__jira_get_issue` (`issue_key: NIV-X`): título, descrição, tipo, `## Como testar`, assignee. Colar a descrição **real** do card; se houver ambiguidade, listar ≥2 interpretações (insumo do passo 4).
 
 ### 2. gh → homolog → branch (REGRA DE OURO)
-Nunca branchar de `homolog` stale:
+Nunca branchar de `homolog` stale — trazer tudo e resolver conflito antes:
 ```bash
 git checkout homolog
-git pull --ff-only          # gh → homolog (traz o remoto antes)
-git checkout -b <branch>    # homolog → branch
+git fetch origin
+git merge origin/homolog    # gh → homolog: traz o remoto; CONFLITO → resolver (entender os 2 lados)
+git checkout -b <branch>    # homolog → branch (a partir da homolog atual e limpa)
 git branch --show-current   # confirmar
 ```
 Nome da branch: derivado do card — `niv-X` (ou `niv-X-slug-curto`). Multi-card: `niv-X-Y` (ordem crescente). Branch já existe → `checkout` nela.
-> **Exceção (Eduardo trabalha direto em homolog):** se a intenção for não usar branch, pular o `checkout -b` e seguir na `homolog` (após o `pull --ff-only`). **Default = criar branch** (fluxo dos devs).
+> **Manter a branch atualizada:** se `origin/homolog` andar durante o trabalho, trazer pra branch (`git merge origin/homolog`, resolvendo conflitos) — o `/method` revê e testa o resultado integrado. Branch nunca fica pra trás de homolog.
+> **Exceção (Eduardo trabalha direto em homolog):** se a intenção for não usar branch, pular o `checkout -b` e seguir na `homolog` (após o sync acima). **Default = criar branch** (fluxo dos devs).
 
 ### 3. Mover o card → "Em andamento"
 - Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue`.

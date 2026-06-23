@@ -24,7 +24,8 @@ Revisa os PRs abertos **mirando `homolog`**, **autentica se o card foi de fato r
 3. NÃO rode `/todo` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (Phase 5), não pra QA.
 4. NÃO faça `homolog → main` sem o usuário autorizar ESTE push explicitamente.
 5. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
-6. NUNCA deployar `homolog` stale: antes do `homolog→main`, garantir **local homolog == origin/homolog** (todos os PRs já mergeados puxados + teus commits diretos pushados). Divergiu → PARAR e reconciliar, não deployar.
+6. NUNCA deployar `homolog` stale nem com divergência aberta: antes do `homolog→main`, sincronizar **local homolog ↔ origin/homolog** trazendo tudo (PRs mergeados + commits diretos) e **resolvendo conflitos** (não `ff-only`-bail). Fim: local == origin/homolog, limpo.
+7. Resolver conflito = mudança de código = **re-review + re-autenticação via front ANTES do `push origin main`**. Nunca deploya merge não-verificado. Resolução de intenção ambígua (não dá pra inferir os dois lados) → **perguntar ao usuário**, não chutar.
 </HARD-GATE>
 
 ---
@@ -62,9 +63,18 @@ gh pr list --base homolog --state open
 ## Phase 3 — Mergear em homolog + limpar branch
 Com review limpo e resolução autenticada:
 ```bash
-gh pr merge <n> --merge --delete-branch     # merge commit (padrão do histórico) + apaga a branch
-git checkout homolog && git pull --ff-only  # traz o merge pro homolog local
+# Branch atualizada com homolog? (homolog pode ter andado desde o PR)
+gh pr view <n> --json mergeable,mergeStateStatus    # CONFLICTING / BEHIND → atualizar a branch
+#   se conflitante/atrás:
+git checkout <branch> && git fetch origin && git merge origin/homolog   # RESOLVER conflitos (os 2 lados)
+#     resolução mudou código → re-rodar Phase 2 (review + autenticação) na branch atualizada
+git push origin <branch>                            # atualiza o PR
+
+# mergeável e (re-)autenticada:
+gh pr merge <n> --merge --delete-branch             # merge commit (padrão do histórico) + apaga a branch
+git checkout homolog && git pull --ff-only          # traz o merge pro homolog local
 ```
+> **Nunca mergear branch atrás/conflitada com homolog:** atualizar (`merge origin/homolog`) + resolver + re-autenticar (Phase 2) primeiro.
 > Branch remota apagada pelo `--delete-branch`. Apagar a local também se existir: `git branch -d <branch>`.
 
 ## Phase 4 — Responder + mover card(s) + follow-up
@@ -89,38 +99,34 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 > "`homolog` tem <N> commit(s) fora de `main`. Quer jogar pra **`main`**? Isso **deploya em produção** (GH Actions). [sim/não]"
 
 - **Não / silêncio** → PARAR. Fica em `homolog`. Fim.
-- **Sim explícito** (só então) — ciclo `garantir homolog → promove → deploy → resync → assert`, **nessa ordem**:
+- **Sim explícito** (só então) — ciclo `sincronizar+resolver → promove → deploy → resync → assert`, **nessa ordem**:
   ```bash
-  # === GARANTIA: homolog completa e sincronizada com origin ANTES de deployar ===
+  # === 0) SINCRONIZAR homolog: tudo atualizado + RESOLVER conflitos, ANTES de deployar ===
   git checkout homolog
   git fetch origin
-  git pull --ff-only origin homolog   # traz TODOS os PRs já mergeados em origin/homolog
-  git push origin homolog             # sobe teus commits diretos (no-op se não há)
-  #   ↳ pull NÃO-ff (homolog local divergiu de origin) OU push rejeitado → STOP:
-  #     reconciliar com o usuário ANTES de deployar. NUNCA promover homolog stale.
+  git merge origin/homolog             # traz TODOS os PRs mergeados; CONFLITO → resolver (ver abaixo)
+  git push origin homolog              # sobe commits diretos (no-op se não há)
 
   # 1) homolog → main (promove)
   git checkout main && git pull --ff-only
-  git merge homolog                    # ff limpo quando main é ancestral de homolog (estado normal)
+  git merge homolog                    # CONFLITO → resolver
 
   # 2) main → GitHub   ←  DEPLOYA PROD (GH Actions)
   git push origin main
 
-  # 3) resync main → homolog   (deixa origin/homolog == origin/main)
-  git checkout homolog && git merge --ff-only main
+  # 3) resync main → homolog
+  git checkout homolog && git merge main
   git push origin homolog
 
-  # 4) ASSERT a garantia
+  # 4) ASSERT
   git fetch origin
   [ "$(git rev-parse origin/homolog)" = "$(git rev-parse origin/main)" ] \
-    && echo "✓ origin/homolog == origin/main" || echo "✗ DIVERGIRAM — investigar antes de seguir"
+    && echo "✓ origin/homolog == origin/main" || echo "✗ DIVERGIRAM — investigar"
   ```
-  > **Guards (qualquer um → PARAR e avisar, nunca forçar):**
-  > - Sync inicial não-ff ou push rejeitado → `homolog` local divergiu de `origin`. Reconciliar com o usuário **antes** de deployar. Nunca promover homolog stale.
-  > - `git merge homolog` em `main` não-ff/conflito → `main` divergiu (commit direto em main). Não force.
-  > - Assert final `✗` → resync falhou; `origin/homolog != origin/main`. Investigar antes de fechar.
+  > **Resolução de conflitos (em QUALQUER merge acima):** resolver entendendo **os dois lados** — nunca `ff-only`-bail, nunca descartar um lado às cegas. **Toda resolução que muda código → re-review + re-autenticar via front ANTES do `push origin main`** (não deploya merge não-verificado). Intenção genuinamente ambígua (não dá pra inferir) → **perguntar ao usuário**.
+  > **Assert `✗`** → resync não fechou (`origin/homolog != origin/main`); investigar antes de concluir.
 
-  Depois: transicionar o(s) card(s) pro status final pós-deploy (se o workflow tiver). **Resultado garantido: `origin/homolog == origin/main`.**
+  Depois: transicionar o(s) card(s) pro status final pós-deploy (se o workflow tiver). **Resultado garantido: `origin/homolog == origin/main`, sem conflito pendente.**
 
 ## Saída
 ```
