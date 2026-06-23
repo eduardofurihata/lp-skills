@@ -88,13 +88,25 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 > "`homolog` tem <N> commit(s) fora de `main`. Quer jogar pra **`main`**? Isso **deploya em produção** (GH Actions). [sim/não]"
 
 - **Não / silêncio** → PARAR. Fica em `homolog`. Fim.
-- **Sim explícito** (só então):
+- **Sim explícito** (só então) — ciclo completo `homolog → main → resync`, **nessa ordem**:
   ```bash
+  # 0) homolog local == origin (já feito se veio de PR; refaz por segurança)
+  git checkout homolog && git pull --ff-only
+
+  # 1) homolog → main (promove)
   git checkout main && git pull --ff-only
-  git merge homolog
-  git push origin main          # DEPLOYA PROD
+  git merge homolog              # ff limpo quando main é ancestral de homolog (estado normal)
+
+  # 2) main → GitHub   ←  DEPLOYA PROD (GH Actions)
+  git push origin main
+
+  # 3) resync main → homolog   (deixa origin/homolog == origin/main)
+  git checkout homolog && git merge --ff-only main
+  git push origin homolog
   ```
-  Depois **resync** a `homolog` se divergiu. Transicionar o(s) card(s) pro status final pós-deploy, se o workflow tiver.
+  > **Guard:** se o `git merge homolog` em `main` **não** for fast-forward nem limpo (conflito, ou `main` tem commit que `homolog` não tem) → **PARAR e avisar** que `main` divergiu. Não force, não resolva às cegas — chamar o usuário.
+
+  Depois: transicionar o(s) card(s) pro status final pós-deploy (se o workflow tiver). **Resultado: `origin/homolog == origin/main`.**
 
 ## Saída
 ```
