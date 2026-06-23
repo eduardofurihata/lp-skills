@@ -27,6 +27,12 @@ git status                 # working tree limpo; commit do /method presente
 - Branch atual = **`homolog`** ou **`main`** → **PARAR.** Avisar: *"/pr é pra feature branch → homolog. Você está em `homolog`; pro release `homolog→main` use o `/merge`."* Não abrir PR.
 - Branch = feature → seguir.
 - Working tree sujo / sem commit da feature → **PARAR** e mandar fechar no `/work` (`/method` até o Step 10) antes.
+- **Branch atualizada com homolog?**
+  ```bash
+  git fetch origin
+  git merge-base --is-ancestor origin/homolog HEAD && echo "✓ contém homolog atual" || echo "✗ ATRÁS de homolog"
+  ```
+  `✗` (homolog andou desde o `/work`) → **PARAR** e mandar rodar `/work` de novo pra integrar `origin/homolog` (merge + resolver conflitos) e **re-testar** — `/pr` publica só o que já passou, não resolve conflito não-testado.
 
 ## Fluxo
 
