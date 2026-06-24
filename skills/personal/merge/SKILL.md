@@ -1,6 +1,6 @@
 ---
 name: merge
-description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them. Runs a code review of the diff + verifies resolution via the front; if the feature is QA-pending (still in kanban/06-todo) runs /todo until green first; merges into homolog and deletes the branch; comments + transitions the Jira card(s); opens a follow-up card if scope was left over; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
+description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Runs a code review of the diff + verifies resolution via the front; if the feature is QA-pending (still in kanban/06-todo) runs /todo until green first; merges into homolog and deletes the branch; comments + transitions the Jira card(s); opens a follow-up card if scope was left over; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
 effort: max
 requires: todo
 argument-hint: "[PR number | NIV-X] | (empty = listar PRs abertos pra homolog)"
@@ -12,6 +12,8 @@ Revisa os PRs abertos **mirando `homolog`**, **autentica se o card foi de fato r
 
 ## Iron Law
 > **Precisão > tokens > velocidade.** "O dev disse que tá pronto" não é prova — **autentique você** (review + front). Bug que passa daqui vai pra `homolog` e depois pra prod. Mire a referência #1.
+>
+> **Mergear não é obrigatório — o `/merge` é um GATE, não uma esteira.** Pode (e às vezes deve) **falhar**: PR com qualidade ruim/inaceitável é **rejeitado e devolvido ao dev**, não empurrado pra dentro. Bloquear lixo é o gate **funcionando**, não falhando. Conserto pontual → corrige na hora; quando "consertar" vira "reimplementar", **rejeita** (Phase 2b).
 
 ## Convenções (CONTRATO)
 - PRs alvo: **base `homolog`**. Remote `origin` (`nivee-org/vibe-nivee`).
@@ -24,8 +26,9 @@ Revisa os PRs abertos **mirando `homolog`**, **autentica se o card foi de fato r
 3. NÃO rode `/todo` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (Phase 5), não pra QA.
 4. NÃO faça `homolog → main` sem o usuário autorizar ESTE push explicitamente.
 5. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
-6. NUNCA deployar `homolog` stale nem com divergência aberta: antes do `homolog→main`, sincronizar **local homolog ↔ origin/homolog** trazendo tudo (PRs mergeados + commits diretos) e **resolvendo conflitos** (não `ff-only`-bail). Fim: local == origin/homolog, limpo.
-7. Resolver conflito = mudança de código = **re-review + re-autenticação via front ANTES do `push origin main`**. Nunca deploya merge não-verificado. Resolução de intenção ambígua (não dá pra inferir os dois lados) → **perguntar ao usuário**, não chutar.
+6. **Mergear NÃO é garantido — REJEITAR é saída válida.** Conserto pontual (bug/edge case/null-check/pattern/copy) → corrige in-place + re-revisa. Mas se "consertar" = **refazer a abordagem**, OU o feature **não faz o que o card pede** e não dá pra ajustar trivial, OU desastre de segurança/perda de dado, OU o loop de conserto **não converge** (~2–3 rodadas) → **REJEITA** (Phase 2b). Não reimplemente o trabalho do dev disfarçado de review. Rejeitar é **seguro** (nada deploya, branch viva) → pode ser autônomo; só **reporta alto** e deixa override.
+7. NUNCA deployar `homolog` stale nem com divergência aberta: antes do `homolog→main`, sincronizar **local homolog ↔ origin/homolog** trazendo tudo (PRs mergeados + commits diretos) e **resolvendo conflitos** (não `ff-only`-bail). Fim: local == origin/homolog, limpo.
+8. Resolver conflito = mudança de código = **re-review + re-autenticação via front ANTES do `push origin main`**. Nunca deploya merge não-verificado. Resolução de intenção ambígua (não dá pra inferir os dois lados) → **perguntar ao usuário**, não chutar.
 </HARD-GATE>
 
 ---
@@ -55,10 +58,22 @@ gh pr list --base homolog --state open
 
 > O gate olha **só o card do PR**. Outros cards pendentes em `06-todo/` NÃO são QA aqui — vão pro cleanup (Phase 5).
 
-## Phase 2 — Review + Autenticar resolução (loop até limpo)
+## Phase 2 — Review + Autenticar resolução (loop até limpo **ou** rejeita)
 1. **Code review do diff** (calibre Step 8 do `/method`): `gh pr diff <n>` → revisar cada arquivo — bugs, edge cases, padrões do projeto (`docs/00-context/technical/patterns.md`), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/08-code-review/<feature>.md` se ainda não houver.
 2. **Autenticar a resolução via front:** abrir o app (Playwright MCP) e validar o **`## Como testar`** do card — o que o card pedia **acontece de verdade**? Confirmar para CADA card do PR ("quais cards" foram resolvidos).
-3. **Achou problema → corrige IMEDIATAMENTE** (na branch do PR) → **re-review + re-autentica** (qualquer fix invalida o passe anterior). Loop até **zero issues + resolução confirmada**.
+3. **Achou problema → decidir CONSERTA ou REJEITA:**
+   - **Conserta in-place** (default p/ o reparável): bug pontual, edge case, null-check, desvio de pattern, erro de copy → corrige na branch do PR → **re-review + re-autentica** (qualquer fix invalida o passe). Loop até **zero issues + resolução confirmada** → Phase 3.
+   - **Rejeita** (quando o reparo não é review, é reimplementação) → **Phase 2b**. Gatilhos: abordagem fundamentalmente errada; o feature **não faz o que o card pede** e não dá pra ajustar trivial; scope bagunçado / itens não-relacionados que precisam re-split; desastre de segurança/perda de dado; ou o loop de conserto **não converge** (~2–3 rodadas — sinal de PR cru, não de detalhe).
+   > **Fio da navalha:** se pra deixar limpo você teria que **reescrever a implementação**, isso é trabalho do dev — **rejeita e devolve**, não faça você escondido no review. Na dúvida entre os dois, rejeitar é a direção segura (nada deploya).
+
+## Phase 2b — Rejeitar o PR (saída TERMINAL — não mergeia)
+Rejeitar é seguro: nada vai pra `homolog`/prod, branch e PR ficam vivos pro dev iterar → **autônomo, sem pedir permissão** (≠ `homolog→main`); só deixa o motivo **explícito** e reporta alto. Override do usuário: "mergeia assim mesmo".
+1. **Request-changes no PR** com feedback concreto e acionável (não vago): `gh pr review <n> --request-changes --body "<o quê + por quê + o que precisa mudar, por item; aponte arquivo/linha>"`.
+2. **NÃO** mergeia, **NÃO** apaga a branch — o dev precisa dela pra empurrar os fixes.
+3. **Jira → devolve pro dev:** `jira_get_transitions` → `jira_transition_issue` pro **"Em andamento"** (rework). `jira_add_comment` com o resumo do que reprovou + link do review. Sem `comment` na transição (ADF).
+4. **Kanban → rework:** mover o card (de onde estiver) pra `kanban/07-implementation/<feature>.md` com frontmatter `status: rework` + motivo. Não deixa em `10-done`/`11-ship` (mentiria "pronto"). *(Sem card no kanban — dev cru — pula esta etapa.)*
+5. **Escopo lateral** que apareceu no review (bug à parte, dívida) ainda vira card de follow-up (Phase 4.5) — mas o **core volta pro dev**, não enfia no PR rejeitado.
+6. **Reporta** (saída "rejeitado", abaixo) e **encerra** — NÃO segue pra Phase 3+. Sem merge, sem deploy.
 
 ## Phase 3 — Mergear em homolog + limpar branch
 Com review limpo e resolução autenticada:
@@ -129,6 +144,8 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
   Depois: transicionar o(s) card(s) pro status final pós-deploy (se o workflow tiver). **Resultado garantido: `origin/homolog == origin/main`, sem conflito pendente.**
 
 ## Saída
+
+**Mergeado:**
 ```
 ## ✅ /merge — PR #<n>
 - Cards:    NIV-X[, NIV-Y]  →  <status pós-merge>
@@ -140,6 +157,16 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - main:     <NÃO (fica em homolog) | SIM — deployado>
 ```
 
+**Rejeitado** (qualidade inaceitável — NÃO mergeou):
+```
+## ⛔ /merge — PR #<n> REJEITADO
+- Cards:    NIV-X[, NIV-Y]  →  Em andamento (devolvido ao dev)
+- Motivo:   <por que reprovou — concreto, por item>
+- Ação:     request-changes no PR ✓  ·  branch preservada ✓  ·  kanban → 07-implementation
+- Merge:    ✗ NÃO mergeado — homolog/prod intocados
+- Override: responda "mergeia assim mesmo" pra forçar
+```
+
 ## Red Flags — STOP
 - "O dev marcou done, mergeio sem autenticar" → NÃO. Autentique via front (Phase 2).
 - "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: roda `/todo` ANTES.
@@ -147,4 +174,8 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre. Nunca auto-delete.
 - "O usuário já disse que eu posso mergear pra main" → NÃO vale pra sempre. Pergunte a CADA `homolog→main`.
 - "Fix pequeno no review, não re-testo" → NÃO. Qualquer fix → re-review + re-autentica.
+- "O loop de conserto não fecha, sigo reescrevendo no review" → NÃO. ~2–3 rodadas sem convergir = PR cru → REJEITA e devolve (Phase 2b).
+- "Código tá limpo, mas o feature não faz o que o card pede — mergeio" → NÃO. Resolução não-autenticada = rejeita, não merge.
+- "Pra mergear eu reescrevi metade da implementação" → NÃO. Isso é trabalho do dev. Reescrita ≠ review → rejeita e devolve.
+- "Achei um null-check faltando, então rejeito o PR" → NÃO (o oposto). Conserto pontual é in-place; rejeição é só pra inaceitável/reimplementação. Não vire trigger-happy.
 - "Acho a ponta solta, deixo sem card" → NÃO. Follow-up vira card (Phase 4.5), não some.
