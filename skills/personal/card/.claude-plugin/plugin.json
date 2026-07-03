@@ -1,0 +1,10 @@
+{
+  "name": "card",
+  "description": "Use when user invokes /card to create a Jira card on the NIVEE board (personal project) from a short description.",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ]
+}

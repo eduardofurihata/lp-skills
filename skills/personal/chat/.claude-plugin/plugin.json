@@ -1,0 +1,10 @@
+{
+  "name": "chat",
+  "description": "Use when you want deep analysis and smart answers without any file or system modifications — activates read-only guru mode",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ]
+}

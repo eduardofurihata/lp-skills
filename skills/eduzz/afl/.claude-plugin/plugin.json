@@ -1,0 +1,15 @@
+{
+  "name": "afl",
+  "description": "Use when working on an AFL (Agents for Life) Jira card — roda o /jira no contexto do AFL, mirando qualidade",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ],
+  "dependencies": [
+    {
+      "name": "jira"
+    }
+  ]
+}

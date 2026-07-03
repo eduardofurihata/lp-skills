@@ -1,0 +1,21 @@
+{
+  "name": "eduzz-builder",
+  "description": "Bundle — instala todas as skills de trabalho (Eduzz) de uma vez.",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "dependencies": [
+    {
+      "name": "afl"
+    },
+    {
+      "name": "jira"
+    },
+    {
+      "name": "notion-pull"
+    },
+    {
+      "name": "notion-push"
+    }
+  ]
+}

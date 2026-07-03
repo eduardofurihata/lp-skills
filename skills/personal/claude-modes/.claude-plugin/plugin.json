@@ -1,0 +1,10 @@
+{
+  "name": "claude-modes",
+  "description": "Use when setting up or replicating the user's Claude Code launch modes on a machine — terminal commands `claude` (effort max) and `claudew` (ultracode), plus IDE terminal profiles \"Claude\" (max) an…",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ]
+}

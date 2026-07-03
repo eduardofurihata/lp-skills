@@ -18,8 +18,9 @@ export function Hero({ count }: HeroProps) {
         </h1>
         <p className="max-w-2xl text-base text-[color:var(--color-text-muted)] sm:text-lg">
           Skills do meu setup do Claude Code — pessoais e de trabalho (Eduzz).
-          Selecione as que você quer, escolha o escopo, copie o prompt e cole no
-          seu Claude Code. Atualizações chegam automaticamente.
+          Selecione as que você quer, copie os comandos e cole no seu Claude
+          Code — funciona em qualquer sistema. Atualizações chegam
+          automaticamente.
         </p>
       </div>
     </section>

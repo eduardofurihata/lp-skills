@@ -7,9 +7,10 @@ import {
   type CategoryFilterValue,
 } from "@/components/CategoryFilter";
 import { SkillGrid } from "@/components/SkillGrid";
+import { BundleInstall } from "@/components/BundleInstall";
 import { StickyInstallBar } from "@/components/StickyInstallBar";
 import type { Skill } from "@/lib/skills";
-import { expandDeps, type Scope } from "@/lib/install-prompt";
+import { expandDeps } from "@/lib/install-prompt";
 
 interface SkillsClientProps {
   skills: Skill[];
@@ -17,7 +18,6 @@ interface SkillsClientProps {
 
 export function SkillsClient({ skills }: SkillsClientProps) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
-  const [scope, setScope] = useState<Scope>("global");
   const [categoryFilter, setCategoryFilter] =
     useState<CategoryFilterValue>("all");
 
@@ -67,6 +67,7 @@ export function SkillsClient({ skills }: SkillsClientProps) {
   return (
     <TooltipProvider delayDuration={150}>
       <main className="mx-auto w-full max-w-7xl px-6 pb-32 pt-12">
+        <BundleInstall counts={counts} />
         <div className="mb-6">
           <CategoryFilter
             value={categoryFilter}
@@ -80,8 +81,6 @@ export function SkillsClient({ skills }: SkillsClientProps) {
         installSkills={installSkills}
         selectedCount={selected.size}
         autoAddedSlugs={autoAddedSlugs}
-        scope={scope}
-        onScopeChange={setScope}
         onClear={clear}
       />
     </TooltipProvider>

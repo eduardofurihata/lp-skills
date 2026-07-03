@@ -1,7 +1,5 @@
 import type { Category } from "./categories";
 
-export type Scope = "global" | "project-shared" | "project-local";
-
 export interface InstallSkill {
   slug: string;
   category: Category;
@@ -14,26 +12,33 @@ export interface SkillNode {
   requires: string[];
 }
 
-export const SCOPE_LABELS: Record<Scope, string> = {
-  global: "Global",
-  "project-shared": "Projeto (compartilhado)",
-  "project-local": "Projeto (local — só pra mim)",
-};
+// Bundle ("builder") — plugin agregador que instala uma categoria inteira.
+export interface Bundle {
+  name: string;
+  label: string;
+  category: Category;
+}
 
-export const SCOPE_DESCRIPTIONS: Record<Scope, string> = {
-  global: "Instala em ~/.claude/skills/. Disponível em todos os projetos.",
-  "project-shared":
-    "Instala em <projeto>/.claude/skills/. Vai pro git do projeto, todo o time tem.",
-  "project-local":
-    "Instala em <projeto>/.claude/skills/ + adiciona ao .gitignore. Só pra você.",
-};
+// Repo/marketplace fonte das skills (Claude Code plugin marketplace).
+const REPO_SLUG = "eduardofurihata/lp-skills";
+const MARKETPLACE = "lp-skills";
 
-const REPO_URL = "https://github.com/eduardofurihata/lp-skills";
-const SOURCE_DIR = "~/.claude/lp-skills-source";
+// Bundles disponíveis (espelham os plugins agregadores gerados em bundles/).
+export const BUNDLES: Bundle[] = [
+  { name: "furi-builder", label: "Todas as pessoais", category: "personal" },
+  { name: "eduzz-builder", label: "Todas de trabalho (Eduzz)", category: "eduzz" },
+];
+
+const ADD_STEP = `1) Adicione o marketplace (uma vez por máquina):
+   /plugin marketplace add ${REPO_SLUG}`;
+
+const UPDATE_STEP = `3) Para atualizar depois, quando houver versão nova:
+   /plugin marketplace update`;
 
 // Fecho transitivo das dependências: dado o que o usuário selecionou, retorna
-// a lista (deduplicada) de skills a instalar — cada uma com seu bucket — já
-// incluindo as `requires` (ex.: jira puxa method; afl puxa jira → method).
+// a lista (deduplicada) de skills a instalar — já incluindo as `requires`
+// (ex.: jira puxa method; afl puxa jira → method). O Claude Code também resolve
+// deps na instalação, mas expandir aqui deixa a lista explícita no comando.
 export function expandDeps(
   selectedSlugs: string[],
   catalog: SkillNode[],
@@ -53,117 +58,36 @@ export function expandDeps(
   return [...out.values()];
 }
 
-export function generatePrompt({
-  skills,
-  scope,
-}: {
-  skills: InstallSkill[];
-  scope: Scope;
-}): string {
+// Comandos `/plugin` para instalar skills individuais (deps já expandidas).
+// Instalação via marketplace nativo: o Claude Code clona e COPIA o plugin pro
+// cache per-OS (funciona igual em Windows/macOS/Linux — sem symlink, sem hook).
+export function generatePrompt({ skills }: { skills: InstallSkill[] }): string {
   if (skills.length === 0) {
-    return "Selecione ao menos 1 skill para gerar o prompt.";
+    return "Selecione ao menos 1 skill para gerar os comandos.";
   }
 
-  const skillList = skills.map((s) => s.slug).join(", ");
-  const header = headerFor(scope, skillList);
-  const steps = stepsFor(scope, skills);
+  const installLines = skills
+    .map((s) => `   /plugin install ${s.slug}@${MARKETPLACE}`)
+    .join("\n");
 
-  return `${header}\n\n${steps}`.trim();
+  return `Instale estas skills do Claude Code (marketplace de Furihata).
+
+${ADD_STEP}
+
+2) Instale as skills (as dependências entram automaticamente):
+${installLines}
+
+${UPDATE_STEP}`;
 }
 
-function headerFor(scope: Scope, skillList: string): string {
-  return `Por favor, instale estas skills do Claude Code do repositório público de Furihata.
+// Comandos `/plugin` para instalar um bundle inteiro (uma categoria de uma vez).
+export function generateBundlePrompt(bundle: Bundle): string {
+  return `Instale o pacote "${bundle.name}" (${bundle.label}) do Claude Code.
 
-- Repositório: ${REPO_URL}
-- Skills a instalar (dependências já resolvidas): ${skillList}
-- Escopo: ${SCOPE_LABELS[scope]}
+${ADD_STEP}
 
-Execute todos os passos abaixo. Reporte sucesso ou erros ao final.`;
-}
+2) Instale o pacote — traz todas as skills da categoria:
+   /plugin install ${bundle.name}@${MARKETPLACE}
 
-function stepsFor(scope: Scope, skills: InstallSkill[]): string {
-  const targetBaseExpr = targetBaseFor(scope);
-  const preSteps = preStepsFor(scope);
-  const symlinkBlock = symlinkBlockFor(skills, targetBaseExpr);
-
-  return [
-    preSteps,
-    `1. Clone ou atualize o repositório fonte (uma única vez por máquina):
-
-   if [ ! -d ${SOURCE_DIR} ]; then
-     git clone ${REPO_URL} ${SOURCE_DIR}
-   else
-     git -C ${SOURCE_DIR} pull --ff-only
-   fi`,
-    symlinkBlock,
-    `3. Configure auto-update em ~/.claude/settings.json:
-
-   - No bloco hooks.SessionStart, adicione o hook abaixo (se ainda não existir):
-
-   {
-     "matcher": "",
-     "hooks": [
-       {
-         "type": "command",
-         "command": "git -C ${SOURCE_DIR} pull --ff-only -q 2>/dev/null &"
-       }
-     ]
-   }
-
-   - Não duplicar se já houver hook idêntico.`,
-    `4. Verifique a instalação:
-
-   ls -la ${targetBaseExpr}/ | grep lp-skills-source
-
-5. Reporte ao usuário: skills instaladas, conflitos resolvidos, hook adicionado.`,
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-}
-
-function targetBaseFor(scope: Scope): string {
-  switch (scope) {
-    case "global":
-      return "~/.claude/skills";
-    case "project-shared":
-    case "project-local":
-      return "$(pwd)/.claude/skills";
-  }
-}
-
-function preStepsFor(scope: Scope): string {
-  if (scope === "global") return "";
-  const projectSteps = [
-    `0. Garanta que você está na raiz do projeto e que o diretório .claude/skills/ existe:
-
-   mkdir -p .claude/skills`,
-  ];
-  if (scope === "project-local") {
-    projectSteps.push(
-      `0a. Adicione .claude/skills/ ao .gitignore (se ainda não estiver), para que essas skills fiquem só pra você:
-
-   if [ -f .gitignore ] && ! grep -qxF '.claude/skills/' .gitignore; then
-     echo '.claude/skills/' >> .gitignore
-   fi`,
-    );
-  }
-  return projectSteps.join("\n\n");
-}
-
-// Source-path inclui o bucket da categoria; destino do symlink continua plano
-// (~/.claude/skills/<slug>), pois o Claude Code carrega skills de um nível só.
-function symlinkBlockFor(skills: InstallSkill[], targetBase: string): string {
-  const lines = skills
-    .map(
-      ({ slug, category }) =>
-        `   - Se ${targetBase}/${slug} já é um diretório real (não symlink), faça:
-       mv ${targetBase}/${slug} ${targetBase}/${slug}.backup-$(date +%s)
-     Em seguida (sempre):
-       ln -sfn ${SOURCE_DIR}/skills/${category}/${slug} ${targetBase}/${slug}`,
-    )
-    .join("\n\n");
-
-  return `2. Para cada skill a instalar (incluindo dependências), crie um symlink em ${targetBase}/:
-
-${lines}`;
+${UPDATE_STEP}`;
 }

@@ -10,16 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScopeSelector } from "@/components/ScopeSelector";
 import { InstallPromptViewer } from "@/components/InstallPromptViewer";
-import { SCOPE_LABELS, type Scope, type InstallSkill } from "@/lib/install-prompt";
+import { generatePrompt, type InstallSkill } from "@/lib/install-prompt";
 
 interface StickyInstallBarProps {
   installSkills: InstallSkill[];
   selectedCount: number;
   autoAddedSlugs: string[];
-  scope: Scope;
-  onScopeChange: (scope: Scope) => void;
   onClear: () => void;
 }
 
@@ -27,8 +24,6 @@ export function StickyInstallBar({
   installSkills,
   selectedCount,
   autoAddedSlugs,
-  scope,
-  onScopeChange,
   onClear,
 }: StickyInstallBarProps) {
   const hasSelection = selectedCount > 0;
@@ -53,13 +48,10 @@ export function StickyInstallBar({
                     {autoAddedSlugs.length > 1 ? "s" : ""})
                   </span>
                 )}
-                <span className="ml-2 text-[color:var(--color-text-muted)]">
-                  · escopo {SCOPE_LABELS[scope]}
-                </span>
               </>
             ) : (
               <span className="text-[color:var(--color-text-muted)]">
-                Selecione skills para gerar o prompt de instalação.
+                Selecione skills para gerar os comandos de instalação.
               </span>
             )}
           </p>
@@ -76,23 +68,24 @@ export function StickyInstallBar({
                 variant="accent"
                 size="md"
                 disabled={!hasSelection}
-                aria-label="Abrir prompt de instalação"
+                aria-label="Abrir comandos de instalação"
               >
                 <ClipboardCopy className="h-4 w-4" />
-                Gerar prompt
+                Gerar comandos
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Prompt de instalação</DialogTitle>
+                <DialogTitle>Comandos de instalação</DialogTitle>
                 <DialogDescription>
-                  Escolha o escopo e copie o prompt para colar no seu Claude
-                  Code. Dependências (ex.: o /method) entram automaticamente.
+                  Cole no seu Claude Code, em qualquer sistema operacional. As
+                  dependências (ex.: o /method) entram automaticamente.
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-col gap-4">
-                <ScopeSelector value={scope} onChange={onScopeChange} />
-                <InstallPromptViewer skills={installSkills} scope={scope} />
+                <InstallPromptViewer
+                  prompt={generatePrompt({ skills: installSkills })}
+                />
               </div>
             </DialogContent>
           </Dialog>

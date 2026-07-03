@@ -1,0 +1,15 @@
+{
+  "name": "work",
+  "description": "Use when user invokes /work [NIV-X] to take a NIVEE card from todo to committed-locally — standalone, NOT the Eduzz /jira.",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ],
+  "dependencies": [
+    {
+      "name": "method"
+    }
+  ]
+}
