@@ -78,8 +78,9 @@ export function StickyInstallBar({
               <DialogHeader>
                 <DialogTitle>Comandos de instalação</DialogTitle>
                 <DialogDescription>
-                  Cole no seu Claude Code, em qualquer sistema operacional. As
-                  dependências (ex.: o /method) entram automaticamente.
+                  Cole no prompt do Claude Code (onde você digita, não no
+                  terminal). As dependências entram automaticamente; funciona em
+                  qualquer sistema.
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-col gap-4">

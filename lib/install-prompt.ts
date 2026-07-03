@@ -29,11 +29,17 @@ export const BUNDLES: Bundle[] = [
   { name: "eduzz-builder", label: "Todas de trabalho (Eduzz)", category: "eduzz" },
 ];
 
+const INTRO =
+  "Cole estes comandos no prompt do Claude Code — a caixa onde você conversa com ele, NÃO no terminal do sistema.";
+
 const ADD_STEP = `1) Adicione o marketplace (uma vez por máquina):
    /plugin marketplace add ${REPO_SLUG}`;
 
-const UPDATE_STEP = `3) Para atualizar depois, quando houver versão nova:
-   /plugin marketplace update`;
+const TEST_STEP =
+  "3) Abra uma sessão NOVA do Claude Code (um CLI separado) e teste digitando a skill — ex.: /method";
+
+const UPDATE_FOOTER =
+  "Para atualizar depois, quando houver versão nova: /plugin marketplace update";
 
 // Fecho transitivo das dependências: dado o que o usuário selecionou, retorna
 // a lista (deduplicada) de skills a instalar — já incluindo as `requires`
@@ -70,24 +76,28 @@ export function generatePrompt({ skills }: { skills: InstallSkill[] }): string {
     .map((s) => `   /plugin install ${s.slug}@${MARKETPLACE}`)
     .join("\n");
 
-  return `Instale estas skills do Claude Code (marketplace de Furihata).
+  return `${INTRO}
 
 ${ADD_STEP}
 
 2) Instale as skills (as dependências entram automaticamente):
 ${installLines}
 
-${UPDATE_STEP}`;
+${TEST_STEP}
+
+${UPDATE_FOOTER}`;
 }
 
 // Comandos `/plugin` para instalar um bundle inteiro (uma categoria de uma vez).
 export function generateBundlePrompt(bundle: Bundle): string {
-  return `Instale o pacote "${bundle.name}" (${bundle.label}) do Claude Code.
+  return `${INTRO}
 
 ${ADD_STEP}
 
-2) Instale o pacote — traz todas as skills da categoria:
+2) Instale o pacote "${bundle.name}" — traz todas as skills (${bundle.label}):
    /plugin install ${bundle.name}@${MARKETPLACE}
 
-${UPDATE_STEP}`;
+${TEST_STEP}
+
+${UPDATE_FOOTER}`;
 }
