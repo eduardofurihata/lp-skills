@@ -1,6 +1,6 @@
 ---
 name: merge
-description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Runs a code review of the diff + verifies resolution via the front; if the feature is QA-pending (still in kanban/06-todo) runs /todo until green first; merges into homolog and deletes the branch; comments + transitions the Jira card(s); opens a follow-up card if scope was left over; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
+description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Always runs a code review of the diff; re-verifies resolution via the front only as a safety net — when the dev''s /method QA failed, isn''t documented as passed, or is QA-pending (kanban/06-todo → runs /todo until green first) — and trusts complete, documented, passing /method QA instead of duplicating it; merges into homolog and deletes the branch; comments + transitions the Jira card(s); opens a follow-up card if scope was left over; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
 effort: max
 requires: todo
 argument-hint: "[PR number | NIV-X] | (empty = listar PRs abertos pra homolog)"
@@ -11,7 +11,7 @@ argument-hint: "[PR number | NIV-X] | (empty = listar PRs abertos pra homolog)"
 Revisa os PRs abertos **mirando `homolog`**, **autentica se o card foi de fato resolvido**, mergeia em `homolog`, limpa, atualiza o Jira e — só com teu OK explícito — joga pra `main` (= deploy prod).
 
 ## Iron Law
-> **Precisão > tokens > velocidade.** "O dev disse que tá pronto" não é prova — **autentique você** (review + front). Bug que passa daqui vai pra `homolog` e depois pra prod. Mire a referência #1.
+> **Precisão > tokens > velocidade.** O **code review do diff é SEMPRE teu** — ninguém revisa por você, isso é inegociável. Já o **front-test é rede de segurança, não redo**: se o dev rodou o protocolo `/method` completo e a QA está **documentada e 100% PASSED** (`kanban/09-run-test/<feature>.md`, todos os TCs do card ✅), **confia e segue em frente** — não re-teste o que já foi testado direito (duplicar QA é desperdício). Re-autentica via front **só** quando a QA (1) **falhou**, (2) **não está explícito que passou** (sem relatório / ambíguo / TCs incompletos), ou (3) **tem TODO pendente** (card em `06-todo/`). Bug que passa daqui vai pra `homolog` e depois pra prod — por isso o review é cego-obrigatório e o front-test é calibrado pelo estado da QA. Mire a referência #1.
 >
 > **Mergear não é obrigatório — o `/merge` é um GATE, não uma esteira.** Pode (e às vezes deve) **falhar**: PR com qualidade ruim/inaceitável é **rejeitado e devolvido ao dev**, não empurrado pra dentro. Bloquear lixo é o gate **funcionando**, não falhando. Conserto pontual → corrige na hora; quando "consertar" vira "reimplementar", **rejeita** (Phase 2b).
 
@@ -21,7 +21,7 @@ Revisa os PRs abertos **mirando `homolog`**, **autentica se o card foi de fato r
 - **`homolog → main` SÓ com autorização explícita do usuário, na hora.** Autoridade dita antes ("sou tech lead", "pode mergear sempre") **NÃO** conta — pergunte a CADA release. (Regra herdada do `/method`.)
 
 <HARD-GATE>
-1. NÃO mergeie sem code review limpo + resolução autenticada via front.
+1. NÃO mergeie sem **code review limpo** (sempre teu). A **autenticação via front** é exigida **só** quando a QA do dev falhou / não está explícito que passou / tem TODO pendente — QA `/method` completa e PASSED documentada (`09-run-test`) **dispensa** o re-teste (ver Iron Law).
 2. Card ainda em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → rode o `/todo` até 100% PASSED ANTES de mergear. Sem pular.
 3. NÃO rode `/todo` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (Phase 5), não pra QA.
 4. NÃO faça `homolog → main` sem o usuário autorizar ESTE push explicitamente.
@@ -52,7 +52,8 @@ gh pr list --base homolog --state open
 
 | Estado do feature | Ação |
 |---|---|
-| Em `kanban/10-done/` ou `kanban/11-ship/` | QA já rodou (via `/work`→`/method` ou `/todo`). Seguir pra Phase 2. |
+| Em `10-done`/`11-ship` **com `09-run-test` 100% PASSED** (QA `/method` documentada) | QA já foi feita via front no Step 9 → **confia**. Phase 2 = **só code review**; **pula o front-test** (não duplica QA já feita direito). |
+| Em `10-done`/`11-ship` mas QA **ausente / ambígua / falhada** no `09-run-test` | "Done" sem prova explícita = trata como não-testado → Phase 2 **com** front-test. |
 | Em `kanban/06-todo/` (QA pendente) | **Rodar o `/todo`** pra esse feature até **100% PASSED** (promove pra `10-done`). Só então Phase 2. — *rede de segurança: o dev parou no `/fast` e esqueceu o teste.* |
 | Sem card no kanban (dev trabalhou cru, sem `/method`) | **PARAR e avisar:** sem test cases não dá pra autenticar QA. Perguntar ao usuário como proceder (rodar `/work`-style discovery+QA, ou aceitar review-only sob risco). |
 
@@ -60,7 +61,9 @@ gh pr list --base homolog --state open
 
 ## Phase 2 — Review + Autenticar resolução (loop até limpo **ou** rejeita)
 1. **Code review do diff** (calibre Step 8 do `/method`): `gh pr diff <n>` → revisar cada arquivo — bugs, edge cases, padrões do projeto (`docs/00-context/technical/patterns.md`), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/08-code-review/<feature>.md` se ainda não houver.
-2. **Autenticar a resolução via front:** abrir o app (Playwright MCP) e validar o **`## Como testar`** do card — o que o card pedia **acontece de verdade**? Confirmar para CADA card do PR ("quais cards" foram resolvidos).
+2. **Autenticar a resolução via front — CONDICIONAL (rede de segurança, não redo):**
+   - **PULA** se a QA do `/method` está **documentada e 100% PASSED** (`kanban/09-run-test/<feature>.md`, todos os TCs do card ✅). O dev já provou via front no Step 9 — re-rodar é duplicar trabalho já feito direito. O code review (passo 1) continua valendo: é ele que pega o que os TCs do dev não pegaram.
+   - **FAZ** (abrir o app via Playwright MCP, validar o **`## Como testar`** de CADA card do PR, confirmar que o que ele pedia **acontece de verdade**) **só** quando: a QA **falhou**, **não está explícito que passou** (sem `09-run-test` / ambíguo / TCs incompletos), ou veio de **TODO pendente** que você acabou de rodar no `/todo`.
 3. **Achou problema → decidir CONSERTA ou REJEITA:**
    - **Conserta in-place** (default p/ o reparável): bug pontual, edge case, null-check, desvio de pattern, erro de copy → corrige na branch do PR → **re-review + re-autentica** (qualquer fix invalida o passe). Loop até **zero issues + resolução confirmada** → Phase 3.
    - **Rejeita** (quando o reparo não é review, é reimplementação) → **Phase 2b**. Gatilhos: abordagem fundamentalmente errada; o feature **não faz o que o card pede** e não dá pra ajustar trivial; scope bagunçado / itens não-relacionados que precisam re-split; desastre de segurança/perda de dado; ou o loop de conserto **não converge** (~2–3 rodadas — sinal de PR cru, não de detalhe).
@@ -168,7 +171,8 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 ```
 
 ## Red Flags — STOP
-- "O dev marcou done, mergeio sem autenticar" → NÃO. Autentique via front (Phase 2).
+- "O dev marcou done **sem prova** (`09-run-test` ausente/ambíguo/falhado), mergeio assim mesmo" → NÃO. "Done" sem QA documentada = não-testado → front-test (Phase 2).
+- "A QA `/method` passou 100% e está documentada, mas re-testo tudo no front por via das dúvidas" → NÃO (o oposto). Isso é **duplicar QA já feita direito** → o code review é teu, mas no front é **só seguir em frente**. Front-test é rede de segurança pra QA falha/ausente/pendente, não redo do que o dev já provou no Step 9.
 - "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: roda `/todo` ANTES.
 - "Rodo `/todo` em todos os pendentes de `06-todo`" → NÃO. Só o card do PR. Órfão é cleanup (Phase 5).
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre. Nunca auto-delete.
