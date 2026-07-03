@@ -52,8 +52,8 @@ export function BundleInstall({ counts }: BundleInstallProps) {
               <DialogHeader>
                 <DialogTitle>Pacote {bundle.name}</DialogTitle>
                 <DialogDescription>
-                  {bundle.label} ({counts[bundle.category]} skills). Cole no seu
-                  Claude Code, em qualquer sistema operacional.
+                  {bundle.label} ({counts[bundle.category]} skills). Cole no
+                  prompt do Claude Code (onde você digita, não no terminal).
                 </DialogDescription>
               </DialogHeader>
               <InstallPromptViewer prompt={generateBundlePrompt(bundle)} />
