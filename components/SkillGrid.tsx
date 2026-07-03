@@ -1,15 +1,13 @@
-"use client";
-
 import { SkillCard } from "@/components/SkillCard";
 import type { Skill } from "@/lib/skills";
 
 interface SkillGridProps {
   skills: Skill[];
-  selected: Set<string>;
-  onToggle: (slug: string) => void;
 }
 
-export function SkillGrid({ skills, selected, onToggle }: SkillGridProps) {
+// Vitrine (só leitura) do que vem dentro dos pacotes — não há seleção nem
+// instalação por skill; a instalação é sempre o pacote (ver BundleInstall).
+export function SkillGrid({ skills }: SkillGridProps) {
   if (skills.length === 0) {
     return (
       <div className="rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-12 text-center">
@@ -31,11 +29,7 @@ export function SkillGrid({ skills, selected, onToggle }: SkillGridProps) {
           className="fade-up"
           style={{ animationDelay: `${Math.min(i * 30, 600)}ms` }}
         >
-          <SkillCard
-            skill={skill}
-            selected={selected.has(skill.slug)}
-            onToggle={() => onToggle(skill.slug)}
-          />
+          <SkillCard skill={skill} />
         </li>
       ))}
     </ul>

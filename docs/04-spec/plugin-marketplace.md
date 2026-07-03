@@ -3,6 +3,8 @@
 > **Autonomous Decision Loop:** 2 rounds, 20 decisões, zero ambiguidades.
 > Fontes oficiais: `code.claude.com/docs/en/plugin-marketplaces`, `/plugins`, `/plugins-reference`.
 
+> ⚠️ **ESTADO ATUAL: ver [Round 4](#decisões-round-4--marketplace-de-2-plugins).** O modelo "1 plugin por skill" (Rounds 1–3, decisões 2/4/10/11/12/21–23) foi **substituído** por **2 plugins** (`furi-builder`, `eduzz-builder`) que empacotam as skills. O gatilho: verificação empírica (2026-07-03) de que skill empacotada num plugin **continua invocável bare** (`/method`) — o medo que motivou o "1 plugin por skill" (namespacing quebraria as cross-refs) não se confirmou.
+
 ## Escopo de Plataforma (derivado, não declarado)
 
 - **Não há superfície mobile.** O artefato distribuído são skills do **Claude Code CLI**, que roda em desktop (Windows/Mac/Linux). Não existe app Android/iOS — **nenhum TC mobile**.
@@ -47,6 +49,51 @@
 | 22 | **Gerados pelo mesmo `generate-plugins.mjs`** em `bundles/<name>/.claude-plugin/plugin.json` | Fonte única; deps derivadas das skills da categoria | manter à mão → drift |
 | 23 | **LP surfaça os bundles** (componente `BundleInstall`) + `generateBundlePrompt` | O dev escolhe pacote OU skills individuais na própria LP | só documentar no README → menos descoberto |
 
+## Decisões (Round 4 — marketplace de 2 plugins)
+
+> Substitui as decisões 2, 4, 10, 11, 12, 21, 22 e 23. Motivação: o marketplace com ~21 entradas (1 plugin por skill + 2 agregadores vazios) poluía o `/plugin`; o pedido é **2 plugins**, cada um trazendo suas skills dentro.
+
+| # | Decisão | Justificativa | Referência / Alternativas descartadas |
+|---|---|---|---|
+| 24 | **Invocação bare sobrevive ao empacotamento** — refuta o bloqueio da decisão 2 | Teste empírico (2026-07-03): plugin `furitest` com `skills:["./meths/methtest"]`; `claude -p --plugin-dir … "/methtest"` **e** `"/furitest:methtest"` ambos dispararam a skill | A doc (`skills.md`) só garante a forma namespaced como canônica ("Plugin skills use a `plugin-name:skill-name` namespace"); a forma curta resolve quando **não há ambiguidade** — confirmado rodando |
+| 25 | **Granularidade: 2 plugins** (`furi-builder` = personal, `eduzz-builder` = eduzz), cada um empacotando TODAS as skills da categoria | É o pedido; um `/plugin` limpo (2 entradas, não 21) | (a) 1 plugin/skill (dec. 2) → 21 entradas, a poluição que queremos remover; (b) 1 plugin monolítico → perde o split personal/eduzz |
+| 26 | **Raiz de cada plugin = a pasta da categoria** (`skills/personal`, `skills/eduzz`); `source` do marketplace aponta pra ela; `skills: ["./<slug>", …]` lista as skills | Zero movimentação de pasta; a LP continua lendo `skills/<cat>/<slug>/` (dec. 16 segue válida); install copia só a categoria (não o repo todo) | callstack-agent-skills usa exatamente `source` + `skills:[…]` (padrão real comprovado); `source:"./"` copiaria o Next inteiro (bloat) |
+| 27 | **Sem install por skill** — instala-se o pacote inteiro | Diretriz explícita do dono ("nao instala mais individualmente, o pacote todo mesmo") | manter granularidade por skill exigiria manter 21 plugins |
+| 28 | **Dep cruzada entre pacotes**: `eduzz-builder` → `dependencies:[furi-builder]`, derivada do `requires` (jira/afl usam method/solve, que são personal) | Correção sem duplicar skill; duplicar `method` nos 2 plugins criaria ambiguidade e quebraria o `/method` bare (dec. 24) | (a) duplicar method em eduzz → quebra bare; (b) não declarar → `/jira` referencia `/method` ausente |
+| 29 | **`generate-plugins.mjs` reescrito**: emite 2 `plugin.json` (em `skills/<cat>/.claude-plugin/`) + `marketplace.json` de 2 entradas; **poda** os manifestos por-skill e `bundles/` | Fonte única mantida; o gerador é a autoridade dos artefatos (limpa o legado) | deixar legado no repo → manifesto órfão confunde |
+| 30 | **LP: só vitrine + 2 pacotes** — remove seleção por skill, `StickyInstallBar`, `expandDeps`, `generatePrompt`; `SkillCard`/`SkillGrid` viram só-leitura; `BundleInstall` é a instalação | A instalação passou a ser 2 comandos; seleção por skill não mapeia mais à realidade | manter seleção → gera `/plugin install <skill>@lp-skills` inexistente |
+
+### Formato novo (Round 4) — `skills/<cat>/.claude-plugin/plugin.json`
+```json
+{
+  "name": "eduzz-builder",
+  "description": "…",
+  "author": { "name": "Eduardo Furihata" },
+  "skills": ["./afl", "./jira", "./notion-pull", "./notion-push"],
+  "dependencies": [{ "name": "furi-builder" }]
+}
+```
+(dependencies só quando há dep cruzada; `version` omitido de propósito.)
+
+### Formato novo (Round 4) — `marketplace.json` (2 entradas)
+```json
+{
+  "name": "lp-skills",
+  "owner": { "name": "Eduardo Furihata" },
+  "metadata": { "description": "Skills do Claude Code do Furihata — pessoais e Eduzz." },
+  "plugins": [
+    { "name": "eduzz-builder", "source": "./skills/eduzz", "description": "…", "category": "eduzz" },
+    { "name": "furi-builder", "source": "./skills/personal", "description": "…", "category": "personal" }
+  ]
+}
+```
+
+### Instalação (Round 4)
+- Adicionar: `/plugin marketplace add eduardofurihata/lp-skills`
+- Instalar: `/plugin install furi-builder@lp-skills` e/ou `/plugin install eduzz-builder@lp-skills` (o segundo puxa o primeiro)
+- Invocar: `/method`, `/jira`, … (bare) — `/furi-builder:method` também funciona
+- Atualizar: `/plugin marketplace update`
+
 ## Grafo de Dependências (fonte: frontmatter `requires`)
 
 ```
@@ -63,6 +110,8 @@ Sem deps: `apf, ask, card, chat, chat-out, claude-modes, commit, make-dev, notio
 No plugin.json declara-se só a dep **direta**; o Claude Code resolve transitivo.
 
 ## Artefatos a criar/editar
+
+> ⚠️ Superseded pelo Round 4 (2 plugins). Artefatos/formato atuais na seção Round 4; o abaixo é o registro do modelo 1-plugin-por-skill.
 
 ```
 lp-skills/
@@ -105,6 +154,9 @@ lp-skills/
 ```
 
 ## Instalação (comandos)
+
+> ⚠️ Superseded pelo Round 4 — a instalação atual (por pacote) está em "Instalação (Round 4)". O abaixo é o modelo antigo (install por skill).
+
 - Adicionar: `/plugin marketplace add eduardofurihata/lp-skills` (ou CLI `claude plugin marketplace add eduardofurihata/lp-skills`)
 - Instalar: `/plugin install <skill>@lp-skills` (deps resolvidas)
 - Atualizar: `/plugin marketplace update`
