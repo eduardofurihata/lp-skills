@@ -1,0 +1,15 @@
+{
+  "name": "fast",
+  "description": "Use when developing features rapidly — /fast É o /method rodando do Step 1 ao Step 8 e PARANDO no Code Review.",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ],
+  "dependencies": [
+    {
+      "name": "method"
+    }
+  ]
+}

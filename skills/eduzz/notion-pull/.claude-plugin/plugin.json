@@ -1,0 +1,10 @@
+{
+  "name": "notion-pull",
+  "description": "Use when the user types `/notion-pull <slug>` to trigger a pull on the local pm-forge app (http://localhost:9432).",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ]
+}

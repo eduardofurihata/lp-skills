@@ -1,0 +1,10 @@
+{
+  "name": "make-dev",
+  "description": "Use when the user types /make-dev, runs a freshly-cloned project for the first time, hits port conflicts (EADDRINUSE / \"address already in use\"), needs the project's Makefile updated after gaining…",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ]
+}

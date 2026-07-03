@@ -1,0 +1,10 @@
+{
+  "name": "notion-push",
+  "description": "Use when the user types `/notion-push <slug>` to push local MD edits back to Notion via pm-forge (http://localhost:9432).",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ]
+}

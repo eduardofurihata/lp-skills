@@ -1,0 +1,15 @@
+{
+  "name": "method",
+  "description": "Use when user invokes /method, when starting feature work, or before any code change and `docs/01-problem/` through `docs/04-spec/` lacks artifact for the feature.",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./"
+  ],
+  "dependencies": [
+    {
+      "name": "solve"
+    }
+  ]
+}

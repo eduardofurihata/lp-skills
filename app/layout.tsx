@@ -13,14 +13,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description =
+  "Skills curadas do Claude Code, distribuídas como plugin marketplace — instale em Windows, macOS ou Linux com auto-update.";
+
 export const metadata: Metadata = {
   title: "Claude Code Skills — Furihata",
-  description:
-    "Skills curadas do Claude Code. Selecione, copie o prompt e instale no seu Claude Code com auto-update.",
+  description,
   openGraph: {
     title: "Claude Code Skills — Furihata",
-    description:
-      "Skills curadas do Claude Code. Selecione, copie o prompt e instale no seu Claude Code com auto-update.",
+    description,
     type: "website",
   },
   robots: { index: true, follow: true },

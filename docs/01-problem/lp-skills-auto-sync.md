@@ -1,5 +1,7 @@
 # LP de Skills com Auto-Sync
 
+> **⚠️ Superseded** por `plugin-marketplace` (2026-07-03). O mecanismo de distribuição (symlink em `~/.claude/skills/` + hook `git pull`) foi migrado para o **Claude Code plugin marketplace nativo**, porque o symlink+hook não funciona em todo SO (quebra no Windows). Ver `docs/**/plugin-marketplace.md`. Este thread fica como registro histórico.
+
 ## Problema
 Não existe um canal público para distribuir as skills pessoais do Claude Code do Furihata com auto-update transparente para os usuários finais.
 
