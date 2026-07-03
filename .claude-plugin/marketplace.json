@@ -8,129 +8,15 @@
   },
   "plugins": [
     {
-      "name": "afl",
-      "source": "./skills/eduzz/afl",
-      "description": "Use when working on an AFL (Agents for Life) Jira card — roda o /jira no contexto do AFL, mirando qualidade",
-      "category": "eduzz"
-    },
-    {
-      "name": "apf",
-      "source": "./skills/personal/apf",
-      "description": "Use when measuring functional size in Function Points (PF/FP).",
-      "category": "personal"
-    },
-    {
-      "name": "ask",
-      "source": "./skills/personal/ask",
-      "description": "Use when user invokes /ask to call the AskUserQuestion tool inline during the current task.",
-      "category": "personal"
-    },
-    {
-      "name": "card",
-      "source": "./skills/personal/card",
-      "description": "Use when user invokes /card to create a Jira card on the NIVEE board (personal project) from a short description.",
-      "category": "personal"
-    },
-    {
-      "name": "chat",
-      "source": "./skills/personal/chat",
-      "description": "Use when you want deep analysis and smart answers without any file or system modifications — activates read-only guru mode",
-      "category": "personal"
-    },
-    {
-      "name": "chat-out",
-      "source": "./skills/personal/chat-out",
-      "description": "Use when exiting /chat read-only mode to restore full read/write capabilities without losing conversation context",
-      "category": "personal"
-    },
-    {
-      "name": "claude-modes",
-      "source": "./skills/personal/claude-modes",
-      "description": "Use when setting up or replicating the user's Claude Code launch modes on a machine — terminal commands `claude` (effort max) and `claudew` (ultracode), plus IDE terminal profiles \"Claude\" (max) an…",
-      "category": "personal"
-    },
-    {
-      "name": "commit",
-      "source": "./skills/personal/commit",
-      "description": "Use when user invokes /commit in a git repo to commit current work, with optional override message in Conventional Commits format",
-      "category": "personal"
-    },
-    {
       "name": "eduzz-builder",
-      "source": "./bundles/eduzz-builder",
-      "description": "Bundle — instala todas as skills de trabalho (Eduzz) de uma vez.",
+      "source": "./skills/eduzz",
+      "description": "Skills de trabalho (Eduzz) — /jira, /afl, /notion-push, /notion-pull. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
       "category": "eduzz"
-    },
-    {
-      "name": "fast",
-      "source": "./skills/personal/fast",
-      "description": "Use when developing features rapidly — /fast É o /method rodando do Step 1 ao Step 8 e PARANDO no Code Review.",
-      "category": "personal"
     },
     {
       "name": "furi-builder",
-      "source": "./bundles/furi-builder",
-      "description": "Bundle — instala todas as skills pessoais do Furihata de uma vez.",
-      "category": "personal"
-    },
-    {
-      "name": "jira",
-      "source": "./skills/eduzz/jira",
-      "description": "Use when working on a Jira card — Step 0 (investigação + reprodução) → /method (implementação) → human check → ship.",
-      "category": "eduzz"
-    },
-    {
-      "name": "make-dev",
-      "source": "./skills/personal/make-dev",
-      "description": "Use when the user types /make-dev, runs a freshly-cloned project for the first time, hits port conflicts (EADDRINUSE / \"address already in use\"), needs the project's Makefile updated after gaining…",
-      "category": "personal"
-    },
-    {
-      "name": "merge",
-      "source": "./skills/personal/merge",
-      "description": "Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card b…",
-      "category": "personal"
-    },
-    {
-      "name": "method",
-      "source": "./skills/personal/method",
-      "description": "Use when user invokes /method, when starting feature work, or before any code change and `docs/01-problem/` through `docs/04-spec/` lacks artifact for the feature.",
-      "category": "personal"
-    },
-    {
-      "name": "notion-pull",
-      "source": "./skills/eduzz/notion-pull",
-      "description": "Use when the user types `/notion-pull <slug>` to trigger a pull on the local pm-forge app (http://localhost:9432).",
-      "category": "eduzz"
-    },
-    {
-      "name": "notion-push",
-      "source": "./skills/eduzz/notion-push",
-      "description": "Use when the user types `/notion-push <slug>` to push local MD edits back to Notion via pm-forge (http://localhost:9432).",
-      "category": "eduzz"
-    },
-    {
-      "name": "pr",
-      "source": "./skills/personal/pr",
-      "description": "Use when user invokes /pr to open a GitHub pull request for the current feature branch targeting homolog.",
-      "category": "personal"
-    },
-    {
-      "name": "solve",
-      "source": "./skills/personal/solve",
-      "description": "Use when the user invokes /solve — resolve the requested task at world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality baseline, aiming to make…",
-      "category": "personal"
-    },
-    {
-      "name": "todo",
-      "source": "./skills/personal/todo",
-      "description": "Use when ready to run QA on features queued in kanban/06-todo/ (cards created by /fast, pending front-validation).",
-      "category": "personal"
-    },
-    {
-      "name": "work",
-      "source": "./skills/personal/work",
-      "description": "Use when user invokes /work [NIV-X] to take a NIVEE card from todo to committed-locally — standalone, NOT the Eduzz /jira.",
+      "source": "./skills/personal",
+      "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pr, /merge e mais. Instala todas de uma vez.",
       "category": "personal"
     }
   ]

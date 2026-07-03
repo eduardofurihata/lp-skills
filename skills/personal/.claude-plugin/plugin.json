@@ -1,0 +1,24 @@
+{
+  "name": "furi-builder",
+  "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pr, /merge e mais. Instala todas de uma vez.",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "skills": [
+    "./apf",
+    "./ask",
+    "./card",
+    "./chat",
+    "./chat-out",
+    "./claude-modes",
+    "./commit",
+    "./fast",
+    "./make-dev",
+    "./merge",
+    "./method",
+    "./pr",
+    "./solve",
+    "./todo",
+    "./work"
+  ]
+}
