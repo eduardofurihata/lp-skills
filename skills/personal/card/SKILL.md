@@ -1,6 +1,6 @@
 ---
 name: card
-description: 'Use when user invokes /card to create a Jira card on the NIVEE board (personal project) from a short description. Project-aware light scan to anchor area/component, fills the NIV conventions (tipo "Tarefa", "## Como testar") and returns the card key + URL. Intake only — does not branch, code, or create docs.'
+description: 'Use when user invokes /card to create a Jira card on the NIVEE board (personal project) from a short description. Project-aware light scan to anchor area/component, fills the NIV conventions (tipo "Tarefa", "## Como resolver" com /method + /solve, "## Como testar"), adds it to the active sprint, and returns the card key + URL. Intake only — does not branch, code, or create docs.'
 effort: max
 argument-hint: "[descrição do card / ideia / bug]"
 ---
@@ -21,7 +21,7 @@ Cria um card no board **NIVEE** (projeto `NIV`, Atlassian pessoal) a partir de u
 - **Tipo:** `Tarefa`. Nunca "Task", "Story" ou "Bug" como nome de tipo — no board o tipo é **Tarefa**.
 - **Seção obrigatória:** toda descrição termina com `## Como testar` (passos verificáveis).
 - **Idioma:** português.
-- Card novo nasce no status default (Backlog / A Fazer). Não mover status aqui.
+- Card novo entra **no sprint ativo** por padrão (passo 5), com o status default do board (A Fazer). Não mover status aqui.
 
 ## Fluxo
 
@@ -45,6 +45,7 @@ Um passe **rápido** só pra ancorar — NÃO é o Step 0 do `/work`:
   - O problema/objetivo em linguagem clara (o porquê + contexto).
   - Área/componente provável (do scan) — dá um norte pro `/work`.
   - Critério de pronto, se óbvio.
+  - **`## Como resolver`** — linha explícita e literal: **"Rode `/method` e `/solve` para resolver o problema deste card."** (OBRIGATÓRIO — sempre presente, com esses dois comandos nomeados).
   - **`## Como testar`** — passos verificáveis (OBRIGATÓRIO).
 
 ### 5. Criar no Jira
@@ -53,17 +54,18 @@ Um passe **rápido** só pra ancorar — NÃO é o Step 0 do `/work`:
 project_key: NIV
 issue_type:  Tarefa
 summary:     <título>
-description: <descrição markdown, terminando em ## Como testar>
+description: <markdown com ## Como resolver e terminando em ## Como testar>
 ```
-Se (e só se) o usuário pediu pra já entrar no sprint ativo: `mcp__atlassian__jira_get_agile_boards` → sprint ativo → `mcp__atlassian__jira_add_issues_to_sprint`. **Default: backlog, sem sprint.**
+**Adicionar ao sprint ativo (DEFAULT).** Depois de criar o card: `mcp__atlassian__jira_get_agile_boards` (board NIVEE) → pegar o **sprint ativo** do board → `mcp__atlassian__jira_add_issues_to_sprint` com o card recém-criado. Se o board **não tiver sprint ativo**, deixa no backlog e **avisa no report**.
 
 ### 6. Reportar
 ```
 ✅ Card criado: NIV-XX
    <título>  ·  Tipo: Tarefa  ·  Área: <componente do scan>
+   Sprint: <nome do sprint ativo>   (ou "backlog — board sem sprint ativo")
    URL: <link>
 
-   Trabalhar: /work NIV-XX
+   Resolver: /work NIV-XX  (roda /method + /solve)
 ```
 
 ## Red Flags — STOP
@@ -71,6 +73,8 @@ Se (e só se) o usuário pediu pra já entrar no sprint ativo: `mcp__atlassian__
 - "Vou investigar fundo pra escrever o card perfeito" → NÃO. `/card` é scan **leve**. Investigação/reprodução é o `/work`.
 - "Esqueci o `## Como testar`" → card incompleto. Sempre incluir.
 - "Tipo = Bug / Story / Task" → NÃO. O tipo é **Tarefa**.
-- "Vou criar branch / docs / kanban / mover status" → NÃO. `/card` é só o card remoto, no status default.
+- "Vou criar branch / docs / kanban / mover status" → NÃO. `/card` só cria o card remoto (adicionar ao **sprint ativo** faz parte — passo 5; mover status de workflow, não).
+- "Descrição sem dizer pra usar `/method` e `/solve`" → NÃO. Toda descrição traz o `## Como resolver` com essa instrução literal (passo 4).
+- "Deixei no backlog sem avisar" → NÃO. Default é **sprint ativo**; só cai no backlog se o board não tiver sprint ativo — e aí **avisa no report**.
 - "1 card gigante com 3 entregas" → NÃO. 1 card = 1 entrega; proponha split.
 - "Crio sem checar duplicata" → cheque antes (passo 2).
