@@ -29,16 +29,17 @@ const INTRO =
 const ADD_STEP = `1) Adicione o marketplace (uma vez por máquina):
    /plugin marketplace add ${REPO_SLUG}`;
 
-// Passo 3: ligar o auto-update. Marketplace de terceiro nasce com auto-update
-// DESLIGADO — sem isto, versão nova só entra com update manual. É ação de UI
-// (não tem slash command): /plugin → aba Marketplaces → o marketplace → Enable.
-const AUTOUPDATE_STEP = `3) Ligue o auto-update (pra receber novas versões sozinho):
-   Rode /plugin → aba "Marketplaces" → selecione "${MARKETPLACE}" → "Enable auto-update"`;
+// Passo 3: ligar o auto-update. Marketplace de terceiro nasce DESLIGADO. O jeito
+// declarativo (e que sincroniza entre máquinas, porque vai no settings.json) é
+// setar "autoUpdate": true na entrada do marketplace em extraKnownMarketplaces —
+// é o MESMO campo que o toggle da UI grava. Como o prompt é colado no Claude
+// Code, dá pra pedir pro próprio Claude fazer a edição.
+const AUTOUPDATE_STEP = `3) Ligue o auto-update (novas versões entram sozinhas). Peça ao próprio Claude Code:
+   «no meu ~/.claude/settings.json, na entrada "${MARKETPLACE}" dentro de "extraKnownMarketplaces", adicione "autoUpdate": true (cria a entrada se não existir)»`;
 
-// Passo 4: confirmar que ligou de verdade (o que o usuário deve ver na tela).
-const VERIFY_STEP = `4) Confirme que ativou — na tela do "${MARKETPLACE}" deve aparecer:
-   "Auto-update enabled. Claude Code will automatically update this marketplace and its installed plugins"
-   e a opção passa a ler "Disable auto-update". Se ainda diz "Enable auto-update", não ligou.`;
+// Passo 4: confirmar que ligou (checar o settings.json, ou a tela do /plugin).
+const VERIFY_STEP = `4) Confirme: a entrada "${MARKETPLACE}" no settings.json deve ficar com "autoUpdate": true.
+   (Dá pra ver na UI também: /plugin → aba "Marketplaces" → "${MARKETPLACE}" mostra "Auto-update enabled".)`;
 
 const TEST_STEP =
   "5) Abra uma sessão NOVA do Claude Code (um CLI separado) e teste digitando uma skill do pacote — ex.: /method";
