@@ -36,7 +36,7 @@ const BUILDERS = {
   eduzz: {
     name: "eduzz-builder",
     description:
-      "Skills de trabalho (Eduzz) — /jira, /afl, /notion-push, /notion-pull. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
+      "Skills de trabalho (Eduzz) — /jira, /afl, /notion-push, /notion-pull, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
   },
 };
 
