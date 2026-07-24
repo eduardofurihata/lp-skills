@@ -1,6 +1,6 @@
 ---
 name: merge
-description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Always runs a code review of the diff; re-verifies resolution via the front only as a safety net — when the dev''s /method QA failed, isn''t documented as passed, or is QA-pending (kanban/06-todo → runs /todo until green first) — and trusts complete, documented, passing /method QA instead of duplicating it; merges into homolog and deletes the branch; comments + transitions the Jira card(s); opens a follow-up card if scope was left over; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
+description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Always runs a code review of the diff; re-verifies resolution via the front only as a safety net — when the dev''s /method QA failed, isn''t documented as passed, or is QA-pending (kanban/06-todo → runs /todo until green first) — and trusts complete, documented, passing /method QA instead of duplicating it; merges into homolog and deletes the branch; comments + transitions the Jira card(s); checks the dev''s follow-up ledger (open item = reject, not a card) and opens a follow-up card only for scope the reviewer alone could see; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
 effort: max
 requires: todo
 argument-hint: "[PR number | NIV-X] | (empty = listar PRs abertos pra homolog)"
@@ -57,6 +57,14 @@ gh pr list --base homolog --state open
 | Em `kanban/06-todo/` (QA pendente) | **Rodar o `/todo`** pra esse feature até **100% PASSED** (promove pra `10-done`). Só então Phase 2. — *rede de segurança: o dev parou no `/fast` e esqueceu o teste.* |
 | Sem card no kanban (dev trabalhou cru, sem `/method`) | **PARAR e avisar:** sem test cases não dá pra autenticar QA. Perguntar ao usuário como proceder (rodar `/work`-style discovery+QA, ou aceitar review-only sob risco). |
 
+4. **Gate de Convergência do dev — ledger de follow-ups.** Abrir `kanban/10-done/<feature>.md` e checar a seção `## Follow-ups`:
+
+| Ledger | Ação |
+|---|---|
+| Presente, **zero `ABERTO`** (tudo `RESOLVIDO-*` / `DESCARTADO` com justificativa) | ✅ dev convergiu → segue pra Phase 2. |
+| Presente **com item `ABERTO`** | ❌ **Rejeita** (Phase 2b) — viola a Regra Inviolável 7 do `/method`. Pendência conhecida não vira card: volta pro dev fechar o ciclo. |
+| **Ausente** (card antigo / dev cru) | Não rejeita por si só — trata como não-verificado e **puxa o peso no code review** (Phase 2): o que você achar de ponta solta vale como achado do reviewer. |
+
 > O gate olha **só o card do PR**. Outros cards pendentes em `06-todo/` NÃO são QA aqui — vão pro cleanup (Phase 5).
 
 ## Phase 2 — Review + Autenticar resolução (loop até limpo **ou** rejeita)
@@ -75,7 +83,7 @@ Rejeitar é seguro: nada vai pra `homolog`/prod, branch e PR ficam vivos pro dev
 2. **NÃO** mergeia, **NÃO** apaga a branch — o dev precisa dela pra empurrar os fixes.
 3. **Jira → devolve pro dev:** `jira_get_transitions` → `jira_transition_issue` pro **"Em andamento"** (rework). `jira_add_comment` com o resumo do que reprovou + link do review. Sem `comment` na transição (ADF).
 4. **Kanban → rework:** mover o card (de onde estiver) pra `kanban/07-implementation/<feature>.md` com frontmatter `status: rework` + motivo. Não deixa em `10-done`/`11-ship` (mentiria "pronto"). *(Sem card no kanban — dev cru — pula esta etapa.)*
-5. **Escopo lateral** que apareceu no review (bug à parte, dívida) ainda vira card de follow-up (Phase 4.5) — mas o **core volta pro dev**, não enfia no PR rejeitado.
+5. **Escopo lateral** que apareceu no review (bug à parte, dívida) segue a qualificação da Phase 4.5: ponta que o dev tinha superfície pra ver **volta no request-changes** (é ele que converge); ponta que só o review externo enxerga **vira card de follow-up**. O **core volta pro dev** de qualquer jeito, não enfia no PR rejeitado.
 6. **Reporta** (saída "rejeitado", abaixo) e **encerra** — NÃO segue pra Phase 3+. Sem merge, sem deploy.
 
 ## Phase 3 — Mergear em homolog + limpar branch
@@ -101,7 +109,11 @@ Para CADA card do PR:
 2. **Transição de status** (`jira_get_transitions` → `jira_transition_issue`) pro pós-merge ("Verificar" / "Concluído", conforme o workflow). Sem `comment` na transição (ADF).
 3. **Responder no PR** se houver discussão aberta (`gh pr comment`).
 4. **Kanban:** atualizar `kanban/11-ship/<feature>.md` (frontmatter `merged: homolog`, `merged_at`).
-5. **Follow-up:** o review/autenticação revelou ponta fora de escopo (bug lateral, dívida, melhoria)? → **criar card** seguindo o fluxo do `/card` (`jira_create_issue`, tipo `Tarefa`, `## Como testar`) e linkar ao card original. Não enfiar no PR atual.
+5. **Follow-up (qualificado):** o review/autenticação revelou ponta fora de escopo (bug lateral, dívida, melhoria)? Antes de criar card, decida **de quem é a ponta**:
+   - **Ponta que o dev deixou** — algo que o `/method` dele tinha superfície para ver (tocou no arquivo, o fluxo passa por ali, o ledger de follow-ups do card de done está sujo ou ausente) → **NÃO vira card**. Isso é violação da Regra Inviolável 7 (`method/references/follow-ups.md`): **rejeita o PR** (Phase 2b) e devolve pro dev convergir.
+   - **Ponta que só o review externo enxerga** — impacto cross-PR, conflito com outra entrega, contexto de produção que o dev não tinha → **aí sim vira card**: `/card` (`jira_create_issue`, tipo `Tarefa`, `## Como testar`) linkado ao original. Não enfiar no PR atual.
+
+   > Card de follow-up é **privilégio do reviewer**, nunca saída do dev. Se virar rota de escape do `/method`, o loop de convergência morre.
 
 ## Phase 5 — Cleanup de órfãos (confirm-first)
 Varrer `kanban/06-todo/` e classificar cada card que **não é** o do PR:
@@ -182,4 +194,5 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - "Código tá limpo, mas o feature não faz o que o card pede — mergeio" → NÃO. Resolução não-autenticada = rejeita, não merge.
 - "Pra mergear eu reescrevi metade da implementação" → NÃO. Isso é trabalho do dev. Reescrita ≠ review → rejeita e devolve.
 - "Achei um null-check faltando, então rejeito o PR" → NÃO (o oposto). Conserto pontual é in-place; rejeição é só pra inaceitável/reimplementação. Não vire trigger-happy.
-- "Acho a ponta solta, deixo sem card" → NÃO. Follow-up vira card (Phase 4.5), não some.
+- "Acho a ponta solta, deixo sem card" → NÃO. Ponta solta nunca some: ou **rejeita o PR** (ponta do dev — Regra 7 do `/method`) ou **vira card** (achado só do reviewer). Ver Phase 4.5.
+- "O dev deixou follow-up aberto mas abro card e mergeio" → NÃO. Card de follow-up não lava violação do `/method`. Ledger sujo = **rejeita** e devolve.

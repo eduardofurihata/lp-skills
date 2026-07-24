@@ -168,7 +168,13 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
      b. CADA TC do batch: executar DO ZERO via ferramenta apropriada
      c. PASSED (com screenshot/evidência) ou FAILED (motivo)
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota do motivo.
-     d. Bug → corrigir → ATENÇÃO: qualquer fix invalida o ciclo → RESETE todos os `- [x]` do checklist de QA para `- [ ]` (vai retestar TUDO do zero)
+     d. Bug → CLASSIFICAR (ver `follow-ups.md`):
+        - dentro do escopo documentado → **balde A**: corrigir AGORA. ATENÇÃO: qualquer fix invalida
+          o ciclo → RESETE todos os `- [x]` do checklist de QA para `- [ ]` (vai retestar TUDO do zero)
+        - escopo novo que este trabalho expôs → **balde B**: registrar ABERTO no ledger
+          (`## Follow-ups` do card de to-do). NÃO corrige aqui — vira ciclo /method no Gate de Convergência
+        - pré-existente e não tocado → **balde C**: DESCARTADO + justificativa
+        Na dúvida entre B e C → B. Balde B **nunca** vira "bug conhecido, seguimos".
      e. Todos TCs do batch PASSED → TaskUpdate grupo → completed
   4. Organizar kanban/09-run-test/<tópico>.md
   5. Algum FAILED com fix → volta ao Step 8 (Code Review) → retesta TUDO
@@ -237,8 +243,11 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 - Ratio E == N? ✅ / ❌ — TCs sem screenshot: [listar TC-IDs]
 - Status agregado: **N PASSED**, **0 FAILED**, **0 NOT_RUN**, **0 SKIPPED**, **0 BLOCKED** ✅ / ❌
 - Último ciclo sem mudanças de código? ✅ / ❌
+- Follow-ups detectados no Step 9: **F** — todos classificados no ledger (A/B/C)? ✅ / ❌
 - **Veredicto:** ✅ LIBERADO para Gateway 9 → 10 / ❌ BLOQUEADO — voltar ao Loop e executar pendentes
 ```
+
+> Follow-up de balde B **não bloqueia o Gateway 9 → 10** (o TC da feature passou) — ele bloqueia o **Gate de Convergência** logo depois, na entrada do Step 10. Registrar aqui é o que garante que ele chegue lá.
 
 **❌ BLOQUEADO = PROIBIDO publicar Gateway 9 → 10 e PROIBIDO escrever qualquer resumo / report de conclusão.** Volte ao Loop, execute os TCs pendentes, produza evidência, republique o audit.
 

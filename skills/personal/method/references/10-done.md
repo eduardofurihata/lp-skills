@@ -1,10 +1,13 @@
 # Step 10 — Done (Encerramento)
 
-> **Step terminal.** É o último step do protocolo — **não existe Step 11**. Aqui a feature é movida para `done` (card promovido) e **só então** o trabalho é **commitado** — num único commit — na branch atual. **Ordem é contrato: mover primeiro, commitar por último.**
+> **Step terminal.** É o último step do protocolo — **não existe Step 11**. Aqui a feature é movida para `done` (card promovido) e **só então** o trabalho é **commitado** — num único commit — na branch atual. **Ordem é contrato: convergir primeiro, mover depois, commitar por último.**
+>
+> Terminal **não** quer dizer sem gateway: o Step 10 tem gateway de **entrada** — o **Gate de Convergência** (zero follow-ups abertos). Ele roda ANTES de escrever o done doc, ANTES do `rm` e ANTES do commit.
 
-## Pré-requisito
+## Pré-requisitos (AMBOS)
 
-Gateway 9 → 10 **LIBERADO** (ver `gateways.md`).
+1. Gateway 9 → 10 **LIBERADO** (ver `gateways.md`).
+2. **Gate de Convergência ✅ CONVERGIU** publicado no chat (ver abaixo).
 
 ## Artefato
 
@@ -25,8 +28,26 @@ Gateway 9 → 10 **LIBERADO** (ver `gateways.md`).
   - Run Test: `kanban/09-run-test/<tópico>.md`
 - **Arquivos de código alterados** — lista completa
 - **Status final dos TCs** — **checklist completo por TC** (`- [x] TC-N`), copiado da seção `## Test Cases (QA)` do card de to-do, + contagem total (todos PASSED)
+- **Ledger de Follow-ups final** — tabela completa copiada da seção `## Follow-ups` do card de to-do (todos `RESOLVIDO-NO-STEP` / `RESOLVIDO-POR-CICLO` / `DESCARTADO`, **zero `ABERTO`**), com link do done doc de cada ciclo
 - **Conteúdo do todo incorporado** — tasks completadas do `kanban/06-todo/`
 - **Commit SHA** — hash do commit criado neste step (ver abaixo)
+
+## Gate de Convergência — ANTES de qualquer ação do Step 10
+
+> **O protocolo fecha SECO.** Nem o `rm` do card, nem o commit, nem resumo de conclusão acontecem enquanto houver follow-up aberto. Publique este bloco no chat:
+
+```markdown
+## Gate de Convergência — Follow-ups
+- Itens no ledger: **T** (A: **a** · B: **b** · C: **c**)
+- Ciclos de follow-up executados: **N** — listar (Fn → `kanban/10-done/<f>.md`)
+- Itens **ABERTOS**: **0**
+- Itens novos detectados no último passe: **0** → **passe seco**
+- **Veredicto: ✅ CONVERGIU** / ❌ BLOQUEADO — abertos: [listar Fn]
+```
+
+**❌ BLOQUEADO →** para CADA item aberto, rode o **`/method` COMPLETO** (Step 1→10, com `/solve`, tópico e artefatos próprios) — **sem commitar** (só o ciclo raiz commita) — marque `RESOLVIDO-POR-CICLO` no ledger e **republique o Gate**. Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ o loop continua.
+
+Triagem A/B/C, formato do ledger e racionalizações: `follow-ups.md`.
 
 ## Ações obrigatórias (ORDEM É CONTRATO — mover primeiro, commitar por último)
 
@@ -35,7 +56,9 @@ Gateway 9 → 10 **LIBERADO** (ver `gateways.md`).
 
 ### 1. Mover o card (promover `06-todo` → `10-done`) — PRIMEIRO
 
-**Antes de apagar:** copie a seção `## Test Cases (QA)` (checklist final, tudo `- [x] TC-N`) do card de to-do para dentro do done — é o registro permanente do que foi testado (o card de to-do some, o status sobrevive no done).
+**Antes de apagar:** copie do card de to-do para dentro do done (o card some, o registro sobrevive):
+- a seção `## Test Cases (QA)` — checklist final, tudo `- [x] TC-N`, registro permanente do que foi testado;
+- a seção `## Follow-ups` — ledger final, zero `ABERTO`, registro permanente do que apareceu e como foi resolvido ou por que foi descartado.
 
 Escreva o card de done em `kanban/10-done/<tópico>.md` (com o resumo acima, incluindo o checklist por TC) e **delete** o card da coluna to-do:
 
@@ -59,7 +82,7 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - **NUNCA commite antes de mover o card.** Commitar o código primeiro e só depois mover o card força um segundo commit — exatamente o erro que esta ordem evita.
 - **SHA é nota de bastidor:** o commit já É o registro (está no `git log`). Anotar o SHA no done doc é opcional e **não justifica um segundo commit** só para gravá-lo.
 
-> **Escopo do commit:** só o `/method` completo commita. **`/fast` para no Step 8 (Code Review) — nem chega aqui.** O **`/todo`** faz a promoção do card (`06`→`10`) e grava `tests: passed`, mas **NÃO commita**. Em ambos, o código fica não-commitado para você versionar quando quiser.
+> **Escopo do commit:** só o `/method` completo — e, dentro dele, **só o ciclo RAIZ** — commita. **`/fast` para no Step 8 (Code Review) — nem chega aqui.** O **`/todo`** faz a promoção do card (`06`→`10`) e grava `tests: passed`, mas **NÃO commita**. **Ciclo de follow-up aninhado** roda este Step 10 inteiro (done doc + `rm` do card) **menos o commit** — se ele commitasse, o `git add -A` varreria o código não-commitado da feature-pai para dentro do commit errado. O commit único do ciclo raiz cobre tudo: a feature + todos os ciclos de follow-up (código, docs de todos os tópicos, todos os cards de done, todas as remoções de to-do).
 
 ## Red Flags — PARE (cada uma gera o segundo commit que queremos evitar)
 
@@ -67,12 +90,17 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - "Commito o código, movo o card, e commito o card depois" → NÃO. Mover PRIMEIRO; UM commit no fim.
 - "Preciso gravar o SHA no done doc → commito de novo" → NÃO. O SHA vive no `git log`; não vale um segundo commit.
 - "O código já estava pronto, então commitei lá atrás" → NÃO. Código de steps anteriores espera o step 10 e entra no commit único, junto com o card.
+- "Commito a feature agora e resolvo os follow-ups num commit depois" → NÃO. Convergência vem ANTES do commit. Dois commits é exatamente o que esta ordem elimina.
+- "O ciclo de follow-up terminou, commito ele antes de voltar pra feature" → NÃO. Ciclo aninhado não commita. Um commit, no fim, no ciclo raiz.
 
 ## Checklist Final (step terminal — sem gateway de saída)
 
-- [ ] Done doc referencia todos os artefatos (docs 1-9)
+- [ ] **Gate de Convergência ✅ CONVERGIU** publicado no chat — zero follow-ups `ABERTO`, passe seco confirmado
+- [ ] Cada item de balde **B** fechado por ciclo `/method` próprio (1→10, com `/solve`, sem commit) com done doc linkado
+- [ ] Cada item de balde **C** com justificativa registrada no ledger
+- [ ] Done doc referencia todos os artefatos (docs 1-9) e contém o **ledger de follow-ups final**
 - [ ] Card de `kanban/06-todo/<tópico>.md` deletado (card movido para `10-done`) — **ANTES do commit**
 - [ ] Artefato `kanban/10-done/<tópico>.md` existe com conteúdo substantivo
-- [ ] **UM único commit** na branch atual (Conventional Commits) capturando código + docs (01-09) + card de done + remoção do todo — sem commit adiantado do código, sem commit extra depois
+- [ ] **UM único commit** na branch atual (Conventional Commits) capturando código + docs (01-09) + card de done + remoção do todo + **todos os ciclos de follow-up** — sem commit adiantado do código, sem commit extra depois
 
 Tudo ✅ → feature encerrada. **Fim do protocolo.**

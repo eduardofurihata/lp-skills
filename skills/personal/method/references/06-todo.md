@@ -51,6 +51,25 @@ Além das tasks de implementação, o card de to-do carrega um **checklist de QA
 
 > Parou e vai retomar depois? Abra o checklist: os `- [ ]` restantes são exatamente o que falta rodar.
 
+## Ledger de Follow-ups (semear agora)
+
+O card carrega também o **Ledger de Follow-ups** — a superfície viva onde todo achado fora do escopo documentado é registrado e classificado, do Step 1 até o Step 10. É o que permite o protocolo fechar **seco** (Regra Inviolável 7).
+
+**Semeie agora (Step 6):** crie a seção `## Follow-ups` com o cabeçalho da tabela e **transcreva o que já apareceu nos Steps 1-5** (as linhas "Follow-ups detectados neste step" dos Gateway Checks). Nada apareceu → seção presente e vazia.
+
+```markdown
+## Follow-ups
+
+| # | Achado | Detectado em | Balde | Status | Resolução |
+|---|--------|--------------|-------|--------|-----------|
+```
+
+- **Baldes:** **A** = defeito dentro do escopo documentado → corrige no step; **B** = escopo novo que este trabalho criou/tocou/expôs → ciclo `/method` próprio; **C** = pré-existente e não tocado → `DESCARTADO` com justificativa. Na dúvida entre B e C → **B**.
+- **Nos Steps 7-9:** todo achado entra aqui na hora, classificado. Item `RESOLVIDO-*` ou `DESCARTADO` não reabre.
+- **No Step 10:** o **Gate de Convergência** exige zero itens `ABERTO`; o ledger final é **copiado para `kanban/10-done/<tópico>.md`** antes do card ser deletado.
+
+Regras completas: `follow-ups.md`.
+
 ## Gateway 6 → 7a
 
 - [ ] Tasks atômicas (1 prompt cada)
@@ -58,3 +77,4 @@ Além das tasks de implementação, o card de to-do carrega um **checklist de QA
 - [ ] Dependências mapeadas
 - [ ] Artefato `kanban/06-todo/<tópico>.md` existe com conteúdo substantivo
 - [ ] Seção `## Test Cases (QA)` presente com 1 `- [ ]` por TC do step 5
+- [ ] Seção `## Follow-ups` presente (semeada com os achados dos Steps 1-5, ou vazia)

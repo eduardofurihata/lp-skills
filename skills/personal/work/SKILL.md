@@ -63,7 +63,8 @@ Invoque o **`/method`** (dependência obrigatória). Ele:
 1. chama o **`/solve`** (padrão #1 do mercado) na ativação — é assim que "resolve com /method e /solve" acontece;
 2. roda discovery (1–5) → To Do (6) → Plano (7a) → Codificar (7b) → Code Review (8) → Run Test / QA via front (9) → Done (10);
 3. trabalha **na branch do passo 2** (nunca cria branch), com seus próprios gateways e audits;
-4. fecha no **Step 10**: um único commit local com código + docs + card em `kanban/10-done/`.
+4. **converge os follow-ups antes de fechar:** todo achado fora de escopo vira ciclo `/method` completo (com `/solve`) até o **passe seco** — o card sai sem ponta solta (Regra Inviolável 7);
+5. fecha no **Step 10**: um único commit local com código + docs + card em `kanban/10-done/` — **incluindo os ciclos de follow-up** (ciclo aninhado não commita sozinho).
 
 **Não duplicar nada do `/method` aqui** — ele é o dono do protocolo. `/work` só prepara (branch + card + perguntas) e delega.
 
