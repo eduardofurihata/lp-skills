@@ -16,6 +16,7 @@ argument-hint: "[feature-name]"
 1. NÃO redefina nenhum step aqui. Para CADA step, abra o reference do /method (`skills/method/references/0X-*.md`) e siga ao pé da letra — INCLUSIVE o Step 5 (quantidade de TCs = nota de complexidade 1-10 derivada dos Steps 3-4, teto de 10; ver `05-test-cases.md`). /fast NÃO tem regra de test case própria — nada de ISTQB/12 técnicas/escalas paralelas.
 2. PARE após o Step 8 (Code Review APROVADO, zero mudanças no último passe). NÃO execute Step 9 (Run Test via front) nem Step 10 (Done/commit).
 3. NÃO crie card em `kanban/10-done/`. NÃO delete o card de `kanban/06-todo/`. NÃO commite. Nada disso pertence ao escopo "até o code review".
+4. **CAPTURE follow-ups, NÃO os resolva.** Todo achado fora do escopo entra no **Ledger de Follow-ups** (seção `## Follow-ups` do card `kanban/06-todo/`), classificado A/B/C — igual ao /method (`skills/method/references/follow-ups.md`). Balde A você corrige agora; **balde B fica `ABERTO`** — o **Gate de Convergência** é na entrada do Step 10, que /fast não roda. Quem converge é o **/todo**. Ledger sujo é handoff legítimo do /fast; **NÃO** é desculpa pra fechar nada.
 </HARD-GATE>
 
 ## Iron Law (idêntica à do /method)
@@ -58,11 +59,13 @@ QUALQUER mudança de código invalida o review anterior. O ciclo só encerra com
 
 Como o Step 10 não roda, **o estado final do /fast já é o handoff**:
 
-- `kanban/06-todo/<feature>.md` **PERMANECE** (criado no Step 6, não deletado) — é a fila de QA. Já contém a seção `## Test Cases (QA)` com um `- [ ]` por TC (semeada no Step 6, conforme `06-todo.md`).
-- `kanban/08-code-review/<feature>.md` **existe** (Step 8) — sinaliza ao /todo que o code review já rodou (`[novo]`, não repete).
+- `kanban/06-todo/<feature>.md` **PERMANECE** (criado no Step 6, não deletado) — é a fila de QA. Já contém a seção `## Test Cases (QA)` com um `- [ ]` por TC **e a seção `## Follow-ups`** (ledger), ambas semeadas no Step 6 conforme `06-todo.md`.
+- `kanban/08-code-review/<feature>.md` **existe** (Step 8) — sinaliza ao /todo que o code review já rodou (`[novo]`, não repete). Traz a seção `## Follow-ups Emitidos`.
 - Código fica **não-commitado** na branch atual.
 
-O `/todo` escaneia `kanban/06-todo/`, vê o relatório de review, roda o Step 9 (front) e só então cria o card em `kanban/10-done/` com `tests: passed`.
+O `/todo` escaneia `kanban/06-todo/`, vê o relatório de review, roda o Step 9 (front), **roda o Gate de Convergência** (resolve cada follow-up `ABERTO` com `/method` completo) e só então cria o card em `kanban/10-done/` com `tests: passed`.
+
+> **O ledger atravessa o handoff.** O que o /fast detectou e deixou `ABERTO` é obrigação do /todo fechar. Por isso o ledger vive no card de to-do, não no relatório: o card é o que o /todo consome.
 
 ## Finalizando
 
@@ -72,10 +75,11 @@ Ao aprovar o Step 8, informe:
 Feature "<nome>" — Dev até Code Review completo (/method Steps 1-8).
 Code Review: APROVADO (kanban/08-code-review/<feature>.md)
 Test cases: X ESCRITOS (docs/05-test-cases/), PENDENTES de execução.
+Follow-ups: A resolvidos: <a> | B ABERTOS: <b> | C descartados: <c>  (ledger no card de to-do)
 Fila de QA: kanban/06-todo/<feature>.md (o /todo consome de lá).
 Código: NÃO commitado.
 
-Para validar via front, rode /todo. /fast não roda Step 9 nem commita.
+Para validar via front, rode /todo. /fast não roda Step 9, não converge follow-ups e não commita.
 ```
 
 ## Red Flags — STOP
@@ -89,3 +93,5 @@ Para validar via front, rode /todo. /fast não roda Step 9 nem commita.
 - "Vou pular o code review — é trivial / urgente / CEO pediu" → NÃO. Step 8 é o último gate do /fast. Sem ele, /fast não termina.
 - "Vou fazer Step 8 mental, sem relatório" → NÃO. Step 8 = relatório formal em `kanban/08-code-review/` (ver `08-code-review.md`).
 - "Vou codar sem plano (7a)" → NÃO. 7a antes de 7b, sempre.
+- "Achei ponta solta, mas /fast não converge — deixo sem registrar" → NÃO. /fast não **resolve** follow-up; **registrar é obrigatório**. Fora do ledger = ponta perdida no handoff.
+- "Vou rodar o ciclo /method do follow-up agora pra adiantar" → NÃO. Convergência é na entrada do Step 10, que é do /todo (ou do /method completo). /fast para no 8.

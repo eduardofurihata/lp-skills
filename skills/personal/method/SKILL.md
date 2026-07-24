@@ -42,6 +42,7 @@ Auto-check em cada gateway: *"Um líder do domínio assinaria isto?"* Se não �
 4. **"Trivial / 1 botão / outros já funcionam assim" NÃO é exceção.** Gate Check vale para TODAS as features — "não existe tarefa pequena demais".
 5. **Escopo de plataforma é DERIVADO** (Step 4 + Verificação de Realidade), nunca declarado pelo usuário.
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
+7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve rodando o **`/method` COMPLETO (Step 1→10, com `/solve`)** para ele. Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio do `/merge` (achado de reviewer externo), nunca saída do dev. Ver `references/follow-ups.md`.
 
 Lista completa de racionalizações + contra-argumentos: ver `references/rationalizations.md`.
 
@@ -94,12 +95,16 @@ Antes de qualquer código:
 
 - **1 TaskCreate cobrindo Discovery (Steps 1-5):** "Discovery — <feature>"
 - **1 TaskCreate por step de 6 a 9:** To Do, Plano (7a), Codificar (7b), Code Review, Run Test
+- **1 TaskCreate por ciclo de follow-up:** "Follow-up F<n> — <achado>" (criado quando o item entra no ledger)
 - **1 TaskCreate cobrindo Closeout (Step 10):** "Closeout — <feature>"
 
 `TaskUpdate → in_progress` ao começar cada um, `→ completed` somente quando:
 - **Discovery:** os 5 artefatos existirem e gateways 1→2…4→5 estiverem ✅
 - **Steps 6-9:** artefato do step existir e gateway respectivo ✅
-- **Closeout:** artefato `kanban/10-done/` existir, card de `kanban/06-todo/` **movido (deletado) ANTES do commit**, e **um único commit** na branch atual capturando código + docs + card de done + remoção do todo (mover primeiro, commitar por último — nunca commit → move → commit de novo)
+- **Follow-up:** o ciclo `/method` do item existir em `kanban/10-done/<f>.md` e o ledger marcar `RESOLVIDO-POR-CICLO`
+- **Closeout:** **Gate de Convergência ✅ publicado (zero follow-ups abertos)**, artefato `kanban/10-done/` existir, card de `kanban/06-todo/` **movido (deletado) ANTES do commit**, e **um único commit** na branch atual capturando código + docs + card de done + remoção do todo (mover primeiro, commitar por último — nunca commit → move → commit de novo)
+
+**Closeout NÃO completa com task de follow-up aberta.**
 
 A partir do Step 6 até o 9: 1 TaskCreate = 1 task. Nunca agrupe entre 6 e 9.
 
@@ -121,11 +126,30 @@ Para cada step:
 
 ```
 Implementar (7) → Code Review (8) → Testing (9)
-  ↳ Tudo PASSED sem mudanças de código → Step 10
+  ↳ Tudo PASSED sem mudanças de código → Gate de Convergência → Step 10
   ↳ FAILED ou fix necessário → Fix → volta ao Code Review (8) → Testing (9)
 ```
 
 QUALQUER mudança de código (fix de bug, correção de review) invalida a validação anterior. O ciclo SÓ encerra com testing 100% PASSED e ZERO mudanças no último passe.
+
+## Loop de Follow-ups (Gate de Convergência)
+
+O protocolo fecha **seco**: nada adiado. A **captura** é contínua (todos os steps alimentam o **Ledger de Follow-ups** — seção `## Follow-ups` do card `kanban/06-todo/<tópico>.md`); a **resolução** acontece num único ponto — a **entrada do Step 10**, antes de mover o card e antes do commit.
+
+```
+Step 9 ✅ → GATE DE CONVERGÊNCIA (entrada do Step 10)
+  ↳ Ledger com item ABERTO → /method COMPLETO (1→10, com /solve) para o item
+                             ↳ o ciclo alimenta o MESMO ledger
+                             ↳ ciclo aninhado NÃO commita
+                             ↳ volta ao Gate
+  ↳ Ledger SECO (zero abertos E zero novos no último passe) → Step 10 libera
+```
+
+**Triagem** de cada achado (é o que faz o loop convergir): **A** = defeito dentro do escopo documentado → corrige agora, no step; **B** = escopo novo que este trabalho criou/tocou/expôs → ciclo `/method` próprio; **C** = pré-existente e não tocado → `DESCARTADO` no ledger com justificativa. Na dúvida entre B e C → **B**.
+
+**Só o ciclo raiz commita** — um único commit no fim, cobrindo a feature + todos os ciclos de follow-up.
+
+Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações: `references/follow-ups.md`.
 
 ## Red Flags — Pare Imediatamente Se Pensar/Ouvir
 
@@ -147,6 +171,11 @@ QUALQUER mudança de código (fix de bug, correção de review) invalida a valid
 - "audit pré/pós é redundante com o Gateway, pulo" / "faço mental, não preciso publicar"
 - "rodo os primeiros TCs e audito depois" / "audit combinado (um só)" / "M==N de cabeça"
 - "28 de 30 passaram, o resto é trivial, avanço sem audit pós-execução"
+- "isso vira card depois" / "follow-up pro próximo sprint" / "anoto como dívida"
+- "achei mas tá fora do escopo, deixo registrado e sigo"
+- "resolvo o follow-up direto no código, sem rodar o `/method` pra ele"
+- "sobrou 1 item no ledger, é pequeno, fecho assim mesmo"
+- "marco como C (descartado) pra não travar o Gate"
 
 **Todas significam: PARE. Releia `references/rationalizations.md`. Execute do jeito certo.**
 
@@ -161,6 +190,7 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 
 - `references/rationalizations.md` — tabela única consolidada de todas as racionalizações proibidas + Red Flags completo
 - `references/gateways.md` — todos os critérios de gateway + Gateway 9→10 detalhado
+- `references/follow-ups.md` — Ledger de Follow-ups, triagem A/B/C, Gate de Convergência e o loop até o passe seco
 - `references/inventario-docs.md` — protocolo do inventário inicial
 - `references/01-problema.md` até `references/10-done.md` — detalhamento por step
 

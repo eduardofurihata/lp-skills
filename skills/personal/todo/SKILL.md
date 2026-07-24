@@ -17,6 +17,7 @@ Distinção `[novo]` vs `[legacy]` (decide se roda Step 8 — Code Review):
 NÃO marque test cases como PASSED sem executar via front.
 NÃO avance da execução para Done sem 100% PASSED com ZERO mudanças de código.
 QUALQUER fix de código invalida o ciclo: volta ao Code Review (se legacy) ou re-executa TCs e retesta TUDO.
+NÃO promova para `kanban/10-done/` com follow-up ABERTO no ledger. O /todo faz o Step 10 do /method — logo, roda o **Gate de Convergência** (Phase 4) e resolve cada item aberto com um `/method` COMPLETO (1→10, com `/solve`, sem commit). /fast captura e deixa aberto; **quem converge é o /todo**.
 </HARD-GATE>
 
 ## REGRA FUNDAMENTAL: Precisão > Economia de Tempo ou Tokens
@@ -35,7 +36,8 @@ Crie tasks via TaskCreate para cada item:
 3. **Carregar contexto** — Ler TODOS os docs de referência (steps 1-7)
 4. **Step 8 — Code Review** — Loop até 100% limpo + relatório
 5. **Step 9 — Run Test** — TODOS os TCs via front com screenshot
-6. **Step 10 — Done** — Promover para `kanban/10-done/` (tests: passed) + deletar o card de `kanban/06-todo/`
+6. **Gate de Convergência** — 1 TaskCreate por follow-up `ABERTO`; cada um resolvido com `/method` completo até o **passe seco**
+7. **Step 10 — Done** — Promover para `kanban/10-done/` (tests: passed) + deletar o card de `kanban/06-todo/`
 
 ## Fluxo
 
@@ -53,6 +55,8 @@ digraph todo {
     review [label="Step 8 — Code Review\n(legacy only — loop até limpo)" shape=box];
     testing [label="Step 9 — Run Test\n(TODOS os TCs via front)" shape=box];
     passed [label="100% PASSED\nsem mudanças?" shape=diamond];
+    gate [label="Gate de Convergência\nledger seco?" shape=diamond];
+    cycle [label="/method completo (1→10)\npara o follow-up ABERTO\n(com /solve, sem commit)" shape=box];
     done [label="Phase 4 — Done\n(tests: passed)" shape=box];
     move [label="Promover\n06-todo → 10-done" shape=box];
     more [label="Mais features?" shape=diamond];
@@ -68,7 +72,10 @@ digraph todo {
     review -> testing;
     testing -> passed;
     passed -> review [label="não — fix → re-review (se legacy)"];
-    passed -> done [label="sim"];
+    passed -> gate [label="sim"];
+    gate -> cycle [label="não — item ABERTO"];
+    cycle -> gate [label="ledger atualizado"];
+    gate -> done [label="sim — passe seco"];
     done -> move;
     move -> more;
     more -> select [label="sim"];
@@ -276,7 +283,11 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
         - Screenshot como prova de cada PASSED
      c. PASSED (com screenshot) ou FAILED (motivo detalhado)
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<feature>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota.
-     d. Bug encontrado → corrigir IMEDIATAMENTE → ATENÇÃO:
+     d. Bug encontrado → CLASSIFICAR primeiro (A/B/C — ver method/references/follow-ups.md):
+        - escopo novo que este trabalho expôs → balde B: registrar ABERTO no ledger
+          (`## Follow-ups` do card de to-do). NÃO corrige aqui — vira ciclo /method na Phase 4
+        - pré-existente e não tocado → balde C: DESCARTADO + justificativa
+        - dentro do escopo documentado → balde A: corrigir IMEDIATAMENTE → ATENÇÃO:
         QUALQUER fix invalida o ciclo:
         - RESETE todos os `- [x]` do checklist de QA (`kanban/06-todo/`) para `- [ ]` — vai retestar TUDO
         - `[legacy]`: volta ao Phase 2 (Code Review) → retesta TUDO
@@ -365,17 +376,49 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 
 ## Phase 4 — Done
 
-Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de `kanban/06-todo/` para `kanban/10-done/`.
+Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de `kanban/06-todo/` para `kanban/10-done/` — **depois de convergir o ledger**.
 
-> **Antes de qualquer `rm` do card de to-do:** copie a seção `## Test Cases (QA)` (checklist final, tudo `- [x] TC-N`) para o card de done. O to-do some no `rm`, mas o registro do que foi testado fica no done.
+### Gate de Convergência — BLOQUEANTE (publicar no chat ANTES de promover)
 
-> **/todo NÃO faz commit.** O commit é ação exclusiva do Step 10 no `/method` completo. O /todo promove o card (cria `kanban/10-done/<feature>.md` com `tests: passed`), mas deixa o versionamento (git) para você.
+A Phase 4 é o Step 10 do `/method`, e o Step 10 tem gateway de **entrada**: o ledger de follow-ups (seção `## Follow-ups` do card de to-do, semeada pelo /fast no Step 6) precisa estar **seco**. Publique:
+
+```markdown
+## Gate de Convergência — Follow-ups
+- Itens no ledger: **T** (A: **a** · B: **b** · C: **c**)
+- Ciclos de follow-up executados: **N** — listar (Fn → `kanban/10-done/<f>.md`)
+- Itens **ABERTOS**: **0**
+- Itens novos detectados no último passe: **0** → **passe seco**
+- **Veredicto: ✅ CONVERGIU** / ❌ BLOQUEADO — abertos: [listar Fn]
+```
+
+**❌ BLOQUEADO = PROIBIDO promover, PROIBIDO `rm` do card, PROIBIDO resumo de conclusão.** Para CADA item `ABERTO`:
+
+1. `TaskCreate: "Follow-up F<n> — <achado>"`.
+2. Rode o **`/method` COMPLETO** (Step 1→10, com `/solve`) para o item — tópico e artefatos próprios (`docs/01-problem/<f>.md` … `kanban/10-done/<f>.md`).
+3. **Sem commit** (o /todo não commita; ciclo aninhado também não).
+4. Marque `RESOLVIDO-POR-CICLO` no ledger + link do done doc.
+5. **Republique o Gate.** Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ continua.
+
+Triagem A/B/C e racionalizações: `method/references/follow-ups.md`.
+
+| Racionalização proibida | Realidade |
+|------------------------|-----------|
+| "O /fast que deixou aberto, não é meu problema" | É. /fast captura, **/todo converge**. O card de to-do é o handoff. BLOQUEADO. |
+| "Os TCs passaram, a feature está pronta" | TC verde ≠ ledger seco. São gates diferentes. BLOQUEADO. |
+| "Abro card no Jira pro follow-up e promovo" | Card de follow-up é do `/merge`, nunca saída do dev. BLOQUEADO. |
+| "Sobrou 1 item, é pequeno" | Gate é binário. 1 `ABERTO` = BLOQUEADO. |
+
+### Promover
+
+> **Antes de qualquer `rm` do card de to-do:** copie para o card de done a seção `## Test Cases (QA)` (checklist final, tudo `- [x] TC-N`) **e a seção `## Follow-ups`** (ledger final, zero `ABERTO`). O to-do some no `rm`, mas o registro do que foi testado e do que apareceu fica no done.
+
+> **/todo NÃO faz commit.** O commit é ação exclusiva do Step 10 no `/method` completo. O /todo promove o card (cria `kanban/10-done/<feature>.md` com `tests: passed`) — inclusive os cards de done dos ciclos de follow-up — mas deixa o versionamento (git) para você.
 
 ### Criar o card de done
 
 **`/fast` não cria card de done** (ele para no Step 8). Quem cria `kanban/10-done/<feature>.md` é o `/todo`, agora — após a QA passar. (Antes o /fast criava um done com `tests: pending`; não mais. Por isso o /todo sempre CRIA o done aqui.)
 
-1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados e **checklist `## Test Cases (QA)` com tudo `- [x] TC-N`** (status final, todos PASSED — copiado do card `kanban/06-todo/` ANTES do `rm`):
+1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados, **checklist `## Test Cases (QA)` com tudo `- [x] TC-N`** e o **`## Follow-ups` final** (status final — copiados do card `kanban/06-todo/` ANTES do `rm`):
    ```yaml
    ---
    feature: <nome>
@@ -392,6 +435,7 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
    ## QA (rodado por /todo em <data>)
    - Total TCs: X | PASSED: X | FAILED: 0
    - Evidências: kanban/09-run-test/<feature>.md
+   - Follow-ups: A: <a> resolvidos no step | B: <b> fechados por ciclo /method | C: <c> descartados | ABERTOS: 0
    ```
 
 3. **Deletar o card da coluna to-do:** `rm kanban/06-todo/<feature>.md`
@@ -402,6 +446,7 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
   ```
   Feature "<nome>" — QA completo.
   TCs: X/X PASSED | Status: done, tests: passed
+  Follow-ups: ledger seco (A: <a> | B: <b> ciclos /method | C: <c> descartados | ABERTOS: 0)
   Promovida para kanban/10-done/<feature>.md (card de kanban/06-todo/ removido)
   ```
 
@@ -411,13 +456,17 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
 
 ## Golden Rule
 
-**Encontrou problema? CORRIJA IMEDIATAMENTE.**
+**Encontrou problema? RESOLVA NESTA EXECUÇÃO.**
 
+- Dentro do escopo documentado (balde A) → **CORRIJA AGORA**
+- Escopo novo que este trabalho expôs (balde B) → **ledger `ABERTO`** → ciclo `/method` completo na Phase 4
 - Não documente para depois
 - Não pule para o próximo TC
 - Não "note para review"
 - Não "vou juntar tudo no final"
-- PARE e CORRIJA AGORA
+- Não "abro card de follow-up"
+
+**Nada sai desta execução como pendência.** A única saída de um achado é: corrigido, fechado por ciclo, ou descartado com justificativa.
 
 ## Red Flags — STOP e Revise
 
@@ -428,3 +477,7 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
 - "O fix foi pequeno, não precisa re-test" → PRECISA. QUALQUER fix volta à execução completa.
 - "tsc passou, está testado" → tsc verifica tipos, não comportamento.
 - "BLOCKED — não consigo acessar" → Resolva o impedimento. Pergunte ao usuário se necessário.
+- "TCs passaram, promovo — o ledger eu vejo depois" → NÃO. Gate de Convergência é bloqueante da Phase 4.
+- "Follow-up foi o /fast que deixou, não é meu" → NÃO. /fast captura, **/todo converge**.
+- "Resolvo o follow-up direto no código" → NÃO. Escopo novo = `/method` completo (1→10, com `/solve`).
+- "Vou commitar os ciclos de follow-up" → NÃO. /todo não commita, nem os ciclos.

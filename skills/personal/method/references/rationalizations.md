@@ -103,6 +103,24 @@
 | "Faço um review preliminar / dry-run enquanto os docs são escritos" | Review sem spec prévia = review circular (código comparado consigo mesmo). "Preliminar" é retrofit disfarçado. BLOQUEADO. |
 | "Versão light do protocolo como compromisso" / "faço compacto" | **Não existe versão light.** "Compacto" = "cumprimento técnico mínimo" = violação disfarçada pela Iron Law. O protocolo é atômico. BLOQUEADO. |
 
+## Categoria 10 — Adiar achados (follow-ups)
+
+> Regra Inviolável 7: **o protocolo fecha SECO.** Detalhes em `follow-ups.md`.
+
+| Frase | Realidade |
+|-------|-----------|
+| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` completo AGORA, no Gate de Convergência. Card de follow-up é privilégio do `/merge` (achado de reviewer externo), nunca saída do dev. BLOQUEADO. |
+| "Deixo anotado no relatório e sigo" | Relatório **documenta**; ledger **obriga a resolver**. Anotar sem entrar no ledger = a ponta escapou. BLOQUEADO. |
+| "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio 1→10. BLOQUEADO. |
+| "É escopo novo, YAGNI manda não fazer" | YAGNI mata complexidade **especulativa**, não achado **real** que este trabalho expôs. Isso é B. BLOQUEADO. |
+| "O ciclo de follow-up achou outro follow-up, isso não acaba nunca" | Acaba: balde C fecha o pré-existente/não relacionado e o ledger impede reabertura. O que não fecha é porque é real. BLOQUEADO. |
+| "Marco como C (descartado) pra não travar o Gate" | Classificação errada de propósito = fraude documental. Tocou no arquivo / mudou o comportamento / a feature depende disso → é **B**. Na dúvida → B. BLOQUEADO. |
+| "Documento a pendência no done doc, fica rastreado" | Documentar ≠ resolver. Done doc com pendência = protocolo não encerrou. BLOQUEADO. |
+| "Sobrou 1 item no ledger, é pequeno, fecho assim mesmo" | Gate é binário. 1 `ABERTO` = BLOQUEADO. |
+| "Commito a feature e resolvo os follow-ups num commit depois" | Convergência vem ANTES do commit. Dois commits é exatamente o que o Step 10 elimina. BLOQUEADO. |
+| "O ciclo de follow-up é pequeno, rodo uma versão light do /method" | Não existe versão light (Categoria 9). O ciclo roda 1→10 completo, com `/solve`. BLOQUEADO. |
+| "Bug conhecido, seguimos e o usuário decide depois" | Achado real de balde B não vira "bug conhecido". Vira ciclo. BLOQUEADO. |
+
 ---
 
 ## Red Flags — Frases-Gatilho que Obrigam STOP
@@ -135,5 +153,11 @@ Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PA
 - "aceito se você prometer escrever depois"
 - "review preliminar / dry-run"
 - "versão light / compacta do protocolo"
+- "isso vira card depois" / "follow-up pro próximo sprint" / "anoto como dívida"
+- "achei mas tá fora do escopo, deixo registrado e sigo"
+- "resolvo o follow-up direto, sem rodar o /method pra ele"
+- "sobrou 1 item no ledger, fecho assim mesmo"
+- "marco como descartado pra não travar o Gate"
+- "bug conhecido, seguimos"
 
 **Todas essas frases significam: PARE. Reative o protocolo. Execute do jeito certo.**

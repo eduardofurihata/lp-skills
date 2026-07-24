@@ -9,8 +9,9 @@
 3. **Bloqueante.** ❌ → volta ao step atual e corrige. Nunca "pula pra arrumar depois".
 4. **Atômico.** Não existe bypass granular. Pular 1 critério = pular o gateway. Ou 100% ou BLOQUEADO.
 5. **Universal.** "Não se aplica nesta feature" não é opção. Justifique no veredicto ou cumpra.
+6. **Sem ponta solta.** Todo Gateway Check declara os follow-ups detectados no step. O que apareceu vai para o **Ledger de Follow-ups** classificado (A/B/C) — nunca fica só na cabeça, nunca vira "depois". Ver `follow-ups.md`.
 
-> Racionalizações para pular Gateway → ver `rationalizations.md` categoria 1 e 3.
+> Racionalizações para pular Gateway → ver `rationalizations.md` categoria 1, 3 e 10.
 
 ## Formato Padrão (publicar em chat)
 
@@ -20,8 +21,11 @@
 - [ ] Critério específico 1 do gateway (ver tabela)
 - [ ] Critério específico 2
 - [ ] Critério específico 3
+- **Follow-ups detectados neste step:** N (registrados no ledger, classificados A/B/C) / nenhum
 - **Veredicto:** ✅ LIBERADO / ❌ BLOQUEADO — motivo: [listar critério falhado]
 ```
+
+**A linha de follow-ups é obrigatória em TODO Gateway Check** — é o mecanismo de captura do loop de convergência. Detectou e não registrou = a ponta escapou. Nos Steps 1-5 o card de to-do ainda não existe: anote na linha do gateway e **semeie o ledger no Step 6**.
 
 ## Tabela de Critérios (TODOS obrigatórios por linha)
 
@@ -33,11 +37,12 @@
 | **3 → 4** | Use Cases derivados (ator × fluxo × estado); tabela de assinaturas única (sem duplicata); seção `## Verificação de Realidade` com cada passo do happy path mapeado a arquivo:linha OU 🔨 gap |
 | **4 → 5** | Autonomous Decision Loop fechou com **zero gaps**; cada decisão tem justificativa + referência (padrão do projeto > big app > boa prática); escopo de plataforma (web/android/ios) **derivado** aqui, não declarado |
 | **5 → 6** | Nota de complexidade (1-10) publicada e derivada dos Steps 3-4; **nº de TCs == nota e ≤ 10** (diverge → BLOQUEADO); **os TCs contemplam 100% dos UCs (Step 3) + detalhes do Step 4** (somatório das linhas `Cobre`, nada descoberto); nenhum TC redundante (significância); cada TC com **Bug único** + observável no front; Android E iOS = execução no Step 9, não TCs extras |
-| **6 → 7a** | Tasks atômicas (1 prompt cada); cada task rastreável; dependências mapeadas |
+| **6 → 7a** | Tasks atômicas (1 prompt cada); cada task rastreável; dependências mapeadas; seção `## Follow-ups` semeada no card (com o que apareceu nos Steps 1-5, ou vazia) |
 | **7a → 7b** | Plano autocontido (contexto + estratégia + mapa TC→código + checklist); i18n planejado se projeto tem i18n; referência de big apps citada para decisões UI/UX |
 | **7b → 8** | Todas tasks do checklist marcadas; tsc/lint passam; "tocou = refatora" executado por arquivo aberto; TCs de regressão criados para features dependentes impactadas |
-| **8 → 9** | Veredicto **APROVADO** em 8b; zero issues pendentes; PR existente atualizado (se houver) |
+| **8 → 9** | Veredicto **APROVADO** em 8b; zero issues pendentes; achados fora de escopo do review classificados no ledger (A/B/C); PR existente atualizado (se houver) |
 | **9 → 10** | Ver detalhado abaixo — TODOS TCs PASSED via front, evidência 1:1, último ciclo SEM mudanças de código |
+| **Gate de Convergência** | Entrada do Step 10, ANTES de mover o card e do commit — ledger sem item `ABERTO` e zero itens novos no último passe (**passe seco**). Ver `follow-ups.md`. |
 
 ## Gateway 9 → 10 (Detalhado — o mais crítico)
 
@@ -100,6 +105,10 @@ Apenas estes casos dispensam Gate Check. **Qualquer dúvida → Gate Check.**
 
 Em dúvida: Gate Check. Custo é baixo, regressão é cara.
 
-## Step 10 é terminal (sem gateway de saída)
+## Step 10 é terminal (sem gateway de saída) — mas tem gateway de ENTRADA
 
-Não existe Step 11. O Step 10 (Done) não tem gateway de saída — seu encerramento usa o **Checklist Final** de `10-done.md`: card movido (`kanban/06-todo/` deletado) + **commit** na branch atual com SHA registrado. Esse commit vale **só para o `/method` completo** (`/fast` e `/todo` não commitam).
+Não existe Step 11. O Step 10 (Done) não tem gateway de saída — seu encerramento usa o **Checklist Final** de `10-done.md`: card movido (`kanban/06-todo/` deletado) + **commit** na branch atual com SHA registrado. Esse commit vale **só para o `/method` completo** (`/fast`, `/todo` e ciclos de follow-up aninhados não commitam).
+
+O que o Step 10 **tem** é um gateway de **entrada**: o **Gate de Convergência**. Antes de mover o card e antes do commit, o ledger de follow-ups precisa estar **seco** — zero itens `ABERTO`, zero itens novos no último passe. Item aberto → roda `/method` completo (1→10, com `/solve`) para ele → volta ao Gate. Bloco a publicar e regras completas: `follow-ups.md` e `10-done.md`.
+
+**Publicar o Checklist Final sem o Gate de Convergência ✅ no chat = violação automática.**
