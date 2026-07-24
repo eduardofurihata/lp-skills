@@ -17,6 +17,7 @@
     "./merge",
     "./method",
     "./pr",
+    "./proto",
     "./solve",
     "./todo",
     "./work"
