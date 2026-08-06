@@ -42,6 +42,8 @@ GATE DE CONVERGÊNCIA (entrada do Step 10)
 
 **Critério de B** ("criou, tocou ou expôs") é o mesmo do *tocou = refatora* do Step 7b / `/solve`. Não é doutrina nova — é a extensão dela para além do arquivo aberto.
 
+**Violação de princípio é achado como qualquer outro.** Duplicação, responsabilidade misturada, abstração especulativa, acoplamento indevido (`principios.md`) entram na MESMA triagem: no código desta feature ou em arquivo que você abriu → **A**, corrige agora; exposta/agravada por este trabalho em código adjacente → **B**; pré-existente e intocada → **C** com justificativa. **YAGNI não é fundamento para C** — "não vou mexer porque não preciso" é exatamente o escape que a regra abaixo proíbe.
+
 **Na dúvida entre B e C → B.** Custo de um ciclo a mais é baixo; ponta solta em produção é cara.
 
 **Proibido usar C como escape.** "Isso já estava quebrado antes" só vale se este trabalho **não** passou por ali. Tocou no arquivo, mudou o comportamento, ou a feature depende daquilo → é B.

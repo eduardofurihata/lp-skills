@@ -145,6 +145,12 @@ REPETIR até 100% limpo:
      - Consistência com codebase?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - Regra "tocou = refatora" seguida?
+     - **Princípios, UM A UM e POR NOME** (`skills/method/references/principios.md`):
+       · SRP (uma responsabilidade, >40 linhas, lógica+UI juntos, camadas)
+       · DRY (duplicou o que já existe? § 3.1 do plano respeitado?)
+       · KISS (dá pra fazer com menos?)
+       · YAGNI (entrou algo sem UC? § 3.2 do plano furado?)
+       · Law of Demeter / acoplamento / direção de dependências
   6. Problema encontrado → corrigir IMEDIATAMENTE → voltar ao 1
   7. Loop até ZERO issues — NÃO aceitar "bom o suficiente"
 ```
@@ -171,6 +177,16 @@ REPETIR até 100% limpo:
 
 ## Análise de Segurança
 Input validation | Auth | Dados sensíveis | Injection vectors
+
+## Análise de Qualidade (por princípio — `principios.md`)
+| Princípio | Veredicto | Evidência / o que foi corrigido |
+|---|---|---|
+| SRP (responsabilidade única, camadas) | ✅/⚠️ | |
+| DRY (duplicação, reúso) | ✅/⚠️ | |
+| KISS (complexidade) | ✅/⚠️ | |
+| YAGNI (especulação) | ✅/⚠️ | |
+| Law of Demeter / acoplamento | ✅/⚠️ | |
+(linha em branco = princípio não revisado)
 
 ## Veredicto Final
 - Status: APROVADO / REQUER correções
@@ -370,6 +386,10 @@ NUNCA "Verified via code" — execute via FRONT com screenshot
 NUNCA "Fix was trivial, doesn't need re-test" — QUALQUER fix invalida o ciclo (legacy: volta Phase 2; novo: re-executa Phase 3)
 NUNCA batch fixes — corrija CADA bug IMEDIATAMENTE ao encontrar
 NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
+NUNCA workaround pra fazer o TC passar — duplicar lógica, regra de negócio no
+      componente, `if` especial do cenário de teste: isso viola os princípios
+      (`principios.md`) e é FAILED disfarçado. Todo fix é código e obedece
+      SRP · DRY · KISS · YAGNI · LoD, igual ao resto.
 ```
 
 ---

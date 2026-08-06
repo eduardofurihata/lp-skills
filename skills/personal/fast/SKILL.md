@@ -16,7 +16,8 @@ argument-hint: "[feature-name]"
 1. NÃO redefina nenhum step aqui. Para CADA step, abra o reference do /method (`skills/method/references/0X-*.md`) e siga ao pé da letra — INCLUSIVE o Step 5 (quantidade de TCs = nota de complexidade 1-10 derivada dos Steps 3-4, teto de 10; ver `05-test-cases.md`). /fast NÃO tem regra de test case própria — nada de ISTQB/12 técnicas/escalas paralelas.
 2. PARE após o Step 8 (Code Review APROVADO, zero mudanças no último passe). NÃO execute Step 9 (Run Test via front) nem Step 10 (Done/commit).
 3. NÃO crie card em `kanban/10-done/`. NÃO delete o card de `kanban/06-todo/`. NÃO commite. Nada disso pertence ao escopo "até o code review".
-4. **CAPTURE follow-ups, NÃO os resolva.** Todo achado fora do escopo entra no **Ledger de Follow-ups** (seção `## Follow-ups` do card `kanban/06-todo/`), classificado A/B/C — igual ao /method (`skills/method/references/follow-ups.md`). Balde A você corrige agora; **balde B fica `ABERTO`** — o **Gate de Convergência** é na entrada do Step 10, que /fast não roda. Quem converge é o **/todo**. Ledger sujo é handoff legítimo do /fast; **NÃO** é desculpa pra fechar nada.
+4. **PRINCÍPIOS valem em TODOS os steps que /fast roda (1-8).** SOLID/SRP, DRY, KISS, YAGNI e Law of Demeter são cobrados pela lente de cada step (`skills/method/references/principios.md`) e **declarados na linha obrigatória de todo Gateway Check**. Inclui as seções § 3.1 (Reúso antes de criar) e § 3.2 (O que NÃO vamos construir) no plano do 7a, e a `## Análise de Qualidade` por princípio no relatório do Step 8. /fast não tem versão relaxada disso.
+5. **CAPTURE follow-ups, NÃO os resolva.** Todo achado fora do escopo entra no **Ledger de Follow-ups** (seção `## Follow-ups` do card `kanban/06-todo/`), classificado A/B/C — igual ao /method (`skills/method/references/follow-ups.md`). Balde A você corrige agora; **balde B fica `ABERTO`** — o **Gate de Convergência** é na entrada do Step 10, que /fast não roda. Quem converge é o **/todo**. Ledger sujo é handoff legítimo do /fast; **NÃO** é desculpa pra fechar nada.
 </HARD-GATE>
 
 ## Iron Law (idêntica à do /method)
@@ -93,5 +94,7 @@ Para validar via front, rode /todo. /fast não roda Step 9, não converge follow
 - "Vou pular o code review — é trivial / urgente / CEO pediu" → NÃO. Step 8 é o último gate do /fast. Sem ele, /fast não termina.
 - "Vou fazer Step 8 mental, sem relatório" → NÃO. Step 8 = relatório formal em `kanban/08-code-review/` (ver `08-code-review.md`).
 - "Vou codar sem plano (7a)" → NÃO. 7a antes de 7b, sempre.
+- "/fast é rápido, os princípios eu aplico na versão final" → NÃO. **Não existe versão final depois** — o /todo roda QA, não redesign. O que sair torto do /fast é o que vai pro merge. Princípios em todos os steps 1-8.
+- "Pulo o § 3.1/§ 3.2 do plano, é burocracia" → NÃO. São os dois portões de DRY e YAGNI, e são critério do gateway 7a→7b.
 - "Achei ponta solta, mas /fast não converge — deixo sem registrar" → NÃO. /fast não **resolve** follow-up; **registrar é obrigatório**. Fora do ledger = ponta perdida no handoff.
 - "Vou rodar o ciclo /method do follow-up agora pra adiantar" → NÃO. Convergência é na entrada do Step 10, que é do /todo (ou do /method completo). /fast para no 8.

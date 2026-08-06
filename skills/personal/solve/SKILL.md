@@ -19,18 +19,23 @@ Resolva mirando ser a **referência #1 do mercado** — no calibre dos **big pop
 
 Qualidade vem antes de esforço, tempo ou tokens. A complexidade necessária para chegar nesse nível é requisito, não obstáculo. Genérico ou mediano = falha.
 
-## Princípios de engenharia (inegociáveis)
+## Princípios de engenharia (inegociáveis — em TUDO, o tempo todo)
 
-Nível #1 é também no código, não só no resultado visível:
+Nível #1 é também no código, não só no resultado visível. E não é fase: valem em cada decisão, cada arquivo, cada artefato — do primeiro rascunho ao último review.
 
 - **SOLID** — incluindo **Single Responsibility**: cada módulo/classe/função faz UMA coisa e a faz bem.
-- **DRY** — zero duplicação de lógica; uma única fonte de verdade.
+- **DRY** — zero duplicação de lógica; uma única fonte de verdade. Antes de criar, **procure** (grep) — reutilizar/estender > recriar.
 - **KISS** — a solução mais simples que atinge o nível #1; simplicidade ≠ mediocridade.
 - **YAGNI** — não construa o que não é necessário agora; sem complexidade especulativa.
+- **Law of Demeter** — objeto só fala com vizinhos diretos; sem `a.b.c.d.method()`, sem dependência circular.
 
 **Tocou = melhora (regra do escoteiro).** Ao mexer em qualquer arquivo, aplique estes princípios ao código que já está lá: identificou duplicação, responsabilidade misturada, naming ruim ou complexidade desnecessária → corrija ali mesmo. Deixe o que tocou no nível #1, nunca no nível em que encontrou — sem sair refatorando escopo não relacionado (foco/YAGNI).
 
-KISS/YAGNI matam a complexidade *desnecessária*; a complexidade *necessária* para o nível #1 continua sendo requisito.
+KISS/YAGNI matam a complexidade *desnecessária*; a complexidade *necessária* para o nível #1 continua sendo requisito. E **YAGNI nunca é desculpa para entregar menos do que foi pedido** nem para ignorar achado real.
+
+**Auto-check antes de entregar** (junto com "um líder do domínio assinaria isto?"): *duplicou algo que já existia? criou abstração que ninguém pediu? alguma unidade ficou com duas responsabilidades? dava pra fazer mais simples sem cair de nível?*
+
+> Rodando dentro do `/method`: a lente de cada step, a linha obrigatória do Gateway Check e as racionalizações estão em `method/references/principios.md` — mesma doutrina, cobrada step a step.
 
 ## PARE se pensar
-"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer"
+"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "copio e adapto, é mais rápido" · "deixo preparado pro dia que precisar" · "o arquivo já estava ruim, não fui eu"

@@ -223,6 +223,15 @@ PROCEDIMENTO (ao iniciar testes via front):
 - **NUNCA marque PASSED apenas com tsc** — tsc verifica tipos, não comportamento.
 - **Qualquer fix de código** → fix invalida review → volta ao Step 8 → depois retesta TUDO no Step 9.
 
+## Princípios neste step (`principios.md`)
+
+O Step 9 não escreve feature — mas escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de "fazer o TC passar", nasce o remendo.
+
+- **Todo fix obedece os princípios.** Fix é código: SRP, DRY, KISS, YAGNI e LoD valem igual. Não existe "fix rápido só pra passar".
+- **Workaround que faz o TC passar violando os princípios é FAILED disfarçado.** Duplicar lógica pra contornar, enfiar regra de negócio no componente, `if` especial pro cenário do teste — o TC até fica verde, a feature fica pior. Marque FAILED e conserte de verdade.
+- **Fix → volta ao Step 8**, que revisa esse fix contra a lista de princípios como qualquer outro código. Sem atalho.
+- **KISS na investigação:** o fix mais simples que resolve a causa — não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
+
 ## Resultado de TC — Binário
 
 - **PASSED** = resultado esperado atingido + evidência (screenshot/dump)
@@ -258,6 +267,7 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 | "Marco os 2 faltantes como PASSED e documento depois" | NÃO. Sem evidência = NOT_RUN. BLOQUEADO. |
 | "Reporto parcial enquanto os últimos rodam" | NÃO. Audit ✅ antes de QUALQUER report. BLOQUEADO. |
 | "Publico Gateway sem Audit, audit é só formalidade" | NÃO. Audit é pré-requisito formal do Gateway. BLOQUEADO. |
+| "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principios.md`). BLOQUEADO. |
 
 ## Gateway 9 → 10
 

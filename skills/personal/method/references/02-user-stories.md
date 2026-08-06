@@ -29,8 +29,16 @@ Isso vira requisito. Inclua TODAS as personas afetadas (identificadas no Step 1)
 - Como admin, quero ver o histórico de pagamentos falhados para dar suporte.
 ```
 
+## Princípios neste step (`principios.md`)
+
+- **SRP** — 1 story = 1 necessidade de 1 persona. Story com "e também" são duas stories disfarçadas de uma.
+- **DRY** — mesma necessidade em duas personas = **uma** story com os dois atores, não duas gêmeas que vão divergir na manutenção.
+- **YAGNI** — toda story rastreia a uma persona identificada no Step 1. Persona nova aparecendo aqui = ou o Step 1 está incompleto (volte) ou a story é especulação (fora).
+- **KISS** — linguagem de usuário, sem solução técnica embutida. "Quero um botão que chame o endpoint X" não é story.
+
 ## Gateway 2 → 3
 
 - [ ] Stories cobrem todas as personas do Step 1
 - [ ] Formato "Como X, quero Y para Z" aplicado a cada story
 - [ ] Artefato `docs/02-user-stories/<tópico>.md` existe com conteúdo substantivo
+- [ ] **Princípios declarados** na linha do Gateway Check (SRP · DRY · YAGNI · KISS pela lente acima)

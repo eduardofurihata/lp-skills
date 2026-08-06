@@ -20,6 +20,15 @@ Lista de tasks com checkboxes. **Cada task = uma unidade resolvível em um promp
 - Dependências entre tasks mapeadas
 - Ordem de execução óbvia
 
+## Princípios neste step (`principios.md`)
+
+A lista de tasks é a primeira forma concreta da arquitetura — o que estiver torto aqui vira código torto no 7b.
+
+- **SRP** — 1 task = 1 responsabilidade resolvível em 1 prompt. Task que precisa de "e depois" é duas tasks.
+- **DRY** — task que recria algo que o projeto já tem deve nascer como task de **reúso**: "estender `X` para cobrir Y" > "criar novo Y". A checagem é grep, não memória.
+- **YAGNI** — toda task rastreia a um UC (Step 3) ou TC (Step 5). Task sem origem = escopo inventado → fora (ou vira achado no ledger, se for real).
+- **KISS** — descrição na linguagem do que muda, não do como interno.
+
 ## Exemplo
 
 ```markdown
@@ -78,3 +87,5 @@ Regras completas: `follow-ups.md`.
 - [ ] Artefato `kanban/06-todo/<tópico>.md` existe com conteúdo substantivo
 - [ ] Seção `## Test Cases (QA)` presente com 1 `- [ ]` por TC do step 5
 - [ ] Seção `## Follow-ups` presente (semeada com os achados dos Steps 1-5, ou vazia)
+- [ ] Toda task rastreia a UC/TC (YAGNI) e task que recria o existente virou task de **reúso** (DRY)
+- [ ] **Princípios declarados** na linha do Gateway Check

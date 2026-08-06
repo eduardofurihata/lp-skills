@@ -15,6 +15,7 @@ Pega um card do board **NIVEE** e leva até o **commit local** na feature branch
 ## Iron Law
 
 > **Precisão > tokens > velocidade.** Mire ser a **referência #1 do mercado** (padrão do `/solve`, que o `/method` carrega na ativação). "É simples, pulo" = a violação.
+> Os princípios de engenharia (**SRP · DRY · KISS · YAGNI · LoD**) vêm junto e valem em **todos** os steps, não só no código — lente por step em `method/references/principios.md`. Card "pequeno" não relaxa nenhum deles.
 
 ## Argument parsing
 

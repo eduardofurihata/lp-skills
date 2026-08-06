@@ -28,7 +28,14 @@ requires: solve
 
 **Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual e sem merge para `main` sem autorização (regras acima).
 
-Os princípios de engenharia (**SOLID/SRP, DRY, KISS, YAGNI**, Law of Demeter) são inegociáveis e estão detalhados no Step 7b (`references/07-implementation.md`) — não duplicados aqui. Valem para o código que você **escreve E o que toca**: identificou onde um princípio cabe melhor → aplique ali mesmo ("tocou = refatora", Step 7b), elevando o que encontra ao nível #1. KISS/YAGNI matam a complexidade *desnecessária*; a complexidade *necessária* para o nível #1 continua sendo requisito.
+### Princípios de engenharia — regime, não fase
+
+Os princípios (**SOLID/SRP, DRY, KISS, YAGNI**, Law of Demeter) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única, com a **lente de cada step** e as racionalizações proibidas: **`references/principios.md`** (não duplicados aqui — DRY vale para o protocolo também).
+
+- **Todo Gateway Check publica a linha de princípios** (`- **Princípios (SRP · DRY · KISS · YAGNI · LoD):** ✅ aplicados — <o que a lente deste step cobrou>`). Sem a linha, o gateway não foi publicado — mesma régua da linha de follow-ups.
+- Valem para o que você **escreve E o que toca**: princípio cabe melhor ali → aplique ("tocou = refatora", Step 7b), elevando o que encontra ao nível #1.
+- **KISS/YAGNI matam a complexidade *desnecessária*; a *necessária* para o nível #1 continua sendo requisito.** YAGNI nunca é desculpa para entregar menos que o UC pede nem para descartar achado real (isso é balde B).
+- Cobrar só no 7b é tarde: a complexidade especulativa nasce no **Spec (4)** e no **Plano (7a)** e chega no código como fato consumado.
 
 Auto-check em cada gateway: *"Um líder do domínio assinaria isto?"* Se não → não está pronto.
 
@@ -43,6 +50,8 @@ Auto-check em cada gateway: *"Um líder do domínio assinaria isto?"* Se não �
 5. **Escopo de plataforma é DERIVADO** (Step 4 + Verificação de Realidade), nunca declarado pelo usuário.
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve rodando o **`/method` COMPLETO (Step 1→10, com `/solve`)** para ele. Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio do `/merge` (achado de reviewer externo), nunca saída do dev. Ver `references/follow-ups.md`.
+
+8. **Princípios valem em TODO step — não só no código.** SOLID/SRP, DRY, KISS, YAGNI e Law of Demeter são cobrados do Step 1 ao 10, cada um pela lente do step (`references/principios.md`), e **declarados na linha obrigatória de todo Gateway Check**. "Princípio é coisa de código", "aplico tudo no 7b", "está implícito" = BLOQUEADO.
 
 Lista completa de racionalizações + contra-argumentos: ver `references/rationalizations.md`.
 
@@ -176,6 +185,9 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "resolvo o follow-up direto no código, sem rodar o `/method` pra ele"
 - "sobrou 1 item no ledger, é pequeno, fecho assim mesmo"
 - "marco como C (descartado) pra não travar o Gate"
+- "princípio (SOLID/DRY/KISS/YAGNI) é coisa de código, aqui é doc" / "aplico tudo no 7b, lá é o lugar"
+- "deixo a abstração pronta, é só um arquivinho a mais" / "duplicar é mais rápido que entender o que já existe"
+- "publico o gateway sem a linha de princípios, está implícito"
 
 **Todas significam: PARE. Releia `references/rationalizations.md`. Execute do jeito certo.**
 
@@ -188,6 +200,7 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 
 ## Arquivos de Referência
 
+- `references/principios.md` — **fonte única** dos princípios (SOLID/SRP, DRY, KISS, YAGNI, LoD), lente por step, linha obrigatória do gateway e racionalizações
 - `references/rationalizations.md` — tabela única consolidada de todas as racionalizações proibidas + Red Flags completo
 - `references/gateways.md` — todos os critérios de gateway + Gateway 9→10 detalhado
 - `references/follow-ups.md` — Ledger de Follow-ups, triagem A/B/C, Gate de Convergência e o loop até o passe seco

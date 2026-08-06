@@ -20,6 +20,13 @@ REPETIR até 100% limpo:
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - Regra "tocou = refatora" do 7b seguida?
+     - **Princípios, UM A UM e POR NOME** (`principios.md` — a MESMA lista contra a qual o 7b escreveu):
+       · **SRP** — arquivo/função/componente faz uma coisa? >40 linhas sem extrair? lógica+UI juntos?
+       · **DRY** — lógica que já existe em shared/lib/components foi duplicada? (grep, não memória)
+       · **KISS** — dá pra fazer o mesmo com menos? abstração que só complica?
+       · **YAGNI** — entrou algo que nenhum UC exige? o § 3.2 do plano foi furado sem registro?
+       · **LoD / acoplamento** — `a.b.c.d`? dependência circular? direção `api ↔ web` violada?
+       · **Camadas** — lógica de negócio em controller/componente?
      - **Nível referência #1:** está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"? ("Um líder do domínio assinaria isto?")
   6. Problema encontrado → CLASSIFICAR e agir:
      - dentro do escopo documentado (docs 01-04) → **balde A**: corrigir IMEDIATAMENTE → voltar ao 1
@@ -57,8 +64,18 @@ O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer a
 ## Análise de Segurança
 Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 
-## Análise de Qualidade
-Duplicação | Complexidade | Naming | Consistência | Nível vs. referência #1 do mercado (big pop tech apps)
+## Análise de Qualidade (por princípio — `principios.md`)
+| Princípio | Veredicto | Evidência / o que foi corrigido |
+|---|---|---|
+| SRP (responsabilidade única, camadas) | ✅/⚠️ | |
+| DRY (duplicação, reúso do § 3.1) | ✅/⚠️ | |
+| KISS (complexidade) | ✅/⚠️ | |
+| YAGNI (especulação, § 3.2 respeitado) | ✅/⚠️ | |
+| Law of Demeter / acoplamento | ✅/⚠️ | |
+| Naming + consistência com o codebase | ✅/⚠️ | |
+| Nível vs. referência #1 (big pop tech apps) | ✅/⚠️ | |
+
+Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio não revisado.
 
 ## Follow-ups Emitidos
 | # | Achado | Balde (A/B/C) | Status | Destino |
@@ -86,6 +103,8 @@ Nenhum? → "nenhum follow-up emitido neste review".
 
 - [ ] Veredicto **APROVADO** em 8b
 - [ ] Zero issues pendentes (balde A)
+- [ ] **`## Análise de Qualidade` preenchida por princípio** (SRP · DRY · KISS · YAGNI · LoD · naming · nível #1) — nenhuma linha em branco
+- [ ] **Princípios declarados** na linha do Gateway Check
 - [ ] Achados fora de escopo classificados no ledger (B ou C) — seção `## Follow-ups Emitidos` preenchida
 - [ ] PR existente atualizado (se houver)
 - [ ] Artefato `kanban/08-code-review/<tópico>.md` existe com conteúdo substantivo

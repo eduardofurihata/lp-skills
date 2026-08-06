@@ -30,6 +30,16 @@ O entregável não é uma tela. É uma **escolha**.
 
 Não commita. Não cria docs nem kanban — isso é o `/method`, depois da escolha.
 
+## Princípios de engenharia — valem aqui também
+
+Protótipo descartável não é desculpa para código torto: a versão escolhida vira a base do `/method`, e o que estiver ruim vai junto.
+
+- **DRY** — as 3 versões compartilham o que já existe no projeto (DS, hooks, utils). Nada de copiar o componente da tela original 3× "porque é temporário": o que é comum às versões sai de um lugar só; o que é específico nasce dentro da pasta da própria versão.
+- **SRP** — cada versão em sua pasta, sem tocar a rota original nem o código compartilhado. Componente burro + hook de dados, não um arquivão.
+- **YAGNI** — 3 versões da tela pedida. Não invente feature nova, config, flag ou "modo" que ninguém pediu para diferenciá-las.
+- **KISS** — a diferença entre as versões é de **proposta** (hierarquia, fluxo, densidade), não de complexidade técnica.
+- Detalhe: `method/references/principios.md`.
+
 ## PARE se pensar
 
 "as 3 ficaram parecidas, mas cada uma tem seu charme" · "só um ajustinho nesse componente compartilhado" · "mobile depois" · "uso os breakpoints padrão da lib, todo projeto usa" · "protótipo pode ter botão morto e sem estado vazio" · "a tela já é assim, então mantenho" · "invento uma cor só pra essa versão" · "commito pra não perder"
