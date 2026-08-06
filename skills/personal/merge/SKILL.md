@@ -1,6 +1,6 @@
 ---
 name: merge
-description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Always runs a code review of the diff; re-verifies resolution via the front only as a safety net — when the dev''s /method QA failed, isn''t documented as passed, or is QA-pending (kanban/06-todo → runs /todo until green first) — and trusts complete, documented, passing /method QA instead of duplicating it; merges into homolog and deletes the branch; comments + transitions the Jira card(s); checks the dev''s follow-up ledger (open item = reject, not a card) and opens a follow-up card only for scope the reviewer alone could see; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
+description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Always runs a code review of the diff; re-verifies resolution via the front only as a safety net — when the dev''s /method QA failed, isn''t documented as passed, or is QA-pending (kanban/06-todo → runs /todo until green first) — and trusts complete, documented, passing /method QA instead of duplicating it; merges into homolog and deletes the branch (remote AND local); comments + transitions the Jira card(s); checks the dev''s follow-up ledger (open item = reject, not a card) and opens a follow-up card only for scope the reviewer alone could see; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
 effort: max
 requires: todo
 argument-hint: "[PR number | NIV-X] | (empty = listar PRs abertos pra homolog)"
@@ -97,11 +97,23 @@ git checkout <branch> && git fetch origin && git merge origin/homolog   # RESOLV
 git push origin <branch>                            # atualiza o PR
 
 # mergeável e (re-)autenticada:
-gh pr merge <n> --merge --delete-branch             # merge commit (padrão do histórico) + apaga a branch
-git checkout homolog && git pull --ff-only          # traz o merge pro homolog local
+gh pr merge <n> --merge --delete-branch             # merge commit (padrão do histórico) + apaga a REMOTA
+git checkout homolog && git pull --ff-only          # traz o merge pro homolog local (e libera a branch p/ delete)
+
+# === apagar a LOCAL — passo OBRIGATÓRIO, não "se sobrar tempo" ===
+git branch -d <branch>                              # -d recusa se houver commit não mergeado (é o safety net)
+git fetch origin --prune                            # limpa o remote-tracking morto (origin/<branch>)
+
+# verificação (as duas listagens têm que vir VAZIAS):
+git branch --list <branch>; git ls-remote --heads origin <branch>
 ```
 > **Nunca mergear branch atrás/conflitada com homolog:** atualizar (`merge origin/homolog`) + resolver + re-autenticar (Phase 2) primeiro.
-> Branch remota apagada pelo `--delete-branch`. Apagar a local também se existir: `git branch -d <branch>`.
+
+**Limpeza da branch = local E remota. As duas, sempre.** O `--delete-branch` do `gh` só mata a remota; a local fica pra trás e vira lixo que confunde o próximo `/work` (branch morta com o mesmo nome, sem upstream, indistinguível de trabalho em andamento).
+- `git branch -d` **falha se você estiver nela** — por isso o `git checkout homolog` vem antes, não depois.
+- Se o `-d` reclamar de "not fully merged" → **PARE**. Tem commit que não entrou no merge; investigue (`git log origin/homolog..<branch>`) e reporte. **Nunca** troque por `-D` pra calar o aviso.
+- Merge feito via REST API (fallback do `gh pr merge` com "EOF") **não apaga nada**: aí as duas deleções são suas — `git push origin --delete <branch>` + `git branch -d <branch>`.
+- Sem PR (commit direto em `homolog`, Phase 0): mesma regra, se existir branch local da feature.
 
 ## Phase 4 — Responder + mover card(s) + follow-up
 Para CADA card do PR:
@@ -166,7 +178,7 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - Cards:    NIV-X[, NIV-Y]  →  <status pós-merge>
 - QA:       <já estava verde | rodei /todo: X/X PASSED>
 - Review:   limpo (kanban/08-code-review/<feature>.md)
-- Merge:    homolog ✓  ·  branch deletada ✓
+- Merge:    homolog ✓  ·  branch deletada: remota ✓ + local ✓
 - Follow-up: <NIV-Z criado | nenhum>
 - Cleanup:  <N órfãos removidos | nenhum>
 - main:     <NÃO (fica em homolog) | SIM — deployado>
@@ -190,6 +202,7 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre. Nunca auto-delete.
 - "O usuário já disse que eu posso mergear pra main" → NÃO vale pra sempre. Pergunte a CADA `homolog→main`.
 - "Fix pequeno no review, não re-testo" → NÃO. Qualquer fix → re-review + re-autentica.
+- "O `--delete-branch` já apagou a branch" → apagou **só a remota**. A local **também** sai (`git branch -d`, depois do `checkout homolog`) + `fetch --prune`. Fechar o `/merge` com branch local morta pendurada = incompleto.
 - "O loop de conserto não fecha, sigo reescrevendo no review" → NÃO. ~2–3 rodadas sem convergir = PR cru → REJEITA e devolve (Phase 2b).
 - "Código tá limpo, mas o feature não faz o que o card pede — mergeio" → NÃO. Resolução não-autenticada = rejeita, não merge.
 - "Pra mergear eu reescrevi metade da implementação" → NÃO. Isso é trabalho do dev. Reescrita ≠ review → rejeita e devolve.
