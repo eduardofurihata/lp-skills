@@ -20,7 +20,9 @@ A AI resolve cada decisão usando (em ordem de prioridade):
 1. **Padrões do projeto** — código existente, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
 2. **Big apps como referência** — big pop tech apps / líderes do mesmo domínio
 3. **Boas práticas de mercado** — padrões consagrados de engenharia de alto nível
-4. **Princípios de engenharia** — SOLID, Clean Architecture, OWASP, performance, acessibilidade, escalabilidade
+4. **Princípios de engenharia** — SOLID/SRP, DRY, KISS, YAGNI, Law of Demeter (`principios.md`), Clean Architecture, OWASP, performance, acessibilidade, escalabilidade
+
+> Os princípios não são só o desempate nº 4: eles **filtram** o resultado dos níveis 1-3. Uma decisão que vem de "big app faz assim" mas viola YAGNI (nenhum UC exige) ou DRY (o projeto já tem esse mecanismo) **não passa** — volta para "alternativas descartadas".
 
 ## Autonomous Decision Loop
 
@@ -46,6 +48,8 @@ REPETIR até zero gaps:
      - Decisão tomada (clara, direta)
      - Justificativa (por que esta é a melhor escolha)
      - Referência (padrão do projeto / big app / princípio)
+     - **UC que a exige** (Step 3) — sem UC, a decisão é especulativa (YAGNI) → vai para descartadas
+     - **Já existe no projeto?** (DRY) — mecanismo equivalente encontrado → a decisão é REUSAR/ESTENDER, não criar
      - Alternativas descartadas (o que foi considerado e por que saiu)
 
   4. RE-ANALISAR (do zero) — Com decisões tomadas, releia TUDO:
@@ -86,9 +90,23 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 
 "Não tenho certeza do melhor approach" **NÃO** é motivo para parar. Resolva pela hierarquia e documente.
 
+## Princípios neste step (`principios.md`)
+
+**Este é o step onde a arquitetura é decidida — e onde YAGNI é MAIS BARATO.** Uma abstração recusada aqui custa uma linha; recusada no Step 8 custa reescrever o que já foi codado.
+
+- **YAGNI** — cada decisão declara o **UC que a exige**. Sem UC → não entra, vai para "alternativas descartadas" com o motivo. Camada, flag, config, tabela ou abstração "pro futuro" = especulação.
+- **DRY** — antes de decidir criar, procure: o projeto já resolve isso? (grep + `patterns.md` + CLAUDE.md). Se sim, a decisão é **reusar/estender**, e isso fica escrito.
+- **SRP** — as fronteiras de módulo/camada saem daqui: quem é dono de quê, o que é service, o que é UI, o que é shared. Fronteira mal desenhada aqui vira o "service que faz tudo" no 7b.
+- **KISS** — entre duas soluções que atingem o nível #1, ganha a mais simples. Complexidade só se paga com requisito, nunca com elegância.
+- **Law of Demeter / acoplamento** — decisões de integração declaram a direção da dependência (`shared → api/web` ok; `api ↔ web` proibido).
+
 ## Gateway 4 → 5
 
 - [ ] Autonomous Decision Loop fechou com **zero gaps**
 - [ ] Cada decisão com justificativa + referência + alternativas descartadas
+- [ ] **Cada decisão declara o UC que a exige** (YAGNI) — sem UC, foi para descartadas
+- [ ] **Reúso verificado antes de criar** (DRY) — decisões que o projeto já resolve viraram "reusar/estender"
+- [ ] Fronteiras de módulo/camada explícitas (SRP) + direção de dependências declarada
 - [ ] Escopo de plataforma derivado (não declarado)
 - [ ] Artefato `docs/04-spec/<tópico>.md` existe com conteúdo substantivo
+- [ ] **Princípios declarados** na linha do Gateway Check

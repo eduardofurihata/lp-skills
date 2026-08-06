@@ -123,6 +123,25 @@
 
 ---
 
+## Categoria 11 — Princípios de engenharia (SOLID/SRP, DRY, KISS, YAGNI, LoD)
+
+> Fonte única dos princípios e da lente de cada step: `principios.md`. Eles valem do Step 1 ao 10 e são declarados na linha obrigatória de TODO Gateway Check.
+
+| Frase | Realidade |
+|-------|-----------|
+| "Princípio é coisa de código, aqui é doc" | Doc duplicado, story empilhada e UC agrupado são a MESMA falha — só que mais barata de corrigir. BLOQUEADO. |
+| "Aplico tudo no 7b, lá é o lugar" | No 7b a complexidade especulativa já foi decidida no Spec (4) e no Plano (7a); você só implementa o erro. BLOQUEADO. |
+| "Deixo a abstração pronta, é só um arquivinho a mais" | YAGNI: sem UC (Step 3) que exija, não entra. Vai para "o que NÃO vamos construir" (§ 3.2 do plano). BLOQUEADO. |
+| "Duplicar é mais rápido que entender o que já existe" | DRY: procure primeiro (grep em shared/lib/components/hooks). Duplicata é dívida com juros — e o § 3.1 do plano existe pra isso. BLOQUEADO. |
+| "Ficou genérico demais, mas é elegante" | KISS: elegância que nenhum UC pediu é complexidade. BLOQUEADO. |
+| "YAGNI, então não faço o que o UC pede" | Inversão. YAGNI mata **especulação**, não requisito nem achado real (balde B). BLOQUEADO. |
+| "Simplifiquei, ficou bom o suficiente" | KISS ≠ mediocridade. O piso é o nível #1 do `/solve`. BLOQUEADO. |
+| "O arquivo já estava ruim, não fui eu" | Tocou = refatora. Abriu para editar, é seu. BLOQUEADO. |
+| "Já que estou aqui, refatoro o projeto inteiro" | O oposto: foco/YAGNI. Só o que você tocou; o resto é balde C (ou B, se este trabalho expôs). BLOQUEADO. |
+| "Publico o gateway sem a linha de princípios, está implícito" | Implícito = inexistente, igual ao gateway silencioso. BLOQUEADO. |
+| "Dupliquei a lógica pro TC passar, limpo depois" | Workaround que viola princípio é **FAILED disfarçado** (Step 9). BLOQUEADO. |
+| "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |
+
 ## Red Flags — Frases-Gatilho que Obrigam STOP
 
 Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PARE e releia este arquivo**:
@@ -159,5 +178,9 @@ Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PA
 - "sobrou 1 item no ledger, fecho assim mesmo"
 - "marco como descartado pra não travar o Gate"
 - "bug conhecido, seguimos"
+- "princípio é coisa de código, aqui é doc" / "aplico tudo no 7b"
+- "deixo a abstração pronta, é só um arquivinho" / "duplicar é mais rápido"
+- "publico o gateway sem a linha de princípios"
+- "workaround só pra esse TC passar, limpo depois"
 
 **Todas essas frases significam: PARE. Reative o protocolo. Execute do jeito certo.**

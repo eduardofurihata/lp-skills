@@ -29,6 +29,23 @@
 - Ordem de tasks (de 06-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
 - **Referência big apps:** como as big pop tech apps / líderes do domínio resolvem este problema de UX?
 - **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? Linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é LEI.
+- **Responsabilidade por arquivo (SRP):** para CADA arquivo a criar/modificar, uma frase — o que ele faz. Não coube em uma frase → o arquivo está fazendo duas coisas.
+
+## 3.1 Reúso antes de criar (DRY) — OBRIGATÓRIO
+Resultado do grep em `packages/shared/`, `src/lib/`, `src/components/ui/`, `src/hooks/` (e equivalentes do projeto):
+
+| Preciso de | Já existe? | Decisão |
+|---|---|---|
+| <capacidade> | `caminho/arquivo.ts` | reutilizar / estender / **criar (por quê nada serve)** |
+
+**Arquivo novo só entra nesta tabela com a justificativa de por que o existente não serve.** "Não procurei" não é resposta.
+
+## 3.2 O que NÃO vamos construir (YAGNI) — OBRIGATÓRIO
+Abstrações, camadas, flags, configs e generalizações que foram **consideradas e descartadas** por não ter UC (Step 3) que as exija:
+
+- <coisa descartada> — descartada porque nenhum UC pede; se aparecer demanda, entra depois.
+
+Seção vazia é suspeita: significa que nada foi cogitado, ou que tudo que foi cogitado entrou.
 
 ## 4. Mapa de Test Cases → Código
 - Para CADA TC: qual código atende, edge cases, validações necessárias
@@ -61,14 +78,17 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 
 ### Práticas Obrigatórias
 
-**Arquitetura (SOLID, Clean Architecture):**
+**Arquitetura — os princípios na íntegra: `principios.md` (fonte única).** Aqui é onde eles têm limiar numérico e viram checklist **por arquivo aberto**:
+
 - **SRP:** cada arquivo/classe/função faz UMA coisa. >40 linhas → extraia helper. Componente mistura lógica+UI → separe em hook+componente.
 - **Separação de camadas:** controller=HTTP, service=lógica, componente=UI. Lógica de negócio NUNCA no controller/componente.
-- **Baixo acoplamento, alta coesão:** módulos injetáveis, independentes. Sem dependências circulares.
+- **Baixo acoplamento, alta coesão:** módulos injetáveis, independentes. Sem dependências circulares. Direção: `shared → api/web` ok; `api ↔ web` proibido.
 - **KISS:** 5 linhas > 50 linhas.
-- **YAGNI:** APENAS o que o plano especifica. Zero abstrações especulativas. 3 linhas similares > abstração prematura.
-- **DRY:** confirme que não existe em shared/lib/components antes de criar novo.
+- **YAGNI:** APENAS o que o plano especifica — e o plano já declarou o que NÃO seria construído (§ 3.2). Zero abstrações especulativas. 3 linhas similares > abstração prematura.
+- **DRY:** confirme que não existe em shared/lib/components antes de criar novo — a tabela do § 3.1 é o contrato; achou algo que ela não previu, atualize o plano (ele é vivo durante o 7b).
 - **Law of Demeter:** objeto só fala com vizinhos diretos. Evite `a.b.c.d.method()`.
+
+> Desvio do que o plano decidiu em § 3.1/§ 3.2 é **decisão nova**: registre no plano (que é vivo em 7b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
 
 **Refatoração Obrigatória (tocou = refatora):**
 
@@ -134,10 +154,17 @@ Para CADA arquivo alterado:
 - [ ] Plano autocontido (contexto + estratégia + mapa TC→código + checklist)
 - [ ] i18n planejado se projeto tem i18n
 - [ ] Referência de big apps citada para decisões UI/UX
+- [ ] **§ 3.1 Reúso antes de criar preenchido** (DRY — grep feito; arquivo novo com justificativa)
+- [ ] **§ 3.2 O que NÃO vamos construir preenchido** (YAGNI)
+- [ ] Responsabilidade única declarada por arquivo do plano (SRP)
 - [ ] Artefato `kanban/07-implementation/<tópico>.md` existe com conteúdo substantivo
+- [ ] **Princípios declarados** na linha do Gateway Check
 
 ### 7b → 8
 - [ ] Todas tasks do checklist marcadas
 - [ ] tsc/lint passam
+- [ ] **Checklist de princípios percorrido por arquivo aberto** (SRP >40 linhas · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD) — `principios.md`
 - [ ] "tocou = refatora" executado por arquivo aberto
+- [ ] Desvios de § 3.1/§ 3.2 registrados no plano (não em silêncio)
 - [ ] TCs de regressão criados em `docs/05-test-cases/` para features dependentes impactadas
+- [ ] **Princípios declarados** na linha do Gateway Check

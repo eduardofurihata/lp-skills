@@ -31,8 +31,16 @@ Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Nã
 - **Resultado**: [estado final ou erro]
 ```
 
+## Princípios neste step (`principios.md`)
+
+- **SRP** — 1 UC = 1 combinação (ator × fluxo × estado). Agrupar "porque é parecido" destrói a rastreabilidade que os Steps 5 e 9 dependem.
+- **DRY** — tabela de assinaturas **única**, sem duplicata (já é critério do gateway). Dois UCs com o mesmo fluxo e estados diferentes compartilham a descrição, não a copiam.
+- **YAGNI** — todo UC rastreia a uma story do Step 2. Fluxo que nenhuma story pede não vira UC — vira achado (ledger), se for real.
+- **KISS** — fluxo em passos de usuário, sem código. UC não é pseudo-implementação.
+
 ## Gateway 3 → 4
 
 - [ ] Toda user story do Step 2 tem UC(s) derivado(s)
 - [ ] Para cada story: happy path + alternativos + erros + todos os atores cobertos (nada omitido)
 - [ ] Artefato `docs/03-use-cases/<tópico>.md` existe com conteúdo substantivo
+- [ ] **Princípios declarados** na linha do Gateway Check (SRP · DRY · YAGNI · KISS pela lente acima)

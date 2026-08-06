@@ -61,6 +61,13 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > A linha **Cobre** é o que torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC e todo detalhe do Step 4 tem que aparecer ao menos uma vez.
 
+## Princípios neste step (`principios.md`)
+
+- **SRP** — 1 TC = **1 bug único**. Denso (atravessa vários UCs) não é o mesmo que difuso: o TC pode cobrir 4 UCs, mas falha por **um** motivo nomeável.
+- **DRY** — o filtro de significância É o DRY dos testes: TC que não puxa cobertura nova duplica outro. Delete e reaproveite o slot.
+- **YAGNI** — teto de 10 e `nº TCs == nota`. Não invente TC "pra ficar completo"; não crie TC de plataforma (execução ≠ TC novo).
+- **KISS** — passos executáveis por outra pessoa sem contexto seu, resultado observável no front.
+
 ## Gateway 5 → 6
 
 - [ ] **Nota de complexidade (1-10) publicada** no chat, derivada dos Steps 3-4
@@ -69,3 +76,4 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 - [ ] Nenhum TC redundante (filtro de significância aplicado)
 - [ ] Cada TC profissional, com bug único + resultado observável no front
 - [ ] Artefato substantivo
+- [ ] **Princípios declarados** na linha do Gateway Check (SRP · DRY · YAGNI · KISS pela lente acima)

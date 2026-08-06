@@ -30,8 +30,16 @@ Fluxo de checkout finaliza com erro 500 quando o método é PIX. Implementado h�
 - Suporte (volume de tickets 3× maior)
 ```
 
+## Princípios neste step (`principios.md`)
+
+- **KISS** — 1 frase. Não coube? você ainda não entendeu o problema; não compense com parágrafo.
+- **YAGNI** — o problema é o que **existe e foi relatado**, não o adjacente que você imaginou junto. Problema inventado aqui vira feature especulativa lá na frente.
+- **DRY** — o Inventário de Docs achou arquivo que já cobre este domínio? **Atualize esse**, não crie um paralelo (`inventario-docs.md`).
+- **SRP** — 1 doc = 1 problema. Dois problemas distintos = dois tópicos, dois fluxos de `/method`.
+
 ## Gateway 1 → 2
 
 - [ ] Problema em **1 frase clara**
 - [ ] Quem é afetado identificado
 - [ ] Artefato `docs/01-problem/<tópico>.md` existe com conteúdo substantivo
+- [ ] **Princípios declarados** na linha do Gateway Check (KISS · YAGNI · DRY · SRP pela lente acima)
