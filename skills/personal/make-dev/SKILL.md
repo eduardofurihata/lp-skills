@@ -1,6 +1,6 @@
 ---
 name: make-dev
-description: Use when the user types /make-dev, runs a freshly-cloned project for the first time, hits port conflicts (EADDRINUSE / "address already in use"), needs the project's Makefile updated after gaining services or dependencies, or when hot reload or auto-migrations aren't working and `make dev` should set them up so the next run just works.
+description: Use when the user types /make-dev, runs a freshly-cloned project for the first time, hits port conflicts (EADDRINUSE / "address already in use"), needs the project's Makefile updated after gaining services or dependencies, when hot reload or auto-migrations aren't working and `make dev` should set them up so the next run just works, or when a push to GitHub should run the repo's Actions on the local self-hosted runner instead of burning GitHub-hosted minutes.
 ---
 
 # /make-dev
@@ -22,6 +22,8 @@ If any of the three can't be proven, **fix the setup and re-prove** — never ha
 - **Create** — no Makefile → write one that satisfies the outcome contract.
 - **Update** — Makefile exists but the project changed (new service, migration tool, or missing watch/migrate step) → patch in place, never regenerate (preserves customizations).
 - **Heal** — last `make dev` failed, or hot reload / migrations aren't working → diagnose, patch, retry **once**, then stop.
+
+Create and Update also wire the repo's CI to the self-hosted runner (see CI runner) — same trip, one less thing burning money.
 
 ## What `make dev` must do, in order
 
@@ -46,12 +48,35 @@ A running watcher is necessary but not sufficient — it silently fails to see e
 - **Detect the tool from project files** (Prisma, Drizzle, Knex, TypeORM, Sequelize, Alembic, Django, Rails/ActiveRecord, Flyway, Liquibase, golang-migrate, …) and run its idempotent "apply pending" command.
 - **Idempotent**: a second `make dev` with nothing pending is a no-op, not an error.
 
+## CI runner (self-hosted)
+
+A push shouldn't cost money. If the repo has `.github/workflows/`, every job runs on **this machine's self-hosted runner**, not on GitHub-hosted minutes.
+
+**One switch, all workflows.** Every job's `runs-on` is the same expression, never a hardcoded image:
+
+```yaml
+runs-on: ${{ vars.RUNNER_LABEL || 'ubuntu-latest' }}
+```
+
+with the repo variable `RUNNER_LABEL=self-hosted` (`gh variable set RUNNER_LABEL --body self-hosted`). Set → every workflow lands on the local runner, zero minutes. Unset → hosted fallback, so a fresh clone, another machine, or a collaborator without the runner still gets green CI. Flipping the variable inverts the whole repo without touching a file.
+
+**The runner has to exist and be online** — a label pointing at nothing means jobs queue forever, silently. Prove it: `gh api repos/{owner}/{repo}/actions/runners` shows a runner `online` whose labels include the one you set. Missing → register it (`./config.sh --url <repo-url> --token <registration-token>`, then `./svc.sh install && ./svc.sh start` so it survives reboot). Installing a system service needs explicit consent — ask, same as any system tool.
+
+**Non-negotiables before flipping the switch:**
+
+- **Private repos only.** A self-hosted runner executes whatever a workflow says, on the user's actual machine. Never on a public repo, and never where `pull_request` from forks can reach it.
+- **The runner's env is not your shell.** A systemd runner starts from a bare environment — node/nvm, Docker, language toolchains must resolve there, or CI fails with "command not found" while it works in your terminal. Verify with a real run, not by reasoning about PATH.
+- **Machine off = job queued, not failed.** Fine for push CI; think twice for `schedule:` workflows and prod deploys that must fire at 3am. Those may deliberately stay hosted — say so in a comment on the job, don't leave it to be rediscovered.
+
+**Update mode:** a new workflow file arrives with the same `runs-on` expression as the others. A hardcoded `ubuntu-latest` anywhere is a leak — patch it.
+
 ## Verify (prove the outcome, don't trust flags)
 
 Same ethos as freeing the port — prove each contract item with a real probe:
 
 - **Serving**: hit the port (HTTP/health) and get a real response.
 - **Migrated**: run the tool's status/"current" check and assert **zero pending** — don't trust that apply "probably" ran.
+- **CI runner** (when workflows exist): after the next push, `gh run list` → `gh run view <id>` and read which runner picked the job up. Job on the local runner = wired. Job on `ubuntu-latest`, or queued with nothing consuming it, = not wired; fix and re-check.
 - **Hot reload**: do a **real edit-probe** — make a trivial, reversible change to a watched source file, confirm the dev server logs a recompile/HMR/restart within a few seconds, then **revert** it. No recompile observed → hot reload is not working; fix the cause (polling? bind mount? excluded dir?) and re-probe. A watcher that printed "ready" is not proof; an observed reload is.
 
 ## Links banner (final output)
@@ -87,6 +112,8 @@ Read stderr. Diagnose. Patch so the next reboot + `make dev` satisfies the full 
 - `make dev` **fails despite a kill step** → the kill step isn't verifying the port is free; strengthen the verification, don't add retries.
 - **Hot reload doesn't fire** despite a running watcher → the watcher isn't seeing edits (no polling / no bind mount / dir excluded); fix the watch path, don't tell the user to restart manually.
 - **Migrations didn't apply** → they were never wired into `make dev`, or ran before the DB was healthy; wire them in after the readiness wait.
+- **CI job stuck queued** → the label matches no online runner (service down, or runner registered on another repo/org scope). Bring the runner back or fix the label — never "solve" it by reverting the repo to hosted minutes.
+- **CI passes locally, fails on the runner with "command not found"** → the runner's environment lacks the toolchain; provide it in the service env or install it in the job, don't hand-fix the shell.
 
 ## Update
 
