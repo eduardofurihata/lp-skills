@@ -12,6 +12,7 @@
     "./chat-out",
     "./claude-modes",
     "./commit",
+    "./ctt",
     "./fast",
     "./make-dev",
     "./merge",
