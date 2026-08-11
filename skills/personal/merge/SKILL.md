@@ -85,7 +85,7 @@ Rejeitar é seguro: nada vai pra `homolog`/prod, branch e PR ficam vivos pro dev
 2. **NÃO** mergeia, **NÃO** apaga a branch — o dev precisa dela pra empurrar os fixes.
 3. **Jira → devolve pro dev:** `jira_get_transitions` → `jira_transition_issue` pro **"Em andamento"** (rework). `jira_add_comment` com o resumo do que reprovou + link do review. Sem `comment` na transição (ADF).
 4. **Kanban → rework:** mover o card (de onde estiver) pra `kanban/07-implementation/<feature>.md` com frontmatter `status: rework` + motivo. Não deixa em `10-done`/`11-ship` (mentiria "pronto"). *(Sem card no kanban — dev cru — pula esta etapa.)*
-5. **Escopo lateral** que apareceu no review (bug à parte, dívida) segue a qualificação da Phase 4.5: ponta que o dev tinha superfície pra ver **volta no request-changes** (é ele que converge); ponta que só o review externo enxerga **vira card de follow-up**. O **core volta pro dev** de qualquer jeito, não enfia no PR rejeitado.
+5. **Escopo lateral** que apareceu no review (bug à parte, dívida) segue a qualificação da **Phase 4 § 6**: ponta que o dev tinha superfície pra ver **volta no request-changes** (é ele que converge); ponta que só o review externo enxerga **vira card de follow-up**. O **core volta pro dev** de qualquer jeito, não enfia no PR rejeitado.
 6. **Reporta** (saída "rejeitado", abaixo) e **encerra** — NÃO segue pra Phase 3+. Sem merge, sem deploy.
 
 ## Phase 3 — Mergear em homolog + limpar branch
@@ -122,8 +122,23 @@ Para CADA card do PR:
 1. **Comentar** (`mcp__atlassian__jira_add_comment`): o que foi entregue + "merged em `homolog`" + commit/URL.
 2. **Transição de status** (`jira_get_transitions` → `jira_transition_issue`) pro pós-merge ("Verificar" / "Concluído", conforme o workflow). Sem `comment` na transição (ADF).
 3. **Responder no PR** se houver discussão aberta (`gh pr comment`).
-4. **Kanban:** atualizar `kanban/11-ship/<feature>.md` (frontmatter `merged: homolog`, `merged_at`).
-5. **Follow-up (qualificado):** o review/autenticação revelou ponta fora de escopo (bug lateral, dívida, melhoria)? Antes de criar card, decida **de quem é a ponta**:
+4. **Kanban:** atualizar `kanban/11-ship/<feature>.md` (frontmatter `merged: homolog`, `merged_at`, `merge_commit`). Se o ledger de follow-ups do card ficou **stale** (item marcado `ABERTO`/`ADIADO` que na verdade foi resolvido por outro ciclo DESTE mesmo PR), corrija — card de ship que mente sobre convergência envenena o gate da próxima release.
+5. **Commitar e pushar o que a Phase 4 editou — PASSO OBRIGATÓRIO, não "depois".**
+   O `gh pr merge` da Phase 3 acontece **no GitHub**, então `origin/homolog` já andou sozinho e o `git pull --ff-only` só trouxe pro local — **nada a pushar ali**. Mas o kanban do passo 4 é edição **local**: sem este passo o `/merge` termina com a árvore suja e os cards no `origin` ainda dizendo `status: in-review`, contra o HARD-GATE 7 ("local == origin/homolog, limpo"). E se a Phase 6 rodar em seguida, ela promove pra `main` um `homolog` **sem** o kanban que você acabou de escrever.
+   ```bash
+   # paths EXPLÍCITOS — sessões paralelas compartilham a árvore; `git add -A` rouba o trabalho alheio
+   git add kanban/11-ship/<feature>.md [outros arquivos que VOCÊ editou]
+   git commit -m "chore(kanban): marca <feature> como mergeado em homolog"
+   git push origin homolog          # dispara o pre-push gate (lint/typecheck/testes/build)
+
+   # ASSERT — as duas linhas têm que bater, e a árvore vir vazia:
+   git fetch origin
+   [ "$(git rev-parse homolog)" = "$(git rev-parse origin/homolog)" ] \
+     && echo "✓ local == origin/homolog" || echo "✗ divergiu — investigar"
+   git status --short                # vazio
+   ```
+   > Gate **vermelho** neste push = a `homolog` que você acabou de mergear não passa no gate. Não force: investigue antes de seguir para a Phase 6 (é exatamente o que ela deployaria).
+6. **Follow-up (qualificado):** o review/autenticação revelou ponta fora de escopo (bug lateral, dívida, melhoria)? Antes de criar card, decida **de quem é a ponta**:
    - **Ponta que o dev deixou** — algo que o `/method` dele tinha superfície para ver (tocou no arquivo, o fluxo passa por ali, o ledger de follow-ups do card de done está sujo ou ausente) → **NÃO vira card**. Isso é violação da Regra Inviolável 7 (`method/references/follow-ups.md`): **rejeita o PR** (Phase 2b) e devolve pro dev convergir.
    - **Ponta que só o review externo enxerga** — impacto cross-PR, conflito com outra entrega, contexto de produção que o dev não tinha → **aí sim vira card**: `/card` (`jira_create_issue`, tipo `Tarefa`, `## Como testar`) linkado ao original. Não enfiar no PR atual.
 
@@ -204,10 +219,12 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre. Nunca auto-delete.
 - "O usuário já disse que eu posso mergear pra main" → NÃO vale pra sempre. Pergunte a CADA `homolog→main`.
 - "Fix pequeno no review, não re-testo" → NÃO. Qualquer fix → re-review + re-autentica.
+- "Editei o kanban da Phase 4, o `/merge` acabou" → NÃO. Edição sem commit+push deixa a árvore suja e os cards no `origin` ainda em `in-review` — e a Phase 6 promoveria pra `main` um `homolog` **sem** o que você escreveu. Phase 4 § 5 é obrigatória, com o assert `local == origin/homolog`.
+- "Vou commitar o kanban com `git add -A`" → NÃO. A árvore é compartilhada com sessões paralelas; sempre paths explícitos (Phase 4 § 5).
 - "O `--delete-branch` já apagou a branch" → apagou **só a remota**. A local **também** sai (`git branch -d`, depois do `checkout homolog`) + `fetch --prune`. Fechar o `/merge` com branch local morta pendurada = incompleto.
 - "O loop de conserto não fecha, sigo reescrevendo no review" → NÃO. ~2–3 rodadas sem convergir = PR cru → REJEITA e devolve (Phase 2b).
 - "Código tá limpo, mas o feature não faz o que o card pede — mergeio" → NÃO. Resolução não-autenticada = rejeita, não merge.
 - "Pra mergear eu reescrevi metade da implementação" → NÃO. Isso é trabalho do dev. Reescrita ≠ review → rejeita e devolve.
 - "Achei um null-check faltando, então rejeito o PR" → NÃO (o oposto). Conserto pontual é in-place; rejeição é só pra inaceitável/reimplementação. Não vire trigger-happy.
-- "Acho a ponta solta, deixo sem card" → NÃO. Ponta solta nunca some: ou **rejeita o PR** (ponta do dev — Regra 7 do `/method`) ou **vira card** (achado só do reviewer). Ver Phase 4.5.
+- "Acho a ponta solta, deixo sem card" → NÃO. Ponta solta nunca some: ou **rejeita o PR** (ponta do dev — Regra 7 do `/method`) ou **vira card** (achado só do reviewer). Ver **Phase 4 § 6**.
 - "O dev deixou follow-up aberto mas abro card e mergeio" → NÃO. Card de follow-up não lava violação do `/method`. Ledger sujo = **rejeita** e devolve.
