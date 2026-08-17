@@ -1,6 +1,6 @@
 ---
 name: work
-description: 'Use when user invokes /work [NIV-X] to take a NIVEE card from todo to committed-locally — standalone, NOT the Eduzz /jira. Syncs homolog from GitHub and branches off it (gh→homolog→branch), moves the card to "Em andamento", asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pr + /merge.'
+description: 'Use when user invokes /work [NIV-X] to take a NIVEE card from todo to committed-locally — standalone, NOT the Eduzz /jira. Syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to "Em andamento", asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pr + /merge.'
 effort: max
 requires: method
 argument-hint: "[NIV-X] | (empty = continuar card ativo)"
@@ -27,7 +27,8 @@ Pega um card do board **NIVEE** e leva até o **commit local** na feature branch
 ## Convenções (CONTRATO)
 
 - Board **NIVEE**, projeto `NIV`, sempre via `mcp__atlassian__*`.
-- Branch base = **`homolog`** (não `main`). Regra de criação: **gh → homolog → branch**.
+- Branch base = **`dev`** (não `main`). Regra de criação: **gh → dev → branch**.
+  > **Padrão:** `dev` é a **branch** de integração, o que vem antes da `main`. **homolog** é o **ambiente** publicado a partir dela — nome de ambiente, nunca de branch. "Mergeei na dev" = integrado; "está em homolog" = no ar.
 - O `/method` trabalha SEMPRE na branch atual e **nunca cria branch** — por isso a branch nasce AQUI, antes de invocá-lo.
 
 ## Fluxo
@@ -35,18 +36,18 @@ Pega um card do board **NIVEE** e leva até o **commit local** na feature branch
 ### 1. Buscar o card
 `mcp__atlassian__jira_get_issue` (`issue_key: NIV-X`): título, descrição, tipo, `## Como testar`, assignee. Colar a descrição **real** do card; se houver ambiguidade, listar ≥2 interpretações (insumo do passo 4).
 
-### 2. gh → homolog → branch (REGRA DE OURO)
-Nunca branchar de `homolog` stale — trazer tudo e resolver conflito antes:
+### 2. gh → dev → branch (REGRA DE OURO)
+Nunca branchar de `dev` stale — trazer tudo e resolver conflito antes:
 ```bash
-git checkout homolog
+git checkout dev
 git fetch origin
-git merge origin/homolog    # gh → homolog: traz o remoto; CONFLITO → resolver (entender os 2 lados)
-git checkout -b <branch>    # homolog → branch (a partir da homolog atual e limpa)
+git merge origin/dev        # gh → dev: traz o remoto; CONFLITO → resolver (entender os 2 lados)
+git checkout -b <branch>    # dev → branch (a partir da dev atual e limpa)
 git branch --show-current   # confirmar
 ```
 Nome da branch: derivado do card — `niv-X` (ou `niv-X-slug-curto`). Multi-card: `niv-X-Y` (ordem crescente). Branch já existe → `checkout` nela.
-> **Manter a branch atualizada:** se `origin/homolog` andar durante o trabalho, trazer pra branch (`git merge origin/homolog`, resolvendo conflitos) — o `/method` revê e testa o resultado integrado. Branch nunca fica pra trás de homolog.
-> **Exceção (Eduardo trabalha direto em homolog):** se a intenção for não usar branch, pular o `checkout -b` e seguir na `homolog` (após o sync acima). **Default = criar branch** (fluxo dos devs).
+> **Manter a branch atualizada:** se `origin/dev` andar durante o trabalho, trazer pra branch (`git merge origin/dev`, resolvendo conflitos) — o `/method` revê e testa o resultado integrado. Branch nunca fica pra trás de `dev`.
+> **Exceção (Eduardo trabalha direto em `dev`):** se a intenção for não usar branch, pular o `checkout -b` e seguir na `dev` (após o sync acima). **Default = criar branch** (fluxo dos devs).
 
 ### 3. Mover o card → "Em andamento"
 - Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue`.
@@ -75,13 +76,14 @@ Invoque o **`/method`** (dependência obrigatória). Ele:
    Branch:  <branch>
    Commit:  <hash>
    Kanban:  kanban/10-done/<feature>.md
-   Próximo: /pr  (push + PR pra homolog + espelha no card)
+   Próximo: /pr  (push + PR pra dev + espelha no card)
 ```
 
 ## Red Flags — STOP
 
 - "Vou usar o `/jira`" → NÃO. `/jira` é Eduzz. `/work` é o projeto pessoal, **standalone**.
-- "Branchei de homolog sem `pull --ff-only`" → NÃO. **gh → homolog → branch**, sempre.
+- "Branchei de `dev` sem trazer o remoto" → NÃO. **gh → dev → branch**, sempre.
+- "Branchei de `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a branch de integração é `dev`.
 - "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
 - "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
 - "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes** de implementar.

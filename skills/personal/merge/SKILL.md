@@ -1,33 +1,34 @@
 ---
 name: merge
-description: 'Use when user invokes /merge to review open GitHub PRs targeting homolog, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Always runs a code review of the diff; re-verifies resolution via the front only as a safety net — when the dev''s /method QA failed, isn''t documented as passed, or is QA-pending (kanban/06-todo → runs /todo until green first) — and trusts complete, documented, passing /method QA instead of duplicating it; merges into homolog and deletes the branch (remote AND local); comments + transitions the Jira card(s); checks the dev''s follow-up ledger (open item = reject, not a card) and opens a follow-up card only for scope the reviewer alone could see; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing homolog→main (= prod deploy). With no open PR (work committed straight to homolog), it offers the homolog→main release directly.'
+description: 'Use when user invokes /merge to review open GitHub PRs targeting the integration branch `dev`, verify the linked NIVEE card(s) were actually resolved, and land them — or REJECT a PR (request-changes + bounce the card back to the dev) when the review/QA exposes unacceptable quality, instead of force-merging it. Always runs a code review of the diff; re-verifies resolution via the front only as a safety net — when the dev''s /method QA failed, isn''t documented as passed, or is QA-pending (kanban/06-todo → runs /todo until green first) — and trusts complete, documented, passing /method QA instead of duplicating it; merges into `dev` and deletes the branch (remote AND local); comments + transitions the Jira card(s); checks the dev''s follow-up ledger (open item = reject, not a card) and opens a follow-up card only for scope the reviewer alone could see; sweeps orphan/stale kanban cards (confirm-first cleanup); and asks for explicit authorization before pushing `dev`→`main` (= prod deploy). With no open PR (work committed straight to `dev`), it offers the `dev`→`main` release directly.'
 effort: max
 requires: todo
-argument-hint: "[PR number | NIV-X] | (empty = listar PRs abertos pra homolog)"
+argument-hint: "[PR number | NIV-X] | (empty = listar PRs abertos pra `dev`)"
 ---
 
-# /merge — Revisar, autenticar e mergear PRs em homolog
+# /merge — Revisar, autenticar e mergear PRs na `dev`
 
-Revisa os PRs abertos **mirando `homolog`**, **autentica se o card foi de fato resolvido**, mergeia em `homolog`, limpa, atualiza o Jira e — só com teu OK explícito — joga pra `main` (= deploy prod).
+Revisa os PRs abertos **mirando `dev`**, **autentica se o card foi de fato resolvido**, mergeia em `dev`, limpa, atualiza o Jira e — só com teu OK explícito — joga pra `main` (= deploy prod).
 
 ## Iron Law
-> **Precisão > tokens > velocidade.** O **code review do diff é SEMPRE teu** — ninguém revisa por você, isso é inegociável. Já o **front-test é rede de segurança, não redo**: se o dev rodou o protocolo `/method` completo e a QA está **documentada e 100% PASSED** (`kanban/09-run-test/<feature>.md`, todos os TCs do card ✅), **confia e segue em frente** — não re-teste o que já foi testado direito (duplicar QA é desperdício). Re-autentica via front **só** quando a QA (1) **falhou**, (2) **não está explícito que passou** (sem relatório / ambíguo / TCs incompletos), ou (3) **tem TODO pendente** (card em `06-todo/`). Bug que passa daqui vai pra `homolog` e depois pra prod — por isso o review é cego-obrigatório e o front-test é calibrado pelo estado da QA. Mire a referência #1.
+> **Precisão > tokens > velocidade.** O **code review do diff é SEMPRE teu** — ninguém revisa por você, isso é inegociável. Já o **front-test é rede de segurança, não redo**: se o dev rodou o protocolo `/method` completo e a QA está **documentada e 100% PASSED** (`kanban/09-run-test/<feature>.md`, todos os TCs do card ✅), **confia e segue em frente** — não re-teste o que já foi testado direito (duplicar QA é desperdício). Re-autentica via front **só** quando a QA (1) **falhou**, (2) **não está explícito que passou** (sem relatório / ambíguo / TCs incompletos), ou (3) **tem TODO pendente** (card em `06-todo/`). Bug que passa daqui vai pra `dev` e depois pra prod — por isso o review é cego-obrigatório e o front-test é calibrado pelo estado da QA. Mire a referência #1.
 >
 > **Mergear não é obrigatório — o `/merge` é um GATE, não uma esteira.** Pode (e às vezes deve) **falhar**: PR com qualidade ruim/inaceitável é **rejeitado e devolvido ao dev**, não empurrado pra dentro. Bloquear lixo é o gate **funcionando**, não falhando. Conserto pontual → corrige na hora; quando "consertar" vira "reimplementar", **rejeita** (Phase 2b).
 
 ## Convenções (CONTRATO)
-- PRs alvo: **base `homolog`**. Remote `origin` (`nivee-org/vibe-nivee`).
+- PRs alvo: **base `dev`**. Remote `origin`; o repositório vem do próprio checkout (`gh repo view --json nameWithOwner -q .nameWithOwner`) — não hardcodar.
+  > **Padrão:** `dev` é a **branch** de integração; `main` é produção. **homolog** é o **ambiente** publicado a partir da `dev` — é onde a mudança aparece depois do merge, nunca uma base de PR. Neste doc, `dev` entre backticks é sempre a branch; "o dev" sem backticks é a pessoa que escreveu o PR.
 - Board NIVEE (`NIV`), via `mcp__atlassian__*`.
-- **`homolog → main` SÓ com autorização explícita do usuário, na hora.** Autoridade dita antes ("sou tech lead", "pode mergear sempre") **NÃO** conta — pergunte a CADA release. (Regra herdada do `/method`.)
+- **`dev → main` SÓ com autorização explícita do usuário, na hora.** Autoridade dita antes ("sou tech lead", "pode mergear sempre") **NÃO** conta — pergunte a CADA release. (Regra herdada do `/method`.)
 
 <HARD-GATE>
 1. NÃO mergeie sem **code review limpo** (sempre teu). A **autenticação via front** é exigida **só** quando a QA do dev falhou / não está explícito que passou / tem TODO pendente — QA `/method` completa e PASSED documentada (`09-run-test`) **dispensa** o re-teste (ver Iron Law).
 2. Card ainda em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → rode o `/todo` até 100% PASSED ANTES de mergear. Sem pular.
 3. NÃO rode `/todo` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (Phase 5), não pra QA.
-4. NÃO faça `homolog → main` sem o usuário autorizar ESTE push explicitamente.
+4. NÃO faça `dev → main` sem o usuário autorizar ESTE push explicitamente.
 5. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
 6. **Mergear NÃO é garantido — REJEITAR é saída válida.** Conserto pontual (bug/edge case/null-check/pattern/copy) → corrige in-place + re-revisa. Mas se "consertar" = **refazer a abordagem**, OU o feature **não faz o que o card pede** e não dá pra ajustar trivial, OU desastre de segurança/perda de dado, OU o loop de conserto **não converge** (~2–3 rodadas) → **REJEITA** (Phase 2b). Não reimplemente o trabalho do dev disfarçado de review. Rejeitar é **seguro** (nada deploya, branch viva) → pode ser autônomo; só **reporta alto** e deixa override.
-7. NUNCA deployar `homolog` stale nem com divergência aberta: antes do `homolog→main`, sincronizar **local homolog ↔ origin/homolog** trazendo tudo (PRs mergeados + commits diretos) e **resolvendo conflitos** (não `ff-only`-bail). Fim: local == origin/homolog, limpo.
+7. NUNCA deployar `dev` stale nem com divergência aberta: antes do `dev→main`, sincronizar **`dev` local ↔ `origin/dev`** trazendo tudo (PRs mergeados + commits diretos) e **resolvendo conflitos** (não `ff-only`-bail). Fim: local == origin/dev, limpo.
 8. Resolver conflito = mudança de código = **re-review + re-autenticação via front ANTES do `push origin main`**. Nunca deploya merge não-verificado. Resolução de intenção ambígua (não dá pra inferir os dois lados) → **perguntar ao usuário**, não chutar.
 </HARD-GATE>
 
@@ -35,15 +36,15 @@ Revisa os PRs abertos **mirando `homolog`**, **autentica se o card foi de fato r
 
 ## Phase 0 — Selecionar o PR (ou entrar em modo release)
 ```bash
-gh pr list --base homolog --state open
+gh pr list --base dev --state open
 ```
 - **Tem PR(s):** `$ARGUMENTS` com número/`NIV-X` → seleciona direto. 1 PR só → automático. Vários → listar e perguntar (ou "all" = um por vez). `gh pr view <n>` + `gh pr diff <n>` pra carregar título, corpo, branch e diff. → segue pra **Phase 1**.
-- **Nenhum PR aberto:** provável que tu commitou **direto em `homolog`** (teu fluxo pessoal). Checar se há o que soltar:
+- **Nenhum PR aberto:** provável que tu commitou **direto em `dev`** (teu fluxo pessoal). Checar se há o que soltar:
   ```bash
-  git checkout homolog && git pull --ff-only
-  git log --oneline main..homolog        # commits em homolog ainda não em main
+  git checkout dev && git pull --ff-only
+  git log --oneline main..dev        # commits em dev ainda não em main
   ```
-  Tem commits → **pular direto pra Phase 6** (release `homolog→main`). Zero commits → "`homolog` == `main`, nada a fazer." e sair.
+  Tem commits → **pular direto pra Phase 6** (release `dev→main`). Zero commits → "`dev` == `main`, nada a fazer." e sair.
 
 ## Phase 1 — Card(s) + Gate de QA (SCOPED ao PR)
 1. **Identificar o(s) card(s)** do PR: `NIV-X` no corpo/título + nome da branch (`niv-X…`). Um PR pode resolver **vários** cards — capture todos.
@@ -80,7 +81,7 @@ gh pr list --base homolog --state open
    > **Fio da navalha:** se pra deixar limpo você teria que **reescrever a implementação**, isso é trabalho do dev — **rejeita e devolve**, não faça você escondido no review. Na dúvida entre os dois, rejeitar é a direção segura (nada deploya).
 
 ## Phase 2b — Rejeitar o PR (saída TERMINAL — não mergeia)
-Rejeitar é seguro: nada vai pra `homolog`/prod, branch e PR ficam vivos pro dev iterar → **autônomo, sem pedir permissão** (≠ `homolog→main`); só deixa o motivo **explícito** e reporta alto. Override do usuário: "mergeia assim mesmo".
+Rejeitar é seguro: nada vai pra `dev`/prod, branch e PR ficam vivos pro dev iterar → **autônomo, sem pedir permissão** (≠ `dev→main`); só deixa o motivo **explícito** e reporta alto. Override do usuário: "mergeia assim mesmo".
 1. **Request-changes no PR** com feedback concreto e acionável (não vago): `gh pr review <n> --request-changes --body "<o quê + por quê + o que precisa mudar, por item; aponte arquivo/linha>"`.
 2. **NÃO** mergeia, **NÃO** apaga a branch — o dev precisa dela pra empurrar os fixes.
 3. **Jira → devolve pro dev:** `jira_get_transitions` → `jira_transition_issue` pro **"Em andamento"** (rework). `jira_add_comment` com o resumo do que reprovou + link do review. Sem `comment` na transição (ADF).
@@ -88,19 +89,19 @@ Rejeitar é seguro: nada vai pra `homolog`/prod, branch e PR ficam vivos pro dev
 5. **Escopo lateral** que apareceu no review (bug à parte, dívida) segue a qualificação da **Phase 4 § 6**: ponta que o dev tinha superfície pra ver **volta no request-changes** (é ele que converge); ponta que só o review externo enxerga **vira card de follow-up**. O **core volta pro dev** de qualquer jeito, não enfia no PR rejeitado.
 6. **Reporta** (saída "rejeitado", abaixo) e **encerra** — NÃO segue pra Phase 3+. Sem merge, sem deploy.
 
-## Phase 3 — Mergear em homolog + limpar branch
+## Phase 3 — Mergear na `dev` + limpar branch
 Com review limpo e resolução autenticada:
 ```bash
-# Branch atualizada com homolog? (homolog pode ter andado desde o PR)
+# Branch atualizada com dev? (dev pode ter andado desde o PR)
 gh pr view <n> --json mergeable,mergeStateStatus    # CONFLICTING / BEHIND → atualizar a branch
 #   se conflitante/atrás:
-git checkout <branch> && git fetch origin && git merge origin/homolog   # RESOLVER conflitos (os 2 lados)
+git checkout <branch> && git fetch origin && git merge origin/dev   # RESOLVER conflitos (os 2 lados)
 #     resolução mudou código → re-rodar Phase 2 (review + autenticação) na branch atualizada
 git push origin <branch>                            # atualiza o PR
 
 # mergeável e (re-)autenticada:
 gh pr merge <n> --merge --delete-branch             # merge commit (padrão do histórico) + apaga a REMOTA
-git checkout homolog && git pull --ff-only          # traz o merge pro homolog local (e libera a branch p/ delete)
+git checkout dev && git pull --ff-only          # traz o merge pra branch dev local (e libera a branch p/ delete)
 
 # === apagar a LOCAL — passo OBRIGATÓRIO, não "se sobrar tempo" ===
 git branch -d <branch>                              # -d recusa se houver commit não mergeado (é o safety net)
@@ -109,35 +110,35 @@ git fetch origin --prune                            # limpa o remote-tracking mo
 # verificação (as duas listagens têm que vir VAZIAS):
 git branch --list <branch>; git ls-remote --heads origin <branch>
 ```
-> **Nunca mergear branch atrás/conflitada com homolog:** atualizar (`merge origin/homolog`) + resolver + re-autenticar (Phase 2) primeiro.
+> **Nunca mergear branch atrás/conflitada com a `dev`:** atualizar (`merge origin/dev`) + resolver + re-autenticar (Phase 2) primeiro.
 
 **Limpeza da branch = local E remota. As duas, sempre.** O `--delete-branch` do `gh` só mata a remota; a local fica pra trás e vira lixo que confunde o próximo `/work` (branch morta com o mesmo nome, sem upstream, indistinguível de trabalho em andamento).
-- `git branch -d` **falha se você estiver nela** — por isso o `git checkout homolog` vem antes, não depois.
-- Se o `-d` reclamar de "not fully merged" → **PARE**. Tem commit que não entrou no merge; investigue (`git log origin/homolog..<branch>`) e reporte. **Nunca** troque por `-D` pra calar o aviso.
+- `git branch -d` **falha se você estiver nela** — por isso o `git checkout dev` vem antes, não depois.
+- Se o `-d` reclamar de "not fully merged" → **PARE**. Tem commit que não entrou no merge; investigue (`git log origin/dev..<branch>`) e reporte. **Nunca** troque por `-D` pra calar o aviso.
 - Merge feito via REST API (fallback do `gh pr merge` com "EOF") **não apaga nada**: aí as duas deleções são suas — `git push origin --delete <branch>` + `git branch -d <branch>`.
-- Sem PR (commit direto em `homolog`, Phase 0): mesma regra, se existir branch local da feature.
+- Sem PR (commit direto em `dev`, Phase 0): mesma regra, se existir branch local da feature.
 
 ## Phase 4 — Responder + mover card(s) + follow-up
 Para CADA card do PR:
-1. **Comentar** (`mcp__atlassian__jira_add_comment`): o que foi entregue + "merged em `homolog`" + commit/URL.
+1. **Comentar** (`mcp__atlassian__jira_add_comment`): o que foi entregue + "merged em `dev`" + commit/URL.
 2. **Transição de status** (`jira_get_transitions` → `jira_transition_issue`) pro pós-merge ("Verificar" / "Concluído", conforme o workflow). Sem `comment` na transição (ADF).
 3. **Responder no PR** se houver discussão aberta (`gh pr comment`).
-4. **Kanban:** atualizar `kanban/11-ship/<feature>.md` (frontmatter `merged: homolog`, `merged_at`, `merge_commit`). Se o ledger de follow-ups do card ficou **stale** (item marcado `ABERTO`/`ADIADO` que na verdade foi resolvido por outro ciclo DESTE mesmo PR), corrija — card de ship que mente sobre convergência envenena o gate da próxima release.
+4. **Kanban:** atualizar `kanban/11-ship/<feature>.md` (frontmatter `merged: dev`, `merged_at`, `merge_commit`). Se o ledger de follow-ups do card ficou **stale** (item marcado `ABERTO`/`ADIADO` que na verdade foi resolvido por outro ciclo DESTE mesmo PR), corrija — card de ship que mente sobre convergência envenena o gate da próxima release.
 5. **Commitar e pushar o que a Phase 4 editou — PASSO OBRIGATÓRIO, não "depois".**
-   O `gh pr merge` da Phase 3 acontece **no GitHub**, então `origin/homolog` já andou sozinho e o `git pull --ff-only` só trouxe pro local — **nada a pushar ali**. Mas o kanban do passo 4 é edição **local**: sem este passo o `/merge` termina com a árvore suja e os cards no `origin` ainda dizendo `status: in-review`, contra o HARD-GATE 7 ("local == origin/homolog, limpo"). E se a Phase 6 rodar em seguida, ela promove pra `main` um `homolog` **sem** o kanban que você acabou de escrever.
+   O `gh pr merge` da Phase 3 acontece **no GitHub**, então `origin/dev` já andou sozinho e o `git pull --ff-only` só trouxe pro local — **nada a pushar ali**. Mas o kanban do passo 4 é edição **local**: sem este passo o `/merge` termina com a árvore suja e os cards no `origin` ainda dizendo `status: in-review`, contra o HARD-GATE 7 ("local == origin/dev, limpo"). E se a Phase 6 rodar em seguida, ela promove pra `main` uma `dev` **sem** o kanban que você acabou de escrever.
    ```bash
    # paths EXPLÍCITOS — sessões paralelas compartilham a árvore; `git add -A` rouba o trabalho alheio
    git add kanban/11-ship/<feature>.md [outros arquivos que VOCÊ editou]
-   git commit -m "chore(kanban): marca <feature> como mergeado em homolog"
-   git push origin homolog          # dispara o pre-push gate (lint/typecheck/testes/build)
+   git commit -m "chore(kanban): marca <feature> como mergeado em dev"
+   git push origin dev          # dispara o pre-push gate (lint/typecheck/testes/build)
 
    # ASSERT — as duas linhas têm que bater, e a árvore vir vazia:
    git fetch origin
-   [ "$(git rev-parse homolog)" = "$(git rev-parse origin/homolog)" ] \
-     && echo "✓ local == origin/homolog" || echo "✗ divergiu — investigar"
+   [ "$(git rev-parse dev)" = "$(git rev-parse origin/dev)" ] \
+     && echo "✓ local == origin/dev" || echo "✗ divergiu — investigar"
    git status --short                # vazio
    ```
-   > Gate **vermelho** neste push = a `homolog` que você acabou de mergear não passa no gate. Não force: investigue antes de seguir para a Phase 6 (é exatamente o que ela deployaria).
+   > Gate **vermelho** neste push = a `dev` que você acabou de mergear não passa no gate. Não force: investigue antes de seguir para a Phase 6 (é exatamente o que ela deployaria).
 6. **Follow-up (qualificado):** o review/autenticação revelou ponta fora de escopo (bug lateral, dívida, melhoria)? Antes de criar card, decida **de quem é a ponta**:
    - **Ponta que o dev deixou** — algo que o `/method` dele tinha superfície para ver (tocou no arquivo, o fluxo passa por ali, o ledger de follow-ups do card de done está sujo ou ausente) → **NÃO vira card**. Isso é violação da Regra Inviolável 7 (`method/references/follow-ups.md`): **rejeita o PR** (Phase 2b) e devolve pro dev convergir.
    - **Ponta que só o review externo enxerga** — impacto cross-PR, conflito com outra entrega, contexto de produção que o dev não tinha → **aí sim vira card**: `/card` (`jira_create_issue`, tipo `Tarefa`, `## Como testar`) linkado ao original. Não enfiar no PR atual.
@@ -153,39 +154,39 @@ Listar os órfãos e **perguntar**: *"Esses cards em `06-todo/` não têm PR nem
 - Confirmar remoção → `rm` o card de `06-todo/` (e perguntar sobre docs/kanban relacionados órfãos).
 - **Nunca** auto-deletar. **Nunca** rodar `/todo` em órfão.
 
-## Phase 6 — homolog → main (PERGUNTAR — é deploy prod)
-Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou** direto da Phase 0 quando não há PR e tu commitou direto em `homolog`. Nos dois, o alvo já está em `homolog`. **Perguntar**:
-> "`homolog` tem <N> commit(s) fora de `main`. Quer jogar pra **`main`**? Isso **deploya em produção** (GH Actions). [sim/não]"
+## Phase 6 — `dev` → `main` (PERGUNTAR — é deploy prod)
+Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou** direto da Phase 0 quando não há PR e tu commitou direto em `dev`. Nos dois, o alvo já está em `dev`. **Perguntar**:
+> "`dev` tem <N> commit(s) fora de `main`. Quer jogar pra **`main`**? Isso **deploya em produção** (GH Actions). [sim/não]"
 
-- **Não / silêncio** → PARAR. Fica em `homolog`. Fim.
+- **Não / silêncio** → PARAR. Fica em `dev`. Fim.
 - **Sim explícito** (só então) — ciclo `sincronizar+resolver → promove → deploy → resync → assert`, **nessa ordem**:
   ```bash
-  # === 0) SINCRONIZAR homolog: tudo atualizado + RESOLVER conflitos, ANTES de deployar ===
-  git checkout homolog
+  # === 0) SINCRONIZAR dev: tudo atualizado + RESOLVER conflitos, ANTES de deployar ===
+  git checkout dev
   git fetch origin
-  git merge origin/homolog             # traz TODOS os PRs mergeados; CONFLITO → resolver (ver abaixo)
-  git push origin homolog              # sobe commits diretos (no-op se não há)
+  git merge origin/dev             # traz TODOS os PRs mergeados; CONFLITO → resolver (ver abaixo)
+  git push origin dev              # sobe commits diretos (no-op se não há)
 
-  # 1) homolog → main (promove)
+  # 1) dev → main (promove)
   git checkout main && git pull --ff-only
-  git merge homolog                    # CONFLITO → resolver
+  git merge dev                    # CONFLITO → resolver
 
   # 2) main → GitHub   ←  DEPLOYA PROD (GH Actions)
   git push origin main
 
-  # 3) resync main → homolog
-  git checkout homolog && git merge main
-  git push origin homolog
+  # 3) resync main → dev
+  git checkout dev && git merge main
+  git push origin dev
 
   # 4) ASSERT
   git fetch origin
-  [ "$(git rev-parse origin/homolog)" = "$(git rev-parse origin/main)" ] \
-    && echo "✓ origin/homolog == origin/main" || echo "✗ DIVERGIRAM — investigar"
+  [ "$(git rev-parse origin/dev)" = "$(git rev-parse origin/main)" ] \
+    && echo "✓ origin/dev == origin/main" || echo "✗ DIVERGIRAM — investigar"
   ```
   > **Resolução de conflitos (em QUALQUER merge acima):** resolver entendendo **os dois lados** — nunca `ff-only`-bail, nunca descartar um lado às cegas. **Toda resolução que muda código → re-review + re-autenticar via front ANTES do `push origin main`** (não deploya merge não-verificado). Intenção genuinamente ambígua (não dá pra inferir) → **perguntar ao usuário**.
-  > **Assert `✗`** → resync não fechou (`origin/homolog != origin/main`); investigar antes de concluir.
+  > **Assert `✗`** → resync não fechou (`origin/dev != origin/main`); investigar antes de concluir.
 
-  Depois: transicionar o(s) card(s) pro status final pós-deploy (se o workflow tiver). **Resultado garantido: `origin/homolog == origin/main`, sem conflito pendente.**
+  Depois: transicionar o(s) card(s) pro status final pós-deploy (se o workflow tiver). **Resultado garantido: `origin/dev == origin/main`, sem conflito pendente.**
 
 ## Saída
 
@@ -195,10 +196,10 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - Cards:    NIV-X[, NIV-Y]  →  <status pós-merge>
 - QA:       <já estava verde | rodei /todo: X/X PASSED>
 - Review:   limpo (kanban/08-code-review/<feature>.md)
-- Merge:    homolog ✓  ·  branch deletada: remota ✓ + local ✓
+- Merge:    `dev` ✓  ·  branch deletada: remota ✓ + local ✓
 - Follow-up: <NIV-Z criado | nenhum>
 - Cleanup:  <N órfãos removidos | nenhum>
-- main:     <NÃO (fica em homolog) | SIM — deployado>
+- main:     <NÃO (fica na `dev`) | SIM — deployado>
 ```
 
 **Rejeitado** (qualidade inaceitável — NÃO mergeou):
@@ -207,7 +208,7 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - Cards:    NIV-X[, NIV-Y]  →  Em andamento (devolvido ao dev)
 - Motivo:   <por que reprovou — concreto, por item>
 - Ação:     request-changes no PR ✓  ·  branch preservada ✓  ·  kanban → 07-implementation
-- Merge:    ✗ NÃO mergeado — homolog/prod intocados
+- Merge:    ✗ NÃO mergeado — `dev`/prod intocados
 - Override: responda "mergeia assim mesmo" pra forçar
 ```
 
@@ -217,14 +218,15 @@ Chega aqui por **dois caminhos**: depois de mergear um PR (Phases 1–5), **ou**
 - "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: roda `/todo` ANTES.
 - "Rodo `/todo` em todos os pendentes de `06-todo`" → NÃO. Só o card do PR. Órfão é cleanup (Phase 5).
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre. Nunca auto-delete.
-- "O usuário já disse que eu posso mergear pra main" → NÃO vale pra sempre. Pergunte a CADA `homolog→main`.
+- "O usuário já disse que eu posso mergear pra main" → NÃO vale pra sempre. Pergunte a CADA `dev→main`.
 - "Fix pequeno no review, não re-testo" → NÃO. Qualquer fix → re-review + re-autentica.
-- "Editei o kanban da Phase 4, o `/merge` acabou" → NÃO. Edição sem commit+push deixa a árvore suja e os cards no `origin` ainda em `in-review` — e a Phase 6 promoveria pra `main` um `homolog` **sem** o que você escreveu. Phase 4 § 5 é obrigatória, com o assert `local == origin/homolog`.
+- "Editei o kanban da Phase 4, o `/merge` acabou" → NÃO. Edição sem commit+push deixa a árvore suja e os cards no `origin` ainda em `in-review` — e a Phase 6 promoveria pra `main` uma `dev` **sem** o que você escreveu. Phase 4 § 5 é obrigatória, com o assert `local == origin/dev`.
 - "Vou commitar o kanban com `git add -A`" → NÃO. A árvore é compartilhada com sessões paralelas; sempre paths explícitos (Phase 4 § 5).
-- "O `--delete-branch` já apagou a branch" → apagou **só a remota**. A local **também** sai (`git branch -d`, depois do `checkout homolog`) + `fetch --prune`. Fechar o `/merge` com branch local morta pendurada = incompleto.
+- "O `--delete-branch` já apagou a branch" → apagou **só a remota**. A local **também** sai (`git branch -d`, depois do `checkout dev`) + `fetch --prune`. Fechar o `/merge` com branch local morta pendurada = incompleto.
 - "O loop de conserto não fecha, sigo reescrevendo no review" → NÃO. ~2–3 rodadas sem convergir = PR cru → REJEITA e devolve (Phase 2b).
 - "Código tá limpo, mas o feature não faz o que o card pede — mergeio" → NÃO. Resolução não-autenticada = rejeita, não merge.
 - "Pra mergear eu reescrevi metade da implementação" → NÃO. Isso é trabalho do dev. Reescrita ≠ review → rejeita e devolve.
 - "Achei um null-check faltando, então rejeito o PR" → NÃO (o oposto). Conserto pontual é in-place; rejeição é só pra inaceitável/reimplementação. Não vire trigger-happy.
 - "Acho a ponta solta, deixo sem card" → NÃO. Ponta solta nunca some: ou **rejeita o PR** (ponta do dev — Regra 7 do `/method`) ou **vira card** (achado só do reviewer). Ver **Phase 4 § 6**.
 - "O dev deixou follow-up aberto mas abro card e mergeio" → NÃO. Card de follow-up não lava violação do `/method`. Ledger sujo = **rejeita** e devolve.
+- "Listo os PRs com base `homolog`" → NÃO existe branch `homolog`; é o **ambiente**. A base é `dev` — buscar por `homolog` devolve lista vazia e parece "nada a mergear".
