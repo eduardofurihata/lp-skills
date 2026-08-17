@@ -1,8 +1,8 @@
 ---
 name: sync
-description: 'Use when user invokes /sync with a branch expression like "main > homolog", "homolog = main", "feat/x = homolog = main" or "A = B > C gh = local" — a notation for synchronizing git branches. `=` means bidirectional convergence (both branches end at the SAME commit, nobody loses work); `>` means one-way flow (left goes into right, and the right NEVER flows back into the left — the source stays untouched). Chained `=` forms an equality group that converges together, not in pairs. `gh = local` declares that every mentioned branch must be identical locally and on GitHub. Resolves conflicts by reading and understanding both sides, never ours/theirs blind, and always reports them. Never uses --force, reset --hard, rebase, or branch deletion. Typical uses: "main > homolog" (hotfix down into dirty homolog), "homolog > main" (prod deploy), "gh = local" (unstick local/remote divergence).'
+description: 'Use when user invokes /sync with a branch expression like "main > dev", "dev = main", "feat/x = dev = main" or "A = B > C gh = local" — a notation for synchronizing git branches. `=` means bidirectional convergence (both branches end at the SAME commit, nobody loses work); `>` means one-way flow (left goes into right, and the right NEVER flows back into the left — the source stays untouched). Chained `=` forms an equality group that converges together, not in pairs. `gh = local` declares that every mentioned branch must be identical locally and on GitHub. Resolves conflicts by reading and understanding both sides, never ours/theirs blind, and always reports them. Never uses --force, reset --hard, rebase, or branch deletion. Typical uses: "main > dev" (hotfix down into a dirty integration branch), "dev > main" (prod deploy), "gh = local" (unstick local/remote divergence).'
 effort: max
-argument-hint: "<expressão> — ex: main > homolog | homolog = main | A = B > C gh = local"
+argument-hint: "<expressão> — ex: main > dev | dev = main | A = B > C gh = local"
 ---
 
 # /sync — sincronizar branches por notação
@@ -32,13 +32,15 @@ grupo     := branch ( '=' branch )*
 
 | Expressão | Intenção |
 |-----------|----------|
-| `main > homolog` | hotfix desce pra homolog suja, **sem** arrastar a sujeira da homolog pra main |
-| `homolog > main` | deploy prod (homolog entra em main, main não volta) |
-| `homolog = main` | deploy prod **e** main volta pra homolog — as duas no mesmo ponto |
-| `feat/x = homolog` | atualiza a feature branch com homolog e vice-versa |
+| `main > dev` | hotfix desce pra `dev` suja, **sem** arrastar a sujeira da `dev` pra main |
+| `dev > main` | deploy prod (`dev` entra em main, main não volta) |
+| `dev = main` | deploy prod **e** main volta pra `dev` — as duas no mesmo ponto |
+| `feat/x = dev` | atualiza a feature branch com a `dev` e vice-versa |
 | `A = B = C` | as três num único ponto |
 | `A = B > C = D` | `{A,B}` convergem → entram em `{C,D}` → `{C,D}` convergem. `A` e `B` não recebem nada de `C`/`D` |
 | `gh = local` | sem outras branches: converge **a branch atual** com o `origin` |
+
+> **A notação só aceita branch.** `dev` = a **branch** de integração (antes da `main`); `main` = produção. Nome de **ambiente** (homolog, staging, prod) não entra na expressão — o ambiente é consequência do push, não um lado do sync.
 
 ## Passo 0 — `gh ↔ local` (sempre, implícito)
 
@@ -93,7 +95,7 @@ git merge <holder de Gesq>            # o que entra, vindo da esquerda
 
 **Verificação de proteção (obrigatória, no fim):** re-checar o SHA de cada branch de `Gesq`. Mudou? O `/sync` violou o próprio contrato → **reporta alto**, não esconde.
 
-`Gdir` tem commits próprios que `Gesq` não tem (o caso da homolog suja) → nasce um **merge commit em `Gdir`**. É o comportamento correto: nada é descartado.
+`Gdir` tem commits próprios que `Gesq` não tem (o caso da `dev` suja) → nasce um **merge commit em `Gdir`**. É o comportamento correto: nada é descartado.
 
 ## Passo 3 — conflito
 
@@ -120,17 +122,17 @@ Push rejeitado como non-fast-forward → o `origin` andou durante a execução. 
 ## Passo 5 — relatório
 
 ```
-✅ /sync main > homolog
+✅ /sync main > dev
 
-  main      abc1234 → abc1234   (intocada ✓)
-  homolog   def5678 → 9ab0cde   +4 commits de main
+  main   abc1234 → abc1234   (intocada ✓)
+  dev    def5678 → 9ab0cde   +4 commits de main
 
   Conflitos resolvidos: 1
-    src/api/auth.ts — main endurecia a validação de token, homolog tinha
+    src/api/auth.ts — main endurecia a validação de token, dev tinha
       adicionado refresh. Ortogonais → mantive as duas (validação
       endurecida + refresh preservado). Typecheck ✓
 
-  Pushado: main, homolog
+  Pushado: main, dev
 ```
 
 Sempre reportar: SHA antes → depois de cada branch, commits ganhos, **todo** conflito (arquivo + o que colidiu + como resolveu + por quê), e o que foi pushado. Branch de origem de `>` sai marcada como **intocada**.
@@ -139,7 +141,7 @@ Sempre reportar: SHA antes → depois de cada branch, commits ganhos, **todo** c
 
 - **Árvore limpa.** Mudança não commitada → **PARA** e pede commit/stash. Um checkout falhando no meio do fluxo é pior que não começar.
 - Remote = `origin`.
-- `/sync homolog > main` **deploya prod sem gate**, por design: a skill é standalone e chamada explicitamente — **quem digita é quem autoriza**. Sem acoplamento com `/merge`.
+- `/sync dev > main` **deploya prod sem gate**, por design: a skill é standalone e chamada explicitamente — **quem digita é quem autoriza**. Sem acoplamento com `/merge`.
 
 <HARD-GATE>
 1. NUNCA `--force` / `--force-with-lease`.
