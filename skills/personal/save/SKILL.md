@@ -1,10 +1,10 @@
 ---
-name: commit
-description: Use when user invokes /commit in a git repo to commit current work, with optional override message in Conventional Commits format
+name: save
+description: Use when user invokes /save in a git repo to commit current work, with optional override message in Conventional Commits format
 argument-hint: "[mensagem opcional]"
 ---
 
-# /commit
+# /save
 
 Commit autônomo de tudo que está no repo. Lida com lixo (delete) e arquivos que devem ser ignorados (.gitignore). Nunca pusha.
 
