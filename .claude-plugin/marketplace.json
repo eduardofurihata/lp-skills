@@ -16,7 +16,7 @@
     {
       "name": "furi-builder",
       "source": "./skills/personal",
-      "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pr, /merge e mais. Instala todas de uma vez.",
+      "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /merge e mais. Instala todas de uma vez.",
       "category": "personal"
     }
   ]
