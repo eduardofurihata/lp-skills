@@ -1,15 +1,15 @@
 ---
-name: pr
-description: 'Use when user invokes /pr to open a GitHub pull request for the current feature branch targeting the integration branch `dev`. Pushes the branch and creates the PR with a 3-layer body (plain-language "O que foi feito" anyone understands + technical Summary/Solução for the reviewer and AI + DevOps notes + Como testar), mirrors the plain-language summary to the NIVEE Jira card (comment + status transition), and promotes the kanban card 10-done → 11-ship. Requires the work to be already committed (via /work). Base is always dev, never main.'
+name: pull-request
+description: 'Use when user invokes /pull-request to open a GitHub pull request for the current feature branch targeting the integration branch `dev`. Pushes the branch and creates the PR with a 3-layer body (plain-language "O que foi feito" anyone understands + technical Summary/Solução for the reviewer and AI + DevOps notes + Como testar), mirrors the plain-language summary to the NIVEE Jira card (comment + status transition), and promotes the kanban card 10-done → 11-ship. Requires the work to be already committed (via /work). Base is always dev, never main.'
 effort: max
 argument-hint: "(nenhum — usa a branch atual)"
 ---
 
-# /pr — Abrir PR (feature branch → dev)
+# /pull-request — Abrir PR (feature branch → dev)
 
 Sobe a branch atual e abre o PR no GitHub **mirando `dev`**, com uma descrição que serve **três leitores ao mesmo tempo** (pessoa leiga, reviewer/IA, devops) e espelha o resumo no card NIVEE.
 
-> Pré-requisito: o trabalho já está **commitado** (Step 10 do `/method`, via `/work`). `/pr` **não** implementa nem commita feature nova — só publica o que já passou.
+> Pré-requisito: o trabalho já está **commitado** (Step 10 do `/method`, via `/work`). `/pull-request` **não** implementa nem commita feature nova — só publica o que já passou.
 
 ## Iron Law
 > **Precisão > tokens.** Um PR mal descrito custa caro no review e no deploy. A descrição **é parte da entrega**, não enfeite.
@@ -25,7 +25,7 @@ Sobe a branch atual e abre o PR no GitHub **mirando `dev`**, com uma descrição
 git branch --show-current
 git status                 # working tree limpo; commit do /method presente
 ```
-- Branch atual = **`dev`** ou **`main`** → **PARAR.** Avisar: *"/pr é pra feature branch → dev. Você está em `dev`; pro release `dev→main` use o `/merge`."* Não abrir PR.
+- Branch atual = **`dev`** ou **`main`** → **PARAR.** Avisar: *"/pull-request é pra feature branch → dev. Você está em `dev`; pro release `dev→main` use o `/merge`."* Não abrir PR.
 - Branch = feature → seguir.
 - Working tree sujo / sem commit da feature → **PARAR** e mandar fechar no `/work` (`/method` até o Step 10) antes.
 - **Branch atualizada com `dev`?**
@@ -33,7 +33,7 @@ git status                 # working tree limpo; commit do /method presente
   git fetch origin
   git merge-base --is-ancestor origin/dev HEAD && echo "✓ contém dev atual" || echo "✗ ATRÁS de dev"
   ```
-  `✗` (a `dev` andou desde o `/work`) → **PARAR** e mandar rodar `/work` de novo pra integrar `origin/dev` (merge + resolver conflitos) e **re-testar** — `/pr` publica só o que já passou, não resolve conflito não-testado.
+  `✗` (a `dev` andou desde o `/work`) → **PARAR** e mandar rodar `/work` de novo pra integrar `origin/dev` (merge + resolver conflitos) e **re-testar** — `/pull-request` publica só o que já passou, não resolve conflito não-testado.
 
 ## Fluxo
 
@@ -120,8 +120,8 @@ status: in-review
 ## Red Flags — STOP
 - "Abro o PR contra `main`" → NÃO. Base é **`dev`**. `main` é via `/merge`, com OK explícito.
 - "Abro o PR contra `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a base é `dev`.
-- "Estou em `dev`, abro o PR mesmo assim" → NÃO. `/pr` é pra feature branch. Pare e oriente pro `/merge`.
+- "Estou em `dev`, abro o PR mesmo assim" → NÃO. `/pull-request` é pra feature branch. Pare e oriente pro `/merge`.
 - "Descrição técnica já basta" → NÃO. As **3 camadas** (leigo + técnico + DevOps) são obrigatórias.
 - "Escrevo só 'corrige bug' em 'O que foi feito'" → NÃO. Tem que ser entendível por qualquer pessoa, com antes/depois concreto.
 - "Pulo o espelhamento no Jira" → NÃO. PR e card andam juntos (descrição + transição).
-- "Commito um ajuste rápido antes do push" → se precisa de código novo, volte pro `/work` (`/method` com re-review). `/pr` só publica o que já passou.
+- "Commito um ajuste rápido antes do push" → se precisa de código novo, volte pro `/work` (`/method` com re-review). `/pull-request` só publica o que já passou.

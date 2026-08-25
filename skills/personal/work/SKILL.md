@@ -1,6 +1,6 @@
 ---
 name: work
-description: 'Use when user invokes /work [NIV-X] to take a NIVEE card from todo to committed-locally — standalone, NOT the Eduzz /jira. Syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to "Em andamento", asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pr + /merge.'
+description: 'Use when user invokes /work [NIV-X] to take a NIVEE card from todo to committed-locally — standalone, NOT the Eduzz /jira. Syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to "Em andamento", asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /merge.'
 effort: max
 requires: method
 argument-hint: "[NIV-X] | (empty = continuar card ativo)"
@@ -10,7 +10,7 @@ argument-hint: "[NIV-X] | (empty = continuar card ativo)"
 
 Pega um card do board **NIVEE** e leva até o **commit local** na feature branch, no nível da referência #1 do mercado. **Skill standalone do projeto pessoal** — NÃO é o `/jira` (esse é Eduzz, outro contexto, fica fora daqui). Reusa o `/method` (que já invoca o `/solve`) como protocolo de engenharia.
 
-> 🚫 NÃO faz push, NÃO abre PR, NÃO mergeia. Termina no **commit local** (Step 10 do `/method`). Ship é o `/pr` depois.
+> 🚫 NÃO faz push, NÃO abre PR, NÃO mergeia. Termina no **commit local** (Step 10 do `/method`). Ship é o `/pull-request` depois.
 
 ## Iron Law
 
@@ -76,7 +76,7 @@ Invoque o **`/method`** (dependência obrigatória). Ele:
    Branch:  <branch>
    Commit:  <hash>
    Kanban:  kanban/10-done/<feature>.md
-   Próximo: /pr  (push + PR pra dev + espelha no card)
+   Próximo: /pull-request  (push + PR pra dev + espelha no card)
 ```
 
 ## Red Flags — STOP
@@ -87,4 +87,4 @@ Invoque o **`/method`** (dependência obrigatória). Ele:
 - "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
 - "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
 - "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes** de implementar.
-- "Terminei, já abro o PR / dou push" → NÃO. `/work` para no **commit local**. Ship é `/pr`.
+- "Terminei, já abro o PR / dou push" → NÃO. `/work` para no **commit local**. Ship é `/pull-request`.
