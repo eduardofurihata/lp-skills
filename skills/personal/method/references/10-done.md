@@ -30,13 +30,15 @@
 - **Status final dos TCs** — **checklist completo por TC** (`- [x] TC-N`), copiado da seção `## Test Cases (QA)` do card de to-do, + contagem total (todos PASSED)
 - **Ledger de Follow-ups final** — tabela completa copiada da seção `## Follow-ups` do card de to-do (todos `RESOLVIDO-NO-STEP` / `RESOLVIDO-POR-CICLO` / `DESCARTADO`, **zero `ABERTO`**), com link do done doc de cada ciclo
 - **Conteúdo do todo incorporado** — tasks completadas do `kanban/06-todo/`
-- **Princípios — o que produziram** (`principios.md`), 3 linhas, sem prosa:
+- **Princípios — o que produziram** (`principios.md`), 5 linhas, sem prosa:
   - **Reutilizado (DRY):** o que existia e foi estendido em vez de recriado (do § 3.1 do plano)
   - **Descartado (YAGNI):** o que foi considerado e não construído (do § 3.2 do plano)
-  - **Elevado (tocou = refatora):** o que estava abaixo do nível #1 nos arquivos abertos e subiu
+  - **Motores (§ 3.3):** quais nasceram, quais cresceram, que lógica dispersa foi absorvida
+  - **Elevado (refatoração do perímetro, § 3.5):** o que estava abaixo do nível #1 no caminho percorrido e subiu — e o que já estava no nível #1
+  - **DS ganhou** (`design.md`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
 - **Commit SHA** — hash do commit criado neste step (ver abaixo)
 
-> Sem essas 3 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo `/method` (e o `/merge`) precisa saber.
+> Sem essas 5 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo `/method` (e o `/merge`) precisa saber. A linha do DS é o que impede a próxima feature de reinventar o que esta acabou de promover.
 
 ## Gate de Convergência — ANTES de qualquer ação do Step 10
 
@@ -105,7 +107,7 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - [ ] Cada item de balde **B** fechado por ciclo `/method` próprio (1→10, com `/solve`, sem commit) com done doc linkado
 - [ ] Cada item de balde **C** com justificativa registrada no ledger
 - [ ] Done doc referencia todos os artefatos (docs 1-9) e contém o **ledger de follow-ups final**
-- [ ] Done doc registra as 3 linhas de **princípios** (reutilizado · descartado · elevado)
+- [ ] Done doc registra as **5 linhas de princípios**: reutilizado (DRY) · descartado (YAGNI) · **motores** · **elevado** (refatoração do perímetro) · **DS ganhou** (se tem UI)
 - [ ] Card de `kanban/06-todo/<tópico>.md` deletado (card movido para `10-done`) — **ANTES do commit**
 - [ ] Artefato `kanban/10-done/<tópico>.md` existe com conteúdo substantivo
 - [ ] **UM único commit** na branch atual (Conventional Commits) capturando código + docs (01-09) + card de done + remoção do todo + **todos os ciclos de follow-up** — sem commit adiantado do código, sem commit extra depois

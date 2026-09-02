@@ -8,6 +8,43 @@
 
 - **Pasta:** `docs/04-spec/`
 - **Arquivo:** `<tópico>.md`
+- **Arquivo (feature com superfície visual):** `docs/04-spec/design-system.md` — **vive entre features**, não é por tópico. Ver § Design System abaixo.
+
+## Design System — o artefato que evolui com o produto
+
+Feature com superfície visual **decide o DS aqui** (doutrina completa: `design.md`). O arquivo é único e cumulativo: cada feature lê, usa e **faz crescer**.
+
+```markdown
+# Design System
+
+## Tokens (SSOT)
+| token | valor | uso |
+|---|---|---|
+| color.surface.raised | … | cards, popovers |
+| space.4 / radius.md / motion.fast | … | … |
+
+## Componentes
+| componente | nível | estados prontos |
+|---|---|---|
+| Button | átomo | hover · focus-visible · active · disabled · loading |
+| EmptyState | molécula | — |
+
+## Padrões de interação
+- Ação destrutiva sempre confirma; "Salvar" é sempre o mesmo rótulo e o mesmo lugar.
+
+## Breakpoints e a11y alvo
+- Breakpoints do projeto: … · piso 320px · WCAG **AA**
+
+## Esta feature promove ao DS
+- `motion.fast` (token novo) — nenhum token cobria transição de foco
+- `<EmptyState>` — extraído de 3 telas que repetiam o mesmo bloco
+```
+
+**Ordem obrigatória ao precisar de algo:** **reusar** → **compor** → **promover** (criar no DS, nunca na pasta da feature).
+
+**Projeto sem DS?** A primeira feature o **funda** com o mínimo que os UCs exigem — sem inventar paleta inteira para uma tela (YAGNI vale aqui igual). As seguintes o fazem crescer.
+
+**Superfície visual é DERIVADA aqui** (sim/não), como o escopo de plataforma — nunca declarada pelo usuário. É o que liga ou desliga a linha de **Design** nos gateways seguintes.
 
 ## Regra central
 
@@ -20,7 +57,7 @@ A AI resolve cada decisão usando (em ordem de prioridade):
 1. **Padrões do projeto** — código existente, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
 2. **Big apps como referência** — big pop tech apps / líderes do mesmo domínio
 3. **Boas práticas de mercado** — padrões consagrados de engenharia de alto nível
-4. **Princípios de engenharia** — SOLID/SRP, DRY, KISS, YAGNI, Law of Demeter (`principios.md`), Clean Architecture, OWASP, performance, acessibilidade, escalabilidade
+4. **Princípios de engenharia e design** — SOLID completo (SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e Motores (`principios.md`); tokens, atomicidade, composição, headless, estados e a11y (`design.md`); Clean Architecture, OWASP, performance, escalabilidade
 
 > Os princípios não são só o desempate nº 4: eles **filtram** o resultado dos níveis 1-3. Uma decisão que vem de "big app faz assim" mas viola YAGNI (nenhum UC exige) ou DRY (o projeto já tem esse mecanismo) **não passa** — volta para "alternativas descartadas".
 
@@ -42,6 +79,9 @@ REPETIR até zero gaps:
      Stack/tecnologia | Regras de negócio | UI/UX e consistência visual | Edge cases
      Integrações | Permissões/roles | Dados/schemas | Performance | Segurança
      **Escopo de plataforma** (web/android/ios) — derivado da feature, não declarado
+     **Superfície visual** (sim/não) — derivada aqui; se sim, o Design System entra como gap
+     **Design System** — que token/componente já existe? o que será reusado, composto ou **promovido**?
+     **Motores** — qual capacidade esta feature exige, e quem é o dono dela?
      **UI/UX obrigatório:** como features similares se comportam no app hoje? como big apps resolvem?
 
   3. RESOLVER CADA GAP — Para cada decisão:
@@ -56,6 +96,8 @@ REPETIR até zero gaps:
      - Decisões geraram NOVAS ambiguidades?
      - Contradições com algo anterior?
      - Dimensões não cobertas? (segurança, performance, a11y, mobile, i18n, rollback)
+     - A decisão pede **token ou componente que o DS não tem**? → reusar / compor / **promover** (registre em `design-system.md`)
+     - A decisão espalha uma regra que já tem dono? → **absorve no motor**
 
   5. DECISÃO: gaps restantes? → novo round. Zero gaps? → sair.
 
@@ -98,7 +140,12 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - **DRY** — antes de decidir criar, procure: o projeto já resolve isso? (grep + `patterns.md` + CLAUDE.md). Se sim, a decisão é **reusar/estender**, e isso fica escrito.
 - **SRP** — as fronteiras de módulo/camada saem daqui: quem é dono de quê, o que é service, o que é UI, o que é shared. Fronteira mal desenhada aqui vira o "service que faz tudo" no 7b.
 - **KISS** — entre duas soluções que atingem o nível #1, ganha a mais simples. Complexidade só se paga com requisito, nunca com elegância.
-- **Law of Demeter / acoplamento** — decisões de integração declaram a direção da dependência (`shared → api/web` ok; `api ↔ web` proibido).
+- **Law of Demeter / acoplamento** — decisões de integração declaram a direção da dependência (`shared → api/web` ok; `api ↔ web` proibido) e **quem fala com quem**. Fronteira mal desenhada aqui vira `a.b.c.d` no 7b.
+- **OCP** — onde a solução vai precisar crescer? O **ponto de extensão é decisão**, não improviso do 7b. Sem isso, o crescimento vira `if` novo no meio do que já funcionava.
+- **DIP** — decisões declaram dependência de **abstração**, não de implementação: o motor define o contrato, a infra (banco, HTTP, lib) implementa. Direção aponta ao domínio.
+- **Motor** — **é aqui que o motor é nomeado e desenhado**: fronteira, contrato público, o que fica dentro e o que fica fora. Cada decisão declara **qual motor é dono da regra**; regra sem dono é regra que vai nascer espalhada.
+- **Refatoração** — decisão que replica mecanismo já existente vira decisão de **estender o motor que já existe**, não de criar um irmão.
+- **Design** (se tem UI) — o step decide o **DS**: inventário em `docs/04-spec/design-system.md`, o que reusa / compõe / **promove**, qual padrão consagrado se aplica (Jakob) e o motivo de qualquer desvio, breakpoints, a11y alvo (AA) e benchmark visual citado. Ver `design.md`.
 
 ## Gateway 4 → 5
 
@@ -106,7 +153,12 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - [ ] Cada decisão com justificativa + referência + alternativas descartadas
 - [ ] **Cada decisão declara o UC que a exige** (YAGNI) — sem UC, foi para descartadas
 - [ ] **Reúso verificado antes de criar** (DRY) — decisões que o projeto já resolve viraram "reusar/estender"
-- [ ] Fronteiras de módulo/camada explícitas (SRP) + direção de dependências declarada
+- [ ] Fronteiras de módulo/camada explícitas (SRP) + direção de dependências declarada (DIP/LoD) + pontos de extensão previstos (OCP)
+- [ ] **Cada decisão declara qual motor é dono da regra**; motor novo nomeado e com contrato desenhado
 - [ ] Escopo de plataforma derivado (não declarado)
+- [ ] **Superfície visual derivada** (sim/não) — publicada no gateway; é ela que liga/desliga a linha de Design daqui em diante
+- [ ] **Se tem UI:** `docs/04-spec/design-system.md` inventariado; promoções ao DS declaradas; breakpoints e a11y alvo (AA) definidos; benchmark visual citado
 - [ ] Artefato `docs/04-spec/<tópico>.md` existe com conteúdo substantivo
 - [ ] **Princípios declarados** na linha do Gateway Check
+- [ ] **Refatoração declarada** na linha própria do Gateway Check
+- [ ] **Design declarado** na linha própria — ou `❌ N/A — sem superfície visual, derivado do Step 4` (a declaração **única**, que os gateways seguintes herdam)

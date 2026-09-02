@@ -19,15 +19,30 @@ REPETIR até 100% limpo:
      - Acessibilidade (se frontend)?
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
-     - Regra "tocou = refatora" do 7b seguida?
+     - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível #1?
      - **Princípios, UM A UM e POR NOME** (`principios.md` — a MESMA lista contra a qual o 7b escreveu):
        · **SRP** — arquivo/função/componente faz uma coisa? >40 linhas sem extrair? lógica+UI juntos?
+       · **OCP** — comportamento novo entrou como `if`/`case` no meio do que já existia, em vez de composição?
+       · **LSP** — alguma implementação lança onde o contrato não prevê, ou exige mais do que ele exige?
+       · **ISP** — interface obrigando a implementar o que o cliente não usa?
+       · **DIP** — regra de negócio importando client de infra (Prisma, HTTP, lib) direto?
        · **DRY** — lógica que já existe em shared/lib/components foi duplicada? (grep, não memória)
        · **KISS** — dá pra fazer o mesmo com menos? abstração que só complica?
        · **YAGNI** — entrou algo que nenhum UC exige? o § 3.2 do plano foi furado sem registro?
        · **LoD / acoplamento** — `a.b.c.d`? dependência circular? direção `api ↔ web` violada?
+       · **Motores** — a capacidade vazou do motor? existe **segunda fonte** da mesma regra? o contrato virou tripa exposta? o § 3.3 foi cumprido?
        · **Camadas** — lógica de negócio em controller/componente?
-     - **Nível referência #1:** está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"? ("Um líder do domínio assinaria isto?")
+     - **Design, UM A UM e POR NOME** (`design.md` — só se a feature tem superfície visual):
+       · **Tokens** — sobrou valor literal (`#hex`, `13px`) onde devia ser token?
+       · **Atomicidade** — átomo conhecendo regra de negócio ou fazendo fetch?
+       · **Composição > configuração** — >2 props booleanas de aparência?
+       · **Headless** — comportamento e aparência no mesmo arquivo?
+       · **Estados** — vazio, carregando, erro, sucesso, limite + hover/focus-visible/active/disabled/loading/selected: todos existem?
+       · **Consistência semântica / Jakob** — mesma ação com nome, ícone e lugar diferentes? padrão inventado sem motivo escrito?
+       · **Preservação de contexto** — voltar apaga? filtro/rascunho/scroll sobrevivem?
+       · **A11y (AA)** — contraste, foco visível, teclado, nome acessível, alvo ≥24px?
+       · **DS** — componente visual novo nasceu na pasta da feature em vez de ser **promovido**?
+     - **Nível referência #1:** está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"? ("Um líder do domínio assinaria isto — e assinaria esta tela?")
   6. Problema encontrado → CLASSIFICAR e agir:
      - dentro do escopo documentado (docs 01-04) → **balde A**: corrigir IMEDIATAMENTE → voltar ao 1
      - escopo novo que este trabalho criou/tocou/expôs → **balde B**: registrar ABERTO no ledger
@@ -68,14 +83,36 @@ Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|
 | SRP (responsabilidade única, camadas) | ✅/⚠️ | |
+| OCP (extensão sem editar o que funciona) | ✅/⚠️ | |
+| LSP (implementação honra o contrato) | ✅/⚠️ | |
+| ISP (interface do tamanho do cliente) | ✅/⚠️ | |
+| DIP (depende de abstração, direção ao domínio) | ✅/⚠️ | |
 | DRY (duplicação, reúso do § 3.1) | ✅/⚠️ | |
 | KISS (complexidade) | ✅/⚠️ | |
 | YAGNI (especulação, § 3.2 respeitado) | ✅/⚠️ | |
 | Law of Demeter / acoplamento | ✅/⚠️ | |
+| Motores (§ 3.3 — um dono por capacidade) | ✅/⚠️ | |
+| Refatoração (saldo do perímetro, § 3.5) | ✅/⚠️ | |
 | Naming + consistência com o codebase | ✅/⚠️ | |
 | Nível vs. referência #1 (big pop tech apps) | ✅/⚠️ | |
 
 Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio não revisado.
+
+## Análise de Design (por princípio — `design.md`) — só com superfície visual
+
+| Princípio | Veredicto | Evidência / o que foi corrigido |
+|---|---|---|
+| Tokens = SSOT (zero literal) | ✅/⚠️ | |
+| Atomicidade (nível certo, átomo sem regra) | ✅/⚠️ | |
+| Composição > configuração | ✅/⚠️ | |
+| Headless (lógica ⟂ apresentação) | ✅/⚠️ | |
+| Estados (todos desenhados) | ✅/⚠️ | |
+| Consistência semântica / Jakob | ✅/⚠️ | |
+| Preservação de contexto | ✅/⚠️ | |
+| A11y (WCAG AA) + responsivo (breakpoints, 320px) | ✅/⚠️ | |
+| DS evoluiu (promoções registradas, nada solto na feature) | ✅/⚠️ | |
+
+Feature sem superfície visual: escreva `N/A — sem superfície visual (derivado do Step 4)` **uma vez**, no lugar da tabela.
 
 ## Follow-ups Emitidos
 | # | Achado | Balde (A/B/C) | Status | Destino |
@@ -103,8 +140,11 @@ Nenhum? → "nenhum follow-up emitido neste review".
 
 - [ ] Veredicto **APROVADO** em 8b
 - [ ] Zero issues pendentes (balde A)
-- [ ] **`## Análise de Qualidade` preenchida por princípio** (SRP · DRY · KISS · YAGNI · LoD · naming · nível #1) — nenhuma linha em branco
+- [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível #1) — nenhuma linha em branco
+- [ ] **`## Análise de Design` preenchida por princípio** (se tem UI) — nenhuma linha em branco
 - [ ] **Princípios declarados** na linha do Gateway Check
+- [ ] **Refatoração declarada** na linha própria do Gateway Check
+- [ ] **Design declarado** na linha própria (se a feature tem superfície visual)
 - [ ] Achados fora de escopo classificados no ledger (B ou C) — seção `## Follow-ups Emitidos` preenchida
 - [ ] PR existente atualizado (se houver)
 - [ ] Artefato `kanban/08-code-review/<tópico>.md` existe com conteúdo substantivo

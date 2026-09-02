@@ -123,9 +123,9 @@
 
 ---
 
-## Categoria 11 — Princípios de engenharia (SOLID/SRP, DRY, KISS, YAGNI, LoD)
+## Categoria 11 — Princípios de engenharia (SOLID · DRY · KISS · YAGNI · LoD · Motores)
 
-> Fonte única dos princípios e da lente de cada step: `principios.md`. Eles valem do Step 1 ao 10 e são declarados na linha obrigatória de TODO Gateway Check.
+> Fonte única dos princípios e da lente de cada step: `principios.md`. Eles valem do Step 1 ao 10 e são declarados na linha obrigatória de TODO Gateway Check. **SOLID são cinco** — SRP, OCP, LSP, ISP, DIP.
 
 | Frase | Realidade |
 |-------|-----------|
@@ -136,11 +136,36 @@
 | "Ficou genérico demais, mas é elegante" | KISS: elegância que nenhum UC pediu é complexidade. BLOQUEADO. |
 | "YAGNI, então não faço o que o UC pede" | Inversão. YAGNI mata **especulação**, não requisito nem achado real (balde B). BLOQUEADO. |
 | "Simplifiquei, ficou bom o suficiente" | KISS ≠ mediocridade. O piso é o nível #1 do `/solve`. BLOQUEADO. |
-| "O arquivo já estava ruim, não fui eu" | Tocou = refatora. Abriu para editar, é seu. BLOQUEADO. |
-| "Já que estou aqui, refatoro o projeto inteiro" | O oposto: foco/YAGNI. Só o que você tocou; o resto é balde C (ou B, se este trabalho expôs). BLOQUEADO. |
-| "Publico o gateway sem a linha de princípios, está implícito" | Implícito = inexistente, igual ao gateway silencioso. BLOQUEADO. |
+| "O arquivo já estava ruim, não fui eu" | Passou por ali, é seu. Está no perímetro → sobe. BLOQUEADO. |
+| "Já que estou aqui, refatoro o projeto inteiro" | O limite é o **perímetro** (editado, aberto para entender, dependente do grep, caminho do fluxo), não o repositório. Fora dele é balde C. BLOQUEADO. |
+| "Só mexi numa linha, não precisa elevar o arquivo" | Regra do saldo: nenhum arquivo do perímetro sai como entrou — ou subiu, ou você declara que já estava no nível #1. BLOQUEADO. |
+| "Abri o arquivo só pra ler, não conta" | Ler é passar. Enxergou o problema, ele está no seu perímetro. BLOQUEADO. |
+| "SOLID eu cubro com o SRP" | SOLID são **cinco**. OCP, LSP, ISP e DIP não são opcionais — e o que não é nomeado nunca é revisado. BLOQUEADO. |
+| "É só mais um `if`, não precisa de motor" | O `if` é a **segunda fonte** da mesma regra. Absorve no motor (§ 3.3 do plano). BLOQUEADO. |
+| "Crio o motor genérico agora e ligo depois" | Motor sem UC é especulação (YAGNI). Motor nasce da capacidade que **já existe**. BLOQUEADO. |
+| "Cada tela trata do seu jeito, fica mais simples" | KISS local, caos global. A regra tem **um** dono. BLOQUEADO. |
+| "Só puxei o campo lá de dentro, é mais rápido" | LoD: o vizinho **expõe**, você não atravessa. Cada ponto na cadeia é um acoplamento a mais. BLOQUEADO. |
+| "Publico o gateway sem a linha de princípios, está implícito" | Implícito = inexistente, igual ao gateway silencioso. Vale para as linhas de **refatoração** e **design** também. BLOQUEADO. |
 | "Dupliquei a lógica pro TC passar, limpo depois" | Workaround que viola princípio é **FAILED disfarçado** (Step 9). BLOQUEADO. |
 | "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |
+
+## Categoria 12 — Design e UI (`design.md`)
+
+> Fonte única do design: `design.md`. Vale para feature com **superfície visual**, derivada no Step 4 — e é declarada na linha própria do Gateway Check.
+
+| Frase | Realidade |
+|-------|-----------|
+| "O DS não tem esse componente, crio na pasta da feature" | Ordem é **reusar → compor → promover**. Componente visual na pasta da feature é dívida de DS. BLOQUEADO. |
+| "É só uma cor / um espaçamento, hardcode não faz mal" | Token é SSOT. Literal é hardcode visual e some do radar na próxima mudança de tema. BLOQUEADO. |
+| "As outras telas são assim, mantenho a consistência" | Consistência vale para padrão **bom**. Padrão ruim no perímetro se **eleva**; fora dele, vai pro ledger. Copiar é propagar. BLOQUEADO. |
+| "Faço a a11y depois, primeiro entrego a tela" | AA é **piso**, não fase. Retrofit de foco e contraste custa a tela inteira. BLOQUEADO. |
+| "Desktop primeiro, mobile numa próxima" | Escopo de plataforma é **derivado** no Step 4, não declarado. BLOQUEADO. |
+| "Estado vazio e erro resolvo se sobrar tempo" | Estado não desenhado = estado quebrado. É o que o usuário vê no pior dia dele. BLOQUEADO. |
+| "Adiciono uma prop booleana, é mais rápido que recompor" | >2 booleanas de aparência = recomponha. Cada flag multiplica os caminhos a testar. BLOQUEADO. |
+| "O screenshot do happy path já prova" | Evidência é por **estado × breakpoint**. Happy path em desktop é a fatia que nunca quebra. BLOQUEADO. |
+| "Inventei um padrão melhor que o consagrado" | Lei de Jakob: o usuário aprendeu em outro produto. Desvio exige motivo escrito no Spec, não gosto. BLOQUEADO. |
+| "Design é subjetivo, não dá pra cobrar em gateway" | Token, nível atômico, estados, contraste e breakpoint são **verificáveis**. É isso que se cobra. BLOQUEADO. |
+| "A feature é pequena, não precisa mexer no DS" | Então ela **reusa**. Se não reusa nem compõe, **promove**. "Pequena" não cria exceção. BLOQUEADO. |
 
 ## Red Flags — Frases-Gatilho que Obrigam STOP
 
@@ -180,7 +205,17 @@ Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PA
 - "bug conhecido, seguimos"
 - "princípio é coisa de código, aqui é doc" / "aplico tudo no 7b"
 - "deixo a abstração pronta, é só um arquivinho" / "duplicar é mais rápido"
-- "publico o gateway sem a linha de princípios"
+- "publico o gateway sem a linha de princípios / de refatoração / de design"
 - "workaround só pra esse TC passar, limpo depois"
+- "SOLID eu cubro com o SRP"
+- "é só mais um `if`, não precisa de motor" / "cada tela trata do seu jeito"
+- "crio o motor genérico agora e ligo depois"
+- "só puxei o campo lá de dentro"
+- "só mexi numa linha, não precisa elevar o arquivo" / "abri só pra ler, não conta"
+- "as outras telas são assim, mantenho a consistência" (sendo que estão ruins)
+- "é só uma cor, hardcode não faz mal" / "o DS não tem, crio na pasta da feature"
+- "a11y depois" / "desktop primeiro, mobile numa próxima" / "estado vazio se sobrar tempo"
+- "o screenshot do happy path já prova"
+- "design é subjetivo, não dá pra cobrar em gateway"
 
 **Todas essas frases significam: PARE. Reative o protocolo. Execute do jeito certo.**

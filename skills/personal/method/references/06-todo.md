@@ -28,6 +28,9 @@ A lista de tasks é a primeira forma concreta da arquitetura — o que estiver t
 - **DRY** — task que recria algo que o projeto já tem deve nascer como task de **reúso**: "estender `X` para cobrir Y" > "criar novo Y". A checagem é grep, não memória.
 - **YAGNI** — toda task rastreia a um UC (Step 3) ou TC (Step 5). Task sem origem = escopo inventado → fora (ou vira achado no ledger, se for real).
 - **KISS** — descrição na linguagem do que muda, não do como interno.
+- **Motor** — cada task declara **qual motor** ela constrói, estende ou absorve. Task que espalha a mesma regra por N telas **não existe**: vira task de motor + tasks de chamada.
+- **Refatoração** — task que recria o existente vira task de **extensão**; e o perímetro previsto pela task já entra anotado, para o 7a planejar a elevação.
+- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e **qual componente do DS** ela constrói, estende ou **promove** (`design.md`).
 
 ## Exemplo
 
@@ -88,4 +91,8 @@ Regras completas: `follow-ups.md`.
 - [ ] Seção `## Test Cases (QA)` presente com 1 `- [ ]` por TC do step 5
 - [ ] Seção `## Follow-ups` presente (semeada com os achados dos Steps 1-5, ou vazia)
 - [ ] Toda task rastreia a UC/TC (YAGNI) e task que recria o existente virou task de **reúso** (DRY)
+- [ ] Cada task declara **qual motor** constrói/estende/absorve — nenhuma task espalha a mesma regra por N telas
+- [ ] **Se tem UI:** task de UI declara o **nível atômico** e o componente do DS que constrói/estende/promove
 - [ ] **Princípios declarados** na linha do Gateway Check
+- [ ] **Refatoração declarada** na linha própria do Gateway Check
+- [ ] **Design declarado** na linha própria (se a feature tem superfície visual)

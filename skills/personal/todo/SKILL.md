@@ -144,13 +144,22 @@ REPETIR até 100% limpo:
      - Performance (N+1, re-renders, memory leaks)?
      - Consistência com codebase?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
-     - Regra "tocou = refatora" seguida?
+     - Saldo do perímetro (§ 3.5 do plano): tudo por onde o trabalho passou subiu, ou está declarado como já no nível #1?
      - **Princípios, UM A UM e POR NOME** (`skills/method/references/principios.md`):
        · SRP (uma responsabilidade, >40 linhas, lógica+UI juntos, camadas)
+       · OCP (comportamento novo entrou como `if` no meio do que já existia?)
+       · LSP (implementação lança onde o contrato não prevê?)
+       · ISP (interface obrigando a implementar o que o cliente não usa?)
+       · DIP (regra de negócio importando client de infra direto?)
        · DRY (duplicou o que já existe? § 3.1 do plano respeitado?)
        · KISS (dá pra fazer com menos?)
        · YAGNI (entrou algo sem UC? § 3.2 do plano furado?)
        · Law of Demeter / acoplamento / direção de dependências
+       · Motores (§ 3.3 — a capacidade tem UM dono? segunda fonte da mesma regra?)
+       · Refatoração (§ 3.5 — saldo do perímetro: tudo por onde passou subiu?)
+       · Design, se tem tela (`design.md`) — tokens (zero literal) · atomicidade ·
+         composição > configuração · headless · todos os estados · Jakob ·
+         preservação de contexto · a11y AA · promoveu ao DS em vez de soltar na feature
   6. Problema encontrado → corrigir IMEDIATAMENTE → voltar ao 1
   7. Loop até ZERO issues — NÃO aceitar "bom o suficiente"
 ```
@@ -182,10 +191,14 @@ Input validation | Auth | Dados sensíveis | Injection vectors
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|
 | SRP (responsabilidade única, camadas) | ✅/⚠️ | |
+| OCP / LSP / ISP / DIP | ✅/⚠️ | |
 | DRY (duplicação, reúso) | ✅/⚠️ | |
 | KISS (complexidade) | ✅/⚠️ | |
 | YAGNI (especulação) | ✅/⚠️ | |
 | Law of Demeter / acoplamento | ✅/⚠️ | |
+| Motores (um dono por capacidade) | ✅/⚠️ | |
+| Refatoração (saldo do perímetro) | ✅/⚠️ | |
+| Design (tokens · estados · a11y — se tem tela) | ✅/⚠️ | |
 (linha em branco = princípio não revisado)
 
 ## Veredicto Final
@@ -389,7 +402,9 @@ NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 NUNCA workaround pra fazer o TC passar — duplicar lógica, regra de negócio no
       componente, `if` especial do cenário de teste: isso viola os princípios
       (`principios.md`) e é FAILED disfarçado. Todo fix é código e obedece
-      SRP · DRY · KISS · YAGNI · LoD, igual ao resto.
+      SOLID · DRY · KISS · YAGNI · LoD · Motores, igual ao resto — e vai
+      PARA O MOTOR, nunca de remendo no chamador. Fix visual segue `design.md`:
+      remendo de CSS pra passar o TC também é FAILED disfarçado.
 ```
 
 ---

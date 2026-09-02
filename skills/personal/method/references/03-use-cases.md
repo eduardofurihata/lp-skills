@@ -37,10 +37,15 @@ Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Nã
 - **DRY** — tabela de assinaturas **única**, sem duplicata (já é critério do gateway). Dois UCs com o mesmo fluxo e estados diferentes compartilham a descrição, não a copiam.
 - **YAGNI** — todo UC rastreia a uma story do Step 2. Fluxo que nenhuma story pede não vira UC — vira achado (ledger), se for real.
 - **KISS** — fluxo em passos de usuário, sem código. UC não é pseudo-implementação.
+- **Motor** — UCs que compartilham a mesma regra são do **mesmo motor**, e a tabela de assinaturas já é o **esboço do contrato** dele: o que entra, o que sai. Dois UCs que precisam da mesma decisão não podem tomá-la cada um por si.
+- **Refatoração** — UC agrupado → **quebre**; assinatura duplicada → **funda**. O artefato sai desta passada mais limpo do que entrou.
+- **Design** (se tem UI) — cada UC lista seus **estados de tela**: vazio, carregando, erro, sucesso e limite (lista longa, texto longo, sem permissão). **Estado não listado aqui é estado que não vai ser desenhado** — e vira bug no Step 9 (`design.md`).
 
 ## Gateway 3 → 4
 
 - [ ] Toda user story do Step 2 tem UC(s) derivado(s)
 - [ ] Para cada story: happy path + alternativos + erros + todos os atores cobertos (nada omitido)
 - [ ] Artefato `docs/03-use-cases/<tópico>.md` existe com conteúdo substantivo
-- [ ] **Princípios declarados** na linha do Gateway Check (SRP · DRY · YAGNI · KISS pela lente acima)
+- [ ] **Princípios declarados** na linha do Gateway Check (SRP · DRY · YAGNI · KISS · Motor pela lente acima)
+- [ ] **Refatoração declarada** na linha própria do Gateway Check
+- [ ] **Design declarado** na linha própria — cada UC com seus estados de tela (se a feature tem superfície visual)
