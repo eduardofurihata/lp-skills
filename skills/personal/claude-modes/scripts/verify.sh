@@ -11,7 +11,7 @@ echo "== shell (~/.bashrc) =="
 grep -q '^claude()'  "$HOME/.bashrc" 2>/dev/null && grep -q '^claudew()' "$HOME/.bashrc" 2>/dev/null \
   && pass "claude() and claudew() defined" || fail "claude()/claudew() missing in ~/.bashrc"
 defs="$(bash -ic 'type claude; type claudew' 2>/dev/null || true)"
-echo "$defs" | grep -q -- '--effort max'                       && pass "claude  -> --effort max" || warn "claude not --effort max (open a NEW shell?)"
+echo "$defs" | grep -q -- '--effort'                           && warn "claude forca --effort (esperado: nenhum; nivel vem de ~/.claude/settings.json)" || pass "claude  -> sem --effort (usa settings/efforts em runtime)"
 echo "$defs" | grep -q -- "--settings '{\"ultracode\": true}'" && pass "claudew -> ultracode"     || warn "claudew not ultracode (open a NEW shell?)"
 
 echo
@@ -62,6 +62,8 @@ PY
 
 echo
 echo "== behavior simulation (what the Claude terminal profile resolves to) =="
-sim(){ CLAUDE_CODE_EFFORT_LEVEL="$1" bash -c 'if [ "$CLAUDE_CODE_EFFORT_LEVEL" = ultracode ]; then echo "claude --settings ultracode"; else echo "claude --effort ${CLAUDE_CODE_EFFORT_LEVEL:-max}"; fi'; }
-printf '  Ctrl+Q       (Claude, env=max)  -> %s\n' "$(sim max)"
-printf '  Ctrl+Shift+U (Claude Ultra)     -> claude --settings ultracode (hardcoded)\n'
+sim(){ CLAUDE_CODE_EFFORT_LEVEL="$1" bash -c 'if [ "$CLAUDE_CODE_EFFORT_LEVEL" = ultracode ]; then echo "claude --settings ultracode"; elif [ -n "$CLAUDE_CODE_EFFORT_LEVEL" ]; then echo "claude --effort $CLAUDE_CODE_EFFORT_LEVEL"; else echo "claude (sem --effort -> ~/.claude/settings.json effortLevel)"; fi'; }
+printf '  Ctrl+Q       (Claude, env vazio)     -> %s\n' "$(sim "")"
+printf '  Ctrl+Q       (Claude, env=high)      -> %s\n' "$(sim high)"
+printf '  Ctrl+Q       (Claude, env=ultracode) -> %s\n' "$(sim ultracode)"
+printf '  Ctrl+Shift+U (Claude Ultra)          -> claude --settings ultracode (hardcoded)\n'
