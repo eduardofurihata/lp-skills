@@ -63,18 +63,30 @@ Para reduzir a lista antes de perguntar, cruze com o contexto local — remote d
 
 MCP indisponível ou não autenticado → pule pro passo 3 pedindo o link direto, e diga por que não há opções.
 
-### 3. Perguntar (AskUserQuestion)
+### 3. Perguntar (AskUserQuestion) — uma vez, e é confirmação
 
-Pergunte **qual board é o deste repositório**, com as opções sendo os boards que existem de verdade:
+**Há candidato provável** (o cruzamento do passo 2 apontou **um** projeto com board) → a pergunta **confirma esse board**, não abre menu:
+
+```
+Este repositório é do board <KEY> — <nome do projeto> · board <ID>?
+  Sim, é esse
+  Não, é outro     ← o campo livre recebe a key ou o link do board certo
+```
+
+Listar todos os projetos do site lado a lado transforma confirmação em adivinhação: quem lê vê `ALK`, `NIV` e `TESTE` como igualmente prováveis e a pergunta parece palpite — *"por que você confundiu com o outro?"* é a resposta que isso produz. O candidato provável você já tem; o que falta é o aceite.
+
+**Não há candidato provável** (o nome do repo não casa com projeto nenhum, ou casa com mais de um) → aí sim liste os projetos que existem de verdade, o mais provável primeiro:
 
 ```
 Qual board do Jira é o deste repositório?
-  <KEY> — <nome do projeto> · board <ID> (<nome do board>)     ← candidato provável primeiro
+  <KEY> — <nome do projeto> · board <ID> (<nome do board>)
   <KEY2> — <nome> · board <ID2>
   …
 ```
 
-O campo livre ("Other") é onde o usuário cola o **link do board** — é a saída quando o board não apareceu na lista ou o MCP não respondeu. Diga isso na descrição de uma das opções.
+Nos dois formatos, o campo livre ("Other") é onde o usuário cola o **link do board** — é a saída quando o board não apareceu ou o MCP não respondeu. Diga isso na descrição de uma das opções.
+
+**A pergunta é isolada.** Nunca a embuta num bloco de perguntas da skill que chamou (`/card`, `/work`, …): misturada com decisões de produto, ela vira mais uma linha que o usuário não sabe por que está respondendo. É uma pergunta só, feita **uma vez na vida do repositório** — o passo 4 grava a resposta e ninguém pergunta de novo.
 
 ### 4. Parsear, validar e gravar
 
@@ -156,6 +168,8 @@ Trocar o board é a única situação em que o arquivo é reescrito. Uso de key 
 
 - "O `MEMORY.md` já estava no contexto, não precisei ler" → NÃO. A leitura de `jira-board.md` é explícita, **toda** invocação. Índice não é conteúdo.
 - "Não tinha board gravado, então inferi do nome da pasta e segui" → NÃO. Inferência **ordena** as opções; quem decide é o usuário. Perguntar uma vez é barato, board errado não.
+- "Listei todos os projetos do site como opções, mesmo com um candidato óbvio" → NÃO. Com candidato provável a pergunta é **confirmação** (sim/não + campo livre). Menu de projetos só quando não há candidato — senão o irrelevante entra na tela com o mesmo peso do certo.
+- "Perguntei o board junto com as perguntas da skill que me chamou" → NÃO. A pergunta do board é **isolada**. Misturada com decisões de produto ela parece palpite, e o usuário não sabe o que está confirmando.
 - "Gravei o que o usuário colou sem validar" → NÃO. Key em `jira_get_all_projects`, board em `jira_get_agile_boards`. Sem os dois, não grava.
 - "A key não apareceu no site, usei a mais parecida" → NÃO. Não existe neste site → **avise** (pode estar em outro) e não grave.
 - "Cachei o tipo de issue e as transições junto, pra economizar" → NÃO. Só board/projeto/site. O resto é descoberto a cada uso, sempre.
