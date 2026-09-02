@@ -87,3 +87,23 @@ Endpoint `/version` obrigatório (imporia mudança a todo projeto-alvo) · rollb
 | F-06 | Fila tratada como estado único no `deploy-run` | A | RESOLVIDO-NO-STEP | Achado pelo TC-8: duas filas + labels + janela declarada |
 
 **ABERTO = 0 · novos no último passe = 0.** Nenhum item virou card no Jira.
+
+---
+
+## Entrega em produção (dogfooding — o próprio `/prod` aplicado a este repositório)
+
+Este repositório é **branch única** (só `main` em `origin`) e o deploy é a integração Git da Vercel. Pelo desenho novo, quem entrega é o `/prod`, sem gate.
+
+| Gap | Motor | Resultado |
+|---|---|---|
+| `deploy.md` não existia | `deploy-context` | ✅ escrito em `docs/00-context/technical/deploy.md` — **tudo inferido**, nada perguntado, zero valor de secret |
+| 1 commit não publicado | `deploy-run` | ✅ `560dcaf` publicado (`9180262..560dcaf`) |
+| Deploy não observado | `deploy-run` | ✅ **desfecho verde**: Vercel `Ready` em 27s |
+| Configuração | `env-config` | ✅ **nada a aplicar** — sem env var, migration, flag ou seed (verificado, não presumido) |
+| Não verificado no ar | `smoke` | ✅ https://lp-skills.vercel.app — 23 cards, `/homolog` e `/prod` presentes, `/merge` **ausente**, contadores 20+3 |
+
+Assert: `origin/main == main` = `560dcaf` ✓
+Gate pré-publicação: `pnpm gen:plugins` idempotente + `pnpm build` de produção passando.
+Evidência do smoke: `.playwright-mcp/smoke-prod-lp-skills.png`
+
+**Nota honesta sobre o próprio teste:** o primeiro loop de acompanhamento do deploy não leu o status (regex do parser errada) e ficou 240s sem desfecho. Reclassificado e refeito em vez de assumir sucesso pelo tempo decorrido — que é exatamente o que o `deploy-run.md` § 4 proíbe ("não usar o relógio como prova").
