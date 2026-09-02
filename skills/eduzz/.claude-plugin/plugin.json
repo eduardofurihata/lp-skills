@@ -1,14 +1,12 @@
 {
   "name": "eduzz-builder",
-  "description": "Skills de trabalho (Eduzz) — /jira, /afl, /notion-push, /notion-pull, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
+  "description": "Skills de trabalho (Eduzz) — /jira, /afl, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
   "author": {
     "name": "Eduardo Furihata"
   },
   "skills": [
     "./afl",
     "./jira",
-    "./notion-pull",
-    "./notion-push",
     "./video-teams"
   ],
   "dependencies": [
