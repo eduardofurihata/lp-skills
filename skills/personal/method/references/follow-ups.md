@@ -40,7 +40,7 @@ GATE DE CONVERGÊNCIA (entrada do Step 10)
 | **B — Ciclo próprio** | Escopo **novo** que este trabalho **criou, tocou ou expôs como quebrado/incompleto** | Ledger `ABERTO` → resolvido no Gate de Convergência por um **`/method` completo próprio**. |
 | **C — Fora do universo** | Pré-existente, **não tocado** por este trabalho, sem relação causal com ele | **Não é follow-up.** Ledger `DESCARTADO` + justificativa de uma linha. Auditável — não some em silêncio, e não trava o Gate. |
 
-**Critério de B** ("criou, tocou ou expôs") é o mesmo do *tocou = refatora* do Step 7b / `/solve`. Não é doutrina nova — é a extensão dela para além do arquivo aberto.
+**Critério de B** ("criou, tocou ou expôs") é o mesmo do **perímetro** da refatoração contínua (`principios.md`) — o Step 7b e o `/solve` elevam o que está *dentro* do perímetro; o que este trabalho expôs *fora* dele vira ciclo próprio. Não é doutrina nova: é a mesma linha divisória vista dos dois lados.
 
 **Violação de princípio é achado como qualquer outro.** Duplicação, responsabilidade misturada, abstração especulativa, acoplamento indevido (`principios.md`) entram na MESMA triagem: no código desta feature ou em arquivo que você abriu → **A**, corrige agora; exposta/agravada por este trabalho em código adjacente → **B**; pré-existente e intocada → **C** com justificativa. **YAGNI não é fundamento para C** — "não vou mexer porque não preciso" é exatamente o escape que a regra abaixo proíbe.
 

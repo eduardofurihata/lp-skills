@@ -30,14 +30,31 @@ requires: solve
 
 ### Princípios de engenharia — regime, não fase
 
-Os princípios (**SOLID/SRP, DRY, KISS, YAGNI**, Law of Demeter) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única, com a **lente de cada step** e as racionalizações proibidas: **`references/principios.md`** (não duplicados aqui — DRY vale para o protocolo também).
+Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter** e **Motores**) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única, com a **lente de cada step** e as racionalizações proibidas: **`references/principios.md`** (não duplicados aqui — DRY vale para o protocolo também).
 
-- **Todo Gateway Check publica a linha de princípios** (`- **Princípios (SRP · DRY · KISS · YAGNI · LoD):** ✅ aplicados — <o que a lente deste step cobrou>`). Sem a linha, o gateway não foi publicado — mesma régua da linha de follow-ups.
-- Valem para o que você **escreve E o que toca**: princípio cabe melhor ali → aplique ("tocou = refatora", Step 7b), elevando o que encontra ao nível #1.
+- **SOLID são cinco, não um.** Declarar só o SRP deixa OCP, LSP, ISP e DIP fora — e o que não é nomeado nunca é revisado.
+- **Motores:** toda capacidade tem **um** dono. Regra espalhada por telas é defeito, não estilo; achou pedaço solto → **absorve**.
+- **Todo Gateway Check publica a linha de princípios** (`- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — <o que a lente deste step cobrou>`). Sem a linha, o gateway não foi publicado — mesma régua da linha de follow-ups.
 - **KISS/YAGNI matam a complexidade *desnecessária*; a *necessária* para o nível #1 continua sendo requisito.** YAGNI nunca é desculpa para entregar menos que o UC pede nem para descartar achado real (isso é balde B).
 - Cobrar só no 7b é tarde: a complexidade especulativa nasce no **Spec (4)** e no **Plano (7a)** e chega no código como fato consumado.
 
-Auto-check em cada gateway: *"Um líder do domínio assinaria isto?"* Se não → não está pronto.
+### Refatoração contínua — a cada passada o código sobe
+
+Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho passa**. O **perímetro** é o arquivo editado, o aberto só para entender, o dependente que o grep revelou e o caminho que o fluxo atravessa. **Dentro dele, refatore bastante**; fora, é balde C.
+
+- **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você **declara** que já estava no nível #1.
+- **Todo Gateway Check publica a linha de refatoração** (`- **Refatoração (tudo por onde passou):** ✅ <N> elevados — <o que subiu>`). Nos Steps 1-6 ela é sobre o **artefato** (doc consolidado, story separada, UC quebrado), e nunca é vazia.
+- Detalhe: `references/principios.md` § Refatoração contínua e `references/07-implementation.md`.
+
+### Design — regime, não fase
+
+Feature com **superfície visual** (derivada no Step 4, nunca declarada pelo usuário) obedece a **`references/design.md`**: tokens como fonte única, atomicidade, composição > configuração, headless, todos os estados, Lei de Jakob, consistência semântica, preservação de contexto, fluxos modulares — e **WCAG AA como piso**.
+
+- **O design system evolui com o produto:** precisou de algo que ele não tem → **reusar → compor → promover** (criar no DS, nunca na pasta da feature), registrando em `docs/04-spec/design-system.md`.
+- **Consistência é lei; mediocridade não é.** Padrão existente abaixo do nível #1 **não se copia** — eleva-se ou vira achado no ledger. É essa a diferença entre UI consistente e UI que nunca melhora.
+- **Gateway de feature com UI publica a linha de design** (`- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ …`). Sem superfície visual: declare `❌ N/A` **uma vez**, no Gateway 4→5.
+
+Auto-check em cada gateway: *"Um líder do domínio assinaria isto — e assinaria esta tela?"* Se não → não está pronto.
 
 **PARE se pensar:** "é só um MVP" · "depois a gente melhora" · "tá bom o suficiente" · "deixa o legado como está pra não refazer".
 
@@ -51,7 +68,11 @@ Auto-check em cada gateway: *"Um líder do domínio assinaria isto?"* Se não �
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve rodando o **`/method` COMPLETO (Step 1→10, com `/solve`)** para ele. Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio do `/merge` (achado de reviewer externo), nunca saída do dev. Ver `references/follow-ups.md`.
 
-8. **Princípios valem em TODO step — não só no código.** SOLID/SRP, DRY, KISS, YAGNI e Law of Demeter são cobrados do Step 1 ao 10, cada um pela lente do step (`references/principios.md`), e **declarados na linha obrigatória de todo Gateway Check**. "Princípio é coisa de código", "aplico tudo no 7b", "está implícito" = BLOQUEADO.
+8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**: SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e **Motores** são cobrados do Step 1 ao 10, cada um pela lente do step (`references/principios.md`), e **declarados na linha obrigatória de todo Gateway Check**. "Princípio é coisa de código", "aplico tudo no 7b", "SOLID eu cubro com o SRP", "está implícito" = BLOQUEADO.
+
+9. **Refatoração é regime.** A cada passada, o código do **perímetro** sobe (regra do saldo). Linha própria em todo Gateway Check; sem ela, o gateway não foi publicado. "Só mexi numa linha", "abri só pra ler", "refatoro numa PR separada depois" = BLOQUEADO.
+
+10. **Design é regime, e o DS evolui com o produto.** Feature com superfície visual obedece a `references/design.md`, declara a linha de design em todo gateway e **promove ao DS** o que não couber em reúso ou composição. "Copio a tela existente por consistência" (estando ruim), "a11y/mobile/estado vazio depois", "hardcodei a cor, é só uma" = BLOQUEADO.
 
 Lista completa de racionalizações + contra-argumentos: ver `references/rationalizations.md`.
 
@@ -72,6 +93,8 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 | 10 | Done | `kanban/10-done/` | `<tópico>.md` | — | `references/10-done.md` |
 
 **Abra o reference do step ANTES de executar.** Releia docs anteriores do step atual antes de começar.
+
+> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `references/principios.md` § Lente por step e `references/design.md` § Lente por step. Não duplicada aqui, e não executável de memória.
 
 ## Ordem de Operações ao Ativar
 
@@ -187,7 +210,17 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "marco como C (descartado) pra não travar o Gate"
 - "princípio (SOLID/DRY/KISS/YAGNI) é coisa de código, aqui é doc" / "aplico tudo no 7b, lá é o lugar"
 - "deixo a abstração pronta, é só um arquivinho a mais" / "duplicar é mais rápido que entender o que já existe"
-- "publico o gateway sem a linha de princípios, está implícito"
+- "publico o gateway sem a linha de princípios / de refatoração / de design, está implícito"
+- "SOLID eu cubro com o SRP"
+- "é só mais um `if`, não precisa de motor" / "cada tela trata do seu jeito, fica mais simples"
+- "crio o motor genérico agora e ligo depois"
+- "só puxei o campo lá de dentro" (LoD)
+- "só mexi numa linha, não precisa elevar o arquivo" / "abri só pra ler, não conta"
+- "refatoro numa PR separada depois"
+- "as outras telas são assim, copio pra manter consistência" (estando ruins)
+- "é só uma cor, hardcode não faz mal" / "o DS não tem, crio na pasta da feature"
+- "a11y / mobile / estado vazio depois"
+- "o screenshot do happy path já prova" / "design é subjetivo, não dá pra cobrar em gateway"
 
 **Todas significam: PARE. Releia `references/rationalizations.md`. Execute do jeito certo.**
 
@@ -200,7 +233,8 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 
 ## Arquivos de Referência
 
-- `references/principios.md` — **fonte única** dos princípios (SOLID/SRP, DRY, KISS, YAGNI, LoD), lente por step, linha obrigatória do gateway e racionalizações
+- `references/principios.md` — **fonte única** dos princípios (SOLID completo, DRY, KISS, YAGNI, LoD, **Motores**), **refatoração contínua**, lente por step, linhas obrigatórias do gateway e racionalizações
+- `references/design.md` — **fonte única** do design (tokens SSOT, atomicidade, composição, headless, estados, Jakob, a11y), **evolução do design system**, lente por step e racionalizações
 - `references/rationalizations.md` — tabela única consolidada de todas as racionalizações proibidas + Red Flags completo
 - `references/gateways.md` — todos os critérios de gateway + Gateway 9→10 detalhado
 - `references/follow-ups.md` — Ledger de Follow-ups, triagem A/B/C, Gate de Convergência e o loop até o passe seco

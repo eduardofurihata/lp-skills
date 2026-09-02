@@ -227,8 +227,11 @@ PROCEDIMENTO (ao iniciar testes via front):
 
 O Step 9 não escreve feature — mas escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de "fazer o TC passar", nasce o remendo.
 
-- **Todo fix obedece os princípios.** Fix é código: SRP, DRY, KISS, YAGNI e LoD valem igual. Não existe "fix rápido só pra passar".
+- **Todo fix obedece os princípios.** Fix é código: SOLID (os cinco), DRY, KISS, YAGNI, LoD e Motores valem igual. Não existe "fix rápido só pra passar".
 - **Workaround que faz o TC passar violando os princípios é FAILED disfarçado.** Duplicar lógica pra contornar, enfiar regra de negócio no componente, `if` especial pro cenário do teste — o TC até fica verde, a feature fica pior. Marque FAILED e conserte de verdade.
+- **Motor** — o fix vai **para o motor**, onde a regra mora; nunca de remendo no chamador. Corrigir na tela o que o motor calcula errado cria a segunda fonte da regra, que é exatamente o defeito.
+- **Refatoração** — fix novo **reabre o perímetro do fix**: os arquivos que ele tocou entram na regra do saldo como qualquer outro.
+- **Design** (se tem UI) — a evidência é por **estado × breakpoint**, não só o happy path em desktop: screenshot prova que a tela existe, a comparação com o DS e com o benchmark prova que está certa. **Remendo de CSS que faz o TC passar é FAILED disfarçado** (`design.md`).
 - **Fix → volta ao Step 8**, que revisa esse fix contra a lista de princípios como qualquer outro código. Sem atalho.
 - **KISS na investigação:** o fix mais simples que resolve a causa — não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
 
@@ -269,6 +272,17 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 | "Publico Gateway sem Audit, audit é só formalidade" | NÃO. Audit é pré-requisito formal do Gateway. BLOQUEADO. |
 | "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principios.md`). BLOQUEADO. |
 
+## Evidência visual — estado × breakpoint (feature com superfície visual)
+
+Um screenshot do happy path em desktop é a fatia que nunca quebra. Para TC que atravessa tela, a evidência cobre:
+
+- **Estados:** vazio · carregando · erro · sucesso · limite (lista longa, texto longo, sem permissão) — os mesmos que o UC listou no Step 3.
+- **Breakpoints do projeto**, com **320px** como piso.
+- **Interação:** foco visível por teclado nos controles do fluxo.
+
+Documente os paths em `kanban/09-run-test/<tópico>.md` identificando **qual estado e qual breakpoint** cada arquivo prova. Estado que o UC listou e que não tem evidência = TC incompleto, não PASSED.
+
 ## Gateway 9 → 10
 
 Ver `gateways.md` seção "Gateway 9 → 10" (detalhado).
+Inclui as linhas de **princípios**, **refatoração** e **design**, e o critério de evidência por estado × breakpoint.
