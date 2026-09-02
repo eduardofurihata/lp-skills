@@ -38,7 +38,7 @@
   - **DS ganhou** (`design.md`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
 - **Commit SHA** — hash do commit criado neste step (ver abaixo)
 
-> Sem essas 5 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo `/method` (e o `/merge`) precisa saber. A linha do DS é o que impede a próxima feature de reinventar o que esta acabou de promover.
+> Sem essas 5 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo `/method` (e o review do `/homolog`) precisa saber. A linha do DS é o que impede a próxima feature de reinventar o que esta acabou de promover.
 
 ## Gate de Convergência — ANTES de qualquer ação do Step 10
 

@@ -31,12 +31,12 @@ const BUILDERS = {
   personal: {
     name: "furi-builder",
     description:
-      "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pr, /merge e mais. Instala todas de uma vez.",
+      "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /homolog, /prod e mais. Instala todas de uma vez.",
   },
   eduzz: {
     name: "eduzz-builder",
     description:
-      "Skills de trabalho (Eduzz) — /jira, /afl, /notion-push, /notion-pull, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
+      "Skills de trabalho (Eduzz) — /jira, /afl, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
   },
 };
 

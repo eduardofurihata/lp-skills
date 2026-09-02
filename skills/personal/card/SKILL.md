@@ -2,6 +2,7 @@
 name: card
 description: 'Use when user invokes /card to create a Jira card on ANY board of the personal Atlassian from a short description — `/card [KEY] <problema>`. Discovers project, board, issue type and active sprint instead of assuming them; writes the card in PM/PO, QA and Designer voice (never dev), with a verifiable "## Como testar"; uploads any reference images sent as attachments; returns the card key + URL. Intake only — does not branch, code, or create docs.'
 effort: max
+requires: jira-board
 argument-hint: "[KEY] <descrição do card / ideia / bug>"
 ---
 
@@ -33,9 +34,9 @@ Cria um card no **projeto que você indicar** (Atlassian pessoal) a partir de um
 
 ## Convenções (CONTRATO — descobrir, nunca assumir)
 
-- **Projeto:** o do argumento ou o inferido (passo 1). Sempre via `mcp__atlassian__*`.
+- **Projeto:** o da **memória do projeto** (passo 0, via `/jira-board`) ou o do argumento, que sobrescreve. Sempre via `mcp__atlassian__*`.
 - **Tipo de issue:** o que o projeto **tem** — descoberto com `jira_get_project_issue_types`. Nunca chutar um nome ("Tarefa", "Task", "Bug") sem listar.
-- **Board e sprint:** descobertos com `jira_get_agile_boards` (`project_key`) → `jira_get_sprints_from_board` (`state: active`).
+- **Board:** vem do `/jira-board` (memória) — não descubra nem pergunte aqui. **Sprint:** sempre descoberto na hora com `jira_get_sprints_from_board` (`state: active`); sprint nunca é lido da memória.
 - **Seção obrigatória:** toda descrição termina com `## Como testar` (passos verificáveis, formato QA).
 - **Idioma:** o do projeto; **default português**.
 - Card novo entra **no sprint ativo** por padrão (passo 5), com o status default do board. Não mover status aqui.
@@ -44,15 +45,21 @@ Cria um card no **projeto que você indicar** (Atlassian pessoal) a partir de um
 
 ## Fluxo
 
+### 0. Board do projeto (SEMPRE, antes de tudo)
+
+Invoque o **`/jira-board`** (dependência obrigatória). Ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+
+Nunca assuma o board, nunca pergunte por ele aqui — quem faz isso é o `/jira-board`, e ele é o único dono dessa memória.
+
 ### 1. Resolver o projeto + entender a intenção
 
 `$ARGUMENTS` = `[KEY] <descrição>`.
 
 **Teste duplo pra não confundir key com texto:** o primeiro token só é key se **casar `^[A-Z][A-Z0-9_]{1,9}$`** *e* **existir** em `jira_get_all_projects`. Assim `/card API não responde` cria o card com a descrição "API não responde" em vez de procurar um projeto `API`.
 
-**Sem key:** infira do repositório — `CLAUDE.md`, remote do git, nome da pasta — cruzando com `jira_get_all_projects`.
-- **Um candidato** → use e **diga qual** no report.
-- **Zero ou vários** → `AskUserQuestion` listando os projetos disponíveis.
+**Com key:** ela **vence** o board da memória e **não** o reescreve — a memória segue apontando pro board padrão do repo. Diga a procedência no report.
+
+**Sem key:** use a key que veio do `/jira-board` (passo 0). Não há inferência a fazer nem pergunta a repetir — a memória já resolveu isso na primeira vez.
 
 Descrição vazia → pedir 1 linha do que é o card e parar.
 Se for claramente **2+ entregas distintas** → propor split (**1 card = 1 entrega**) antes de criar.
@@ -114,7 +121,7 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 ### 6. Reportar
 ```
 ✅ Card criado: <KEY>-<N>
-   <título>  ·  Projeto: <KEY> (<nome>)  ·  Tipo: <tipo descoberto>
+   <título>  ·  Projeto: <KEY> (<nome>) [memória do projeto | argumento]  ·  Tipo: <tipo descoberto>
    Onde: <área do produto> · rota <rota>
    Sprint: <nome do sprint ativo>   (ou "backlog — sem sprint ativo")
    Anexos: <N>/<N>
@@ -126,7 +133,10 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 ## Red Flags — STOP
 
 **Projeto e convenções**
-- "Assumi o projeto de sempre" → NÃO. Key vem do argumento ou da inferência declarada; na dúvida, **pergunte**.
+- "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira-board`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
+- "Pulei o passo 0 porque já sei o board desta sessão" → NÃO. A leitura da memória é **toda** invocação.
+- "O usuário passou `ALK`, então atualizei a memória" → NÃO. Argumento é **override**, não redefinição. Só o `/jira-board` com argumento troca o board.
+- "Assumi o projeto de sempre" → NÃO. Key vem do `/jira-board` (memória) ou do argumento; nunca de palpite.
 - "Chutei o tipo `Tarefa`" → NÃO. Liste com `jira_get_project_issue_types` e escolha entre os que existem.
 - "A key não apareceu, usei a mais parecida" → NÃO. Não existe neste site → **avise**; pode estar em outro site Atlassian.
 - "Criei sem dizer em qual board" → NÃO. O report sempre diz projeto e sprint.

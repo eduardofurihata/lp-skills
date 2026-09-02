@@ -1,6 +1,6 @@
 ---
 name: work
-description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone, NOT the Eduzz /jira. Discovers the project board from the card key, syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /merge.'
+description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone, NOT the Eduzz /jira. Discovers the project board from the card key, syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
 effort: max
 requires: method
 argument-hint: "[KEY-N] | (empty = continuar card ativo)"
@@ -32,9 +32,9 @@ Nenhum desses passos é lugar de "adianto um código". Entender aqui é o que fa
 
 ## Convenções (CONTRATO)
 
-- **Qualquer projeto** do Atlassian pessoal, sempre via `mcp__atlassian__*`. A key sai do próprio argumento (`ALK-42` → projeto `ALK`) — **nada hardcoded**.
-- **Board e sprint são descobertos**, não presumidos: `mcp__atlassian__jira_get_agile_boards` (`project_key`). Projeto sem board ágil → segue sem sprint, e avisa.
-- **Status de "em andamento" é descoberto**: `mcp__atlassian__jira_get_transitions` e escolha a transição equivalente entre as que **existem** no workflow ("Em andamento", "In Progress", "Doing"…). Nenhuma equivalente → **avise e siga sem transicionar**; nunca invente nome de status.
+- **Qualquer projeto** do Atlassian pessoal, sempre via `mcp__atlassian__*`. A key sai do argumento (`ALK-42` → projeto `ALK`) ou da **memória do projeto** quando o argumento não traz uma — **nada hardcoded**.
+- **Board vem do `/jira-board`** (passo 0, dependência obrigatória), que lê a memória do projeto e pergunta só na primeira vez. Não descubra nem pergunte o board aqui. Projeto sem board ágil → segue sem sprint, e avisa.
+- **Status de "em andamento" é descoberto, nunca inventado** — o nome varia por projeto ("Em andamento", "In Progress", "Doing"…). A mecânica de descobrir e aplicar, e o que fazer quando o workflow não tem equivalente, é do **`skills/personal/prod/references/jira-sync.md`** (fonte única).
 - Card não encontrado → o projeto pode estar em **outro site Atlassian** (o MCP alcança só o site do seu `JIRA_URL`). Diga isso; não aproxime para outra key.
 - Branch base = **`dev`** (não `main`). Regra de criação: **gh → dev → branch**.
   > **Padrão:** `dev` é a **branch** de integração, o que vem antes da `main`. **homolog** é o **ambiente** publicado a partir dela — nome de ambiente, nunca de branch. "Mergeei na dev" = integrado; "está em homolog" = no ar.
@@ -42,14 +42,19 @@ Nenhum desses passos é lugar de "adianto um código". Entender aqui é o que fa
 
 ## Fluxo
 
+### 0. Board do projeto (SEMPRE, antes de tudo)
+Invoque o **`/jira-board`** (dependência obrigatória, junto do `/method`). Ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+
+Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não** a reescreve. No modo CONTINUE (argumento vazio), o board da memória é o que resolve site e prefixo de branch ao retomar o card ativo. Nunca assuma o board nem pergunte por ele aqui.
+
 ### 1. Buscar o card
 `mcp__atlassian__jira_get_issue` (`issue_key: KEY-N`): título, descrição, tipo, `## Como testar`, assignee, **anexos**. Colar a descrição **real** do card; se houver ambiguidade, listar ≥2 interpretações (insumo do passo 4).
 
 > **O card vem em voz de PM/PO, QA ou Designer** (`/card`), não de dev — ele diz **o quê** e **por quê**, com rota, comportamento esperado e referência visual. Traduza isso para a **capacidade** que a feature exige. Card não é spec técnica: se ele prescrever solução, isso é ruído, não contrato — quem deriva arquitetura é o `/method`.
 > Tem **anexo de imagem**? Baixe (`jira_download_attachments` / `jira_get_issue_images`) e leia antes de decidir: é o que o solicitante viu.
 
-### 2. gh → dev → branch (REGRA DE OURO)
-Nunca branchar de `dev` stale — trazer tudo e resolver conflito antes:
+### 2. gh → integração → branch (REGRA DE OURO)
+A branch de integração vem da **topologia**, nunca assumida — `git ls-remote --heads origin dev` vazio ⇒ branch única, e a integração é `main` (detalhe: `skills/personal/prod/references/deploy-context.md`). Nunca branchar de integração stale — trazer tudo e resolver conflito antes:
 ```bash
 git checkout dev
 git fetch origin
@@ -63,7 +68,7 @@ Nome da branch: derivado do card — `<key-minúscula>-<n>` (ex.: `niv-12`, `alk
 
 ### 3. Mover o card → em andamento
 - Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue`.
-- Status: `mcp__atlassian__jira_get_transitions` → escolher a transição **equivalente a "em andamento"** entre as que o workflow daquele projeto oferece ("Em andamento", "In Progress", "Doing"…) → `mcp__atlassian__jira_transition_issue` com o `id` dela. Sem `comment` na transição (ADF).
+- Status: mover o card para o **equivalente a "em andamento"** no workflow daquele projeto ("Em andamento", "In Progress", "Doing"…). A mecânica é do **`skills/personal/prod/references/jira-sync.md`**, fonte única — siga-o, não o reescreva aqui.
 - **Nenhuma equivalente no workflow?** Avise e siga — o trabalho não trava por causa de status. Nunca invente nome de transição nem force uma que signifique outra coisa.
 
 ### 4. GATE de perguntas (analisar — perguntar SÓ se necessário)
@@ -88,7 +93,7 @@ Invoque o **`/method`** (dependência obrigatória). Ele:
 ### 6. Encerrar
 ```
 ✅ /work KEY-N — implementado, revisado, testado e commitado (local).
-   Projeto: <KEY>  ·  Board: <nome do board>
+   Projeto: <KEY>  ·  Board: <nome do board> [memória do projeto | argumento]
    Branch:  <branch>
    Commit:  <hash>
    Kanban:  kanban/10-done/<feature>.md
@@ -98,10 +103,13 @@ Invoque o **`/method`** (dependência obrigatória). Ele:
 ## Red Flags — STOP
 
 - "Vou usar o `/jira`" → NÃO. `/jira` é Eduzz. `/work` é o fluxo pessoal (kanban local + `/method`), **standalone** — e serve **qualquer board**, o que não o transforma no `/jira`.
-- "Assumi o board de sempre" → NÃO. A key vem do argumento; board, sprint e transições são **descobertos**.
+- "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira-board`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
+- "Pulei o passo 0 porque já sei o board desta sessão" → NÃO. A leitura da memória é **toda** invocação.
+- "Assumi o board de sempre" → NÃO. Board vem do `/jira-board`; a key, do argumento ou da memória; sprint e transições são **descobertos** na hora.
 - "O status 'Em andamento' não existe nesse projeto, então inventei um" → NÃO. Escolha entre as transições que existem; nenhuma equivalente → avisa e segue.
 - "Branchei de `dev` sem trazer o remoto" → NÃO. **gh → dev → branch**, sempre.
-- "Branchei de `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a branch de integração é `dev`.
+- "Branchei de `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a branch de integração é `dev` (ou `main`, em branch única).
+- "Todo projeto meu tem `dev`, dou `checkout dev`" → NÃO. `git ls-remote` primeiro: em branch única o `checkout dev` falha e o fluxo trava na largada.
 - "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
 - "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
 - "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes** de implementar.

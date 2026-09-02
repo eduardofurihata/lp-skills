@@ -141,7 +141,8 @@ Sempre reportar: SHA antes → depois de cada branch, commits ganhos, **todo** c
 
 - **Árvore limpa.** Mudança não commitada → **PARA** e pede commit/stash. Um checkout falhando no meio do fluxo é pior que não começar.
 - Remote = `origin`.
-- `/sync dev > main` **deploya prod sem gate**, por design: a skill é standalone e chamada explicitamente — **quem digita é quem autoriza**. Sem acoplamento com `/merge`.
+- `/sync dev > main` **dispara o deploy de prod sem gate**, por design: a skill é standalone e chamada explicitamente — **quem digita é quem autoriza**.
+  > **Isto move branch; não entrega produção.** O `/sync` não acompanha o run, não configura o ambiente e não verifica nada no ar — ele empurra commits. Para **entregar** produção (deploy observado, configs de prod e homolog, smoke na URL, assert de convergência), o caminho é o **`/prod`**. Use o `/sync dev > main` quando você quer exatamente o comando cru.
 
 <HARD-GATE>
 1. NUNCA `--force` / `--force-with-lease`.
