@@ -440,7 +440,7 @@ Triagem A/B/C e racionalizações: `method/references/follow-ups.md`.
 |------------------------|-----------|
 | "O /fast que deixou aberto, não é meu problema" | É. /fast captura, **/todo converge**. O card de to-do é o handoff. BLOQUEADO. |
 | "Os TCs passaram, a feature está pronta" | TC verde ≠ ledger seco. São gates diferentes. BLOQUEADO. |
-| "Abro card no Jira pro follow-up e promovo" | Card de follow-up é do `/merge`, nunca saída do dev. BLOQUEADO. |
+| "Abro card no Jira pro follow-up e promovo" | Card de follow-up é do **reviewer** (`/homolog`, `/prod`), nunca saída do dev. BLOQUEADO. |
 | "Sobrou 1 item, é pequeno" | Gate é binário. 1 `ABERTO` = BLOQUEADO. |
 
 ### Promover

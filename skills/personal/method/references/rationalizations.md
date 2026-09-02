@@ -109,7 +109,7 @@
 
 | Frase | Realidade |
 |-------|-----------|
-| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` completo AGORA, no Gate de Convergência. Card de follow-up é privilégio do `/merge` (achado de reviewer externo), nunca saída do dev. BLOQUEADO. |
+| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` completo AGORA, no Gate de Convergência. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `prod/references/findings.md`), nunca saída do dev. BLOQUEADO. |
 | "Deixo anotado no relatório e sigo" | Relatório **documenta**; ledger **obriga a resolver**. Anotar sem entrar no ledger = a ponta escapou. BLOQUEADO. |
 | "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio 1→10. BLOQUEADO. |
 | "É escopo novo, YAGNI manda não fazer" | YAGNI mata complexidade **especulativa**, não achado **real** que este trabalho expôs. Isso é B. BLOQUEADO. |

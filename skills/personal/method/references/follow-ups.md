@@ -132,7 +132,7 @@ Mesmo precedente do `/todo`, que promove o card mas não commita (`10-done.md`, 
 
 | Frase | Realidade |
 |-------|-----------|
-| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` agora. Card de follow-up é privilégio do `/merge` (achado de reviewer externo), nunca saída do dev. BLOQUEADO. |
+| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` agora. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `prod/references/findings.md`), nunca saída do dev. BLOQUEADO. |
 | "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio. BLOQUEADO. |
 | "É escopo novo, YAGNI manda não fazer" | YAGNI mata complexidade **especulativa**, não achado **real**. Achado real que este trabalho expôs é B. BLOQUEADO. |
 | "O ciclo de follow-up achou outro follow-up, isso não acaba nunca" | Acaba: o balde C fecha o que é pré-existente/não relacionado, e o ledger impede reabertura. O que não fecha é porque é real. BLOQUEADO. |

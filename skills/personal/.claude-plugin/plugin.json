@@ -1,6 +1,6 @@
 {
   "name": "furi-builder",
-  "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /merge e mais. Instala todas de uma vez.",
+  "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /homolog, /prod e mais. Instala todas de uma vez.",
   "author": {
     "name": "Eduardo Furihata"
   },
@@ -13,9 +13,11 @@
     "./claude-modes",
     "./ctt",
     "./fast",
+    "./homolog",
+    "./jira-board",
     "./make-dev",
-    "./merge",
     "./method",
+    "./prod",
     "./proto",
     "./pull-request",
     "./save",

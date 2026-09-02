@@ -50,7 +50,7 @@ lp-skills/
 └── lib/                    # categorias + leitor de skills + gerador de comandos
 ```
 
-Cada pasta de categoria (`skills/personal`, `skills/eduzz`) **é** a raiz de um plugin; o `plugin.json` gerado lá lista as skills da categoria em `skills: ["./<slug>", …]`. A categoria de cada skill é derivada da pasta-pai. O nome de invocação (`/merge`) vem do `name` no frontmatter do `SKILL.md`; a dependência cruzada entre pacotes (eduzz → furi) é derivada do `requires`.
+Cada pasta de categoria (`skills/personal`, `skills/eduzz`) **é** a raiz de um plugin; o `plugin.json` gerado lá lista as skills da categoria em `skills: ["./<slug>", …]`. A categoria de cada skill é derivada da pasta-pai. O nome de invocação (`/homolog`) vem do `name` no frontmatter do `SKILL.md`; a dependência cruzada entre pacotes (eduzz → furi) é derivada do `requires`.
 
 ## Workflow do autor
 
