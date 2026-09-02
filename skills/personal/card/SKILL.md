@@ -96,7 +96,11 @@ mcp__atlassian__jira_create_issue
   description: <markdown com ## Como resolver e terminando em ## Como testar>
 ```
 
-**Adicionar ao sprint ativo (DEFAULT):** `jira_get_agile_boards` (`project_key`) → pegar o **sprint ativo** (`jira_get_sprints_from_board`, `state: active`) → `jira_add_issues_to_sprint`. Sem board ágil ou sem sprint ativo → deixa no backlog e **avisa no report**.
+**Adicionar ao sprint ativo (DEFAULT):** o `boardId` **já veio do `/jira-board`** no passo 0 — use ele, não chame `jira_get_agile_boards`. Redescobrir o board é exatamente a ida ao servidor que a memória existe pra eliminar.
+
+> **Exceção:** key explícita no argumento (passo 1) aponta pra **outro** projeto, e o board da memória não pertence a ele. Só nesse caso descubra com `jira_get_agile_boards` (`project_key` do argumento).
+
+Com o board em mãos: `jira_get_sprints_from_board` (`state: active`) → `jira_add_issues_to_sprint`. Sem board ágil (`boardId` vazio) ou sem sprint ativo → deixa no backlog e **avisa no report**.
 
 ### 5.1 Anexar as referências visuais (OBRIGATÓRIO quando houver)
 
@@ -139,6 +143,7 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 - "Assumi o projeto de sempre" → NÃO. Key vem do `/jira-board` (memória) ou do argumento; nunca de palpite.
 - "Chutei o tipo `Tarefa`" → NÃO. Liste com `jira_get_project_issue_types` e escolha entre os que existem.
 - "A key não apareceu, usei a mais parecida" → NÃO. Não existe neste site → **avise**; pode estar em outro site Atlassian.
+- "Chamei `jira_get_agile_boards` pra achar o sprint" → NÃO. O `boardId` veio do `/jira-board` no passo 0. Só a key por argumento — que aponta pra outro projeto — justifica descobrir outro board.
 - "Criei sem dizer em qual board" → NÃO. O report sempre diz projeto e sprint.
 
 **Voz**
