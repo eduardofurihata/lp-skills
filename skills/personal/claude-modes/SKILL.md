@@ -1,6 +1,6 @@
 ---
 name: claude-modes
-description: Use when setting up or replicating the user's Claude Code launch modes on a machine — terminal commands `claude` (effort max) and `claudew` (ultracode), plus IDE terminal profiles "Claude" (max) and "Claude Ultra" (ultracode) for VS Code + Antigravity, bound to Ctrl+Q (max) and Ctrl+Shift+U (ultracode) across ALL profiles. Triggers on "configura o claude/claudew", "instala os modos do claude", "ctrl+q / ctrl+shift+u claude", "replica essa config em outra máquina".
+description: Use when setting up or replicating the user's Claude Code launch modes on a machine — terminal commands `claude` (no forced effort; level from ~/.claude/settings.json) and `claudew` (ultracode), plus IDE terminal profiles "Claude" and "Claude Ultra" (ultracode) for VS Code + Antigravity, bound to Ctrl+Q and Ctrl+Shift+U (ultracode) across ALL profiles. Triggers on "configura o claude/claudew", "instala os modos do claude", "ctrl+q / ctrl+shift+u claude", "replica essa config em outra máquina".
 allowed-tools: Bash, Read, Edit, Write
 ---
 
@@ -11,7 +11,7 @@ Installs and verifies the user's preferred way to launch Claude Code, on any mac
 ## What it sets up
 
 **Terminal (`~/.bashrc`) — two commands:**
-- `claude`  → `--effort max` (normal max mode)
+- `claude`  → **no forced effort**. The level comes from `~/.claude/settings.json` (`"effortLevel"`) and from `/effort` at runtime. Nothing here pins `max`.
 - `claudew` → ultracode (`--settings '{"ultracode": true}'` = xhigh + automatic workflow orchestration)
 
 Both are shell **functions** (not aliases) so the JSON in `--settings` escapes cleanly and `"$@"` forwards extra args (e.g. `claudew --model opus`). A trailing `unset CLAUDE_CODE_EFFORT_LEVEL` keeps a stray effort override from silently suppressing `claudew`'s ultracode.
@@ -20,17 +20,17 @@ Both are shell **functions** (not aliases) so the JSON in `--settings` escapes c
 
 | Shortcut | Terminal profile | Opens |
 |---|---|---|
-| **Ctrl+Q** | `Claude` | effort max (reads `CLAUDE_CODE_EFFORT_LEVEL`, default `max`) |
+| **Ctrl+Q** | `Claude` | effort do `~/.claude/settings.json` (nada forçado, a menos que `CLAUDE_CODE_EFFORT_LEVEL` esteja setado no profile) |
 | **Ctrl+Shift+U** | `Claude Ultra` | ultracode (hardcoded `--settings '{"ultracode": true}'`) |
 
-- **`Claude`** runs a command that branches on `CLAUDE_CODE_EFFORT_LEVEL`: value `ultracode` → real ultracode; anything else (`max`/`xhigh`/…) → `--effort <value>`. So Ctrl+Q opens max by default, but the per-profile env value can retune it.
+- **`Claude`** branches on `CLAUDE_CODE_EFFORT_LEVEL`: `ultracode` → real ultracode; any other non-empty value (`max`/`xhigh`/…) → `--effort <value>`; **unset (the default) → no `--effort` at all**, so `settings.effortLevel` and `/effort` govern. The env var is the opt-in knob, not the default.
 - **`Claude Ultra`** always opens ultracode — it `unset`s the (suppressing) env var, then calls `--settings`.
 
 ```jsonc
-"terminal.integrated.env.linux": { "CLAUDE_CODE_EFFORT_LEVEL": "max" },
+// sem CLAUDE_CODE_EFFORT_LEVEL em "terminal.integrated.env.linux" — setar ali é opt-in, não default
 "terminal.integrated.profiles.linux": {
   "Claude":       { "icon": "robot", "path": "/bin/bash", "args": ["-c",
-    "stty -ixon; if [ \"$CLAUDE_CODE_EFFORT_LEVEL\" = ultracode ]; then unset CLAUDE_CODE_EFFORT_LEVEL; command claude --dangerously-skip-permissions --settings '{\"ultracode\": true}'; else command claude --dangerously-skip-permissions --effort \"${CLAUDE_CODE_EFFORT_LEVEL:-max}\"; fi; exec bash"] },
+    "stty -ixon; if [ \"$CLAUDE_CODE_EFFORT_LEVEL\" = ultracode ]; then unset CLAUDE_CODE_EFFORT_LEVEL; command claude --dangerously-skip-permissions --settings '{\"ultracode\": true}'; elif [ -n \"$CLAUDE_CODE_EFFORT_LEVEL\" ]; then command claude --dangerously-skip-permissions --effort \"$CLAUDE_CODE_EFFORT_LEVEL\"; else command claude --dangerously-skip-permissions; fi; exec bash"] },
   "Claude Ultra": { "icon": "zap",   "path": "/bin/bash", "args": ["-c",
     "stty -ixon; unset CLAUDE_CODE_EFFORT_LEVEL; command claude --dangerously-skip-permissions --settings '{\"ultracode\": true}'; exec bash"] }
 }
@@ -42,7 +42,8 @@ Both are shell **functions** (not aliases) so the JSON in `--settings` escapes c
 ## How to run
 
 ```bash
-bash scripts/install.sh                             # Ctrl+Q effort = max (default)
+bash scripts/install.sh                             # nada forçado: effort vem de ~/.claude/settings.json
+bash scripts/install.sh --default-mode max          # opt-in: fixa max no Ctrl+Q de todos os profiles
 bash scripts/install.sh --default-mode ultracode    # make Ctrl+Q open ultracode too
 bash scripts/verify.sh                              # check everything, per profile
 source ~/.bashrc                                    # activate claude/claudew now
@@ -55,7 +56,7 @@ The installer is **idempotent** and backs up every file it touches to `*.bak-<ti
 ## Steps the skill performs
 
 1. **Shell.** Rewrite the `# >>> claude-modes >>>` block in `~/.bashrc` with `claude`/`claudew` + `unset`. Remove any legacy `alias claude=...`.
-2. **IDE settings — every profile.** For VS Code (`~/.config/Code/User`) and Antigravity (`~/.config/Antigravity/User`): in the base `settings.json` **and every `profiles/*/settings.json`**, define the `Claude` and `Claude Ultra` terminal profiles (+ a `bash` profile if absent), set `CLAUDE_CODE_EFFORT_LEVEL` (default `max`), drop any legacy `CLAUDE_MODE`. Done by **surgical text insertion** (not full JSON re-serialization) so `//` comments and the user's toggle comment survive.
+2. **IDE settings — every profile.** For VS Code (`~/.config/Code/User`) and Antigravity (`~/.config/Antigravity/User`): in the base `settings.json` **and every `profiles/*/settings.json`**, define the `Claude` and `Claude Ultra` terminal profiles (+ a `bash` profile if absent), **remove** `CLAUDE_CODE_EFFORT_LEVEL` unless `--default-mode <nivel>` was passed (then it's written), drop any legacy `CLAUDE_MODE`. Done by **surgical text insertion** (not full JSON re-serialization) so `//` comments and the user's toggle comment survive.
 3. **IDE keybindings.** In the base `keybindings.json` **and every existing `profiles/*/keybindings.json`**: add Ctrl+Q→`Claude` and Ctrl+Shift+U→`Claude Ultra`, remove stale Ctrl+Q bindings from older installs (e.g. `closeActiveEditor`), dedupe. The leading `// Place your key bindings…` header is preserved. Does **not** create `keybindings.json` inside profiles that don't have one (they inherit the base — creating one would break inheritance).
 4. **Verify.** `scripts/verify.sh` reports `claude`/`claudew`, env hygiene, and per-profile profiles + shortcuts.
 

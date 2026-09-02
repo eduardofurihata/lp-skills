@@ -2,32 +2,34 @@
 # claude-modes installer — replicates the user's Claude Code launch setup:
 #
 #   Terminal (~/.bashrc):
-#     claude   -> --effort max
+#     claude   -> no forced effort (level comes from ~/.claude/settings.json "effortLevel"
+#                 and /effort at runtime)
 #     claudew  -> ultracode (--settings '{"ultracode": true}')
 #
 #   IDEs (VS Code + Antigravity), in ALL profiles:
-#     terminal profile "Claude"        -> reads CLAUDE_CODE_EFFORT_LEVEL (default max);
-#                                         value "ultracode" switches to real ultracode
+#     terminal profile "Claude"        -> no forced effort by default; if CLAUDE_CODE_EFFORT_LEVEL
+#                                         is set, it is honored ("ultracode" -> real ultracode)
 #     terminal profile "Claude Ultra"  -> hardcoded ultracode
-#     keybind  Ctrl+Q        -> open "Claude" terminal (max)
+#     keybind  Ctrl+Q        -> open "Claude" terminal
 #     keybind  Ctrl+Shift+U  -> open "Claude Ultra" terminal (ultracode)
 #
 # Settings files are JSONC (// comments, trailing commas) — patched by SURGICAL
 # text insertion so comments are preserved. Idempotent. Backs up every file to *.bak-<ts>.
 # Usage:  bash install.sh [--default-mode max|ultracode|xhigh|...]
+#         (no --default-mode = nothing forced; pass one only to pin a level per IDE profile)
 set -euo pipefail
 
-DEFAULT_MODE="max"
+DEFAULT_MODE=""
 while [ $# -gt 0 ]; do
   case "$1" in
-    --default-mode) DEFAULT_MODE="${2:-max}"; shift 2 ;;
+    --default-mode) DEFAULT_MODE="${2:-}"; shift 2 ;;
     *) echo "unknown arg: $1" >&2; exit 2 ;;
   esac
 done
 TS="$(date +%Y%m%d-%H%M%S)"
 
 # ---------------------------------------------------------------------------
-# 1) Shell: claude() = effort max, claudew() = ultracode
+# 1) Shell: claude() = effort from settings, claudew() = ultracode
 # ---------------------------------------------------------------------------
 install_bashrc() {
   local rc="$HOME/.bashrc"
@@ -43,16 +45,17 @@ install_bashrc() {
   ' "$rc" > "$tmp"
   cat >> "$tmp" <<'EOF'
 # >>> claude-modes >>>
-# `claude` = effort max (normal). `claudew` = ultracode (xhigh + workflow orchestration).
+# `claude` = no forced effort — the level comes from ~/.claude/settings.json ("effortLevel")
+# and from /effort at runtime. `claudew` = ultracode (xhigh + workflow orchestration).
 # Functions (not aliases) so the --settings JSON escapes cleanly; "$@" forwards extra args.
-claude()  { command claude --dangerously-skip-permissions --effort max "$@"; }
+claude()  { command claude --dangerously-skip-permissions "$@"; }
 claudew() { command claude --dangerously-skip-permissions --settings '{"ultracode": true}' "$@"; }
 # Strip any inherited effort override so `claudew`'s ultracode is never suppressed.
 unset CLAUDE_CODE_EFFORT_LEVEL
 # <<< claude-modes <<<
 EOF
   mv "$tmp" "$rc"
-  echo "  ok: claude()=max, claudew()=ultracode"
+  echo "  ok: claude()=effort do settings, claudew()=ultracode"
 }
 
 # ---------------------------------------------------------------------------
@@ -70,7 +73,9 @@ root = os.environ["CM_ROOT"]; mode = os.environ["CM_MODE"]; ts = os.environ["CM_
 CLAUDE_CMD = ('stty -ixon; if [ "$CLAUDE_CODE_EFFORT_LEVEL" = ultracode ]; then '
               'unset CLAUDE_CODE_EFFORT_LEVEL; '
               "command claude --dangerously-skip-permissions --settings '{\"ultracode\": true}'; "
-              'else command claude --dangerously-skip-permissions --effort "${CLAUDE_CODE_EFFORT_LEVEL:-max}"; '
+              'elif [ -n "$CLAUDE_CODE_EFFORT_LEVEL" ]; then '
+              'command claude --dangerously-skip-permissions --effort "$CLAUDE_CODE_EFFORT_LEVEL"; '
+              'else command claude --dangerously-skip-permissions; '
               'fi; exec bash')
 ULTRA_CMD = ('stty -ixon; unset CLAUDE_CODE_EFFORT_LEVEL; '
              "command claude --dangerously-skip-permissions --settings '{\"ultracode\": true}'; "
@@ -141,6 +146,19 @@ def ensure_env(txt):
     # drop legacy CLAUDE_MODE (the old two-variable design), comment-safe
     txt = re.sub(r'\s*"CLAUDE_MODE"\s*:\s*"[^"]*"\s*,?', '', txt)
     txt = re.sub(r',(\s*"CLAUDE_CODE_EFFORT_LEVEL")', r'\1', txt)  # heal a leading comma if CLAUDE_MODE was first
+    if not mode:
+        # Nothing forced: strip any CLAUDE_CODE_EFFORT_LEVEL so the effort comes from
+        # ~/.claude/settings.json ("effortLevel") and /effort at runtime. Scoped to the
+        # env block so a stray comma elsewhere is never touched.
+        sp = find_key_span(txt, "terminal.integrated.env.linux")
+        if sp:
+            s, e = sp
+            blk = txt[s:e]
+            blk = re.sub(r'^[ \t]*"CLAUDE_CODE_EFFORT_LEVEL"\s*:\s*"[^"]*"\s*,?[ \t]*(?://[^\n]*)?\n', '', blk, flags=re.M)
+            blk = re.sub(r'"CLAUDE_CODE_EFFORT_LEVEL"\s*:\s*"[^"]*"\s*,?', '', blk)   # same-line form
+            blk = re.sub(r',(\s*\})', r'\1', blk)                                     # heal trailing comma
+            txt = txt[:s] + blk + txt[e:]
+        return txt
     if '"terminal.integrated.env.linux"' in txt:
         if re.search(r'"CLAUDE_CODE_EFFORT_LEVEL"\s*:', txt):
             return re.sub(r'("CLAUDE_CODE_EFFORT_LEVEL"\s*:\s*)"[^"]*"', r'\1"%s"' % mode, txt, count=1)
@@ -217,7 +235,7 @@ for f in kfiles:
 PY
 }
 
-echo "claude-modes installer (default IDE mode: $DEFAULT_MODE)"
+echo "claude-modes installer (default IDE mode: ${DEFAULT_MODE:-nenhum — usa ~/.claude/settings.json})"
 echo
 install_bashrc
 echo
@@ -226,7 +244,8 @@ echo
 patch_ide "$HOME/.config/Antigravity/User" "Antigravity"
 echo
 echo "Done."
-echo "  Terminal : 'source ~/.bashrc' then:  claude (max) | claudew (ultracode)"
-echo "  IDEs     : reload window, then:  Ctrl+Q -> Claude (max) | Ctrl+Shift+U -> Claude Ultra (ultracode)"
-echo "             (Ctrl+Q's effort = CLAUDE_CODE_EFFORT_LEVEL in the active profile's settings.json)"
+echo "  Terminal : 'source ~/.bashrc' then:  claude (effort do settings) | claudew (ultracode)"
+echo "  IDEs     : reload window, then:  Ctrl+Q -> Claude | Ctrl+Shift+U -> Claude Ultra (ultracode)"
+echo "             (Ctrl+Q não força effort; para fixar um, set CLAUDE_CODE_EFFORT_LEVEL"
+echo "              no settings.json do profile ativo — ou rode com --default-mode <nivel>)"
 echo "  Verify   : bash $(dirname "$0")/verify.sh"
