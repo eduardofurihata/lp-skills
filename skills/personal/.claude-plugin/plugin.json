@@ -17,6 +17,7 @@
     "./make-dev",
     "./method",
     "./prod",
+    "./proof",
     "./proto",
     "./pull-request",
     "./save",
