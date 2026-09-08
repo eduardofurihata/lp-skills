@@ -1,8 +1,8 @@
 ---
 name: card
-description: 'Use when user invokes /card to create a Jira card on ANY board of the personal Atlassian from a short description — `/card [KEY] <problema>`. Discovers project, board, issue type and active sprint instead of assuming them; writes the card in PM/PO, QA and Designer voice (never dev), with a verifiable "## Como testar"; uploads any reference images sent as attachments; returns the card key + URL. Intake only — does not branch, code, or create docs.'
+description: 'Use when user invokes /card to create a Jira card on ANY board of the personal Atlassian from a short description — `/card [KEY] <problema>`. Discovers project, board, issue type and active sprint instead of assuming them; writes the card in PM/PO, QA and Designer voice (never dev), with a verifiable "## Como testar"; uploads any reference images sent as attachments; returns the card key + URL. Invokes /solve on activation so the problem is framed at the #1-in-market bar, and writes that bar into the card as a named "## Referência de mercado" — the ambition, never the architecture. Intake only — does not branch, code, or create docs.'
 effort: max
-requires: jira-board
+requires: [jira-board, solve]
 argument-hint: "[KEY] <descrição do card / ideia / bug>"
 ---
 
@@ -10,11 +10,17 @@ argument-hint: "[KEY] <descrição do card / ideia / bug>"
 
 Cria um card no **projeto que você indicar** (Atlassian pessoal) a partir de uma descrição curta, **considerando o contexto do projeto** via um **scan leve** do código/docs — pra ancorar a área do produto, a rota e um "Como testar" plausível.
 
-> **Escopo: intake puro.** Só cria o card remoto. NÃO cria branch, NÃO cria docs/kanban, NÃO implementa, NÃO investiga fundo. Pra trabalhar o card depois → `/work <KEY>-<N>`.
+> **Escopo: intake puro — e calibrado.** Só cria o card remoto. NÃO cria branch, NÃO cria docs/kanban, NÃO implementa, NÃO investiga fundo. O que o `/solve` muda: o card nasce com a **régua do nível #1 escrita nele**. Pra trabalhar o card depois → `/work <KEY>-<N>`.
 
 ## Iron Law
 
 > **Precisão > Tokens.** Um card vago vira retrabalho lá na frente (o `/work` vai ter que adivinhar). Vale o scan leve pra escrever um card que o próximo passo pega sem dúvida. Mas **scan LEVE** — investigação profunda é o `/work`, não aqui.
+
+## Ordem de Operações ao Ativar
+
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/card` for ativado, a PRIMEIRA ação é chamar a skill `/solve` (Skill tool) para carregar o padrão — ser a **referência #1 do mercado**. O `/solve` define o nível; o `/card` é o intake que **nasce já mirando nele**. Sem isso, o card descreve o que está quebrado e nunca o que deveria existir. Depois disso, siga o Fluxo a partir do passo 0.
+
+Ele entra aqui pela **ambição**, não pela engenharia — a fronteira está logo abaixo, na Voz do card.
 
 ## Voz do card — PM/PO, QA e Designer (nunca dev)
 
@@ -32,6 +38,19 @@ Cria um card no **projeto que você indicar** (Atlassian pessoal) a partir de um
 
 **Teste final da voz:** se o card só faz sentido pra quem conhece o código, foi escrito errado — reescreva. Nada se perde: o card é **intake**, não spec; quem deriva arquitetura é o `/method`.
 
+### O `/solve` no intake — sobe a ambição, não a arquitetura
+
+O `/solve` que você carregou na ativação vale **inteiro pra pensar** e **filtrado pra escrever**. Ele responde a pergunta que o intake normalmente não faz: *"qual é o nível certo aqui?"*
+
+| | |
+|---|---|
+| **Entra no card** | quem é o líder reconhecido **deste domínio** (nomeado, nunca "o mercado"), o que ele entrega **neste ponto** do produto, que possibilidades isso abre, e o quanto estamos abaixo disso |
+| **Fica de fora** | SOLID, motores, DRY, KISS, tokens, nome de componente, prescrição de arquitetura |
+
+Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer como construir é trabalho de dev — não passa. E nada se perde no filtro: o `/method` **recarrega o mesmo `/solve`** quando o `/work` rodar, e é lá que a doutrina de engenharia é cobrada, step a step.
+
+> **O par que confunde:** *"o checkout do Stripe confirma o pagamento sem tirar o usuário da tela"* é **referência de produto** → liberado, é o vocabulário natural do PM. *"crie um motor de pagamento com contrato pequeno"* é **prescrição de arquitetura** → fora. Os dois miram o nível #1; só um deles é do card.
+
 ## Convenções (CONTRATO — descobrir, nunca assumir)
 
 - **Projeto:** o da **memória do projeto** (passo 0, via `/jira-board`) ou o do argumento, que sobrescreve. Sempre via `mcp__atlassian__*`.
@@ -45,7 +64,7 @@ Cria um card no **projeto que você indicar** (Atlassian pessoal) a partir de um
 
 ## Fluxo
 
-### 0. Board do projeto (SEMPRE, antes de tudo)
+### 0. Board do projeto (SEMPRE, antes de tocar no Jira)
 
 Invoque o **`/jira-board`** (dependência obrigatória). Ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
 
@@ -77,13 +96,20 @@ Um passe **rápido** só pra ancorar — NÃO é o Step 0 do `/work`:
 
 ### 4. Compor o card
 - **Título:** conciso, imperativo, PT (≤ ~80 chars).
-- **Descrição (markdown):**
+- **Descrição (markdown), nesta ordem:**
   - O problema/objetivo em linguagem de produto (o porquê + quem sente + impacto).
   - **Onde o usuário sente** — tela/fluxo + **rota**.
   - Critério de pronto em **comportamento observável**, se óbvio.
   - Se for visual: estados esperados, responsivo, acessibilidade — o que um Designer diria.
-  - **`## Como resolver`** — linha explícita e literal: **"Rode `/method` e `/solve` para resolver o problema deste card."** (OBRIGATÓRIO).
-  - **`## Como testar`** — formato QA: **pré-condição → passos → resultado esperado**, tudo observável no front (OBRIGATÓRIO).
+  - **`## Referência de mercado`** (OBRIGATÓRIO) — quem é o **#1 deste domínio** (nomeado) e o que ele entrega **neste ponto**: o **piso**, nunca o teto. Duas formas, conforme o card:
+    - **melhoria / feature / tela** → a referência nomeada + as **possibilidades** que ela abre aqui;
+    - **bug** → o comportamento que o líder entrega neste ponto — é ele a régua do "consertado", não o "voltou ao que era".
+  - **`## Como resolver`** (OBRIGATÓRIO) — bloco, não linha:
+    - a instrução literal **"Rode `/method` e `/solve` para resolver o problema deste card."**;
+    - o enquadramento: **o alvo não é "funcionar" — é ser a referência #1 do mercado**, no calibre dos big pop tech apps. Se a base atual não chega lá, **refazer é decisão válida**, não desperdício.
+  - **`## Como testar`** (OBRIGATÓRIO, e sempre a última seção) — formato QA: **pré-condição → passos → resultado esperado**, tudo observável no front.
+
+> **Referência genérica não é referência.** "seguir o padrão de mercado", "como os apps modernos fazem" e "melhores práticas" não dizem nada a quem vai executar. **Nomeie o produto.** Não há líder óbvio no domínio? Nomeie o mais próximo e diga por que ele serve de régua — mas a seção nunca fica no vago.
 
 ### 5. Criar no Jira
 Descobrir o tipo antes: `mcp__atlassian__jira_get_project_issue_types` (`project_key`) → escolher o que **existe** e cabe (bug vs tarefa/melhoria). Depois:
@@ -93,7 +119,7 @@ mcp__atlassian__jira_create_issue
   project_key: <KEY>
   issue_type:  <tipo descoberto>
   summary:     <título>
-  description: <markdown com ## Como resolver e terminando em ## Como testar>
+  description: <markdown com ## Referência de mercado, ## Como resolver e terminando em ## Como testar>
 ```
 
 **Adicionar ao sprint ativo (DEFAULT):** o `boardId` **já veio do `/jira-board`** no passo 0 — use ele, não chame `jira_get_agile_boards`. Redescobrir o board é exatamente a ida ao servidor que a memória existe pra eliminar.
@@ -127,6 +153,7 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 ✅ Card criado: <KEY>-<N>
    <título>  ·  Projeto: <KEY> (<nome>) [memória do projeto | argumento]  ·  Tipo: <tipo descoberto>
    Onde: <área do produto> · rota <rota>
+   Referência: <líder do domínio nomeado>
    Sprint: <nome do sprint ativo>   (ou "backlog — sem sprint ativo")
    Anexos: <N>/<N>
    URL: <link>
@@ -149,9 +176,11 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 **Voz**
 - "Escrevi o card como dev" → NÃO. PM/PO, QA ou Designer. Teste de papel antes de cada linha.
 - "Coloquei o caminho do arquivo pra ajudar o dev" → NÃO. Rota sim, arquivo não. Isso é `/method`.
-- "Prescrevi a solução no card" → NÃO. O card diz **o quê** e **por quê**; o **como** é do `/work` + `/method`.
+- "Prescrevi a solução no card" → NÃO. O card diz **o quê**, **por quê** e **em que nível**; o **como** é do `/work` + `/method`. Nomear a ambição não é prescrever a solução — a linha está na Voz do card.
+- "Botei SOLID / motor / token / nome de componente na `## Referência de mercado`" → NÃO. A referência é **o que** o líder entrega, não **como** se constrói. Engenharia é do `/method`, que recarrega o `/solve` lá.
+- "Escrevi 'seguir o padrão de mercado' sem nomear ninguém" → NÃO. Referência genérica não é referência; nomeie o produto.
 - "`## Como testar` sem resultado esperado observável" → NÃO. Pré-condição → passos → resultado.
-- "Esqueci o `## Como testar`" ou o `## Como resolver` → card incompleto. Ambos sempre.
+- "Esqueci uma das três seções (`## Referência de mercado`, `## Como resolver`, `## Como testar`)" → card incompleto. As três, sempre.
 
 **Anexos**
 - "Não achei tool de upload no MCP, então pulei" → NÃO. É `jira_update_issue` + `attachments` (`references/jira-anexos.md`).
@@ -160,6 +189,8 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 - "O usuário viu a imagem no chat, não precisa anexar" → NÃO. Quem executa o card não estava na conversa.
 
 **Escopo**
+- "Pulei o `/solve` porque o card é pequeno" → NÃO. É **toda** invocação. Ele custa pouco no intake e é o que separa um card "está quebrado" de um card "estamos abaixo do líder".
+- "O `/solve` me deu vontade de investigar fundo" → NÃO. Ele sobe a **régua**, não o **tempo**. Scan segue **leve** (Iron Law); investigação é o `/work`.
 - "Vou investigar fundo pra escrever o card perfeito" → NÃO. Scan **leve**. Investigação/reprodução é o `/work`.
 - "Vou criar branch / docs / kanban / mover status" → NÃO. `/card` só cria o card remoto (sprint ativo faz parte — passo 5; status de workflow, não).
 - "1 card gigante com 3 entregas" → NÃO. 1 card = 1 entrega; proponha split.
