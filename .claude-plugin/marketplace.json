@@ -4,13 +4,13 @@
     "name": "Eduardo Furihata"
   },
   "metadata": {
-    "description": "Skills do Claude Code do Furihata — pessoais e Eduzz."
+    "description": "Skills do Claude Code do Furihata — pessoais, ferramentas avulsas e Eduzz."
   },
   "plugins": [
     {
       "name": "eduzz-builder",
       "source": "./skills/eduzz",
-      "description": "Skills de trabalho (Eduzz) — /jira, /afl, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
+      "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
       "category": "eduzz"
     },
     {
@@ -18,6 +18,12 @@
       "source": "./skills/personal",
       "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /homolog, /prod e mais. Instala todas de uma vez.",
       "category": "personal"
+    },
+    {
+      "name": "furi-toolbox",
+      "source": "./skills/toolbox",
+      "description": "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+      "category": "toolbox"
     }
   ]
 }

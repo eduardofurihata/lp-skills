@@ -5,24 +5,15 @@
     "name": "Eduardo Furihata"
   },
   "skills": [
-    "./ask",
     "./card",
-    "./chat",
-    "./chat-out",
-    "./claude-modes",
-    "./ctt",
     "./fast",
     "./homolog",
     "./jira-board",
-    "./make-dev",
     "./method",
     "./prod",
-    "./proof",
     "./proto",
     "./pull-request",
-    "./save",
     "./solve",
-    "./sync",
     "./todo",
     "./work"
   ]

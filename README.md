@@ -1,26 +1,27 @@
 # lp-skills
 
-Skills do Claude Code do [Furihata](https://github.com/eduardofurihata), distribuídas como um **Claude Code plugin marketplace** — instala e atualiza igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em duas categorias: **Pessoal** e **Eduzz** (trabalho).
+Skills do Claude Code do [Furihata](https://github.com/eduardofurihata), distribuídas como um **Claude Code plugin marketplace** — instala e atualiza igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em três categorias: **Pessoal** (o workflow: `/method`, `/work`, `/prod`…), **Toolbox** (ferramentas avulsas: `/ask`, `/chat`, `/save`, `/sync`…) e **Eduzz** (trabalho).
 
-Este repo é as duas coisas ao mesmo tempo: o **marketplace** (`.claude-plugin/marketplace.json` + **2 plugins** que empacotam as skills) e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
+Este repo é as duas coisas ao mesmo tempo: o **marketplace** (`.claude-plugin/marketplace.json` + **3 plugins**, um por categoria, que empacotam as skills) e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
 
 ## Para usuários
 
-O marketplace tem **2 pacotes** (plugins) — você instala o pacote, não skill por skill. Cada pacote já traz todas as skills da categoria dentro.
+O marketplace tem **3 pacotes** (plugins), um por categoria — você instala o pacote, não skill por skill. Cada pacote já traz todas as skills da categoria dentro.
 
 ```
 # 1) adicione o marketplace (uma vez por máquina)
 /plugin marketplace add eduardofurihata/lp-skills
 
-# 2) instale o pacote que quiser (um, ou os dois)
-/plugin install furi-builder@lp-skills     # todas as skills pessoais
-/plugin install eduzz-builder@lp-skills    # todas as skills de trabalho (Eduzz)
+# 2) instale o pacote que quiser (um, dois ou os três)
+/plugin install furi-builder@lp-skills     # o workflow pessoal (/method, /work, /pull-request, /prod…)
+/plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/ask, /chat, /save, /sync, /make-dev…)
+/plugin install eduzz-builder@lp-skills    # skills de trabalho (Eduzz): /jira, /afl, /proof, /video-teams
 
 # 3) atualize quando houver versão nova
 /plugin marketplace update
 ```
 
-`eduzz-builder` **puxa o `furi-builder` junto** (dependência): o `/jira` e o `/afl` usam o `/method` e o `/solve`, que são pessoais — então instalar o pacote de trabalho traz também os pessoais que ele precisa.
+`eduzz-builder` **puxa o `furi-builder` junto** (dependência): o `/jira` e o `/afl` usam o `/method` e o `/solve`, que são pessoais — então instalar o pacote de trabalho traz também os pessoais que ele precisa. O `furi-toolbox` não puxa nem é puxado por ninguém: cada skill dele funciona sozinha.
 
 Depois de instalado, cada skill é invocada pelo nome curto (`/method`, `/jira`, …) — a forma namespaced (`/furi-builder:method`) também funciona. O Claude Code **copia** o plugin para o cache dele (`~/.claude/plugins/`) ele mesmo, por SO — por isso funciona igual em qualquer sistema, sem os problemas de symlink no Windows.
 
@@ -35,22 +36,27 @@ Prefere escolher visualmente? Acesse a [LP](https://lp-skills.vercel.app), filtr
 ```
 lp-skills/
 ├── .claude-plugin/
-│   └── marketplace.json    # catálogo do marketplace — só 2 plugins (GERADO)
+│   └── marketplace.json    # catálogo do marketplace — 1 plugin por categoria (GERADO)
 ├── skills/                 # source of truth
 │   ├── personal/           # = plugin furi-builder (raiz)
 │   │   ├── .claude-plugin/plugin.json   # empacota as skills abaixo (GERADO)
+│   │   └── <skill>/SKILL.md
+│   ├── toolbox/            # = plugin furi-toolbox (raiz) — skills avulsas
+│   │   ├── .claude-plugin/plugin.json   # (GERADO)
 │   │   └── <skill>/SKILL.md
 │   └── eduzz/              # = plugin eduzz-builder (raiz)
 │       ├── .claude-plugin/plugin.json   # (GERADO)
 │       └── <skill>/SKILL.md
 ├── scripts/
-│   └── generate-plugins.mjs   # gera os 2 plugin.json + o marketplace.json do frontmatter
+│   └── generate-plugins.mjs   # gera os plugin.json + o marketplace.json do frontmatter
 ├── app/                    # Next.js App Router (a LP)
 ├── components/             # React components
 └── lib/                    # categorias + leitor de skills + gerador de comandos
 ```
 
-Cada pasta de categoria (`skills/personal`, `skills/eduzz`) **é** a raiz de um plugin; o `plugin.json` gerado lá lista as skills da categoria em `skills: ["./<slug>", …]`. A categoria de cada skill é derivada da pasta-pai. O nome de invocação (`/homolog`) vem do `name` no frontmatter do `SKILL.md`; a dependência cruzada entre pacotes (eduzz → furi) é derivada do `requires`.
+Cada pasta de categoria (`skills/personal`, `skills/toolbox`, `skills/eduzz`) **é** a raiz de um plugin; o `plugin.json` gerado lá lista as skills da categoria em `skills: ["./<slug>", …]`. A categoria de cada skill é derivada da pasta-pai. O nome de invocação (`/homolog`) vem do `name` no frontmatter do `SKILL.md`; a dependência cruzada entre pacotes (eduzz → furi) é derivada do `requires`.
+
+**Critério de pasta:** categoria é dona primeiro — skill de trabalho mora em `eduzz/`, antes de qualquer outro critério (o `/proof` não tem dependências, mas audita PRs da Eduzz: é `eduzz/`). Entre as pessoais, a que não tem `requires` **e** de quem nenhuma outra skill depende ou invoca vai para `toolbox/` — funciona sozinha; se ela entra num grafo (o `/solve`, por exemplo, é requerido por cinco), fica em `personal/`.
 
 ## Workflow do autor
 
@@ -69,6 +75,7 @@ Cada push vira uma versão nova (não há `version` fixado); os usuários recebe
 
 ```bash
 claude --plugin-dir ~/GitHub/lp-skills/skills/personal   # furi-builder
+claude --plugin-dir ~/GitHub/lp-skills/skills/toolbox    # furi-toolbox
 claude --plugin-dir ~/GitHub/lp-skills/skills/eduzz      # eduzz-builder
 ```
 

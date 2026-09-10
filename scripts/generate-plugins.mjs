@@ -3,16 +3,20 @@
 // Emite, de forma idempotente:
 //   1. skills/<cat>/.claude-plugin/plugin.json  (UM plugin por categoria, que
 //      empacota TODAS as skills da categoria via `skills:[./<slug>, …]`)
-//   2. .claude-plugin/marketplace.json           (catálogo com só 2 plugins)
+//   2. .claude-plugin/marketplace.json           (catálogo: 1 plugin por categoria)
 // Rodar 2× produz bytes idênticos (git diff vazio) — chaves em ordem fixa,
 // listas ordenadas. Também PODA artefatos do modelo antigo (1 plugin por skill
 // + bundles/ agregadores), já que este script é a autoridade dos gerados.
 //
-// Modelo: 2 plugins ("builders"), não 21. Cada builder é a pasta da categoria
-// (skills/personal, skills/eduzz) como raiz de plugin; as skills continuam em
-// skills/<cat>/<slug>/ e entram no plugin pelo array `skills`. Skill empacotada
-// segue sendo chamada por `/method` (forma curta resolve sem ambiguidade); a
-// forma canônica namespaced `/furi-builder:method` também funciona.
+// Modelo: 1 plugin ("builder") por categoria — 3, não 21. Cada builder é a pasta
+// da categoria (skills/personal, skills/toolbox, skills/eduzz) como raiz de
+// plugin; as skills continuam em skills/<cat>/<slug>/ e entram no plugin pelo
+// array `skills`. Categoria é dona primeiro: skill de trabalho é `eduzz`, antes
+// de qualquer critério. Entre as pessoais, `toolbox` é a das avulsas — sem
+// `requires` e sem ninguém que dependa delas — por isso o builder nasce sem
+// `dependencies`. Skill empacotada segue sendo chamada por `/method` (forma
+// curta resolve sem ambiguidade); a forma canônica namespaced
+// `/furi-builder:method` também funciona.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,11 +24,11 @@ import matter from "gray-matter";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKILLS_DIR = path.join(ROOT, "skills");
-const CATEGORIES = ["personal", "eduzz"];
+const CATEGORIES = ["personal", "toolbox", "eduzz"];
 const MARKETPLACE_NAME = "lp-skills";
 const OWNER = { name: "Eduardo Furihata" };
 const MARKETPLACE_DESCRIPTION =
-  "Skills do Claude Code do Furihata — pessoais e Eduzz.";
+  "Skills do Claude Code do Furihata — pessoais, ferramentas avulsas e Eduzz.";
 
 // Um builder por categoria: o plugin que empacota a categoria inteira.
 const BUILDERS = {
@@ -33,10 +37,15 @@ const BUILDERS = {
     description:
       "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /homolog, /prod e mais. Instala todas de uma vez.",
   },
+  toolbox: {
+    name: "furi-toolbox",
+    description:
+      "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+  },
   eduzz: {
     name: "eduzz-builder",
     description:
-      "Skills de trabalho (Eduzz) — /jira, /afl, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
+      "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
   },
 };
 
@@ -84,7 +93,7 @@ function pruneLegacy(slugsByCategory) {
 
 // 1ª passada: lê todas as skills (name, description, requires, categoria).
 const skills = []; // { slug, category, name, description, requires }
-const slugsByCategory = { personal: [], eduzz: [] };
+const slugsByCategory = Object.fromEntries(CATEGORIES.map((c) => [c, []]));
 
 for (const category of CATEGORIES) {
   const bucket = path.join(SKILLS_DIR, category);

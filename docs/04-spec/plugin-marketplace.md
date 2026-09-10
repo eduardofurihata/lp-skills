@@ -3,7 +3,7 @@
 > **Autonomous Decision Loop:** 2 rounds, 20 decisões, zero ambiguidades.
 > Fontes oficiais: `code.claude.com/docs/en/plugin-marketplaces`, `/plugins`, `/plugins-reference`.
 
-> ⚠️ **ESTADO ATUAL: ver [Round 4](#decisões-round-4--marketplace-de-2-plugins).** O modelo "1 plugin por skill" (Rounds 1–3, decisões 2/4/10/11/12/21–23) foi **substituído** por **2 plugins** (`furi-builder`, `eduzz-builder`) que empacotam as skills. O gatilho: verificação empírica (2026-07-03) de que skill empacotada num plugin **continua invocável bare** (`/method`) — o medo que motivou o "1 plugin por skill" (namespacing quebraria as cross-refs) não se confirmou.
+> ⚠️ **ESTADO ATUAL: ver [Round 4](#decisões-round-4--marketplace-de-2-plugins) + [Round 5](#decisões-round-5--3º-builder-furi-toolbox).** O modelo "1 plugin por skill" (Rounds 1–3, decisões 2/4/10/11/12/21–23) foi **substituído** por **1 plugin por categoria** — 2 no Round 4 (`furi-builder`, `eduzz-builder`), 3 desde o Round 5 (`furi-toolbox` para as skills avulsas) — que empacotam as skills. O gatilho: verificação empírica (2026-07-03) de que skill empacotada num plugin **continua invocável bare** (`/method`) — o medo que motivou o "1 plugin por skill" (namespacing quebraria as cross-refs) não se confirmou.
 
 ## Escopo de Plataforma (derivado, não declarado)
 
@@ -93,6 +93,20 @@
 - Instalar: `/plugin install furi-builder@lp-skills` e/ou `/plugin install eduzz-builder@lp-skills` (o segundo puxa o primeiro)
 - Invocar: `/method`, `/jira`, … (bare) — `/furi-builder:method` também funciona
 - Atualizar: `/plugin marketplace update`
+
+## Decisões (Round 5 — 3º builder `furi-toolbox`)
+
+> Estende o Round 4 (não substitui nada). Motivação (2026-09-10): dentro do `furi-builder` conviviam o **workflow** (`method`, `solve`, `fast`, `todo`, `proto`, `card`, `work`, `pull-request`, `homolog`, `prod`, `jira-board` — um grafo de `requires`/invocações que só faz sentido instalado junto) e **ferramentas avulsas** que ninguém requer e não requerem ninguém. O pedido: as avulsas num plugin próprio, com nome em inglês.
+
+| # | Decisão | Justificativa | Referência / Alternativas descartadas |
+|---|---|---|---|
+| 31 | **3ª categoria `toolbox` = plugin `furi-toolbox`**, mesma mecânica das outras (pasta `skills/toolbox/` é a raiz do plugin; `plugin.json` gerado lá; entrada no `marketplace.json` com `category: "toolbox"`) | Modelo do Round 4 já é "1 plugin por categoria" — a 3ª entra sem mudar o mecanismo, só o dado (`CATEGORIES`) | (a) sub-pasta dentro de `personal/` → gerador e LP teriam que aprender um nível de aninhamento sem ganho de instalação separada; (b) `furi-tools`/`furi-utils`/`furi-kit` → nome escolhido pelo dono: `furi-toolbox` |
+| 32 | **Critério de pertencimento à `toolbox`**: categoria é dona primeiro — skill de trabalho é `eduzz/` antes de qualquer critério. Entre as pessoais: sem `requires` **e** nenhuma outra skill a lista em `requires` ou a invoca via Skill tool. Hoje: `ask`, `chat`, `chat-out`, `claude-shortcuts`, `ctt`, `make-dev`, `save`, `sync` (8) | Objetivo e verificável por grep; "sozinha" precisa de definição pra não virar gosto — e a dona vem antes, senão skill de trabalho sem deps cairia no pacote pessoal | `proof` cumpre o critério de avulsa (sem deps, sem dependentes) mas audita PRs da Eduzz (`AV-*`) → `eduzz/`, decisão do dono. `solve` fica em `personal/`: não tem `requires`, mas 5 skills dependem dele (`method`, `fast`, `todo`, `proto`, `card`) — é a base do grafo, não uma ferramenta solta. Menção como fronteira (`/prod` citando `/sync` numa red flag) não é dependência |
+| 33 | **Zero deps cruzadas** com o `furi-toolbox`: ele não declara `dependencies` e nenhum builder o declara | Consequência direta do critério 32; `crossBuilderDeps` do gerador deriva isso sozinho do `requires` | declarar `furi-builder → furi-toolbox` "por conveniência" → instalar o workflow forçaria as avulsas, o oposto do pedido |
+| 34 | **Categoria vira dado na LP**: `CategoryFilter`, `SkillsClient` (counts), `Hero` (nº de pacotes) e o gerador (`slugsByCategory`) iteram `CATEGORIES`/`BUNDLES` em vez de listar `personal`/`eduzz` na mão; `Record<Category, …>` em `CategoryBadge` obriga toda categoria nova a ganhar cor (âmbar `--color-toolbox`) | 3 lugares listavam as categorias literalmente — adicionar a 3ª sem isso seria a 3ª cópia da mesma lista (DRY) | manter literais → próxima categoria repete esta edição em 4 arquivos |
+| 35 | **Prompt de instalação testa com skill do próprio pacote** (`Bundle.example`: `/method`, `/save`, `/jira`) | O passo 5 mandava testar `/method` em qualquer pacote — no `furi-toolbox` esse teste "falha" num install que deu certo | manter `/method` fixo → falso negativo no pacote novo |
+
+**Efeito na máquina de quem já tinha o `furi-builder`**: no próximo auto-update ele perde as 8 avulsas e o `/proof`; `/plugin install furi-toolbox@lp-skills` traz as avulsas de volta, e o `/proof` passa a vir do `eduzz-builder` (que só existe onde estiver habilitado). Não há caminho automático — plugin novo é instalação nova.
 
 ## Grafo de Dependências (fonte: frontmatter `requires`)
 

@@ -9,6 +9,7 @@ import {
 import { SkillGrid } from "@/components/SkillGrid";
 import { BundleInstall } from "@/components/BundleInstall";
 import type { Skill } from "@/lib/skills";
+import { CATEGORIES } from "@/lib/categories";
 
 interface SkillsClientProps {
   skills: Skill[];
@@ -19,11 +20,10 @@ export function SkillsClient({ skills }: SkillsClientProps) {
     useState<CategoryFilterValue>("all");
 
   const counts = useMemo<Record<CategoryFilterValue, number>>(() => {
-    const c: Record<CategoryFilterValue, number> = {
+    const c = {
       all: skills.length,
-      personal: 0,
-      eduzz: 0,
-    };
+      ...Object.fromEntries(CATEGORIES.map((cat) => [cat, 0])),
+    } as Record<CategoryFilterValue, number>;
     for (const s of skills) c[s.category] += 1;
     return c;
   }, [skills]);
