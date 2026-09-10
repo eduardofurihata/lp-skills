@@ -1,25 +1,41 @@
 import type { Category } from "./categories";
 
 // Bundle ("builder") — o plugin que empacota uma categoria inteira de skills.
-// O marketplace tem só 2: furi-builder (pessoais) e eduzz-builder (trabalho).
-// Não se instala skill isolada — instala-se o pacote, que já traz todas dentro.
+// Um por categoria: furi-builder (pessoais), furi-toolbox (ferramentas avulsas)
+// e eduzz-builder (trabalho). Não se instala skill isolada — instala-se o
+// pacote, que já traz todas dentro.
 export interface Bundle {
   name: string;
   label: string;
   category: Category;
+  // Skill do pacote usada como exemplo no passo de teste do prompt — tem que
+  // existir DENTRO deste pacote, senão o teste "falha" num install que deu certo.
+  example: string;
 }
 
 // Repo/marketplace fonte das skills (Claude Code plugin marketplace).
 const REPO_SLUG = "eduardofurihata/lp-skills";
 const MARKETPLACE = "lp-skills";
 
-// Os 2 pacotes (espelham os plugins gerados em skills/<cat>/.claude-plugin/).
+// Os pacotes (espelham os plugins gerados em skills/<cat>/.claude-plugin/).
 export const BUNDLES: Bundle[] = [
-  { name: "furi-builder", label: "Todas as pessoais", category: "personal" },
+  {
+    name: "furi-builder",
+    label: "Todas as pessoais",
+    category: "personal",
+    example: "/method",
+  },
+  {
+    name: "furi-toolbox",
+    label: "Ferramentas avulsas",
+    category: "toolbox",
+    example: "/save",
+  },
   {
     name: "eduzz-builder",
     label: "Todas de trabalho (Eduzz)",
     category: "eduzz",
+    example: "/jira",
   },
 ];
 
@@ -41,8 +57,8 @@ const AUTOUPDATE_STEP = `3) Ligue o auto-update (novas versões entram sozinhas)
 const VERIFY_STEP = `4) Confirme: a entrada "${MARKETPLACE}" no settings.json deve ficar com "autoUpdate": true.
    (Dá pra ver na UI também: /plugin → aba "Marketplaces" → "${MARKETPLACE}" mostra "Auto-update enabled".)`;
 
-const TEST_STEP =
-  "5) Abra uma sessão NOVA do Claude Code (um CLI separado) e teste digitando uma skill do pacote — ex.: /method";
+const testStep = (example: string) =>
+  `5) Abra uma sessão NOVA do Claude Code (um CLI separado) e teste digitando uma skill do pacote — ex.: ${example}`;
 
 const UPDATE_FOOTER = `Com o auto-update ligado, versão nova entra sozinha no próximo start do Claude Code. Pra puxar na hora: /plugin marketplace update ${MARKETPLACE}`;
 
@@ -61,7 +77,7 @@ ${AUTOUPDATE_STEP}
 
 ${VERIFY_STEP}
 
-${TEST_STEP}
+${testStep(bundle.example)}
 
 ${UPDATE_FOOTER}`;
 }

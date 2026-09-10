@@ -17,6 +17,9 @@
   --color-eduzz: #34D399;
   --color-eduzz-soft: rgba(16, 185, 129, 0.14);
 
+  --color-toolbox: #FBBF24;
+  --color-toolbox-soft: rgba(245, 158, 11, 0.14);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

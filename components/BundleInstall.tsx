@@ -17,8 +17,9 @@ interface BundleInstallProps {
   counts: Record<Category, number>;
 }
 
-// A instalação da LP: escolher 1 dos 2 pacotes. Cada pacote é um plugin que já
-// traz todas as skills da categoria dentro — não existe install por skill.
+// A instalação da LP: escolher um dos pacotes (um por categoria). Cada pacote é
+// um plugin que já traz todas as skills da categoria dentro — não existe
+// install por skill.
 export function BundleInstall({ counts }: BundleInstallProps) {
   return (
     <section className="mb-8 rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-5">
@@ -31,7 +32,7 @@ export function BundleInstall({ counts }: BundleInstallProps) {
           Instale um pacote — já vem com todas as skills dentro
         </h2>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {BUNDLES.map((bundle) => (
           <Dialog key={bundle.name}>
             <DialogTrigger asChild>

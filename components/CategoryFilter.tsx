@@ -1,7 +1,11 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CATEGORY_LABELS, type Category } from "@/lib/categories";
+import {
+  CATEGORIES,
+  CATEGORY_LABELS,
+  type Category,
+} from "@/lib/categories";
 
 export type CategoryFilterValue = "all" | Category;
 
@@ -11,10 +15,10 @@ interface CategoryFilterProps {
   counts: Record<CategoryFilterValue, number>;
 }
 
+// "Todas" + uma aba por categoria, na ordem de CATEGORIES (nunca listadas na mão).
 const TABS: { value: CategoryFilterValue; label: string }[] = [
   { value: "all", label: "Todas" },
-  { value: "personal", label: CATEGORY_LABELS.personal },
-  { value: "eduzz", label: CATEGORY_LABELS.eduzz },
+  ...CATEGORIES.map((c) => ({ value: c, label: CATEGORY_LABELS[c] })),
 ];
 
 export function CategoryFilter({
