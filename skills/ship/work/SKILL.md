@@ -2,20 +2,24 @@
 name: work
 description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone, NOT the Eduzz /jira. Discovers the project board from the card key, syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
 effort: max
-requires: [jira-board, method]
+requires: [jira-board, method, solve]
 argument-hint: "[KEY-N] | (empty = continuar card ativo)"
 ---
 
 # /work — Trabalhar um card do Jira (do todo ao commit)
 
-Pega um card de **qualquer board** do Atlassian pessoal e leva até o **commit local** na feature branch, no nível da referência #1 do mercado. **Skill standalone do projeto pessoal** — NÃO é o `/jira` (esse é Eduzz, outro contexto, fica fora daqui). Reusa o `/method` (que já invoca o `/solve`) como protocolo de engenharia.
+Pega um card de **qualquer board** do Atlassian pessoal e leva até o **commit local** na feature branch, no nível da referência #1 do mercado. **Skill standalone do projeto pessoal** — NÃO é o `/jira` (esse é Eduzz, outro contexto, fica fora daqui). Carrega o `/solve` na ativação e reusa o `/method` (que o recarrega) como protocolo de engenharia.
 
 > 🚫 NÃO faz push, NÃO abre PR, NÃO mergeia. Termina no **commit local** (Step 10 do `/method`). Ship é o `/pull-request` depois.
 
+## Ordem de Operações ao Ativar
+
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/work` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/work` é quem leva o card até o commit **nesse nível** — e o `/method` (passo 5) recarrega o mesmo `/solve` quando rodar. Depois disso, siga o Fluxo a partir do passo 0.
+
 ## Iron Law
 
-> **Precisão > tokens > velocidade.** Mire ser a **referência #1 do mercado** (padrão do `/solve`, que o `/method` carrega na ativação). "É simples, pulo" = a violação.
-> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** (tudo por onde passa sobe) e o **design** (tokens, atomicidade, estados, a11y — quando tem tela) vêm juntos e valem em **todos** os steps, não só no código — lente por step em `method/references/principios.md` e `method/references/design.md`. Card "pequeno" não relaxa nenhum deles.
+> **Precisão > tokens > velocidade.** Mire ser a **referência #1 do mercado** (padrão do `/solve`, carregado aqui na ativação e recarregado pelo `/method`). "É simples, pulo" = a violação.
+> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** (tudo por onde passa sobe) e o **design** (tokens, atomicidade, estados, a11y — quando tem tela) vêm juntos e valem em **todos** os steps, não só no código — lente por step em `skills/build/method/references/principios.md` e `skills/build/method/references/design.md` (pacote `furi-build`, carregados pelo `/method` que o `/work` invoca). Card "pequeno" não relaxa nenhum deles.
 
 ## Disciplina em todos os passos
 
@@ -34,7 +38,7 @@ Nenhum desses passos é lugar de "adianto um código". Entender aqui é o que fa
 
 - **Qualquer projeto** do Atlassian pessoal, sempre via `mcp__atlassian__*`. A key sai do argumento (`ALK-42` → projeto `ALK`) ou da **memória do projeto** quando o argumento não traz uma — **nada hardcoded**.
 - **Board vem do `/jira-board`** (passo 0, dependência obrigatória), que lê a memória do projeto e pergunta só na primeira vez. Não descubra nem pergunte o board aqui. Projeto sem board ágil → segue sem sprint, e avisa.
-- **Status de "em andamento" é descoberto, nunca inventado** — o nome varia por projeto ("Em andamento", "In Progress", "Doing"…). A mecânica de descobrir e aplicar, e o que fazer quando o workflow não tem equivalente, é do **`skills/personal/prod/references/jira-sync.md`** (fonte única).
+- **Status de "em andamento" é descoberto, nunca inventado** — o nome varia por projeto ("Em andamento", "In Progress", "Doing"…). A mecânica de descobrir e aplicar, e o que fazer quando o workflow não tem equivalente, é do **`prod/references/jira-sync.md`** (fonte única).
 - Card não encontrado → o projeto pode estar em **outro site Atlassian** (o MCP alcança só o site do seu `JIRA_URL`). Diga isso; não aproxime para outra key.
 - Branch base = **`dev`** (não `main`). Regra de criação: **gh → dev → branch**.
   > **Padrão:** `dev` é a **branch** de integração, o que vem antes da `main`. **homolog** é o **ambiente** publicado a partir dela — nome de ambiente, nunca de branch. "Mergeei na dev" = integrado; "está em homolog" = no ar.
@@ -43,7 +47,7 @@ Nenhum desses passos é lugar de "adianto um código". Entender aqui é o que fa
 ## Fluxo
 
 ### 0. Board do projeto (SEMPRE, antes de tudo)
-**Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória, junto do `/method`: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+**Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória, junto do `/solve` e do `/method`: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
 
 Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não** a reescreve. No modo CONTINUE (argumento vazio), o board da memória é o que resolve site e prefixo de branch ao retomar o card ativo. Nunca assuma o board nem pergunte por ele aqui.
 
@@ -54,7 +58,7 @@ Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não
 > Tem **anexo de imagem**? Baixe (`jira_download_attachments` / `jira_get_issue_images`) e leia antes de decidir: é o que o solicitante viu.
 
 ### 2. gh → integração → branch (REGRA DE OURO)
-A branch de integração vem da **topologia**, nunca assumida — `git ls-remote --heads origin dev` vazio ⇒ branch única, e a integração é `main` (detalhe: `skills/personal/prod/references/deploy-context.md`). Nunca branchar de integração stale — trazer tudo e resolver conflito antes:
+A branch de integração vem da **topologia**, nunca assumida — `git ls-remote --heads origin dev` vazio ⇒ branch única, e a integração é `main` (detalhe: `prod/references/deploy-context.md`). Nunca branchar de integração stale — trazer tudo e resolver conflito antes:
 ```bash
 git checkout dev
 git fetch origin
@@ -68,7 +72,7 @@ Nome da branch: derivado do card — `<key-minúscula>-<n>` (ex.: `niv-12`, `alk
 
 ### 3. Mover o card → em andamento
 - Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue`.
-- Status: mover o card para o **equivalente a "em andamento"** no workflow daquele projeto ("Em andamento", "In Progress", "Doing"…). A mecânica é do **`skills/personal/prod/references/jira-sync.md`**, fonte única — siga-o, não o reescreva aqui.
+- Status: mover o card para o **equivalente a "em andamento"** no workflow daquele projeto ("Em andamento", "In Progress", "Doing"…). A mecânica é do **`prod/references/jira-sync.md`**, fonte única — siga-o, não o reescreva aqui.
 - **Nenhuma equivalente no workflow?** Avise e siga — o trabalho não trava por causa de status. Nunca invente nome de transição nem force uma que signifique outra coisa.
 
 ### 4. GATE de perguntas (analisar — perguntar SÓ se necessário)
@@ -81,7 +85,7 @@ Dar uma **nota 0–100** à clareza do que precisa ser feito:
 > O gate é **pré-implementação** e é sobre *produto/escopo*. Dúvida de *implementação* resolve pela hierarquia (padrão do projeto > big apps > boas práticas) e documenta no spec — não vira pergunta ao usuário.
 
 ### 5. Rodar o /method
-**Invoque o `/method`** — via **Skill tool** (`furi-builder:method`; a forma curta `method` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória. Ele:
+**Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória. Ele:
 1. chama o **`/solve`** (padrão #1 do mercado) na ativação — é assim que "resolve com /method e /solve" acontece;
 2. roda discovery (1–5) → To Do (6) → Plano (7a) → Codificar (7b) → Code Review (8) → Run Test / QA via front (9) → Done (10);
 3. trabalha **na branch do passo 2** (nunca cria branch), com seus próprios gateways e audits — cada um declarando **princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores)**, **refatoração do perímetro** e, se a feature tem tela, **design** (tokens, atomicidade, estados, a11y);
@@ -111,7 +115,7 @@ Dar uma **nota 0–100** à clareza do que precisa ser feito:
 - "Branchei de `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a branch de integração é `dev` (ou `main`, em branch única).
 - "Todo projeto meu tem `dev`, dou `checkout dev`" → NÃO. `git ls-remote` primeiro: em branch única o `checkout dev` falha e o fluxo trava na largada.
 - "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
-- "Já conheço o `/jira-board` / o `/method`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
+- "Já conheço o `/solve` / o `/jira-board` / o `/method`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
 - "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes** de implementar.
 - "O card não falou de motor, então espalho a regra" → NÃO. O card fala de produto; a arquitetura é derivada no `/method`, e capacidade tem **um** dono.

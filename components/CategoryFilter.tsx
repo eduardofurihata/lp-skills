@@ -31,7 +31,7 @@ export function CategoryFilter({
       value={value}
       onValueChange={(v) => onChange(v as CategoryFilterValue)}
     >
-      <TabsList className="max-w-md">
+      <TabsList className="max-w-lg flex-wrap sm:flex-nowrap">
         {TABS.map((t) => (
           <TabsTrigger key={t.value} value={t.value}>
             {t.label}

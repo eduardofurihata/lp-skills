@@ -8,7 +8,7 @@ argument-hint: "[rota, tela ou print]"
 
 # /proto — a mesma tela em 3 versões, pra escolher uma
 
-Recria a tela pedida em **3 versões**, cada uma numa **rota paralela temporária** do mesmo app. Padrão de qualidade: a PRIMEIRA ação é **invocar o `/solve`** — via **Skill tool** (`furi-builder:solve`; a forma curta `solve` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Não ficou claro qual tela → pergunte antes de começar.
+Recria a tela pedida em **3 versões**, cada uma numa **rota paralela temporária** do mesmo app. Padrão de qualidade: a PRIMEIRA ação é **invocar o `/solve`** — via **Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Não ficou claro qual tela → pergunte antes de começar.
 
 O entregável não é uma tela. É uma **escolha**.
 

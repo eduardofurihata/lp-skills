@@ -15,7 +15,7 @@ Distinção `[novo]` vs `[legacy]` (decide se roda Step 8 — Code Review):
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/todo` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-builder:solve`; a forma curta `solve` também resolve) — é o padrão que o code review (Phase 2) e qualquer fix (Phase 3) cobram: referência #1 do mercado. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois, siga o Checklist.
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/todo` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) — é o padrão que o code review (Phase 2) e qualquer fix (Phase 3) cobram: referência #1 do mercado. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois, siga o Checklist.
 
 <HARD-GATE>
 NÃO marque test cases como PASSED sem executar via front.
@@ -149,7 +149,7 @@ REPETIR até 100% limpo:
      - Consistência com codebase?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - Saldo do perímetro (§ 3.5 do plano): tudo por onde o trabalho passou subiu, ou está declarado como já no nível #1?
-     - **Princípios, UM A UM e POR NOME** (`skills/method/references/principios.md`):
+     - **Princípios, UM A UM e POR NOME** (`method/references/principios.md`):
        · SRP (uma responsabilidade, >40 linhas, lógica+UI juntos, camadas)
        · OCP (comportamento novo entrou como `if` no meio do que já existia?)
        · LSP (implementação lança onde o contrato não prevê?)
@@ -433,7 +433,7 @@ A Phase 4 é o Step 10 do `/method`, e o Step 10 tem gateway de **entrada**: o l
 **❌ BLOQUEADO = PROIBIDO promover, PROIBIDO `rm` do card, PROIBIDO resumo de conclusão.** Para CADA item `ABERTO`:
 
 1. `TaskCreate: "Follow-up F<n> — <achado>"`.
-2. **Invoque o `/method`** — via **Skill tool** (`furi-builder:method`; a forma curta `method` também resolve) — e rode-o **COMPLETO** (Step 1→10; a primeira ação dele é invocar o `/solve`) para o item — tópico e artefatos próprios (`docs/01-problem/<f>.md` … `kanban/10-done/<f>.md`). Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou.
+2. **Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve) — e rode-o **COMPLETO** (Step 1→10; a primeira ação dele é invocar o `/solve`) para o item — tópico e artefatos próprios (`docs/01-problem/<f>.md` … `kanban/10-done/<f>.md`). Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou.
 3. **Sem commit** (o /todo não commita; ciclo aninhado também não).
 4. Marque `RESOLVIDO-POR-CICLO` no ledger + link do done doc.
 5. **Republique o Gate.** Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ continua.

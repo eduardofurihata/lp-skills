@@ -25,7 +25,7 @@ Sobe a branch atual e abre o PR no GitHub **mirando `dev`**, com uma descrição
   | `dev` **e** `main` em `origin` | **`dev`**. Nunca `main` — produção é o `/prod` |
   | só `main` (branch única) | **`main`** — é a única integração que existe |
 
-  > **Padrão:** `dev` é a **branch** de integração. **homolog** é o **ambiente** publicado a partir dela — não é base de PR, é onde a mudança aparece depois do merge. Detalhe da topologia: `skills/personal/prod/references/deploy-context.md`.
+  > **Padrão:** `dev` é a **branch** de integração. **homolog** é o **ambiente** publicado a partir dela — não é base de PR, é onde a mudança aparece depois do merge. Detalhe da topologia: `prod/references/deploy-context.md`.
 - **Board:** o da **memória do projeto** — vem do `/jira-board` (passo 0), nunca hardcoded. Via `mcp__atlassian__*`.
 - Remote = `origin`. O repositório vem do próprio checkout (`gh repo view --json nameWithOwner -q .nameWithOwner`) — não hardcodar.
 
@@ -47,7 +47,7 @@ git status                 # working tree limpo; commit do /method presente
 ## Fluxo
 
 ### 0. Board do projeto (SEMPRE, antes de tudo)
-**Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+**Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
 
 É de lá que sai a `<KEY>` usada no título do PR, no corpo, no comentário do card e no prefixo da branch. Nunca assuma o board nem pergunte por ele aqui.
 
@@ -108,7 +108,7 @@ PR: <URL>
 Branch: <branch>
 Status: Em revisão
 ```
-Transição de status — mover o card para o status **equivalente a "em revisão"** no workflow daquele projeto. A mecânica (descobrir a transição, aplicar, e o que fazer se o workflow não tiver equivalente) é do **`skills/personal/prod/references/jira-sync.md`**, fonte única — siga-o, não o reescreva aqui.
+Transição de status — mover o card para o status **equivalente a "em revisão"** no workflow daquele projeto. A mecânica (descobrir a transição, aplicar, e o que fazer se o workflow não tiver equivalente) é do **`prod/references/jira-sync.md`**, fonte única — siga-o, não o reescreva aqui.
 
 ### 5. Promover o kanban
 ```bash

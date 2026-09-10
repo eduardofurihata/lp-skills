@@ -40,7 +40,7 @@ Não é "mergear PR": é **atingir um estado** — o que está pronto está **no
 
 ## Step 0 — Board, contexto e guard de topologia
 
-1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. É de lá que sai a `<KEY>` dos cards, o prefixo da branch e os comentários/transições. Nunca assuma o board nem pergunte por ele aqui.
+1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. É de lá que sai a `<KEY>` dos cards, o prefixo da branch e os comentários/transições. Nunca assuma o board nem pergunte por ele aqui.
 2. **`prod/references/deploy-context.md`** — topologia + processo de deploy do projeto.
 3. **Guard de topologia — antes de qualquer outra coisa:**
 
@@ -65,7 +65,7 @@ alvo = {
 
 Entregue ao **`prod/references/reconcile.md`**, que faz o resto: publica o diagnóstico **antes** de agir, fecha os gaps na ordem da dependência (`origem → branch → sincronizado → configurado → verificado`), re-diagnostica a cada gap fechado, e só encerra quando o último fecha.
 
-Os motores que ele aciona vivem em `skills/personal/prod/references/`: `pr-cycle` · `findings` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de PR ou do deploy precisar mudar, ela muda no motor, para as duas skills de uma vez. As skills externas que os motores acionam na borda — **`/pull-request`**, **`/todo`**, **`/card`** — entram **via Skill tool** (`furi-builder:<nome>`), nunca reproduzidas de memória.
+Os motores que ele aciona vivem em `prod/references/`: `pr-cycle` · `findings` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de PR ou do deploy precisar mudar, ela muda no motor, para as duas skills de uma vez. As skills externas que os motores acionam na borda — **`/pull-request`** e **`/card`** (`furi-ship:pull-request`, `furi-ship:card`, mesmo pacote) e **`/todo`** (`furi-build:todo` — do `furi-build`, dependência declarada do `furi-ship`) — entram **via Skill tool**, nunca reproduzidas de memória.
 
 `$ARGUMENTS` com número de PR ou `<KEY>-<N>` → passa como preferência de ordem ao `reconcile` (aquele PR primeiro). **Não** restringe o objetivo a ele: o estado do ambiente continua sendo o alvo.
 

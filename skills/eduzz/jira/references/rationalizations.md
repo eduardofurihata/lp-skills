@@ -2,7 +2,7 @@
 
 **Qualquer uma dessas frases = PARE. Esse pensamento É a violação. Volte e execute do jeito certo.**
 
-> A fase de implementação/testes roda no `/method` — skill separada, invocada via Skill tool (`furi-builder:method`); as racionalizações canônicas dela estão no `references/rationalizations.md` do próprio `/method`. Esta tabela cobre o **Step 0** (investigação/reprodução), as **validações humanas** e o **ship**.
+> A fase de implementação/testes roda no `/method` — skill separada, invocada via Skill tool (`furi-build:method`); as racionalizações canônicas dela estão no `references/rationalizations.md` do próprio `/method`. Esta tabela cobre o **Step 0** (investigação/reprodução), as **validações humanas** e o **ship**.
 
 ## Entender o problema (Step 0.5)
 

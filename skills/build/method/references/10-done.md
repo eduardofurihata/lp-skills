@@ -53,7 +53,7 @@
 - **Veredicto: ✅ CONVERGIU** / ❌ BLOQUEADO — abertos: [listar Fn]
 ```
 
-**❌ BLOQUEADO →** para CADA item aberto, **invoque o `/method`** (Skill tool — `furi-builder:method`) e rode-o **COMPLETO** (Step 1→10, com `/solve`, tópico e artefatos próprios) — **sem commitar** (só o ciclo raiz commita) — marque `RESOLVIDO-POR-CICLO` no ledger e **republique o Gate**. Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ o loop continua.
+**❌ BLOQUEADO →** para CADA item aberto, **invoque o `/method`** (Skill tool — `furi-build:method`) e rode-o **COMPLETO** (Step 1→10, com `/solve`, tópico e artefatos próprios) — **sem commitar** (só o ciclo raiz commita) — marque `RESOLVIDO-POR-CICLO` no ledger e **republique o Gate**. Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ o loop continua.
 
 Triagem A/B/C, formato do ledger e racionalizações: `follow-ups.md`.
 

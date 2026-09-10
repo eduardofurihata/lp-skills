@@ -42,7 +42,7 @@ Não é "dar push na `main`": é **atingir um estado** — produção **no ar, f
 
 ## Step 0 — Board, contexto e topologia
 
-1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. Nunca assuma nem pergunte o board aqui.
+1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. Nunca assuma nem pergunte o board aqui.
 2. **`references/deploy-context.md`** — topologia detectada por `git ls-remote --heads origin dev`, doc do projeto lido (ou descoberto e escrito).
 
 ## Step 1 — Declarar o alvo
@@ -71,7 +71,7 @@ alvo = {
 
 Entregue ao **`references/reconcile.md`**: ele publica o diagnóstico **antes** de agir, aplica o gate quando o alvo pede, fecha os gaps na ordem da dependência, re-diagnostica a cada um, e só encerra quando o último fecha. **Não reimplemente motor aqui.**
 
-O gap de **pré-requisito** (homolog não verificado) é fechado **invocando o `/homolog`** — via **Skill tool** (`furi-builder:homolog`; a forma curta `homolog` também resolve): ele roda o mesmo loop com o alvo homolog e só devolve com smoke verde. Chamada real, não "seguir de memória": verificar homolog "por dentro" não conta. As demais skills externas que os motores acionam na borda — **`/pull-request`**, **`/todo`**, **`/card`** — também entram via Skill tool.
+O gap de **pré-requisito** (homolog não verificado) é fechado **invocando o `/homolog`** — via **Skill tool** (`furi-ship:homolog`; a forma curta `homolog` também resolve): ele roda o mesmo loop com o alvo homolog e só devolve com smoke verde. Chamada real, não "seguir de memória": verificar homolog "por dentro" não conta. As demais skills externas que os motores acionam na borda — **`/pull-request`**, **`/todo`**, **`/card`** — também entram via Skill tool.
 
 `$ARGUMENTS` com PR/`<KEY>-<N>` → preferência de ordem, não restrição do objetivo.
 

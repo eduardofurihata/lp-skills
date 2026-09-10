@@ -102,7 +102,7 @@ Sem `✅ CONVERGIU` publicado no chat, o Gateway/Checklist Final do Step 10 não
 
 Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por um remendo:
 
-1. **Invoque o `/method`** — via **Skill tool** (`furi-builder:method`; a forma curta `method` também resolve), para o item. Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou. A primeira ação do `/method` é invocar o `/solve` — mesmo padrão de qualidade (referência #1 do mercado).
+1. **Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve), para o item. Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou. A primeira ação do `/method` é invocar o `/solve` — mesmo padrão de qualidade (referência #1 do mercado).
 2. **Steps 1 → 9 completos** para o item, com seus próprios artefatos (`docs/01-problem/<f>.md` … `kanban/09-run-test/<f>.md`), gateways publicados e Gate Check inicial. Tópico próprio, arquivos próprios — não enfie no `<tópico>` da feature-pai.
 3. **Step 10 do ciclo — INTEIRO, MENOS O COMMIT.** Cria `kanban/10-done/<f>.md`, deleta `kanban/06-todo/<f>.md`, e para.
 4. **Marca no ledger da feature-pai:** `RESOLVIDO-POR-CICLO` + link do done doc.
@@ -132,7 +132,7 @@ Mesmo precedente do `/todo`, que promove o card mas não commita (`10-done.md`, 
 
 | Frase | Realidade |
 |-------|-----------|
-| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` agora. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `prod/references/findings.md`), nunca saída do dev. BLOQUEADO. |
+| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` agora. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `skills/ship/prod/references/findings.md`), nunca saída do dev. BLOQUEADO. |
 | "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio. BLOQUEADO. |
 | "Rodo o ciclo de follow-up de cabeça, sem invocar o `/method`" | Mencionar não é invocar. O ciclo começa com a chamada da skill via Skill tool — sem ela não há Gate Check nem gateways, só retrofit. BLOQUEADO. |
 | "É escopo novo, YAGNI manda não fazer" | YAGNI mata complexidade **especulativa**, não achado **real**. Achado real que este trabalho expôs é B. BLOQUEADO. |

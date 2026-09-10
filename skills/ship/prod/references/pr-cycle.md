@@ -12,7 +12,7 @@
 
 <HARD-GATE>
 1. NÃO mergeie sem **code review limpo** (sempre teu). Autenticação via front é exigida só quando a QA do dev falhou / não está explícito que passou / tem TODO pendente.
-2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → **invoque o `/todo`** (Skill tool — `furi-builder:todo`) e leve-o até 100% PASSED ANTES de mergear.
+2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → **invoque o `/todo`** (Skill tool — `furi-build:todo`) e leve-o até 100% PASSED ANTES de mergear.
 3. NÃO rode `/todo` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (§ 7).
 4. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
 5. **Mergear NÃO é garantido — REJEITAR é saída válida** (§ 5).
@@ -56,7 +56,7 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 
 1. **Code review do diff** (calibre Step 8 do `/method`): `gh pr diff <n>` → cada arquivo — bugs, edge cases, padrões do projeto (`docs/00-context/technical/patterns.md`), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/08-code-review/<feature>.md`.
    - **Escopo = o diff.** Os arquivos que o PR toca, mais o que eles chamam direto. Auditoria do repo inteiro **não é este passo**: o que aparecer fora do diff é achado pré-existente e passa pelo `findings.md`.
-   - **Princípios, um a um e por nome** (`skills/personal/method/references/principios.md` — a mesma lista contra a qual o dev escreveu): **SOLID** — **SRP** (responsabilidade única, camadas, >40 linhas), **OCP** (comportamento novo entrou como `if` no meio do que já funcionava?), **LSP** (implementação lança onde o contrato não prevê?), **ISP** (interface maior que o cliente?), **DIP** (regra de negócio importando client de infra?) · **DRY** (duplicou o que já existe? conferir com grep, e o grep é sobre **símbolo que o diff introduz**, não varredura do repo) · **KISS** · **YAGNI** (entrou abstração que nenhum UC pede?) · **LoD / acoplamento / direção de dependências** · **Motores** (a capacidade tem dono, ou o diff criou a segunda fonte da mesma regra?) · **Design**, se o diff tem tela (`skills/personal/method/references/design.md`). Violação **sem sintoma observável** é classe **C** no `findings.md`: linha no relatório, nunca card.
+   - **Princípios, um a um e por nome** (`skills/build/method/references/principios.md` — a mesma lista contra a qual o dev escreveu): **SOLID** — **SRP** (responsabilidade única, camadas, >40 linhas), **OCP** (comportamento novo entrou como `if` no meio do que já funcionava?), **LSP** (implementação lança onde o contrato não prevê?), **ISP** (interface maior que o cliente?), **DIP** (regra de negócio importando client de infra?) · **DRY** (duplicou o que já existe? conferir com grep, e o grep é sobre **símbolo que o diff introduz**, não varredura do repo) · **KISS** · **YAGNI** (entrou abstração que nenhum UC pede?) · **LoD / acoplamento / direção de dependências** · **Motores** (a capacidade tem dono, ou o diff criou a segunda fonte da mesma regra?) · **Design**, se o diff tem tela (`skills/build/method/references/design.md`). Violação **sem sintoma observável** é classe **C** no `findings.md`: linha no relatório, nunca card.
    - **Cheque o done doc:** ele declara "reutilizado / descartado / elevado" (Step 10 do `/method`). Diff que cria do zero o que o projeto já tinha, com o done doc silencioso, é sinal de que o § 3.1 do plano não foi feito.
 2. **Autenticar a resolução via front — CONDICIONAL** (rede de segurança, não redo): **PULA** se a QA está documentada e 100% PASSED. **FAZ** (Playwright MCP, validando o `## Como testar` de CADA card do PR) só quando a QA falhou, não está explícito que passou, ou veio de TODO pendente.
 3. **Achou problema → CONSERTA ou REJEITA:**
@@ -131,7 +131,7 @@ Rejeitar é seguro: nada vai para a integração nem para o ar, branch e PR fica
 
 ## 6 — Sem PR aberto
 
-Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-builder:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (fluxo pessoal) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente.
+Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-ship:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (fluxo pessoal) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente.
 
 ## 7 — Cleanup de órfãos (confirm-first)
 
