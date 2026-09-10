@@ -39,7 +39,9 @@ Vercel CLI presente na máquina: `50.32.1`. **Não existe `gh run`** para este p
 Rotas críticas:
 - `/` — a LP inteira: catálogo de skills renderizado do frontmatter.
 
-O que verificar: os cards das skills aparecem com nome (`/nome`) e descrição; o contador total bate com o número de diretórios em `skills/**`; os filtros de categoria (Pessoal / Eduzz) funcionam; os comandos `/plugin install` são copiáveis.
+O que verificar: os cards das skills aparecem com nome (`/nome`) e descrição; o contador total bate com o número de diretórios em `skills/**`; os filtros de categoria (Build / Ship / Toolbox / Eduzz) funcionam; os cards de pacote batem com os plugins do `marketplace.json`; os comandos `/plugin install` são copiáveis.
+
+Marketplace (a outra metade da produção — é o que `/plugin marketplace update` puxa): `gh api repos/eduardofurihata/lp-skills/contents/.claude-plugin/marketplace.json -q .content | base64 -d | jq '.plugins[].name'` lista exatamente os plugins gerados por `pnpm gen:plugins`.
 
 **Skill que desaparece do catálogo = frontmatter inválido** — `lib/skills.ts` faz `catch { return null }` e a engole em silêncio. Este é o modo de falha mais importante do projeto, e só aparece no smoke.
 
