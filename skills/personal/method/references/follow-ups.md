@@ -1,13 +1,13 @@
 # Follow-ups — Ledger + Loop de Convergência
 
-> **O `/method` fecha SECO.** Nada de "abro um card pra isso depois". Todo achado que este trabalho criou, tocou ou expôs é **resolvido dentro desta execução** — e resolver escopo novo significa rodar o `/method` COMPLETO (Step 1 → 10, com `/solve`) para ele.
+> **O `/method` fecha SECO.** Nada de "abro um card pra isso depois". Todo achado que este trabalho criou, tocou ou expôs é **resolvido dentro desta execução** — e resolver escopo novo significa **invocar o `/method`** (Skill tool) e rodá-lo COMPLETO (Step 1 → 10, com `/solve`) para ele.
 
 O loop **não é um step novo** (os 10 steps são contrato; não existe Step 11). É um **wrapper** com dois pontos de enforcement:
 
 | Ponto | Onde acontece | O quê |
 |-------|---------------|-------|
 | **Captura** | TODOS os steps (1 → 10) | Todo achado fora do escopo documentado entra no **Ledger de Follow-ups**. Cada Gateway Check publica quantos foram detectados no step. |
-| **Resolução** | **Entrada do Step 10**, antes de mover o card e antes do commit | **Gate de Convergência**: ledger com item aberto → roda `/method` completo para ele → volta ao Gate. Só libera o Step 10 com **passe seco**. |
+| **Resolução** | **Entrada do Step 10**, antes de mover o card e antes do commit | **Gate de Convergência**: ledger com item aberto → invoca o `/method` (Skill tool) e roda o ciclo completo para ele → volta ao Gate. Só libera o Step 10 com **passe seco**. |
 
 Capturar durante e resolver no fim preserva a esteira de produção (`SKILL.md` — "Não Pergunte Entre Steps"): o achado não interrompe a feature, mas também não escapa.
 
@@ -90,7 +90,7 @@ Publicar no chat **antes de qualquer ação do Step 10** — antes do `rm` do ca
 - **Veredicto: ✅ CONVERGIU** / ❌ BLOQUEADO — abertos: [listar Fn]
 ```
 
-**❌ BLOQUEADO = PROIBIDO iniciar o Step 10.** Nem mover o card, nem commitar, nem escrever resumo de conclusão. Rode o ciclo `/method` de cada item aberto e **republique o Gate**.
+**❌ BLOQUEADO = PROIBIDO iniciar o Step 10.** Nem mover o card, nem commitar, nem escrever resumo de conclusão. Invoque o `/method` (Skill tool) para cada item aberto, rode o ciclo completo e **republique o Gate**.
 
 **Passe seco** = uma varredura completa do ledger que encontra **zero itens `ABERTO`** E **zero itens novos** desde o passe anterior. Ciclo de follow-up que gera novo follow-up ⇒ o passe **não** foi seco ⇒ o loop continua.
 
@@ -102,7 +102,7 @@ Sem `✅ CONVERGIU` publicado no chat, o Gateway/Checklist Final do Step 10 não
 
 Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por um remendo:
 
-1. **Invoque o `/solve`** — mesmo padrão de qualidade (referência #1 do mercado).
+1. **Invoque o `/method`** — via **Skill tool** (`furi-builder:method`; a forma curta `method` também resolve), para o item. Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou. A primeira ação do `/method` é invocar o `/solve` — mesmo padrão de qualidade (referência #1 do mercado).
 2. **Steps 1 → 9 completos** para o item, com seus próprios artefatos (`docs/01-problem/<f>.md` … `kanban/09-run-test/<f>.md`), gateways publicados e Gate Check inicial. Tópico próprio, arquivos próprios — não enfie no `<tópico>` da feature-pai.
 3. **Step 10 do ciclo — INTEIRO, MENOS O COMMIT.** Cria `kanban/10-done/<f>.md`, deleta `kanban/06-todo/<f>.md`, e para.
 4. **Marca no ledger da feature-pai:** `RESOLVIDO-POR-CICLO` + link do done doc.
@@ -134,6 +134,7 @@ Mesmo precedente do `/todo`, que promove o card mas não commita (`10-done.md`, 
 |-------|-----------|
 | "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` agora. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `prod/references/findings.md`), nunca saída do dev. BLOQUEADO. |
 | "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio. BLOQUEADO. |
+| "Rodo o ciclo de follow-up de cabeça, sem invocar o `/method`" | Mencionar não é invocar. O ciclo começa com a chamada da skill via Skill tool — sem ela não há Gate Check nem gateways, só retrofit. BLOQUEADO. |
 | "É escopo novo, YAGNI manda não fazer" | YAGNI mata complexidade **especulativa**, não achado **real**. Achado real que este trabalho expôs é B. BLOQUEADO. |
 | "O ciclo de follow-up achou outro follow-up, isso não acaba nunca" | Acaba: o balde C fecha o que é pré-existente/não relacionado, e o ledger impede reabertura. O que não fecha é porque é real. BLOQUEADO. |
 | "Documento a pendência no done doc, fica rastreado" | Documentar ≠ resolver. Done doc com pendência = protocolo não encerrou. BLOQUEADO. |

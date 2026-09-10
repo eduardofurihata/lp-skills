@@ -126,6 +126,6 @@ Em dúvida: Gate Check. Custo é baixo, regressão é cara.
 
 Não existe Step 11. O Step 10 (Done) não tem gateway de saída — seu encerramento usa o **Checklist Final** de `10-done.md`: card movido (`kanban/06-todo/` deletado) + **commit** na branch atual com SHA registrado. Esse commit vale **só para o `/method` completo** (`/fast`, `/todo` e ciclos de follow-up aninhados não commitam).
 
-O que o Step 10 **tem** é um gateway de **entrada**: o **Gate de Convergência**. Antes de mover o card e antes do commit, o ledger de follow-ups precisa estar **seco** — zero itens `ABERTO`, zero itens novos no último passe. Item aberto → roda `/method` completo (1→10, com `/solve`) para ele → volta ao Gate. Bloco a publicar e regras completas: `follow-ups.md` e `10-done.md`.
+O que o Step 10 **tem** é um gateway de **entrada**: o **Gate de Convergência**. Antes de mover o card e antes do commit, o ledger de follow-ups precisa estar **seco** — zero itens `ABERTO`, zero itens novos no último passe. Item aberto → invoca o `/method` (Skill tool) e roda o ciclo completo (1→10, com `/solve`) para ele → volta ao Gate. Bloco a publicar e regras completas: `follow-ups.md` e `10-done.md`.
 
 **Publicar o Checklist Final sem o Gate de Convergência ✅ no chat = violação automática.**

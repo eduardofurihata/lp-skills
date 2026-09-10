@@ -47,7 +47,7 @@ git status                 # working tree limpo; commit do /method presente
 ## Fluxo
 
 ### 0. Board do projeto (SEMPRE, antes de tudo)
-Invoque o **`/jira-board`** (dependência obrigatória). Ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+**Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
 
 É de lá que sai a `<KEY>` usada no título do PR, no corpo, no comentário do card e no prefixo da branch. Nunca assuma o board nem pergunte por ele aqui.
 
@@ -135,6 +135,7 @@ status: in-review
 - "Assumi o board de sempre / o do outro repositório" → NÃO. Skill não tem board padrão. O board é o da **memória deste repositório**, via `/jira-board`.
 - "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira-board`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
 - "Pulei o passo 0 porque já sei o board desta sessão" → NÃO. A leitura da memória é **toda** invocação.
+- "Já conheço o `/jira-board`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Abro o PR contra `main`" → NÃO, havendo `dev`. Base é a **integração** (`dev`); `main` é via `/prod`, com OK explícito. Em branch única, `main` **é** a integração — aí é a base certa.
 - "Abro o PR contra `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a base é `dev` (ou `main`, em branch única).
 - "Todo projeto meu tem `dev`, abro contra ela" → NÃO. `git ls-remote` primeiro: em branch única não existe `origin/dev`, e o PR não tem para onde ir.

@@ -2,7 +2,7 @@
 name: homolog
 description: 'Use when user invokes /homolog to get everything that is ready live on the homolog environment — working and configured, not merely merged. Declares the homolog target (environment homolog, integration branch `dev`) and hands it to the reconcile engine, which diagnoses the gap between what is ready and what actually answers on the homolog URL, then closes it: opens a PR for work committed without one, runs `/todo` when QA is pending, reviews the diff, APPROVES the PR, fixes small problems in place or REJECTS a raw one and bounces the card back to the dev, splits oversized scope into cards, merges into `dev` and deletes the branch (remote AND local), watches the deploy run to a named outcome (green/red/queued — a self-hosted runner offline is a QUEUE, never a success), applies the environment configuration the change needs (env vars, secrets, migrations, feature flags, seeds — a secret value is always asked, never inferred), and finally verifies on the homolog URL that EVERY card that should be live is live and working. Never touches `main`: production is `/prod`. On a single-branch repository there is no homolog environment, so it says so and forwards to `/prod`.'
 effort: max
-requires: [todo, jira-board, prod]
+requires: [jira-board, todo, pull-request, card, prod]
 argument-hint: "[PR number | KEY-N] | (vazio = diagnosticar e fechar o gap de homolog)"
 ---
 
@@ -40,7 +40,7 @@ Não é "mergear PR": é **atingir um estado** — o que está pronto está **no
 
 ## Step 0 — Board, contexto e guard de topologia
 
-1. **`/jira-board`** — devolve `{site, key, boardId, boardName, url, origem}`. É de lá que sai a `<KEY>` dos cards, o prefixo da branch e os comentários/transições. Nunca assuma o board nem pergunte por ele aqui.
+1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. É de lá que sai a `<KEY>` dos cards, o prefixo da branch e os comentários/transições. Nunca assuma o board nem pergunte por ele aqui.
 2. **`prod/references/deploy-context.md`** — topologia + processo de deploy do projeto.
 3. **Guard de topologia — antes de qualquer outra coisa:**
 
@@ -65,7 +65,7 @@ alvo = {
 
 Entregue ao **`prod/references/reconcile.md`**, que faz o resto: publica o diagnóstico **antes** de agir, fecha os gaps na ordem da dependência (`origem → branch → sincronizado → configurado → verificado`), re-diagnostica a cada gap fechado, e só encerra quando o último fecha.
 
-Os motores que ele aciona vivem em `skills/personal/prod/references/`: `pr-cycle` · `findings` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de PR ou do deploy precisar mudar, ela muda no motor, para as duas skills de uma vez.
+Os motores que ele aciona vivem em `skills/personal/prod/references/`: `pr-cycle` · `findings` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de PR ou do deploy precisar mudar, ela muda no motor, para as duas skills de uma vez. As skills externas que os motores acionam na borda — **`/pull-request`**, **`/todo`**, **`/card`** — entram **via Skill tool** (`furi-builder:<nome>`), nunca reproduzidas de memória.
 
 `$ARGUMENTS` com número de PR ou `<KEY>-<N>` → passa como preferência de ordem ao `reconcile` (aquele PR primeiro). **Não** restringe o objetivo a ele: o estado do ambiente continua sendo o alvo.
 
@@ -127,4 +127,5 @@ Os motores que ele aciona vivem em `skills/personal/prod/references/`: `pr-cycle
 **Motores**
 - "Copio as regras do ciclo de PR pra dentro daqui, fica mais direto" → NÃO. Foi assim que a sequência do Jira virou três cópias divergentes. As regras vivem no motor; aqui só o alvo.
 - "Chamo o `deploy-run` direto, sem passar pelo `reconcile`" → NÃO. A porta é única: sem o `reconcile` não há diagnóstico, ordem de dependência nem re-diagnóstico.
+- "Sei o que o `/todo` (ou o `/pull-request`, o `/card`) faz, rodo de cabeça" → NÃO. Mencionar não é invocar: skill externa entra pelo Skill tool, **toda** vez.
 - "Uma regra do review precisa mudar só para homolog" → NÃO. Muda no motor, para as duas skills. Divergência aqui é a duplicação renascendo.

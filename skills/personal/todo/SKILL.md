@@ -2,7 +2,7 @@
 name: todo
 description: 'Use when ready to run QA on features queued in kanban/06-todo/ (cards created by /fast, pending front-validation). Executes testing via front (step 9) and promotes passing features to kanban/10-done/ with `tests: passed`'
 effort: max
-requires: method
+requires: [method, solve]
 argument-hint: "[feature-name or 'all']"
 ---
 
@@ -13,11 +13,15 @@ Distinção `[novo]` vs `[legacy]` (decide se roda Step 8 — Code Review):
 - `[novo]` — já existe `kanban/08-code-review/<feature>.md` (o /fast já rodou o code review). /todo NÃO repete o Step 8.
 - `[legacy]` — não há relatório de code review. /todo roda o Step 8 agora (o /fast antigo não rodava).
 
+## Ordem de Operações ao Ativar
+
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/todo` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-builder:solve`; a forma curta `solve` também resolve) — é o padrão que o code review (Phase 2) e qualquer fix (Phase 3) cobram: referência #1 do mercado. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois, siga o Checklist.
+
 <HARD-GATE>
 NÃO marque test cases como PASSED sem executar via front.
 NÃO avance da execução para Done sem 100% PASSED com ZERO mudanças de código.
 QUALQUER fix de código invalida o ciclo: volta ao Code Review (se legacy) ou re-executa TCs e retesta TUDO.
-NÃO promova para `kanban/10-done/` com follow-up ABERTO no ledger. O /todo faz o Step 10 do /method — logo, roda o **Gate de Convergência** (Phase 4) e resolve cada item aberto com um `/method` COMPLETO (1→10, com `/solve`, sem commit). /fast captura e deixa aberto; **quem converge é o /todo**.
+NÃO promova para `kanban/10-done/` com follow-up ABERTO no ledger. O /todo faz o Step 10 do /method — logo, roda o **Gate de Convergência** (Phase 4) e resolve cada item aberto **invocando o `/method` via Skill tool** — ciclo COMPLETO (1→10, com `/solve`, sem commit). /fast captura e deixa aberto; **quem converge é o /todo**.
 </HARD-GATE>
 
 ## REGRA FUNDAMENTAL: Precisão > Economia de Tempo ou Tokens
@@ -36,7 +40,7 @@ Crie tasks via TaskCreate para cada item:
 3. **Carregar contexto** — Ler TODOS os docs de referência (steps 1-7)
 4. **Step 8 — Code Review** — Loop até 100% limpo + relatório
 5. **Step 9 — Run Test** — TODOS os TCs via front com screenshot
-6. **Gate de Convergência** — 1 TaskCreate por follow-up `ABERTO`; cada um resolvido com `/method` completo até o **passe seco**
+6. **Gate de Convergência** — 1 TaskCreate por follow-up `ABERTO`; cada um resolvido invocando o `/method` (Skill tool) — ciclo completo — até o **passe seco**
 7. **Step 10 — Done** — Promover para `kanban/10-done/` (tests: passed) + deletar o card de `kanban/06-todo/`
 
 ## Fluxo
@@ -56,7 +60,7 @@ digraph todo {
     testing [label="Step 9 — Run Test\n(TODOS os TCs via front)" shape=box];
     passed [label="100% PASSED\nsem mudanças?" shape=diamond];
     gate [label="Gate de Convergência\nledger seco?" shape=diamond];
-    cycle [label="/method completo (1→10)\npara o follow-up ABERTO\n(com /solve, sem commit)" shape=box];
+    cycle [label="Invoca /method (Skill tool)\nciclo completo (1→10) para o follow-up ABERTO\n(com /solve, sem commit)" shape=box];
     done [label="Phase 4 — Done\n(tests: passed)" shape=box];
     move [label="Promover\n06-todo → 10-done" shape=box];
     more [label="Mais features?" shape=diamond];
@@ -429,7 +433,7 @@ A Phase 4 é o Step 10 do `/method`, e o Step 10 tem gateway de **entrada**: o l
 **❌ BLOQUEADO = PROIBIDO promover, PROIBIDO `rm` do card, PROIBIDO resumo de conclusão.** Para CADA item `ABERTO`:
 
 1. `TaskCreate: "Follow-up F<n> — <achado>"`.
-2. Rode o **`/method` COMPLETO** (Step 1→10, com `/solve`) para o item — tópico e artefatos próprios (`docs/01-problem/<f>.md` … `kanban/10-done/<f>.md`).
+2. **Invoque o `/method`** — via **Skill tool** (`furi-builder:method`; a forma curta `method` também resolve) — e rode-o **COMPLETO** (Step 1→10; a primeira ação dele é invocar o `/solve`) para o item — tópico e artefatos próprios (`docs/01-problem/<f>.md` … `kanban/10-done/<f>.md`). Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou.
 3. **Sem commit** (o /todo não commita; ciclo aninhado também não).
 4. Marque `RESOLVIDO-POR-CICLO` no ledger + link do done doc.
 5. **Republique o Gate.** Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ continua.
@@ -515,4 +519,5 @@ Triagem A/B/C e racionalizações: `method/references/follow-ups.md`.
 - "TCs passaram, promovo — o ledger eu vejo depois" → NÃO. Gate de Convergência é bloqueante da Phase 4.
 - "Follow-up foi o /fast que deixou, não é meu" → NÃO. /fast captura, **/todo converge**.
 - "Resolvo o follow-up direto no código" → NÃO. Escopo novo = `/method` completo (1→10, com `/solve`).
+- "Já conheço o `/solve` / rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Vou commitar os ciclos de follow-up" → NÃO. /todo não commita, nem os ciclos.

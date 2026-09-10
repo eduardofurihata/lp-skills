@@ -1,6 +1,6 @@
 # Reconcile — o loop que fecha a distância entre a origem e o ambiente
 
-> **A porta única.** `/homolog` e `/prod` declaram um **alvo** e entregam a ele. Nenhuma das duas invoca os outros motores direto, e nenhum motor invoca outro — a direção é `skill → reconcile → motor → borda`, sem retorno.
+> **A porta única.** `/homolog` e `/prod` declaram um **alvo** e entregam a ele. Nenhuma das duas invoca os outros motores direto, e nenhum motor invoca outro — a direção é `skill → reconcile → motor → borda`, sem retorno. Na borda, skill externa (`/pull-request`, `/todo`, `/card`, `/homolog`) é **invocada via Skill tool** (`furi-builder:<nome>`) — chamada real, nunca reproduzida de memória.
 
 **Responsabilidade única:** rodar `diagnosticar → aplicar o motor do gap → re-diagnosticar` até `gaps[] == 0`.
 
@@ -81,11 +81,11 @@ origem → branch → sincronizado → configurado → verificado
 
 | Gap | Motor | Observação |
 |---|---|---|
-| Trabalho commitado em feature branch, sem PR | **`/pull-request`** | nada chega ao ambiente sem passar por review |
+| Trabalho commitado em feature branch, sem PR | **`/pull-request`** (invocar via Skill tool) | nada chega ao ambiente sem passar por review |
 | PR aberto (review, QA, aprovação, merge, rejeição) | **`pr-cycle.md`** | vários PRs → **um por um**, re-diagnosticando entre eles |
 | PR entrega além do card | **`scope-split.md`** | |
 | Achado fora do escopo | **`findings.md`** | |
-| `pré-requisito` do alvo não verificado | **este loop, no alvo do pré-requisito** | `/prod` roda a verificação de homolog antes de cogitar prod |
+| `pré-requisito` do alvo não verificado | **`/homolog`** (invocar via Skill tool) | o `/prod` invoca o `/homolog`, que roda este mesmo loop com o alvo homolog e só devolve com smoke verde — antes de cogitar prod |
 | Commits na branch e não publicados | **`deploy-run.md`** | os três desfechos: verde · vermelho · fila |
 | Publicado e sem configuração | **`env-config.md`** | |
 | Configurado e não verificado | **`smoke.md`** | o último gap, e o único que autoriza dizer "no ar" |
@@ -117,3 +117,4 @@ origem → branch → sincronizado → configurado → verificado
 - "Está tudo no ar, então não digo nada" → NÃO. Gap zero se **declara**, com a evidência. Silêncio parece falha.
 - "Um gap não fechou, mas os outros sim — reporto sucesso" → NÃO. O objetivo é o estado inteiro. Diz o que ficou e o que destrava.
 - "Tento de novo até passar" → NÃO. Teto de ~3 passes por gap. Depois disso, a causa não é transitória.
+- "Sei o que o `/homolog` (ou o `/todo`, o `/pull-request`, o `/card`) faz, rodo de cabeça" → NÃO. Mencionar não é invocar: skill externa entra pelo Skill tool, **toda** vez.

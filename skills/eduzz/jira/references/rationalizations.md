@@ -2,7 +2,7 @@
 
 **Qualquer uma dessas frases = PARE. Esse pensamento É a violação. Volte e execute do jeito certo.**
 
-> A fase de implementação/testes roda no `/method` vendorizado — as racionalizações canônicas dela estão em `references/method/references/rationalizations.md`. Esta tabela cobre o **Step 0** (investigação/reprodução), as **validações humanas** e o **ship**.
+> A fase de implementação/testes roda no `/method` — skill separada, invocada via Skill tool (`furi-builder:method`); as racionalizações canônicas dela estão no `references/rationalizations.md` do próprio `/method`. Esta tabela cobre o **Step 0** (investigação/reprodução), as **validações humanas** e o **ship**.
 
 ## Entender o problema (Step 0.5)
 
@@ -11,6 +11,7 @@
 | "Já sei o que o card significa, não preciso ler o código" | Leia o código. A nota de entendimento (≥ 90) exige base real, não suposição. |
 | "Entendi mais ou menos, tá bom" | `< 90` = loop. Reveja (mais código/contexto) até `≥ 90`. Sem atalho. |
 | "Conheço o codebase, não preciso mapear" | Memória falha; uso transitivo surpreende. Leia o que importa. |
+| "Já conheço o `/method`, sigo sem invocar" | Mencionar não é invocar. O `/method` entra pelo Skill tool, **toda** vez — sem a chamada, não há Gate Check, gateways nem audits. BLOQUEADO. |
 
 ## Reproduzir no front (Step 0.6)
 

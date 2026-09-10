@@ -2,7 +2,7 @@
 name: work
 description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone, NOT the Eduzz /jira. Discovers the project board from the card key, syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
 effort: max
-requires: method
+requires: [jira-board, method]
 argument-hint: "[KEY-N] | (empty = continuar card ativo)"
 ---
 
@@ -43,7 +43,7 @@ Nenhum desses passos é lugar de "adianto um código". Entender aqui é o que fa
 ## Fluxo
 
 ### 0. Board do projeto (SEMPRE, antes de tudo)
-Invoque o **`/jira-board`** (dependência obrigatória, junto do `/method`). Ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+**Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória, junto do `/method`: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
 
 Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não** a reescreve. No modo CONTINUE (argumento vazio), o board da memória é o que resolve site e prefixo de branch ao retomar o card ativo. Nunca assuma o board nem pergunte por ele aqui.
 
@@ -81,7 +81,7 @@ Dar uma **nota 0–100** à clareza do que precisa ser feito:
 > O gate é **pré-implementação** e é sobre *produto/escopo*. Dúvida de *implementação* resolve pela hierarquia (padrão do projeto > big apps > boas práticas) e documenta no spec — não vira pergunta ao usuário.
 
 ### 5. Rodar o /method
-Invoque o **`/method`** (dependência obrigatória). Ele:
+**Invoque o `/method`** — via **Skill tool** (`furi-builder:method`; a forma curta `method` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória. Ele:
 1. chama o **`/solve`** (padrão #1 do mercado) na ativação — é assim que "resolve com /method e /solve" acontece;
 2. roda discovery (1–5) → To Do (6) → Plano (7a) → Codificar (7b) → Code Review (8) → Run Test / QA via front (9) → Done (10);
 3. trabalha **na branch do passo 2** (nunca cria branch), com seus próprios gateways e audits — cada um declarando **princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores)**, **refatoração do perímetro** e, se a feature tem tela, **design** (tokens, atomicidade, estados, a11y);
@@ -111,6 +111,7 @@ Invoque o **`/method`** (dependência obrigatória). Ele:
 - "Branchei de `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a branch de integração é `dev` (ou `main`, em branch única).
 - "Todo projeto meu tem `dev`, dou `checkout dev`" → NÃO. `git ls-remote` primeiro: em branch única o `checkout dev` falha e o fluxo trava na largada.
 - "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
+- "Já conheço o `/jira-board` / o `/method`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
 - "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes** de implementar.
 - "O card não falou de motor, então espalho a regra" → NÃO. O card fala de produto; a arquitetura é derivada no `/method`, e capacidade tem **um** dono.

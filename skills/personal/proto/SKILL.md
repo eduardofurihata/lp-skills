@@ -8,7 +8,7 @@ argument-hint: "[rota, tela ou print]"
 
 # /proto — a mesma tela em 3 versões, pra escolher uma
 
-Recria a tela pedida em **3 versões**, cada uma numa **rota paralela temporária** do mesmo app. Padrão de qualidade: **invoque o `/solve`**. Não ficou claro qual tela → pergunte antes de começar.
+Recria a tela pedida em **3 versões**, cada uma numa **rota paralela temporária** do mesmo app. Padrão de qualidade: a PRIMEIRA ação é **invocar o `/solve`** — via **Skill tool** (`furi-builder:solve`; a forma curta `solve` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Não ficou claro qual tela → pergunte antes de começar.
 
 O entregável não é uma tela. É uma **escolha**.
 
@@ -43,4 +43,4 @@ Protótipo descartável não é desculpa para código torto: a versão escolhida
 
 ## PARE se pensar
 
-"as 3 ficaram parecidas, mas cada uma tem seu charme" · "só um ajustinho nesse componente compartilhado" · "mobile depois" · "uso os breakpoints padrão da lib, todo projeto usa" · "protótipo pode ter botão morto e sem estado vazio" · "a tela já é assim, então mantenho" · "invento uma cor só pra essa versão" · "commito pra não perder"
+"as 3 ficaram parecidas, mas cada uma tem seu charme" · "só um ajustinho nesse componente compartilhado" · "mobile depois" · "uso os breakpoints padrão da lib, todo projeto usa" · "protótipo pode ter botão morto e sem estado vazio" · "a tela já é assim, então mantenho" · "invento uma cor só pra essa versão" · "commito pra não perder" · "já sei o que o `/solve` diz, sigo sem invocar"

@@ -62,11 +62,11 @@ Achou → **não é card**. No máximo uma **pergunta** ao usuário, se o motivo
 
 ## Criar (ou não)
 
-- **A · bug reproduzido** → `/card` direto, linkado ao original. Bug provado é caso pacificado. O tipo de issue é **descoberto pelo `/card`** no projeto de destino — não prescreva um nome aqui.
+- **A · bug reproduzido** → **invoque o `/card`** (Skill tool — `furi-builder:card`) direto, linkado ao original. Bug provado é caso pacificado. O tipo de issue é **descoberto pelo `/card`** no projeto de destino — não prescreva um nome aqui.
 - **B · furo** → **NÃO crie.** Apresente e **pergunte**:
   > "O review achou N furo(s) de regra fora do escopo do PR: **[1]** `<achado>` — exigido por `<arquivo:linha>`: *"`<frase colada>`"* · consequência: `<material>` … Abro card para qual/quais? [todos/números/nenhum]"
 
-  Só com resposta explícita → `/card`. Silêncio ou negativa → fica no relatório.
+  Só com resposta explícita → **invoque o `/card`** (Skill tool). Silêncio ou negativa → fica no relatório.
 - **C** → relatório, e pronto.
 
 **O card descreve o defeito, NÃO prescreve a implementação.** Proibido escrever `## Como resolver` mandando alterar hook/módulo compartilhado: quem decide isso é o `/method` do card, com o escopo na mão. Card que prescreve mudança em código compartilhado a partir de achado não reproduzido é **exatamente** como o review vira regressão em produção. O `## Como testar` leva **os passos que você já executou** (A) ou **a citação da fonte** (B) — nunca hipótese a testar.
