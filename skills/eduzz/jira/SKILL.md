@@ -29,7 +29,7 @@ requires: method
 | `phase` | Ação |
 |---------|------|
 | `investigation` | retomar o Step 0 |
-| `method` | re-invocar o `/method` (Skill tool — `furi-builder:method`) e retomar do step registrado no card |
+| `method` | re-invocar o `/method` (Skill tool — `furi-build:method`) e retomar do step registrado no card |
 | `human-check` | rodar o human check |
 | `ship` | rodar o ship (após confirmação do usuário) |
 | nenhum card | "Nenhum card ativo. Use `/jira [CARD-CODE]` para começar." |
@@ -85,7 +85,7 @@ Publicar no chat: ambiente pronto + "👉 Clique em **[elemento exato]**" + comp
 
 Com o problema **entendido e reproduzido**, rode o **`/method`** (instalado junto com o `/jira` — dependência obrigatória) para implementar:
 
-1. **Invoque o `/method`** — via **Skill tool** (`furi-builder:method`; a forma curta `method` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Ele invoca o `/solve` na ativação e roda discovery → implementação → code review → testes → done (commit local), com seus próprios gateways e audits.
+1. **Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Ele invoca o `/solve` na ativação e roda discovery → implementação → code review → testes → done (commit local), com seus próprios gateways e audits.
 2. **Trabalhe na branch já criada no 0.2** — o `/method` nunca cria branch.
 3. Quando o `/method` finalizar (Step 10 — commit), volte aqui para o human check. Atualizar o card: `phase: human-check`.
 

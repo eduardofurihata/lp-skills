@@ -4,20 +4,26 @@
     "name": "Eduardo Furihata"
   },
   "metadata": {
-    "description": "Skills do Claude Code do Furihata — pessoais, ferramentas avulsas e Eduzz."
+    "description": "Skills do Claude Code do Furihata — build (o método), ship (a entrega), ferramentas avulsas e Eduzz."
   },
   "plugins": [
     {
       "name": "eduzz-builder",
       "source": "./skills/eduzz",
-      "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
+      "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
       "category": "eduzz"
     },
     {
-      "name": "furi-builder",
-      "source": "./skills/personal",
-      "description": "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /homolog, /prod e mais. Instala todas de uma vez.",
-      "category": "personal"
+      "name": "furi-build",
+      "source": "./skills/build",
+      "description": "Skills de construção do Furihata — /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+      "category": "build"
+    },
+    {
+      "name": "furi-ship",
+      "source": "./skills/ship",
+      "description": "Skills de entrega do Furihata — /jira-board, /card, /work, /pull-request, /homolog, /prod: do card no Jira até produção. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
+      "category": "ship"
     },
     {
       "name": "furi-toolbox",

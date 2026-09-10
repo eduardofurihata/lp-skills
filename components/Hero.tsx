@@ -18,10 +18,11 @@ export function Hero({ count }: HeroProps) {
           <span className="text-[color:var(--color-text-muted)]">curadas.</span>
         </h1>
         <p className="max-w-2xl text-base text-[color:var(--color-text-muted)] sm:text-lg">
-          Skills do meu setup do Claude Code, em três pacotes — pessoal,
-          ferramentas avulsas e trabalho (Eduzz). Instale o pacote, cole os
-          comandos no seu Claude Code e pronto: funciona em qualquer sistema e
-          as atualizações chegam automáticas.
+          Skills do meu setup do Claude Code, em quatro pacotes — build (o
+          método: do problema ao commit), ship (a entrega: Jira, PR, homolog e
+          produção), ferramentas avulsas e trabalho (Eduzz). Instale o pacote,
+          cole os comandos no seu Claude Code e pronto: funciona em qualquer
+          sistema e as atualizações chegam automáticas.
         </p>
       </div>
     </section>

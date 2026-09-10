@@ -4,7 +4,7 @@
 
 **Responsabilidade única:** dado um achado fora do escopo do card, dizer **de quem é a ponta**, **qual é a classe** e **qual é o destino**. Não conserta, não abre PR, não mergeia.
 
-> **Não confundir com `skills/personal/method/references/follow-ups.md`.** Aquele é a triagem do **dev** (A/B/C, destino: ciclo `/method`, e "vira card" é **proibido** como saída dele). Este é a triagem do **reviewer**, cujo destino pode ser card — e é justamente por isso que ele exige prova. As duas coexistem porque os atores e os destinos são diferentes; fundi-las abriria a rota de escape que mata o loop de convergência do `/method`.
+> **Não confundir com `skills/build/method/references/follow-ups.md`.** Aquele é a triagem do **dev** (A/B/C, destino: ciclo `/method`, e "vira card" é **proibido** como saída dele). Este é a triagem do **reviewer**, cujo destino pode ser card — e é justamente por isso que ele exige prova. As duas coexistem porque os atores e os destinos são diferentes; fundi-las abriria a rota de escape que mata o loop de convergência do `/method`.
 
 ## Iron Law
 
@@ -62,7 +62,7 @@ Achou → **não é card**. No máximo uma **pergunta** ao usuário, se o motivo
 
 ## Criar (ou não)
 
-- **A · bug reproduzido** → **invoque o `/card`** (Skill tool — `furi-builder:card`) direto, linkado ao original. Bug provado é caso pacificado. O tipo de issue é **descoberto pelo `/card`** no projeto de destino — não prescreva um nome aqui.
+- **A · bug reproduzido** → **invoque o `/card`** (Skill tool — `furi-ship:card`) direto, linkado ao original. Bug provado é caso pacificado. O tipo de issue é **descoberto pelo `/card`** no projeto de destino — não prescreva um nome aqui.
 - **B · furo** → **NÃO crie.** Apresente e **pergunte**:
   > "O review achou N furo(s) de regra fora do escopo do PR: **[1]** `<achado>` — exigido por `<arquivo:linha>`: *"`<frase colada>`"* · consequência: `<material>` … Abro card para qual/quais? [todos/números/nenhum]"
 

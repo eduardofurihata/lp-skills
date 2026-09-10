@@ -6,12 +6,13 @@
 // CategoryBadge + bundle em install-prompt.ts + builder em
 // scripts/generate-plugins.mjs (o .mjs não importa este módulo).
 
-export type Category = "personal" | "toolbox" | "eduzz";
+export type Category = "build" | "ship" | "toolbox" | "eduzz";
 
-export const CATEGORIES: Category[] = ["personal", "toolbox", "eduzz"];
+export const CATEGORIES: Category[] = ["build", "ship", "toolbox", "eduzz"];
 
 export const CATEGORY_LABELS: Record<Category, string> = {
-  personal: "Pessoal",
+  build: "Build",
+  ship: "Ship",
   toolbox: "Toolbox",
   eduzz: "Eduzz",
 };

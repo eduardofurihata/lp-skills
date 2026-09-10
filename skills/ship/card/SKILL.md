@@ -18,7 +18,7 @@ Cria um card no **projeto que você indicar** (Atlassian pessoal) a partir de um
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/card` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-builder:solve`; a forma curta `solve` também resolve) para carregar o padrão — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/card` é o intake que **nasce já mirando nele**. Sem isso, o card descreve o que está quebrado e nunca o que deveria existir. Depois disso, siga o Fluxo a partir do passo 0.
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/card` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/card` é o intake que **nasce já mirando nele**. Sem isso, o card descreve o que está quebrado e nunca o que deveria existir. Depois disso, siga o Fluxo a partir do passo 0.
 
 Ele entra aqui pela **ambição**, não pela engenharia — a fronteira está logo abaixo, na Voz do card.
 
@@ -66,7 +66,7 @@ Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer com
 
 ### 0. Board do projeto (SEMPRE, antes de tocar no Jira)
 
-**Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+**Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
 
 Nunca assuma o board, nunca pergunte por ele aqui — quem faz isso é o `/jira-board`, e ele é o único dono dessa memória.
 

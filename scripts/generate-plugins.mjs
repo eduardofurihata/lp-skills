@@ -8,15 +8,16 @@
 // listas ordenadas. Também PODA artefatos do modelo antigo (1 plugin por skill
 // + bundles/ agregadores), já que este script é a autoridade dos gerados.
 //
-// Modelo: 1 plugin ("builder") por categoria — 3, não 21. Cada builder é a pasta
-// da categoria (skills/personal, skills/toolbox, skills/eduzz) como raiz de
-// plugin; as skills continuam em skills/<cat>/<slug>/ e entram no plugin pelo
-// array `skills`. Categoria é dona primeiro: skill de trabalho é `eduzz`, antes
-// de qualquer critério. Entre as pessoais, `toolbox` é a das avulsas — sem
+// Modelo: 1 plugin ("builder") por categoria — 4, não 23. Cada builder é a pasta
+// da categoria (skills/build, skills/ship, skills/toolbox, skills/eduzz) como
+// raiz de plugin; as skills continuam em skills/<cat>/<slug>/ e entram no plugin
+// pelo array `skills`. Categoria é dona primeiro: skill de trabalho é `eduzz`,
+// antes de qualquer critério. Entre as pessoais, `toolbox` é a das avulsas — sem
 // `requires` e sem ninguém que dependa delas — por isso o builder nasce sem
-// `dependencies`. Skill empacotada segue sendo chamada por `/method` (forma
-// curta resolve sem ambiguidade); a forma canônica namespaced
-// `/furi-builder:method` também funciona.
+// `dependencies`; `ship` é quem toca board/GitHub/ambiente (`jira-board` e quem
+// o lista em `requires`) e depende de `build` (o método), nunca o inverso. Skill
+// empacotada segue sendo chamada por `/method` (forma curta resolve sem
+// ambiguidade); a forma canônica namespaced `/furi-build:method` também funciona.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,18 +25,23 @@ import matter from "gray-matter";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKILLS_DIR = path.join(ROOT, "skills");
-const CATEGORIES = ["personal", "toolbox", "eduzz"];
+const CATEGORIES = ["build", "ship", "toolbox", "eduzz"];
 const MARKETPLACE_NAME = "lp-skills";
 const OWNER = { name: "Eduardo Furihata" };
 const MARKETPLACE_DESCRIPTION =
-  "Skills do Claude Code do Furihata — pessoais, ferramentas avulsas e Eduzz.";
+  "Skills do Claude Code do Furihata — build (o método), ship (a entrega), ferramentas avulsas e Eduzz.";
 
 // Um builder por categoria: o plugin que empacota a categoria inteira.
 const BUILDERS = {
-  personal: {
-    name: "furi-builder",
+  build: {
+    name: "furi-build",
     description:
-      "Skills pessoais do Furihata — /method, /solve, /fast, /work, /pull-request, /homolog, /prod e mais. Instala todas de uma vez.",
+      "Skills de construção do Furihata — /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+  },
+  ship: {
+    name: "furi-ship",
+    description:
+      "Skills de entrega do Furihata — /jira-board, /card, /work, /pull-request, /homolog, /prod: do card no Jira até produção. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
   },
   toolbox: {
     name: "furi-toolbox",
@@ -45,7 +51,7 @@ const BUILDERS = {
   eduzz: {
     name: "eduzz-builder",
     description:
-      "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-builder (as pessoais que /jira e /afl usam).",
+      "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
   },
 };
 
@@ -127,8 +133,9 @@ pruneLegacy(slugsByCategory);
 const categoryOfName = new Map(skills.map((s) => [s.name, s.category]));
 
 // Deps cruzadas entre builders: se uma skill da categoria X `requires` uma skill
-// da categoria Y (Y≠X), o builder de X depende do builder de Y. Ex.: /jira e /afl
-// (eduzz) usam /method+/solve (personal) → eduzz-builder depende de furi-builder.
+// da categoria Y (Y≠X), o builder de X depende do builder de Y. Ex.: /work (ship)
+// requer /method (build) → furi-ship depende de furi-build; /jira (eduzz) requer
+// /method → eduzz-builder depende de furi-build.
 // Dentro da mesma categoria não há dep: o builder já traz todas as skills dela.
 function crossBuilderDeps(category) {
   const others = new Set();

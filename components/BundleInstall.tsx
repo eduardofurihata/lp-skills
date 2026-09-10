@@ -32,7 +32,7 @@ export function BundleInstall({ counts }: BundleInstallProps) {
           Instale um pacote — já vem com todas as skills dentro
         </h2>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {BUNDLES.map((bundle) => (
           <Dialog key={bundle.name}>
             <DialogTrigger asChild>

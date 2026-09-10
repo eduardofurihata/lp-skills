@@ -127,7 +127,7 @@
 ## Round 3 — Re-análise: fronteiras, duplicação e dimensões não cobertas
 
 ### D-15 — Os 8 motores e onde vivem
-**Decisão:** `skills/personal/prod/references/` — `reconcile` · `pr-cycle` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. O `/homolog` consome de lá.
+**Decisão:** `skills/ship/prod/references/` (era `skills/personal/…` até o Round 6 do marketplace) — `reconcile` · `pr-cycle` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. O `/homolog` consome de lá.
 **Justificativa:** um dono, um lugar. `/prod` é a **única** skill presente nas duas topologias (em branch única o `/homolog` não trabalha), então é a sede natural. Simetria (metade em cada) criaria dependência circular de leitura sem ganho.
 **Referência:** o próprio protocolo — `merge:82` já lê `references/principios.md` do `/method`, precedente de cross-read entre skills.
 **UC que exige:** a tabela de assinaturas do Step 3 (todos os UCs).

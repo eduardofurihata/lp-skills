@@ -1,6 +1,6 @@
 # Reconcile — o loop que fecha a distância entre a origem e o ambiente
 
-> **A porta única.** `/homolog` e `/prod` declaram um **alvo** e entregam a ele. Nenhuma das duas invoca os outros motores direto, e nenhum motor invoca outro — a direção é `skill → reconcile → motor → borda`, sem retorno. Na borda, skill externa (`/pull-request`, `/todo`, `/card`, `/homolog`) é **invocada via Skill tool** (`furi-builder:<nome>`) — chamada real, nunca reproduzida de memória.
+> **A porta única.** `/homolog` e `/prod` declaram um **alvo** e entregam a ele. Nenhuma das duas invoca os outros motores direto, e nenhum motor invoca outro — a direção é `skill → reconcile → motor → borda`, sem retorno. Na borda, skill externa é **invocada via Skill tool** — `furi-ship:pull-request`, `furi-ship:card`, `furi-ship:homolog` (mesmo pacote) e `furi-build:todo` (do `furi-build`, dependência declarada do `furi-ship`) — chamada real, nunca reproduzida de memória.
 
 **Responsabilidade única:** rodar `diagnosticar → aplicar o motor do gap → re-diagnosticar` até `gaps[] == 0`.
 

@@ -1,9 +1,10 @@
 import type { Category } from "./categories";
 
 // Bundle ("builder") — o plugin que empacota uma categoria inteira de skills.
-// Um por categoria: furi-builder (pessoais), furi-toolbox (ferramentas avulsas)
-// e eduzz-builder (trabalho). Não se instala skill isolada — instala-se o
-// pacote, que já traz todas dentro.
+// Um por categoria: furi-build (o método: /solve, /method, /fast, /todo, /proto),
+// furi-ship (a entrega: /jira-board, /card, /work, /pull-request, /homolog,
+// /prod), furi-toolbox (ferramentas avulsas) e eduzz-builder (trabalho). Não se
+// instala skill isolada — instala-se o pacote, que já traz todas dentro.
 export interface Bundle {
   name: string;
   label: string;
@@ -20,10 +21,16 @@ const MARKETPLACE = "lp-skills";
 // Os pacotes (espelham os plugins gerados em skills/<cat>/.claude-plugin/).
 export const BUNDLES: Bundle[] = [
   {
-    name: "furi-builder",
-    label: "Todas as pessoais",
-    category: "personal",
+    name: "furi-build",
+    label: "Construir — método e QA",
+    category: "build",
     example: "/method",
+  },
+  {
+    name: "furi-ship",
+    label: "Entregar — Jira, PR e deploy",
+    category: "ship",
+    example: "/jira-board",
   },
   {
     name: "furi-toolbox",
@@ -64,7 +71,8 @@ const UPDATE_FOOTER = `Com o auto-update ligado, versão nova entra sozinha no p
 
 // Comandos `/plugin` para instalar um pacote inteiro. Instalar o pacote traz
 // TODAS as skills dentro dele; cada skill é chamada pelo nome curto (/method,
-// /jira). eduzz-builder puxa o furi-builder junto (dependência declarada).
+// /jira). furi-ship e eduzz-builder puxam o furi-build junto (dependência
+// declarada).
 export function generateBundlePrompt(bundle: Bundle): string {
   return `${INTRO}
 
