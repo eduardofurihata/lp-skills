@@ -63,6 +63,8 @@ git add -A && git commit && git push   # publicar = dar push (versionamento por 
 
 Cada push vira uma versão nova (não há `version` fixado); os usuários recebem no próximo `/plugin marketplace update`.
 
+**Skill que depende de outra a invoca via Skill tool** no ponto de uso (`furi-builder:<nome>` / `eduzz-builder:<nome>`) e a lista em `requires` — mencionar não é invocar. Hand-offs ("Próximo: /pull-request") e fronteiras ("isso é o /prod") ficam como menção: o próximo passo é decisão do usuário.
+
 **Editando uma skill com feedback imediato** (sem republicar a cada tecla): carregue o plugin em modo dev, in-place, apontando para a pasta da categoria (a raiz do plugin) — carrega o pacote inteiro com todas as skills:
 
 ```bash

@@ -2,7 +2,7 @@
 name: prod
 description: 'Use when user invokes /prod to get production live with the updates — working and configured, verified on the production URL, not merely pushed. The single owner of production: declares the prod target and hands it to the reconcile engine, which diagnoses the gap between what is ready and what actually answers in prod, then closes it. On a `dev`+`main` repository it requires homolog to be verified first, ASKS for explicit authorization for THIS release (authority claimed earlier never counts), closes `dev` (committing loose work with explicit paths, never `git add -A`), promotes `dev`→`main`, watches the deploy run to a named outcome, applies configuration to prod AND homolog, smoke-tests every card on the production URL, and closes with the resync `main`→`dev` plus the assert `origin/dev == origin/main`. On a single-branch repository there is no promotion and no gate: it runs the whole cycle — review, approve, merge into `main`, deploy, configure, smoke. Red deploy never announces success; a queued run on an offline self-hosted runner is a QUEUE; a secret value is always asked, never inferred; rollback is offered, never automatic.'
 effort: max
-requires: [jira-board, todo, homolog]
+requires: [jira-board, todo, homolog, pull-request, card]
 argument-hint: "[PR number | KEY-N] | (vazio = diagnosticar e fechar o gap de produção)"
 ---
 
@@ -42,7 +42,7 @@ Não é "dar push na `main`": é **atingir um estado** — produção **no ar, f
 
 ## Step 0 — Board, contexto e topologia
 
-1. **`/jira-board`** — `{site, key, boardId, boardName, url, origem}`. Nunca assuma nem pergunte o board aqui.
+1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-builder:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. Nunca assuma nem pergunte o board aqui.
 2. **`references/deploy-context.md`** — topologia detectada por `git ls-remote --heads origin dev`, doc do projeto lido (ou descoberto e escrito).
 
 ## Step 1 — Declarar o alvo
@@ -54,7 +54,7 @@ alvo = {
   branch:        main
   fonteDoDelta:  o que está em `dev` e não em `main`
   gate:          SIM — autorização explícita, a cada release
-  pré-requisito: homolog verificado
+  pré-requisito: homolog verificado   # fechado INVOCANDO o /homolog (Skill tool)
 }
 ```
 
@@ -70,6 +70,8 @@ alvo = {
 ```
 
 Entregue ao **`references/reconcile.md`**: ele publica o diagnóstico **antes** de agir, aplica o gate quando o alvo pede, fecha os gaps na ordem da dependência, re-diagnostica a cada um, e só encerra quando o último fecha. **Não reimplemente motor aqui.**
+
+O gap de **pré-requisito** (homolog não verificado) é fechado **invocando o `/homolog`** — via **Skill tool** (`furi-builder:homolog`; a forma curta `homolog` também resolve): ele roda o mesmo loop com o alvo homolog e só devolve com smoke verde. Chamada real, não "seguir de memória": verificar homolog "por dentro" não conta. As demais skills externas que os motores acionam na borda — **`/pull-request`**, **`/todo`**, **`/card`** — também entram via Skill tool.
 
 `$ARGUMENTS` com PR/`<KEY>-<N>` → preferência de ordem, não restrição do objetivo.
 
@@ -167,6 +169,7 @@ O push do passo 2 é só o **gatilho**: o `reconcile` segue para `deploy-run` (r
 - "Commito com `git add -A`, é mais rápido" → NÃO. A árvore é compartilhada com sessões paralelas; paths explícitos.
 - "O assert deu `✗` mas o deploy passou, fecho assim" → NÃO. Release não fecha com `origin/dev != origin/main`.
 - "Promovo sem verificar homolog, o dev testou na máquina dele" → NÃO. Aquilo provou o código; homolog prova o ambiente.
+- "Verifico homolog por dentro, sem invocar o `/homolog`" → NÃO. Mencionar não é invocar: o pré-requisito fecha com a chamada do `/homolog` via Skill tool — e o mesmo vale para `/todo`, `/pull-request` e `/card` na borda dos motores.
 - "Uso `/sync dev > main` que é mais direto" → é uma ferramenta de **branch**, sem deploy observado, sem configuração e sem smoke. Para **entregar** produção, o caminho é este.
 
 **Objetivo e motores**

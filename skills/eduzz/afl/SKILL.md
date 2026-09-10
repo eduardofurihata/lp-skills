@@ -9,7 +9,7 @@ requires: jira
 
 `/afl` = `/jira` rodando no contexto do **AFL (Agents for Life)**.
 
-1. **Rode o `/jira`** com os mesmos argumentos recebidos (`[CARD-CODE]`, `finish [CARD-CODE]`, ou vazio). O `/jira` instala junto o `/method` (dependência), então o fluxo completo — Step 0 → /method → human check → ship — está disponível.
+1. **Invoque o `/jira`** — via **Skill tool** (`eduzz-builder:jira`; a forma curta `jira` também resolve) — com os mesmos argumentos recebidos (`[CARD-CODE]`, `finish [CARD-CODE]`, ou vazio). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/jira` instala junto o `/method` (dependência) e o invoca via Skill tool, então o fluxo completo — Step 0 → /method → human check → ship — está disponível.
 
 2. **Contexto Eduzz / AFL:**
    - Project key **`AV-*`**: card único `AV-36`; multi-card `AV-36-40`, `AV-36-40-55` (números crescentes, prefixo `AV-`). Sempre que o `/jira` pedir um `[CARD-CODE]`, considere o `AV-*`.

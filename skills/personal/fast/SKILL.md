@@ -2,7 +2,7 @@
 name: fast
 description: 'Use when developing features rapidly — /fast É o /method rodando do Step 1 ao Step 8 e PARANDO no Code Review. Mesmas regras, mesmos references, mesmos gateways do /method; a única diferença é ONDE para. Escreve os Test Cases (Step 5) mas NÃO os executa (Step 9 é do /todo). NÃO faz Step 10 (Done/commit). O card em kanban/06-todo/ + o relatório em kanban/08-code-review/ ficam como handoff para o /todo rodar a QA depois.'
 effort: max
-requires: method
+requires: [method, solve]
 argument-hint: "[feature-name]"
 ---
 
@@ -28,7 +28,7 @@ argument-hint: "[feature-name]"
 
 ## Como rodar
 
-Siga a **Ordem de Operações do `/method`** (ver `method/SKILL.md`): **invoque o `/solve`** (padrão de qualidade — referência #1 do mercado) → Inventário de Docs → Gate Check → TaskCreate → executar os steps em sequência, publicando o **Gateway Check** de cada um no chat. **A diferença é só parar no Step 8.**
+Siga a **Ordem de Operações do `/method`** (leia `method/SKILL.md` por arquivo — o `/fast` **não invoca** o `/method`: ele **é** o protocolo, lido dos mesmos references). A PRIMEIRA ação é **invocar o `/solve`** — via **Skill tool** (`furi-builder:solve`; a forma curta `solve` também resolve), padrão de qualidade — referência #1 do mercado. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois: Inventário de Docs → Gate Check → TaskCreate → executar os steps em sequência, publicando o **Gateway Check** de cada um no chat. **A diferença é só parar no Step 8.**
 
 | Step | Reference | /fast roda? |
 |------|-----------|-------------|
@@ -85,6 +85,7 @@ Para validar via front, rode /todo. /fast não roda Step 9, não converge follow
 
 ## Red Flags — STOP
 
+- "Já conheço o `/solve`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Vou pular o Step 4/5 porque é simples" → NÃO. /fast roda os Steps 1-8 COMPLETOS, com as regras do /method.
 - "Vou inventar uma regra de test case mais completa (ISTQB, 12 técnicas, 50-100 TCs)" → NÃO. Step 5 = `05-test-cases.md`, `nº TCs == nota de complexidade`, teto de 10. /fast não tem regra própria.
 - "Essa feature é complexa, mereço passar de 10 TCs" → NÃO. Teto é 10. Transbordou? Quebre a feature (ver `05-test-cases.md`).

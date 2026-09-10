@@ -32,7 +32,7 @@ Dúvida entre "elevou o perímetro" e "trouxe feature nova" → olhe o `kanban/0
 
 ## 3 — Devolver rastreado
 
-Para cada excedente que vira trabalho futuro: **`/card`** no board do projeto (o `/jira-board` já resolveu qual é), descrevendo **o que é** e **por que saiu deste PR** — nunca prescrevendo implementação (a solução é do `/method` do card, com o escopo na mão). O tipo de issue é descoberto pelo `/card` no projeto de destino.
+Para cada excedente que vira trabalho futuro: **invoque o `/card`** (Skill tool — `furi-builder:card`) no board do projeto (o `/jira-board` já resolveu qual é), descrevendo **o que é** e **por que saiu deste PR** — nunca prescrevendo implementação (a solução é do `/method` do card, com o escopo na mão). O tipo de issue é descoberto pelo `/card` no projeto de destino.
 
 No `request-changes`, dizer exatamente: o que sai, para qual card foi, e o que fica.
 

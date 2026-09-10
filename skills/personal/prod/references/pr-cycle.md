@@ -12,7 +12,7 @@
 
 <HARD-GATE>
 1. NÃO mergeie sem **code review limpo** (sempre teu). Autenticação via front é exigida só quando a QA do dev falhou / não está explícito que passou / tem TODO pendente.
-2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → rode o `/todo` até 100% PASSED ANTES de mergear.
+2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → **invoque o `/todo`** (Skill tool — `furi-builder:todo`) e leve-o até 100% PASSED ANTES de mergear.
 3. NÃO rode `/todo` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (§ 7).
 4. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
 5. **Mergear NÃO é garantido — REJEITAR é saída válida** (§ 5).
@@ -39,7 +39,7 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 |---|---|
 | Em `10-done`/`11-ship` **com `09-run-test` 100% PASSED** | QA já foi feita via front no Step 9 → **confia**. Só code review; **pula o front-test** |
 | Em `10-done`/`11-ship` mas QA **ausente / ambígua / falhada** | "Done" sem prova = não-testado → review **com** front-test |
-| Em `kanban/06-todo/` (QA pendente) | **Rodar o `/todo`** até **100% PASSED**. Só então o review — *rede de segurança: o dev parou no `/fast` e esqueceu o teste* |
+| Em `kanban/06-todo/` (QA pendente) | **Invocar o `/todo`** (Skill tool) até **100% PASSED**. Só então o review — *rede de segurança: o dev parou no `/fast` e esqueceu o teste* |
 | Sem card no kanban (dev trabalhou cru) | **PARAR e avisar:** sem test cases não dá para autenticar QA. Perguntar como proceder |
 
 4. **Gate de convergência do dev — ledger de follow-ups.** Abrir `kanban/10-done/<feature>.md`, seção `## Follow-ups`:
@@ -131,7 +131,7 @@ Rejeitar é seguro: nada vai para a integração nem para o ar, branch e PR fica
 
 ## 6 — Sem PR aberto
 
-Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar `/pull-request`** e voltar ao § 1. Commit direto na branch de integração (fluxo pessoal) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente.
+Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-builder:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (fluxo pessoal) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente.
 
 ## 7 — Cleanup de órfãos (confirm-first)
 
@@ -145,7 +145,7 @@ Listar os órfãos e **perguntar**: *"Esses cards em `06-todo/` não têm PR nem
 
 - "O dev marcou done **sem prova** (`09-run-test` ausente/ambíguo/falhado), mergeio assim mesmo" → NÃO. "Done" sem QA documentada = não-testado → front-test.
 - "A QA `/method` passou 100% e está documentada, mas re-testo tudo no front por via das dúvidas" → NÃO (o oposto). Isso é **duplicar QA já feita direito**. O code review é teu; no front é **só seguir em frente**.
-- "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: roda `/todo` ANTES.
+- "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: invoca o `/todo` (Skill tool) ANTES.
 - "Rodo `/todo` em todos os pendentes de `06-todo`" → NÃO. Só o card do PR. Órfão é cleanup (§ 7).
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre.
 - "Fix pequeno no review, não re-testo" → NÃO. Qualquer fix → re-review + re-autentica.

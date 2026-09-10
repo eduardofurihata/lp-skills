@@ -53,7 +53,7 @@
 - **Veredicto: ✅ CONVERGIU** / ❌ BLOQUEADO — abertos: [listar Fn]
 ```
 
-**❌ BLOQUEADO →** para CADA item aberto, rode o **`/method` COMPLETO** (Step 1→10, com `/solve`, tópico e artefatos próprios) — **sem commitar** (só o ciclo raiz commita) — marque `RESOLVIDO-POR-CICLO` no ledger e **republique o Gate**. Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ o loop continua.
+**❌ BLOQUEADO →** para CADA item aberto, **invoque o `/method`** (Skill tool — `furi-builder:method`) e rode-o **COMPLETO** (Step 1→10, com `/solve`, tópico e artefatos próprios) — **sem commitar** (só o ciclo raiz commita) — marque `RESOLVIDO-POR-CICLO` no ledger e **republique o Gate**. Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ o loop continua.
 
 Triagem A/B/C, formato do ledger e racionalizações: `follow-ups.md`.
 
@@ -104,7 +104,7 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 ## Checklist Final (step terminal — sem gateway de saída)
 
 - [ ] **Gate de Convergência ✅ CONVERGIU** publicado no chat — zero follow-ups `ABERTO`, passe seco confirmado
-- [ ] Cada item de balde **B** fechado por ciclo `/method` próprio (1→10, com `/solve`, sem commit) com done doc linkado
+- [ ] Cada item de balde **B** fechado por ciclo `/method` próprio (invocado via Skill tool; 1→10, com `/solve`, sem commit) com done doc linkado
 - [ ] Cada item de balde **C** com justificativa registrada no ledger
 - [ ] Done doc referencia todos os artefatos (docs 1-9) e contém o **ledger de follow-ups final**
 - [ ] Done doc registra as **5 linhas de princípios**: reutilizado (DRY) · descartado (YAGNI) · **motores** · **elevado** (refatoração do perímetro) · **DS ganhou** (se tem UI)
