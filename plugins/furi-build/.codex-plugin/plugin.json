@@ -1,6 +1,6 @@
 {
   "name": "furi-build",
-  "version": "0.1.0+codex.0d4e37cb2109",
+  "version": "0.1.0+codex.aa267eb48844",
   "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
   "author": {
     "name": "Eduardo Furihata",

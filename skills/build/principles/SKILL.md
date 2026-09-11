@@ -16,9 +16,9 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 | Invocação | Modo | O que acontece |
 |---|---|---|
 | sem argumento — pelo usuário ou por outra skill | **régua** | Leia este arquivo inteiro agora (sem a leitura, a invocação não aconteceu). Os princípios e as provas abaixo valem para tudo que você tocar daqui em diante. Sem passada, sem nota, sem output final. |
-| com alvo | **alvo** | Fluxo abaixo: os alvos, os pilares e os pesos desta régua, rodando o motor de `references/fluxo-modo-alvo.md` — inventário → achados → baldes → nota → corrige → repete até todo pilar ≥ 95. |
+| com alvo | **alvo** | Fluxo abaixo: os alvos, os pilares e os pesos **desta** régua, rodando o motor de `references/fluxo-modo-alvo.md` — que é quem dita os passos, a fórmula da nota e o critério de parada. |
 
-# Princípios de engenharia — SOLID · DRY · KISS · YAGNI · LoD · Motores
+# Princípios de engenharia — SOLID · DRY · KISS · YAGNI · LoD · Motores · Refatoração
 
 > **Esta seção é a fonte única dos princípios.** Nenhum outro arquivo os redefine — todos apontam para cá (DRY aplicado a si mesmo). Quem aplica a doutrina numa etapa de trabalho tem a **lente**: o que o princípio significa *ali*. É o pilar **Princípios** da nota, e a prova é esta seção inteira.
 
@@ -36,7 +36,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 | **I — ISP** (segregação de interface) | Interface pequena, focada no que o cliente usa. Depender de 10 métodos para usar 2 é acoplamento a 8 que não lhe dizem respeito. | "A interface do service tem tudo, cada um usa o que quiser" |
 | **D — DIP** (inversão de dependência) | Dependa de **abstração**, não de implementação; a direção aponta para o domínio, nunca para o detalhe (banco, HTTP, lib). O **motor** (abaixo) define o contrato; a infra implementa. | "O service importa o client do Prisma direto" |
 
-## Os demais
+## Os outros cinco — DRY · KISS · YAGNI · LoD · Motores
 
 | Princípio | Regra | Falha típica |
 |---|---|---|
@@ -93,7 +93,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 - o **dependente direto** que o grep revelou;
 - o **caminho inteiro** que o fluxo atravessa.
 
-**Dentro do perímetro: refatore bastante, sem timidez.** Fora do perímetro: triagem normal — **balde B** se o trabalho o expôs, **C** se não tem relação (a triagem A/B/C do fluxo). O limite é o **caminho percorrido**, não "só a linha que editei" e nem o repositório inteiro.
+**Dentro do perímetro: refatore bastante, sem timidez.** Fora do perímetro: quem decide é a triagem A/B/C do fluxo. O limite é o **caminho percorrido**, não "só a linha que editei" e nem o repositório inteiro.
 
 **O que elevar, por arquivo do perímetro:**
 
@@ -114,8 +114,6 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 # A régua de clareza — para gente e para IA
 
 Simples e Eficiente são a lente de SRP, DRY e KISS (§ Princípios de engenharia, acima) para qualquer alvo — commit, pasta, doc; Premium e os dois leitores são o que a doutrina não cobria.
-
-**Toda palavra do padrão tem UMA prova aqui — sinônimo não vira pilar novo (YAGNI):** minimalista e clean → **Simples** (zero sobra) + **Premium** (acabamento) · fácil, qualquer pessoa de qualquer idade → **Humano** (teste do leigo) · objetivo, direto → **Eficiente** (menor forma) · otimizado → **Eficiente** (zero desperdício) · preciso → **Eficiente** (preciso) · completo → **Premium** (nada pela metade + fecha o ciclo) · moderno → **Premium** (moderno) · profissional → **Premium** (acabamento). O que não tem prova nomeada não é cobrado.
 
 ## Simples · Eficiente · Premium — cada palavra é uma prova
 
@@ -148,6 +146,8 @@ Premium se mede contra o que o alvo **promete** (nome + 1ª linha), nunca contra
 | **IA** — comando roda sem gente | Todo comando citado roda por copy-paste: sem pergunta interativa, sem variável não declarada, e diz se deu certo | `make setup` que faz perguntas · "roda os testes" (qual comando?) |
 | **IA** — igual aos irmãos | Mesma forma, mesmo nome, mesmo lugar que os vizinhos — a IA aprende com um e acerta os outros | `a.service.ts` ao lado de `bService.ts` · `## Como testar` só em um doc |
 
+**Toda palavra do padrão cai em UMA prova das duas tabelas acima — sinônimo não vira pilar novo (YAGNI):** minimalista e clean → **Simples** (zero sobra) + **Premium** (acabamento) · fácil, qualquer pessoa de qualquer idade → **Humano** (teste do leigo) · objetivo, direto → **Eficiente** (menor forma) · otimizado → **Eficiente** (zero desperdício) · preciso → **Eficiente** (preciso) · completo → **Premium** (nada pela metade + fecha o ciclo) · moderno → **Premium** (moderno) · profissional → **Premium** (acabamento). O que não tem prova nomeada não é cobrado.
+
 ## Onde a prova muda de forma
 
 | Prova | projeto · pasta | arquivo | commit · diff | doc · skill · prompt |
@@ -161,7 +161,7 @@ Premium se mede contra o que o alvo **promete** (nome + 1ª linha), nunca contra
 
 # Fluxo (modo alvo)
 
-**Leia `references/fluxo-modo-alvo.md` agora** — é o motor desta passada: snapshot, inventário do zero, baldes A/B/C, fórmula da nota, checks, correção, repetição até todo pilar ≥ 95 e Output final. É o mesmo motor que o `/ui` roda, e ele é a fonte única dessas regras. Sem essa leitura, o modo alvo não roda. Daqui sai o que é **desta** régua:
+**Leia `references/fluxo-modo-alvo.md` agora** — é o motor desta passada: os passos, a triagem A/B/C, a fórmula da nota, o critério de parada e o Output final moram lá, e ele é a fonte única deles. É o mesmo motor que o `/ui` roda. Sem essa leitura, o modo alvo não roda. Daqui sai o que é **desta** régua:
 
 ## Alvos — passo 1
 
@@ -187,8 +187,8 @@ Os seis: **Simples · Eficiente · Premium · Humano · IA · Princípios**.
 
 - **Passo 3 (passada)** — releia a doutrina acima, que é a régua do pilar Princípios. **Um achado, um pilar:** se uma prova de clareza o nomeia, é dela; Princípios fica com o que só a doutrina cobre (OCP, LSP, ISP, DIP, YAGNI, LoD, Motores, perímetro, limiares). Todo caminho (`ls`), comando (existe) e link (responde) citado pelo alvo é conferido — é a prova "preciso" em qualquer projeto.
 - **Passo 6 (checks)** — os do projeto: `package.json` scripts `lint`, `typecheck`/`tsc`, `test`, `format`; `Makefile` alvos `lint`, `test`, `check`.
-- **Passo 7 (corrige)** — comportamento idêntico significa que refatorar não muda o que o alvo faz. Apagar um arquivo inteiro ou renomear um nome público/exportado → **pergunte antes**.
-- **Output** — em `commit <sha>`, acrescenta a linha `Mensagem proposta: <subject>`; a mensagem só recebe proposta, nunca `--amend`.
+- **Passo 7 (corrige)** — comportamento idêntico significa que renomear uma seção, encurtar a forma, trocar a cópia por um ponteiro para a fonte e apagar sobra não mudam a regra que o alvo enuncia nem o que o código faz; mexer num limiar, num critério ou numa condição muda. Apagar um arquivo inteiro ou renomear um nome público/exportado → **pergunte antes**.
+- **Output** — em `commit <sha>`, acrescenta a linha `Mensagem proposta: <subject>`.
 
 # Racionalizações proibidas — PARE se pensar
 
@@ -205,7 +205,7 @@ As do fluxo estão em `references/fluxo-modo-alvo.md`; estas são da doutrina.
 | "Simplifiquei, ficou 'bom o suficiente'" | KISS ≠ mediocridade. O piso é o nível #1. BLOQUEADO. |
 | "Premium é adicionar mais" | Isso é escopo novo, não acabamento — e escopo não é desta skill. A régua é o que o alvo **promete**. BLOQUEADO. |
 | "O arquivo já estava ruim, não fui eu" | Passou por ali, é seu. Está no perímetro → sobe. BLOQUEADO. |
-| "Refatoro o projeto inteiro já que estou aqui" | O limite é o **perímetro** — o que você editou, abriu, atravessou — nunca o repositório. Fora dele, a triagem A/B/C do fluxo decide: B se este trabalho o expôs, C se não tem relação. BLOQUEADO. |
+| "Refatoro o projeto inteiro já que estou aqui" | O limite é o **perímetro** — o que você editou, abriu, atravessou — nunca o repositório. Fora dele, quem decide é a triagem A/B/C do fluxo. BLOQUEADO. |
 | "Só mexi numa linha, não precisa elevar o arquivo" | O arquivo está no perímetro. Regra do saldo: sai melhor do que entrou, ou você declara que já estava no nível #1. BLOQUEADO. |
 | "Abri o arquivo só pra ler, não conta" | Conta. Ler é passar. Se enxergou o problema, ele está no seu perímetro. BLOQUEADO. |
 | "SOLID eu cubro com o SRP" | SOLID são **cinco** — SRP, OCP, LSP, ISP, DIP. O que não é nomeado nunca é revisado. BLOQUEADO. |

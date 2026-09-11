@@ -1,6 +1,6 @@
 # Fluxo do modo alvo — o motor que as réguas rodam
 
-> **Este arquivo é a fonte única do fluxo de avaliação.** Toda skill que dá nota a um alvo e o corrige até passar roda ESTE fluxo: `/principles` (clareza e princípios de engenharia) e `/ui` (design). Cada uma traz só o que é dela — a tabela de alvos, os seis pilares, a tabela de pesos, e o que os passos 3 e 7 exigem naquele domínio. **Sem a leitura deste arquivo, o modo alvo não roda.**
+> **Este arquivo é a fonte única do fluxo de avaliação.** Toda skill que dá nota a um alvo e o corrige até passar roda ESTE fluxo: `/principles` (clareza e princípios de engenharia) e `/ui` (design). Cada uma traz só o que é dela: a tabela de alvos, os seis pilares, a tabela de pesos e o que cada passo exige naquele domínio. **Sem a leitura deste arquivo, o modo alvo não roda.**
 
 O motor não conhece domínio: ele não sabe o que é um token nem o que é um motor de frete. Ele sabe transformar **achados** em **nota**, e nota em **correção** — sempre do zero, sempre com o alvo lido do disco.
 
@@ -42,7 +42,7 @@ Passadas: N · Checks: <os do projeto> ✓   (ou: nenhum no projeto)
 Próximo: revisar o diff e commitar
 ```
 
-A skill acrescenta as linhas que só ela tem (a mensagem proposta de um commit, o que não deu para verificar) — nunca remove as de cima.
+A skill acrescenta as linhas que só ela tem — nunca remove as de cima.
 
 Em `audit`: `Nota: <antes>` só, sem "depois"; `Passadas: 1`; `Checks:` só a conferência do passo 3 — os do projeto não rodam, não há antes/depois; `Próximo: /<skill> <alvo>` para aplicar.
 
