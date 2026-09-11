@@ -20,7 +20,7 @@ Lista de tasks com checkboxes. **Cada task = uma unidade resolvível em um promp
 - Dependências entre tasks mapeadas
 - Ordem de execução óbvia
 
-## Princípios neste step (`principios.md`)
+## Princípios neste step (`principles/references/principios.md`)
 
 A lista de tasks é a primeira forma concreta da arquitetura — o que estiver torto aqui vira código torto no 7b.
 

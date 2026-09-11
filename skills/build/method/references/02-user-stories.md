@@ -29,7 +29,7 @@ Isso vira requisito. Inclua TODAS as personas afetadas (identificadas no Step 1)
 - Como admin, quero ver o histórico de pagamentos falhados para dar suporte.
 ```
 
-## Princípios neste step (`principios.md`)
+## Princípios neste step (`principles/references/principios.md`)
 
 - **SRP** — 1 story = 1 necessidade de 1 persona. Story com "e também" são duas stories disfarçadas de uma.
 - **DRY** — mesma necessidade em duas personas = **uma** story com os dois atores, não duas gêmeas que vão divergir na manutenção.

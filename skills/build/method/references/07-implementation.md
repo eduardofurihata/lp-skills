@@ -48,7 +48,7 @@ Abstrações, camadas, flags, configs e generalizações que foram **considerada
 Seção vazia é suspeita: significa que nada foi cogitado, ou que tudo que foi cogitado entrou.
 
 ## 3.3 Motores — OBRIGATÓRIO
-Toda capacidade tem **um** dono (`principios.md` § Motores):
+Toda capacidade tem **um** dono (`principles/references/principios.md` § Motores):
 
 | Capacidade | Motor | Ação |
 |---|---|---|
@@ -68,7 +68,7 @@ Lido de `docs/04-spec/design-system.md` (`design.md`):
 - **Zero valor literal planejado** — se o plano já traz `#hex` ou `13px`, o 7b nasce errado.
 
 ## 3.5 Perímetro da refatoração — OBRIGATÓRIO
-O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um (`principios.md` § Refatoração contínua):
+O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um (`principles/references/principios.md` § Refatoração contínua):
 
 | Arquivo do perímetro | Por que entra | O que será elevado |
 |---|---|---|
@@ -106,7 +106,7 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 
 ### Práticas Obrigatórias
 
-**Arquitetura — os princípios na íntegra: `principios.md` (fonte única).** Aqui é onde eles têm limiar numérico e viram checklist **por arquivo aberto**:
+**Arquitetura — os princípios na íntegra: `principles/references/principios.md` (fonte única).** Aqui é onde eles têm limiar numérico e viram checklist **por arquivo aberto**:
 
 - **SRP:** cada arquivo/classe/função faz UMA coisa. >40 linhas → extraia helper. Componente mistura lógica+UI → separe em hook+componente.
 - **OCP:** comportamento novo entra por composição/estratégia. Se você está adicionando mais um `if`/`case` no meio de uma função que muita gente usa, pare — o ponto de extensão estava no plano (§ 3.3).
@@ -123,7 +123,7 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 
 > Desvio do que o plano decidiu em § 3.1/§ 3.2 é **decisão nova**: registre no plano (que é vivo em 7b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
 
-**Refatoração Obrigatória — a cada passada o código sobe** (`principios.md` § Refatoração contínua):
+**Refatoração Obrigatória — a cada passada o código sobe** (`principles/references/principios.md` § Refatoração contínua):
 
 Aplique os princípios acima (SOLID completo, DRY, KISS, YAGNI, LoD, Motores) ao código que **encontra**, não só ao que escreve. O alvo é o **perímetro do § 3.5** — e o perímetro não é só o arquivo que você editou:
 
@@ -218,7 +218,7 @@ Para CADA arquivo alterado:
 ### 7b → 8
 - [ ] Todas tasks do checklist marcadas
 - [ ] tsc/lint passam
-- [ ] **Checklist de princípios percorrido por arquivo do perímetro** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD · Motores) — `principios.md`
+- [ ] **Checklist de princípios percorrido por arquivo do perímetro** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD · Motores) — `principles/references/principios.md`
 - [ ] **Refatoração do perímetro executada** com a **regra do saldo**: cada arquivo subiu, ou está declarado como já no nível #1
 - [ ] Capacidade espalhada **absorvida no motor**; chamadores passaram a só chamar
 - [ ] **Se tem UI:** zero valor literal (tokens), composição > configuração, headless, **todos** os estados implementados, a11y AA, breakpoints do projeto — `design.md`

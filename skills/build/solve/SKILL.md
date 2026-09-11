@@ -3,6 +3,7 @@ name: solve
 description: Use when the user invokes /solve — resolve the requested task at world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality baseline, aiming to make us the #1 reference in the market.
 effort: max
 argument-hint: "[o que resolver]"
+requires: principles
 ---
 
 # /solve — Resolver no nível da referência #1
@@ -19,25 +20,11 @@ Resolva mirando ser a **referência #1 do mercado** — no calibre dos **big pop
 
 Qualidade vem antes de esforço, tempo ou tokens. A complexidade necessária para chegar nesse nível é requisito, não obstáculo. Genérico ou mediano = falha.
 
-## Princípios de engenharia (inegociáveis — em TUDO, o tempo todo)
+## Princípios de engenharia e clareza — skill `/principles`
 
-Nível #1 é também no código, não só no resultado visível. E não é fase: valem em cada decisão, cada arquivo, cada artefato — do primeiro rascunho ao último review.
+**ANTES de tudo — invoque o `/principles` via Skill tool** (`furi-build:principles`; a forma curta `principles` também resolve). Sem alvo, ele entra em modo régua: a doutrina (SOLID · DRY · KISS · YAGNI · LoD · Motores · refatoração do perímetro · regra do saldo) e as provas de clareza (simples · eficiente · premium · humano · IA) passam a valer em tudo que você tocar. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu.
 
-- **SOLID — os cinco, não só o "S":**
-  - **SRP** — cada módulo/classe/função faz UMA coisa e a faz bem.
-  - **OCP** — comportamento novo entra por composição, sem editar o que já funciona. Mais um `if` no meio da função de todo mundo é o sintoma.
-  - **LSP** — implementação honra o contrato: mesmas garantias, sem lançar onde ele não prevê.
-  - **ISP** — interface do tamanho do que o cliente usa, não do que o dono quis oferecer.
-  - **DIP** — dependa de abstração; a direção aponta ao domínio, nunca ao detalhe (banco, HTTP, lib).
-- **DRY** — zero duplicação de lógica; uma única fonte de verdade. Antes de criar, **procure** (grep) — reutilizar/estender > recriar.
-- **KISS** — a solução mais simples que atinge o nível #1; simplicidade ≠ mediocridade.
-- **YAGNI** — não construa o que não é necessário agora; sem complexidade especulativa.
-- **Law of Demeter** — objeto só fala com vizinhos diretos: sem `a.b.c.d.method()`, sem ciclo. Precisou do dado do fundo? o vizinho **expõe**; você não atravessa.
-- **Motores** — toda capacidade (calcular, validar, sincronizar, autorizar) tem **um** dono: uma unidade nomeada pela capacidade, com contrato pequeno, e é o único lugar onde a regra vive. Achou pedaço solto — um `if` numa tela, um cálculo repetido — **absorve**. Motor nasce da capacidade que já existe; motor "pro dia que precisar" é especulação.
-
-**Tudo por onde passa sobe.** Estes princípios valem para o código que você **encontra**, não só para o que escreve. O **perímetro** é tudo por onde o trabalho passou: o arquivo editado, o aberto só para entender, o dependente que o grep revelou, o caminho que o fluxo atravessa. **Dentro dele, refatore bastante** — duplicação, responsabilidade misturada, naming ruim, complexidade desnecessária, `a.b.c.d`, código morto. Fora dele, não é seu (foco/YAGNI).
-
-**Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você declara que já estava no nível #1.
+Nível #1 é também no código, não só no resultado visível — e não é fase: vale em cada decisão, cada arquivo, cada artefato. **Tudo por onde passa sobe**: nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você declara que já estava no nível #1.
 
 ## Design — quando tem tela, o nível #1 é visual também
 
@@ -56,7 +43,7 @@ KISS/YAGNI matam a complexidade *desnecessária*; a complexidade *necessária* p
 
 **Auto-check antes de entregar** (junto com "um líder do domínio assinaria isto?"): *duplicou algo que já existia? criou abstração que ninguém pediu? alguma unidade ficou com duas responsabilidades? a capacidade tem um dono ou ficou espalhada? dava pra fazer mais simples sem cair de nível? todo arquivo do perímetro subiu? se tem tela: sobrou literal, faltou estado, passou a11y?*
 
-> Rodando dentro do `/method`: a lente de cada step, as linhas obrigatórias do Gateway Check e as racionalizações estão em `method/references/principios.md` e `method/references/design.md` — mesma doutrina, cobrada step a step.
+> Rodando dentro do `/method`: a lente de cada step, as linhas obrigatórias do Gateway Check e as racionalizações estão em `principles/references/principios.md` e `method/references/design.md` — mesma doutrina, cobrada step a step.
 
 ## PARE se pensar
-"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "copio e adapto, é mais rápido" · "deixo preparado pro dia que precisar" · "o arquivo já estava ruim, não fui eu" · "SOLID eu cubro com o SRP" · "é só mais um `if`, não precisa de motor" · "cada tela trata do seu jeito" · "só puxei o campo lá de dentro" · "abri só pra ler, não conta" · "refatoro depois, numa PR só de refactor" · "a UI tá igual às outras, então tá certa" · "é só uma cor, hardcode não faz mal" · "a11y/mobile/estado vazio depois"
+"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "copio e adapto, é mais rápido" · "deixo preparado pro dia que precisar" · "o arquivo já estava ruim, não fui eu" · "SOLID eu cubro com o SRP" · "é só mais um `if`, não precisa de motor" · "cada tela trata do seu jeito" · "só puxei o campo lá de dentro" · "abri só pra ler, não conta" · "refatoro depois, numa PR só de refactor" · "a UI tá igual às outras, então tá certa" · "é só uma cor, hardcode não faz mal" · "a11y/mobile/estado vazio depois" · "já conheço o `/principles`, sigo sem invocar"

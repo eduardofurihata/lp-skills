@@ -30,7 +30,7 @@
 - **Status final dos TCs** — **checklist completo por TC** (`- [x] TC-N`), copiado da seção `## Test Cases (QA)` do card de to-do, + contagem total (todos PASSED)
 - **Ledger de Follow-ups final** — tabela completa copiada da seção `## Follow-ups` do card de to-do (todos `RESOLVIDO-NO-STEP` / `RESOLVIDO-POR-CICLO` / `DESCARTADO`, **zero `ABERTO`**), com link do done doc de cada ciclo
 - **Conteúdo do todo incorporado** — tasks completadas do `kanban/06-todo/`
-- **Princípios — o que produziram** (`principios.md`), 5 linhas, sem prosa:
+- **Princípios — o que produziram** (`principles/references/principios.md`), 5 linhas, sem prosa:
   - **Reutilizado (DRY):** o que existia e foi estendido em vez de recriado (do § 3.1 do plano)
   - **Descartado (YAGNI):** o que foi considerado e não construído (do § 3.2 do plano)
   - **Motores (§ 3.3):** quais nasceram, quais cresceram, que lógica dispersa foi absorvida

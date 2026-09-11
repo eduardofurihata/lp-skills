@@ -30,7 +30,7 @@ Fluxo de checkout finaliza com erro 500 quando o método é PIX. Implementado h�
 - Suporte (volume de tickets 3× maior)
 ```
 
-## Princípios neste step (`principios.md`)
+## Princípios neste step (`principles/references/principios.md`)
 
 - **KISS** — 1 frase. Não coube? você ainda não entendeu o problema; não compense com parágrafo.
 - **YAGNI** — o problema é o que **existe e foi relatado**, não o adjacente que você imaginou junto. Problema inventado aqui vira feature especulativa lá na frente.

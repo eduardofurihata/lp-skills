@@ -61,7 +61,7 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > A linha **Cobre** é o que torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC e todo detalhe do Step 4 tem que aparecer ao menos uma vez.
 
-## Princípios neste step (`principios.md`)
+## Princípios neste step (`principles/references/principios.md`)
 
 - **SRP** — 1 TC = **1 bug único**. Denso (atravessa vários UCs) não é o mesmo que difuso: o TC pode cobrir 4 UCs, mas falha por **um** motivo nomeável.
 - **DRY** — o filtro de significância É o DRY dos testes: TC que não puxa cobertura nova duplica outro. Delete e reaproveite o slot.

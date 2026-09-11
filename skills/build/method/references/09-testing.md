@@ -223,7 +223,7 @@ PROCEDIMENTO (ao iniciar testes via front):
 - **NUNCA marque PASSED apenas com tsc** — tsc verifica tipos, não comportamento.
 - **Qualquer fix de código** → fix invalida review → volta ao Step 8 → depois retesta TUDO no Step 9.
 
-## Princípios neste step (`principios.md`)
+## Princípios neste step (`principles/references/principios.md`)
 
 O Step 9 não escreve feature — mas escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de "fazer o TC passar", nasce o remendo.
 
@@ -270,7 +270,7 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 | "Marco os 2 faltantes como PASSED e documento depois" | NÃO. Sem evidência = NOT_RUN. BLOQUEADO. |
 | "Reporto parcial enquanto os últimos rodam" | NÃO. Audit ✅ antes de QUALQUER report. BLOQUEADO. |
 | "Publico Gateway sem Audit, audit é só formalidade" | NÃO. Audit é pré-requisito formal do Gateway. BLOQUEADO. |
-| "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principios.md`). BLOQUEADO. |
+| "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principles/references/principios.md`). BLOQUEADO. |
 
 ## Evidência visual — estado × breakpoint (feature com superfície visual)
 

@@ -19,7 +19,7 @@ Pega um card de **qualquer board** do Atlassian pessoal e leva até o **commit l
 ## Iron Law
 
 > **Precisão > tokens > velocidade.** Mire ser a **referência #1 do mercado** (padrão do `/solve`, carregado aqui na ativação e recarregado pelo `/method`). "É simples, pulo" = a violação.
-> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** (tudo por onde passa sobe) e o **design** (tokens, atomicidade, estados, a11y — quando tem tela) vêm juntos e valem em **todos** os steps, não só no código — lente por step em `skills/build/method/references/principios.md` e `skills/build/method/references/design.md` (pacote `furi-build`, carregados pelo `/method` que o `/work` invoca). Card "pequeno" não relaxa nenhum deles.
+> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** (tudo por onde passa sobe) e o **design** (tokens, atomicidade, estados, a11y — quando tem tela) vêm juntos e valem em **todos** os steps, não só no código — lente por step em `skills/build/principles/references/principios.md` e `skills/build/method/references/design.md` (pacote `furi-build`, carregados pelo `/method` que o `/work` invoca). Card "pequeno" não relaxa nenhum deles.
 
 ## Disciplina em todos os passos
 

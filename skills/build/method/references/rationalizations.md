@@ -125,7 +125,7 @@
 
 ## Categoria 11 — Princípios de engenharia (SOLID · DRY · KISS · YAGNI · LoD · Motores)
 
-> Fonte única dos princípios e da lente de cada step: `principios.md`. Eles valem do Step 1 ao 10 e são declarados na linha obrigatória de TODO Gateway Check. **SOLID são cinco** — SRP, OCP, LSP, ISP, DIP.
+> Fonte única dos princípios e da lente de cada step: `principles/references/principios.md`. Eles valem do Step 1 ao 10 e são declarados na linha obrigatória de TODO Gateway Check. **SOLID são cinco** — SRP, OCP, LSP, ISP, DIP.
 
 | Frase | Realidade |
 |-------|-----------|

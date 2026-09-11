@@ -30,7 +30,7 @@ requires: solve
 
 ### Princípios de engenharia — regime, não fase
 
-Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter** e **Motores**) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única, com a **lente de cada step** e as racionalizações proibidas: **`references/principios.md`** (não duplicados aqui — DRY vale para o protocolo também).
+Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter** e **Motores**) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única, com a **lente de cada step** e as racionalizações proibidas: **`principles/references/principios.md`** (não duplicados aqui — DRY vale para o protocolo também).
 
 - **SOLID são cinco, não um.** Declarar só o SRP deixa OCP, LSP, ISP e DIP fora — e o que não é nomeado nunca é revisado.
 - **Motores:** toda capacidade tem **um** dono. Regra espalhada por telas é defeito, não estilo; achou pedaço solto → **absorve**.
@@ -44,7 +44,7 @@ Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho pa
 
 - **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você **declara** que já estava no nível #1.
 - **Todo Gateway Check publica a linha de refatoração** (`- **Refatoração (tudo por onde passou):** ✅ <N> elevados — <o que subiu>`). Nos Steps 1-6 ela é sobre o **artefato** (doc consolidado, story separada, UC quebrado), e nunca é vazia.
-- Detalhe: `references/principios.md` § Refatoração contínua e `references/07-implementation.md`.
+- Detalhe: `principles/references/principios.md` § Refatoração contínua e `references/07-implementation.md`.
 
 ### Design — regime, não fase
 
@@ -68,7 +68,7 @@ Auto-check em cada gateway: *"Um líder do domínio assinaria isto — e assinar
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 1→10; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `skills/ship/prod/references/findings.md`), nunca saída do dev. Ver `references/follow-ups.md`.
 
-8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**: SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e **Motores** são cobrados do Step 1 ao 10, cada um pela lente do step (`references/principios.md`), e **declarados na linha obrigatória de todo Gateway Check**. "Princípio é coisa de código", "aplico tudo no 7b", "SOLID eu cubro com o SRP", "está implícito" = BLOQUEADO.
+8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**: SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e **Motores** são cobrados do Step 1 ao 10, cada um pela lente do step (`principles/references/principios.md`), e **declarados na linha obrigatória de todo Gateway Check**. "Princípio é coisa de código", "aplico tudo no 7b", "SOLID eu cubro com o SRP", "está implícito" = BLOQUEADO.
 
 9. **Refatoração é regime.** A cada passada, o código do **perímetro** sobe (regra do saldo). Linha própria em todo Gateway Check; sem ela, o gateway não foi publicado. "Só mexi numa linha", "abri só pra ler", "refatoro numa PR separada depois" = BLOQUEADO.
 
@@ -94,11 +94,11 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 
 **Abra o reference do step ANTES de executar.** Releia docs anteriores do step atual antes de começar.
 
-> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `references/principios.md` § Lente por step e `references/design.md` § Lente por step. Não duplicada aqui, e não executável de memória.
+> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `principles/references/principios.md` § Lente por step e `references/design.md` § Lente por step. Não duplicada aqui, e não executável de memória.
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. O `/solve`, por sua vez, invoca o **`/principles`** — a doutrina (princípios de engenharia + provas de clareza), válida do Step 1 ao 10; a lente de cada step está em `principles/references/principios.md` § Lente por step. Chamada real, não "seguir de memória": **sem as duas chamadas visíveis (`solve` → `principles`), a ativação não aconteceu.** O `/solve` define o nível; o `/principles` define a régua; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
 
 ### 1. Inventário de Docs (UMA vez, antes de qualquer step)
 
@@ -206,7 +206,7 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "isso vira card depois" / "follow-up pro próximo sprint" / "anoto como dívida"
 - "achei mas tá fora do escopo, deixo registrado e sigo"
 - "resolvo o follow-up direto no código, sem rodar o `/method` pra ele"
-- "rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" / "já conheço o `/solve`, sigo sem invocar"
+- "rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" / "já conheço o `/solve`, sigo sem invocar" / "já conheço o `/principles`, sigo sem invocar"
 - "sobrou 1 item no ledger, é pequeno, fecho assim mesmo"
 - "marco como C (descartado) pra não travar o Gate"
 - "princípio (SOLID/DRY/KISS/YAGNI) é coisa de código, aqui é doc" / "aplico tudo no 7b, lá é o lugar"
@@ -234,7 +234,7 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 
 ## Arquivos de Referência
 
-- `references/principios.md` — **fonte única** dos princípios (SOLID completo, DRY, KISS, YAGNI, LoD, **Motores**), **refatoração contínua**, lente por step, linhas obrigatórias do gateway e racionalizações
+- `principles/references/principios.md` — **fonte única** dos princípios (SOLID completo, DRY, KISS, YAGNI, LoD, **Motores**), **refatoração contínua**, lente por step, linhas obrigatórias do gateway e racionalizações — mora na skill `/principles` (dona da doutrina), mesmo pacote
 - `references/design.md` — **fonte única** do design (tokens SSOT, atomicidade, composição, headless, estados, Jakob, a11y), **evolução do design system**, lente por step e racionalizações
 - `references/rationalizations.md` — tabela única consolidada de todas as racionalizações proibidas + Red Flags completo
 - `references/gateways.md` — todos os critérios de gateway + Gateway 9→10 detalhado
