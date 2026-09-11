@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "eduzz-builder",
+  "version": "0.1.0+f74c9a3b14a1",
+  "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
+  "author": {
+    "name": "Eduardo Furihata",
+    "url": "https://github.com/eduardofurihata/lp-skills"
+  },
+  "homepage": "https://lp-skills.vercel.app",
+  "repository": "https://github.com/eduardofurihata/lp-skills",
+  "license": "MIT",
+  "keywords": [
+    "eduzz",
+    "jira",
+    "workflow",
+    "development"
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "name": "eduzz-builder",
-  "version": "0.1.0+codex.2466a1efbd52",
+  "version": "0.1.0+codex.f74c9a3b14a1",
   "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
   "author": {
     "name": "Eduardo Furihata",
