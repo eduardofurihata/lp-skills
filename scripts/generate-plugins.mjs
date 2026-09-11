@@ -195,7 +195,27 @@ function contentVersion(pkg, slugs) {
 //   - bundles/                 (agregadores só-dependências)
 //   - plugins/<pkg>/skills/<slug>/.claude-plugin/  (1-plugin-por-skill)
 function pruneLegacy(slugsByPackage) {
-  fs.rmSync(path.join(ROOT, "skills"), { recursive: true, force: true });
+  // `skills/` só é apagada se carregar a MARCA do layout antigo (a pasta de
+  // categoria era a raiz do plugin, com `.claude-plugin/` dentro). Sem a marca,
+  // é uma pasta que alguém criou para outra coisa: avisa e não toca — um script
+  // que apaga um diretório de nome genérico sem olhar o conteúdo é magia.
+  const legacySkills = path.join(ROOT, "skills");
+  if (fs.existsSync(legacySkills)) {
+    const marked = fs
+      .readdirSync(legacySkills, { withFileTypes: true })
+      .some(
+        (d) =>
+          d.isDirectory() &&
+          fs.existsSync(
+            path.join(legacySkills, d.name, ".claude-plugin", "plugin.json"),
+          ),
+      );
+    if (marked) fs.rmSync(legacySkills, { recursive: true, force: true });
+    else
+      console.warn(
+        "generate-plugins: skills/ existe mas não é do layout antigo — não foi tocada.",
+      );
+  }
   fs.rmSync(path.join(ROOT, "bundles"), { recursive: true, force: true });
   for (const [pkgName, slugs] of Object.entries(slugsByPackage)) {
     for (const slug of slugs) {
@@ -269,7 +289,7 @@ for (const pkg of PACKAGES) {
   if (slugs.length === 0) continue;
 
   const pluginRoot = path.join(PLUGINS_DIR, pkg.name);
-  const version = `${PACKAGE_VERSION}+${contentVersion(pkg, slugs)}`;
+  const digest = contentVersion(pkg, slugs); // hash do dir: calcula 1×, usa nos 2 manifestos
   const deps = crossPackageDeps(pkg.name);
 
   // (1) Agent Plugins v1 — manifesto na RAIZ. Schema é additionalProperties:false,
@@ -277,7 +297,7 @@ for (const pkg of PACKAGES) {
   writeJson(path.join(pluginRoot, "plugin.json"), {
     $schema: AGENT_PLUGINS_SCHEMA,
     name: pkg.name,
-    version,
+    version: `${PACKAGE_VERSION}+${digest}`,
     description: pkg.description,
     author: { name: OWNER.name, url: REPO },
     homepage: HOMEPAGE,
@@ -300,7 +320,7 @@ for (const pkg of PACKAGES) {
   // (3) Codex — manifesto em .codex-plugin/, com `skills` apontando a pasta.
   writeJson(path.join(pluginRoot, ".codex-plugin", "plugin.json"), {
     name: pkg.name,
-    version: `${PACKAGE_VERSION}+codex.${contentVersion(pkg, slugs)}`,
+    version: `${PACKAGE_VERSION}+codex.${digest}`,
     description: pkg.description,
     author: { name: OWNER.name, url: "https://github.com/eduardofurihata" },
     homepage: HOMEPAGE,
