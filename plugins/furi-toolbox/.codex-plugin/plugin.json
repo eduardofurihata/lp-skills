@@ -1,0 +1,34 @@
+{
+  "name": "furi-toolbox",
+  "version": "0.1.0+codex.21aff9b4090d",
+  "description": "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+  "author": {
+    "name": "Eduardo Furihata",
+    "url": "https://github.com/eduardofurihata"
+  },
+  "homepage": "https://lp-skills.vercel.app",
+  "repository": "https://github.com/eduardofurihata/lp-skills",
+  "license": "MIT",
+  "keywords": [
+    "utilities",
+    "git",
+    "productivity",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Furi Toolbox",
+    "shortDescription": "Ferramentas avulsas para o fluxo de desenvolvimento.",
+    "longDescription": "Use atalhos e utilitários independentes para conversar, salvar, sincronizar e preparar projetos.",
+    "developerName": "Eduardo Furihata",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use a ferramenta Furi mais adequada para esta tarefa."
+    ],
+    "brandColor": "#F59E0B"
+  }
+}

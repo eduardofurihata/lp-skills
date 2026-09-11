@@ -1,0 +1,56 @@
+{
+  "name": "lp-skills",
+  "interface": {
+    "displayName": "LP Skills"
+  },
+  "plugins": [
+    {
+      "name": "furi-build",
+      "source": {
+        "source": "local",
+        "path": "./plugins/furi-build"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "furi-ship",
+      "source": {
+        "source": "local",
+        "path": "./plugins/furi-ship"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "furi-toolbox",
+      "source": {
+        "source": "local",
+        "path": "./plugins/furi-toolbox"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "eduzz-builder",
+      "source": {
+        "source": "local",
+        "path": "./plugins/eduzz-builder"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
