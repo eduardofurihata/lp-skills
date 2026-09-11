@@ -1,5 +1,9 @@
 # Step 8 — Code Review Crítico
 
+## Princípios neste step (`principles/SKILL.md`)
+
+Revisar **contra a lista, princípio a princípio e por nome** — não por proxy, e **os cinco do SOLID**, não só o SRP. É o que a tabela `## Análise de Qualidade` do 8b cobra linha a linha (e a `## Análise de Design`, com superfície visual): a capacidade vazou do motor? existe segunda fonte da mesma regra? o contrato virou tripa exposta? o **saldo do perímetro** fecha — todo arquivo que a passada tocou subiu ou já estava no nível #1? Violação encontrada entra na triagem A/B/C (`follow-ups.md`): dentro do escopo, corrige agora; escopo novo, ledger.
+
 ## 8a — Revisão em Loop
 
 ```
@@ -32,7 +36,7 @@ REPETIR até 100% limpo:
        · **LoD / acoplamento** — `a.b.c.d`? dependência circular? direção `api ↔ web` violada?
        · **Motores** — a capacidade vazou do motor? existe **segunda fonte** da mesma regra? o contrato virou tripa exposta? o § 3.3 foi cumprido?
        · **Camadas** — lógica de negócio em controller/componente?
-     - **Design, UM A UM e POR NOME** (`design.md` — só se a feature tem superfície visual):
+     - **Design, UM A UM e POR NOME** (`ui/SKILL.md` — só se a feature tem superfície visual):
        · **Tokens** — sobrou valor literal (`#hex`, `13px`) onde devia ser token?
        · **Atomicidade** — átomo conhecendo regra de negócio ou fazendo fetch?
        · **Composição > configuração** — >2 props booleanas de aparência?
@@ -98,7 +102,7 @@ Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 
 Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio não revisado.
 
-## Análise de Design (por princípio — `design.md`) — só com superfície visual
+## Análise de Design (por princípio — `ui/SKILL.md`) — só com superfície visual
 
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|

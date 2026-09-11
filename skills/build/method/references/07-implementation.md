@@ -1,5 +1,9 @@
 # Step 7 — Implementação (7a: Plano + 7b: Codificar)
 
+## Princípios neste step (`principles/SKILL.md`)
+
+A lente do Step 7 não é uma lista à parte — ela **é** a estrutura deste arquivo. No **7a** são as seções obrigatórias do plano: § 3.1 Reúso (DRY) · § 3.2 O que NÃO vamos construir (YAGNI) · § 3.3 Motores · § 3.4 Design System · § 3.5 Perímetro. No **7b** são § Práticas Obrigatórias (SOLID completo com limiar numérico, por arquivo aberto) e § Refatoração Obrigatória (o perímetro e a regra do saldo).
+
 ## 7a — Plano de Implementação (OBRIGATÓRIO antes de codar)
 
 ### Reler antes
@@ -28,7 +32,7 @@
 ## 3. Estratégia de Implementação
 - Ordem de tasks (de 06-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
 - **Referência big apps:** como as big pop tech apps / líderes do domínio resolvem este problema de UX?
-- **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? A linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é **lei para consistência** — e **não para qualidade**: padrão abaixo do nível #1 se **eleva** ou vira achado no ledger, nunca se copia. Ver `design.md` § *Consistência é lei; mediocridade não é*.
+- **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? A linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é **lei para consistência** — e **não para qualidade**: padrão abaixo do nível #1 se **eleva** ou vira achado no ledger, nunca se copia. Ver `ui/SKILL.md` § *Consistência é lei; mediocridade não é*.
 - **Responsabilidade por arquivo (SRP):** para CADA arquivo a criar/modificar, uma frase — o que ele faz. Não coube em uma frase → o arquivo está fazendo duas coisas.
 
 ## 3.1 Reúso antes de criar (DRY) — OBRIGATÓRIO
@@ -57,7 +61,7 @@ Toda capacidade tem **um** dono (`principles/SKILL.md` § Motores):
 **Absorver é planejado, não improvisado:** liste onde a mesma regra está espalhada hoje e que passa a só chamar o motor.
 
 ## 3.4 Design System — OBRIGATÓRIO se a feature tem superfície visual
-Lido de `docs/04-spec/design-system.md` (`design.md`):
+Lido de `docs/04-spec/design-system.md` (`ui/SKILL.md`):
 
 | Preciso de | DS tem? | Decisão |
 |---|---|---|
@@ -100,7 +104,7 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 - **Identificar a camada:** controller/service/component/hook/schema/shared — respeite responsabilidades
 - **Buscar código reutilizável ANTES de criar:** Grep/Glob em `packages/shared/`, `src/lib/`, `src/components/ui/`, `src/hooks/`. Se existe parecido, reutilize — NÃO duplique.
 - **Verificar direção de dependências:** shared → api/web ok. api → web ou web → api proibido.
-- **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-spec/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `design.md`.
+- **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-spec/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `ui/SKILL.md`.
 - **Ordem ao precisar de algo visual:** **reusar** o que o DS tem → **compor** do que ele tem → **promover** (criar no DS, nunca na pasta da feature).
 - **i18n (se configurado):** TODA string user-facing nova/alterada DEVE ser chave de tradução, nunca literal. Strings literais hardcoded em projeto com i18n = bug, mesmo se texto estiver "correto".
 
@@ -147,7 +151,7 @@ Para CADA arquivo do perímetro, escaneie e eleve ao nível #1:
 - **Comentários enganosos** → corrija/remova
 - **TODO/FIXME resolúveis** → resolva agora ou deixe com contexto
 - **Código morto** → delete completamente. Sem `_unused`, sem `// removed`, sem re-export
-- **Padrão visual abaixo do nível #1** (se tem UI) → eleve, não copie (`design.md`)
+- **Padrão visual abaixo do nível #1** (se tem UI) → eleve, não copie (`ui/SKILL.md`)
 
 **Regra do saldo (é o que o gateway cobra):** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível #1** — e você **declara isso** —, ou ele **subiu**.
 
@@ -221,7 +225,7 @@ Para CADA arquivo alterado:
 - [ ] **Checklist de princípios percorrido por arquivo do perímetro** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD · Motores) — `principles/SKILL.md`
 - [ ] **Refatoração do perímetro executada** com a **regra do saldo**: cada arquivo subiu, ou está declarado como já no nível #1
 - [ ] Capacidade espalhada **absorvida no motor**; chamadores passaram a só chamar
-- [ ] **Se tem UI:** zero valor literal (tokens), composição > configuração, headless, **todos** os estados implementados, a11y AA, breakpoints do projeto — `design.md`
+- [ ] **Se tem UI:** zero valor literal (tokens), composição > configuração, headless, **todos** os estados implementados, a11y AA, breakpoints do projeto — `ui/SKILL.md`
 - [ ] Desvios de § 3.1/§ 3.2/§ 3.3/§ 3.4 registrados no plano (não em silêncio)
 - [ ] TCs de regressão criados em `docs/05-test-cases/` para features dependentes impactadas
 - [ ] **Princípios declarados** na linha do Gateway Check

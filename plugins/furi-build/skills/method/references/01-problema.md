@@ -38,7 +38,7 @@ Fluxo de checkout finaliza com erro 500 quando o método é PIX. Implementado h�
 - **SRP** — 1 doc = 1 problema. Dois problemas distintos = dois tópicos, dois fluxos de `/method`.
 - **Motor** — o problema nomeia a **capacidade que falta** ("o produto não sabe calcular X"), não a tela onde ela some. Problema descrito como tela leva a solução espalhada por telas.
 - **Refatoração** — o inventário achou doc que já cobre este domínio? **Consolide nele.** Doc paralelo é duplicação de decisão, a mais barata de evitar e a mais cara de descobrir depois.
-- **Design** (se tem UI) — o problema é de UX? Nomeie a **fricção**: passo redundante, contexto perdido, ação que não se acha. "Falta um botão" não é problema; "o usuário perde o que digitou ao voltar" é (`design.md`).
+- **Design** (se tem UI) — o problema é de UX? Nomeie a **fricção**: passo redundante, contexto perdido, ação que não se acha. "Falta um botão" não é problema; "o usuário perde o que digitou ao voltar" é (`ui/SKILL.md`).
 
 ## Gateway 1 → 2
 

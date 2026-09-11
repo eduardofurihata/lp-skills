@@ -12,7 +12,7 @@
 
 ## Design System — o artefato que evolui com o produto
 
-Feature com superfície visual **decide o DS aqui** (doutrina completa: `design.md`). O arquivo é único e cumulativo: cada feature lê, usa e **faz crescer**.
+Feature com superfície visual **decide o DS aqui** (doutrina completa: `ui/SKILL.md`). O arquivo é único e cumulativo: cada feature lê, usa e **faz crescer**.
 
 ```markdown
 # Design System
@@ -57,7 +57,7 @@ A AI resolve cada decisão usando (em ordem de prioridade):
 1. **Padrões do projeto** — código existente, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
 2. **Big apps como referência** — big pop tech apps / líderes do mesmo domínio
 3. **Boas práticas de mercado** — padrões consagrados de engenharia de alto nível
-4. **Princípios de engenharia e design** — SOLID completo (SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e Motores (`principles/SKILL.md`); tokens, atomicidade, composição, headless, estados e a11y (`design.md`); Clean Architecture, OWASP, performance, escalabilidade
+4. **Princípios de engenharia e design** — SOLID completo (SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e Motores (`principles/SKILL.md`); tokens, atomicidade, composição, headless, estados e a11y (`ui/SKILL.md`); Clean Architecture, OWASP, performance, escalabilidade
 
 > Os princípios não são só o desempate nº 4: eles **filtram** o resultado dos níveis 1-3. Uma decisão que vem de "big app faz assim" mas viola YAGNI (nenhum UC exige) ou DRY (o projeto já tem esse mecanismo) **não passa** — volta para "alternativas descartadas".
 
@@ -145,7 +145,7 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - **DIP** — decisões declaram dependência de **abstração**, não de implementação: o motor define o contrato, a infra (banco, HTTP, lib) implementa. Direção aponta ao domínio.
 - **Motor** — **é aqui que o motor é nomeado e desenhado**: fronteira, contrato público, o que fica dentro e o que fica fora. Cada decisão declara **qual motor é dono da regra**; regra sem dono é regra que vai nascer espalhada.
 - **Refatoração** — decisão que replica mecanismo já existente vira decisão de **estender o motor que já existe**, não de criar um irmão.
-- **Design** (se tem UI) — o step decide o **DS**: inventário em `docs/04-spec/design-system.md`, o que reusa / compõe / **promove**, qual padrão consagrado se aplica (Jakob) e o motivo de qualquer desvio, breakpoints, a11y alvo (AA) e benchmark visual citado. Ver `design.md`.
+- **Design** (se tem UI) — o step decide o **DS**: inventário em `docs/04-spec/design-system.md`, o que reusa / compõe / **promove**, qual padrão consagrado se aplica (Jakob) e o motivo de qualquer desvio, breakpoints, a11y alvo (AA) e benchmark visual citado. Ver `ui/SKILL.md`.
 
 ## Gateway 4 → 5
 

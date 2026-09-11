@@ -30,7 +30,7 @@ A lista de tasks é a primeira forma concreta da arquitetura — o que estiver t
 - **KISS** — descrição na linguagem do que muda, não do como interno.
 - **Motor** — cada task declara **qual motor** ela constrói, estende ou absorve. Task que espalha a mesma regra por N telas **não existe**: vira task de motor + tasks de chamada.
 - **Refatoração** — task que recria o existente vira task de **extensão**; e o perímetro previsto pela task já entra anotado, para o 7a planejar a elevação.
-- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e **qual componente do DS** ela constrói, estende ou **promove** (`design.md`).
+- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e **qual componente do DS** ela constrói, estende ou **promove** (`ui/SKILL.md`).
 
 ## Exemplo
 

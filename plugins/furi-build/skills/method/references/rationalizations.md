@@ -149,9 +149,9 @@
 | "Dupliquei a lógica pro TC passar, limpo depois" | Workaround que viola princípio é **FAILED disfarçado** (Step 9). BLOQUEADO. |
 | "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |
 
-## Categoria 12 — Design e UI (`design.md`)
+## Categoria 12 — Design e UI (`ui/SKILL.md`)
 
-> Fonte única do design: `design.md`. Vale para feature com **superfície visual**, derivada no Step 4 — e é declarada na linha própria do Gateway Check.
+> Fonte única do design: `ui/SKILL.md`. Vale para feature com **superfície visual**, derivada no Step 4 — e é declarada na linha própria do Gateway Check.
 
 | Frase | Realidade |
 |-------|-----------|

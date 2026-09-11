@@ -161,7 +161,7 @@ REPETIR até 100% limpo:
        · Law of Demeter / acoplamento / direção de dependências
        · Motores (§ 3.3 — a capacidade tem UM dono? segunda fonte da mesma regra?)
        · Refatoração (§ 3.5 — saldo do perímetro: tudo por onde passou subiu?)
-       · Design, se tem tela (`design.md`) — tokens (zero literal) · atomicidade ·
+       · Design, se tem tela (`ui/SKILL.md`) — tokens (zero literal) · atomicidade ·
          composição > configuração · headless · todos os estados · Jakob ·
          preservação de contexto · a11y AA · promoveu ao DS em vez de soltar na feature
   6. Problema encontrado → corrigir IMEDIATAMENTE → voltar ao 1
@@ -407,7 +407,7 @@ NUNCA workaround pra fazer o TC passar — duplicar lógica, regra de negócio n
       componente, `if` especial do cenário de teste: isso viola os princípios
       (`principles/SKILL.md`) e é FAILED disfarçado. Todo fix é código e obedece
       SOLID · DRY · KISS · YAGNI · LoD · Motores, igual ao resto — e vai
-      PARA O MOTOR, nunca de remendo no chamador. Fix visual segue `design.md`:
+      PARA O MOTOR, nunca de remendo no chamador. Fix visual segue `ui/SKILL.md`:
       remendo de CSS pra passar o TC também é FAILED disfarçado.
 ```
 

@@ -231,7 +231,7 @@ O Step 9 não escreve feature — mas escreve **fixes**, e é aí que o protocol
 - **Workaround que faz o TC passar violando os princípios é FAILED disfarçado.** Duplicar lógica pra contornar, enfiar regra de negócio no componente, `if` especial pro cenário do teste — o TC até fica verde, a feature fica pior. Marque FAILED e conserte de verdade.
 - **Motor** — o fix vai **para o motor**, onde a regra mora; nunca de remendo no chamador. Corrigir na tela o que o motor calcula errado cria a segunda fonte da regra, que é exatamente o defeito.
 - **Refatoração** — fix novo **reabre o perímetro do fix**: os arquivos que ele tocou entram na regra do saldo como qualquer outro.
-- **Design** (se tem UI) — a evidência é por **estado × breakpoint**, não só o happy path em desktop: screenshot prova que a tela existe, a comparação com o DS e com o benchmark prova que está certa. **Remendo de CSS que faz o TC passar é FAILED disfarçado** (`design.md`).
+- **Design** (se tem UI) — a evidência é por **estado × breakpoint**, não só o happy path em desktop: screenshot prova que a tela existe, a comparação com o DS e com o benchmark prova que está certa. **Remendo de CSS que faz o TC passar é FAILED disfarçado** (`ui/SKILL.md`).
 - **Fix → volta ao Step 8**, que revisa esse fix contra a lista de princípios como qualquer outro código. Sem atalho.
 - **KISS na investigação:** o fix mais simples que resolve a causa — não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
 

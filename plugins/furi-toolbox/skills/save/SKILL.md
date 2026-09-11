@@ -8,6 +8,8 @@ argument-hint: "[mensagem opcional]"
 
 Commit autônomo de tudo que está no repo. Lida com lixo (delete) e arquivos que devem ser ignorados (.gitignore). Nunca pusha.
 
+> **É aqui que termina quem corrige sem commitar.** Uma passada de princípios, um refactor guiado, uma limpeza de pasta — deixam o trabalho no working tree de propósito, para que o commit seja um ato separado e revisável. Esse ato é este.
+
 ## Fluxo
 
 1. **Pré-check.** Não é git repo → falha com mensagem clara (não tenta `git init`). Working tree e index limpos → avisa "nothing to commit" e sai.
