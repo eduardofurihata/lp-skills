@@ -12,7 +12,7 @@
 6. **Sem ponta solta.** Todo Gateway Check declara os follow-ups detectados no step. O que apareceu vai para o **Ledger de Follow-ups** classificado (A/B/C) — nunca fica só na cabeça, nunca vira "depois". Ver `follow-ups.md`.
 7. **Princípios em todo gateway.** Todo Gateway Check declara como **SOLID · DRY · KISS · YAGNI · LoD · Motores** foram aplicados no step, pela lente daquele step (`principles/SKILL.md`). Princípio não declarado = princípio não aplicado. **SOLID são cinco** (SRP, OCP, LSP, ISP, DIP) — declarar só o SRP não cumpre.
 8. **Refatoração em todo gateway.** Todo Gateway Check declara o que a passada **elevou** no perímetro (`principles/SKILL.md` § Refatoração contínua). Linha ausente = gateway não publicado; "nada a elevar" exige dizer o que foi verificado.
-9. **Design em todo gateway de feature com UI.** Feature com superfície visual declara a linha de design (`design.md`). Superfície visual é **derivada no Step 4**, nunca declarada pelo usuário — e a ausência dela se declara **uma vez**, no Gateway 4→5.
+9. **Design em todo gateway de feature com UI.** Feature com superfície visual declara a linha de design (`ui/SKILL.md`). Superfície visual é **derivada no Step 4**, nunca declarada pelo usuário — e a ausência dela se declara **uma vez**, no Gateway 4→5.
 
 > Racionalizações para pular Gateway → ver `rationalizations.md` categoria 1, 3, 10 e 11.
 
@@ -26,7 +26,7 @@
 - [ ] Critério específico 3
 - **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — [1 linha: o que a lente deste step cobrou — ver `principles/SKILL.md`]
 - **Refatoração (tudo por onde passou):** ✅ [N] elevados — [o que subiu] / nada a elevar — verifiquei [X] e já estava no nível #1
-- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ [o que a lente cobrou — ver `design.md`]   ← só com superfície visual
+- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ [o que a lente cobrou — ver `ui/SKILL.md`]   ← só com superfície visual
 - **Follow-ups detectados neste step:** N (registrados no ledger, classificados A/B/C) / nenhum
 - **Veredicto:** ✅ LIBERADO / ❌ BLOQUEADO — motivo: [listar critério falhado]
 ```
@@ -34,9 +34,9 @@
 **Três linhas são obrigatórias em TODO Gateway Check** — princípios, refatoração e follow-ups —, mais a de **design** em feature com superfície visual. Elas existem pelo mesmo motivo: o que não é declarado escapa.
 
 - **Follow-ups:** mecanismo de captura do loop de convergência. Detectou e não registrou = a ponta escapou. Nos Steps 1-5 o card de to-do ainda não existe: anote na linha do gateway e **semeie o ledger no Step 6**.
-- **Princípios:** mecanismo que impede o protocolo de virar burocracia de artefato. Cada step tem sua **lente** (`principles/SKILL.md` § Lente por step) — declare o que ela cobrou. "N/A" não existe: nada a corrigir → escreva o que você verificou e não encontrou. Violação achada → triagem A/B/C como qualquer achado. **Declarar "SOLID" significa os cinco** (SRP, OCP, LSP, ISP, DIP).
+- **Princípios:** mecanismo que impede o protocolo de virar burocracia de artefato. Cada step tem sua **lente** (`<step>.md` § Princípios neste step, aplicando a doutrina de `principles/SKILL.md`) — declare o que ela cobrou. "N/A" não existe: nada a corrigir → escreva o que você verificou e não encontrou. Violação achada → triagem A/B/C como qualquer achado. **Declarar "SOLID" significa os cinco** (SRP, OCP, LSP, ISP, DIP).
 - **Refatoração:** o que a passada **elevou** no perímetro — o arquivo que você editou, o que abriu só para entender, o dependente que o grep revelou, o caminho que o fluxo atravessa. Nos **Steps 1-6 a refatoração é do artefato** (doc consolidado, story separada, UC quebrado), não do código: a linha nunca é vazia. Regra do saldo em `principles/SKILL.md`.
-- **Design:** só quando a feature tem superfície visual (derivada no Step 4). Declare o que a lente do step cobrou (`design.md` § Lente por step). Feature sem UI: declare `❌ N/A — sem superfície visual, derivado do Step 4` **uma vez**, no Gateway 4→5; os seguintes herdam.
+- **Design:** só quando a feature tem superfície visual (derivada no Step 4). Declare o que a lente do step cobrou (a linha **Design** de `<step>.md` § Princípios neste step, aplicando a doutrina de `ui/SKILL.md`). Feature sem UI: declare `❌ N/A — sem superfície visual, derivado do Step 4` **uma vez**, no Gateway 4→5; os seguintes herdam.
 
 ## Tabela de Critérios (TODOS obrigatórios por linha)
 
@@ -76,7 +76,7 @@
 | Zero mudanças no último ciclo? | Último passe = 100% PASSED SEM nenhum fix de código |
 | Mobile: iOS + Android cobertos? | Toda feature mobile com evidência nas DUAS plataformas |
 | Nenhum TC passou por workaround? | Todo fix aplicado no ciclo respeita os princípios (`principles/SKILL.md`). TC que só passa violando SRP/DRY = **FAILED disfarçado**, não PASSED. Fix vai **para o motor**, nunca de remendo no chamador |
-| UI: evidência por estado × breakpoint? | Feature com superfície visual: cada TC de UI tem evidência nos **estados** (vazio, carregando, erro, sucesso, limite) e nos **breakpoints do projeto**, não só o happy path em desktop (`design.md`) |
+| UI: evidência por estado × breakpoint? | Feature com superfície visual: cada TC de UI tem evidência nos **estados** (vazio, carregando, erro, sucesso, limite) e nos **breakpoints do projeto**, não só o happy path em desktop (`ui/SKILL.md`) |
 
 ```markdown
 ## Gateway Check — Step 9 → Step 10

@@ -37,7 +37,7 @@ Isso vira requisito. Inclua TODAS as personas afetadas (identificadas no Step 1)
 - **KISS** — linguagem de usuário, sem solução técnica embutida. "Quero um botão que chame o endpoint X" não é story.
 - **Motor** — stories que pedem a **mesma capacidade** apontam para o mesmo motor. Anote a observação: é insumo do Step 4, onde o motor é nomeado.
 - **Refatoração** — story empilhada ("e também") → **separe agora**. Aqui custa uma linha; no Step 6 custa duas tasks; no 7b custa código.
-- **Design** (se tem UI) — a story descreve o **resultado para o usuário**, nunca o componente: "quero ver o total atualizado", não "quero um badge azul". Solução na story engessa o design antes de ele existir (`design.md`).
+- **Design** (se tem UI) — a story descreve o **resultado para o usuário**, nunca o componente: "quero ver o total atualizado", não "quero um badge azul". Solução na story engessa o design antes de ele existir (`ui/SKILL.md`).
 
 ## Gateway 2 → 3
 

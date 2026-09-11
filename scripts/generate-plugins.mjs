@@ -49,7 +49,7 @@ const BUILDERS = {
   build: {
     name: "furi-build",
     description:
-      "Skills de construção do Furihata — /principles, /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
     codex: {
       displayName: "Furi Build",
       shortDescription: "Método de construção, QA e commit local.",

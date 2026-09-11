@@ -4,6 +4,10 @@
 >
 > Terminal **não** quer dizer sem gateway: o Step 10 tem gateway de **entrada** — o **Gate de Convergência** (zero follow-ups abertos). Ele roda ANTES de escrever o done doc, ANTES do `rm` e ANTES do commit.
 
+## Princípios neste step (`principles/SKILL.md`)
+
+O done doc registra **o que os princípios produziram** — as 5 linhas da seção § Conteúdo — Resumo Final: o que foi reutilizado (DRY), o que foi descartado (YAGNI), quais motores nasceram, cresceram ou absorveram, o que a refatoração do perímetro elevou e o que o DS ganhou. Sem elas o registro mente sobre **como a feature ficou**.
+
 ## Pré-requisitos (AMBOS)
 
 1. Gateway 9 → 10 **LIBERADO** (ver `gateways.md`).
@@ -35,7 +39,7 @@
   - **Descartado (YAGNI):** o que foi considerado e não construído (do § 3.2 do plano)
   - **Motores (§ 3.3):** quais nasceram, quais cresceram, que lógica dispersa foi absorvida
   - **Elevado (refatoração do perímetro, § 3.5):** o que estava abaixo do nível #1 no caminho percorrido e subiu — e o que já estava no nível #1
-  - **DS ganhou** (`design.md`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
+  - **DS ganhou** (`ui/SKILL.md`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
 - **Commit SHA** — hash do commit criado neste step (ver abaixo)
 
 > Sem essas 5 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo `/method` (e o review do `/homolog`) precisa saber. A linha do DS é o que impede a próxima feature de reinventar o que esta acabou de promover.

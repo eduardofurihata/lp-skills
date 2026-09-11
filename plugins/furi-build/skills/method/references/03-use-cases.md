@@ -39,7 +39,7 @@ Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Nã
 - **KISS** — fluxo em passos de usuário, sem código. UC não é pseudo-implementação.
 - **Motor** — UCs que compartilham a mesma regra são do **mesmo motor**, e a tabela de assinaturas já é o **esboço do contrato** dele: o que entra, o que sai. Dois UCs que precisam da mesma decisão não podem tomá-la cada um por si.
 - **Refatoração** — UC agrupado → **quebre**; assinatura duplicada → **funda**. O artefato sai desta passada mais limpo do que entrou.
-- **Design** (se tem UI) — cada UC lista seus **estados de tela**: vazio, carregando, erro, sucesso e limite (lista longa, texto longo, sem permissão). **Estado não listado aqui é estado que não vai ser desenhado** — e vira bug no Step 9 (`design.md`).
+- **Design** (se tem UI) — cada UC lista seus **estados de tela**: vazio, carregando, erro, sucesso e limite (lista longa, texto longo, sem permissão). **Estado não listado aqui é estado que não vai ser desenhado** — e vira bug no Step 9 (`ui/SKILL.md`).
 
 ## Gateway 3 → 4
 
