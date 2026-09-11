@@ -28,7 +28,7 @@ Qualidade vem antes de esforço, tempo ou tokens. A complexidade necessária par
 
 **ANTES de tudo — invoque o `/principles` via Skill tool** (`furi-build:principles`; a forma curta `principles` também resolve). Sem alvo, ele entra em modo régua: a doutrina (SOLID · DRY · KISS · YAGNI · LoD · Motores · refatoração do perímetro · regra do saldo) e as provas de clareza (simples · eficiente · premium · humano · IA) passam a valer em tudo que você tocar. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu.
 
-**A divisão é essa:** o `/solve` decide **o quanto** existe — o nível #1 e a complexidade que ele exige; o `/principles` garante que tudo o que existe esteja na forma mais clara e curta, e inteiro. Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pediu". A doutrina é independente deste protocolo: ela não conhece `/solve` nem `/method` — quem a aplica ao trabalho em curso é quem a invoca.
+**A divisão é essa:** o `/solve` decide **o quanto** existe — o nível #1 e a complexidade que ele exige; o `/principles` garante que tudo o que existe esteja na forma mais clara e curta, e inteiro. A doutrina é independente deste protocolo: ela não conhece `/solve` nem `/method` — quem a aplica ao trabalho em curso é quem a invoca.
 
 Nível #1 é também no código, não só no resultado visível — e não é fase: vale em cada decisão, cada arquivo, cada artefato. **É o piso contra o qual a doutrina mede tudo o que a passada tocou.**
 

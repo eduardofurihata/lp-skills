@@ -16,7 +16,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 | Invocação | Modo | O que acontece |
 |---|---|---|
 | sem argumento — pelo usuário ou por outra skill | **régua** | Leia este arquivo inteiro agora (sem a leitura, a invocação não aconteceu). Os princípios e as provas abaixo valem para tudo que você tocar daqui em diante. Sem passada, sem nota, sem output final. |
-| com alvo | **alvo** | Fluxo abaixo: inventário → achados → baldes → nota → corrige → repete até passar (passo 8). |
+| com alvo | **alvo** | Fluxo abaixo: os alvos, os pilares e os pesos desta régua, rodando o motor de `references/fluxo-modo-alvo.md` — inventário → achados → baldes → nota → corrige → repete até todo pilar ≥ 95. |
 
 # Princípios de engenharia — SOLID · DRY · KISS · YAGNI · LoD · Motores
 
@@ -42,7 +42,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 |---|---|---|
 | **DRY** | Zero duplicação de lógica **ou de decisão**; uma única fonte de verdade. Antes de criar, **procure** (grep em `shared/`, `lib/`, `components/`, `hooks/`) — reutilizar/estender > recriar. Repetiu 2× já é candidato a extração. | "Copiei e adaptei" |
 | **KISS** | A solução mais simples que atinge o **nível #1**. 5 linhas > 50 linhas. Simplicidade ≠ mediocridade. | "Fiz genérico pra ficar elegante" |
-| **YAGNI** | APENAS o que o requisito acordado exige. Zero abstração especulativa. 3 linhas similares > abstração prematura. Nunca é desculpa para entregar menos que o requisito pede, nem para descartar achado real (vira **balde B** — § Fluxo, passo 4). | "Deixei preparado pro dia que precisar" |
+| **YAGNI** | APENAS o que o requisito acordado exige. Zero abstração especulativa. 3 linhas similares > abstração prematura. Nunca é desculpa para entregar menos que o requisito pede, nem para descartar achado real (vira **balde B** na triagem A/B/C do fluxo). | "Deixei preparado pro dia que precisar" |
 | **LoD** (Law of Demeter) | Objeto só fala com vizinhos diretos. Seção própria abaixo. | "Só puxei o campo lá de dentro" |
 | **Motores** | Toda capacidade tem **um** dono. Seção própria abaixo. | "Cada tela trata do seu jeito" |
 
@@ -93,7 +93,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 - o **dependente direto** que o grep revelou;
 - o **caminho inteiro** que o fluxo atravessa.
 
-**Dentro do perímetro: refatore bastante, sem timidez.** Fora do perímetro: triagem normal — **balde B** se o trabalho o expôs, **C** se não tem relação (§ Fluxo, passo 4). O limite é o **caminho percorrido**, não "só a linha que editei" e nem o repositório inteiro.
+**Dentro do perímetro: refatore bastante, sem timidez.** Fora do perímetro: triagem normal — **balde B** se o trabalho o expôs, **C** se não tem relação (a triagem A/B/C do fluxo). O limite é o **caminho percorrido**, não "só a linha que editei" e nem o repositório inteiro.
 
 **O que elevar, por arquivo do perímetro:**
 
@@ -161,62 +161,38 @@ Premium se mede contra o que o alvo **promete** (nome + 1ª linha), nunca contra
 
 # Fluxo (modo alvo)
 
-1. **Alvo e jeito** — pelo argumento. `audit` (ou "só avalia") em qualquer posição = só relatório, nada é alterado; sem `audit` = **força**: avalia e corrige.
+**Leia `references/fluxo-modo-alvo.md` agora** — é o motor desta passada: snapshot, inventário do zero, baldes A/B/C, fórmula da nota, checks, correção, repetição até todo pilar ≥ 95 e Output final. É o mesmo motor que o `/ui` roda, e ele é a fonte única dessas regras. Sem essa leitura, o modo alvo não roda. Daqui sai o que é **desta** régua:
 
-   | Argumento | Alvo | O que se lê |
-   |---|---|---|
-   | `commit <sha>` · `HEAD` · `HEAD~n` | mensagem **e** diff do commit | `git show <sha>` |
-   | `diff` · `alteração` | tudo não commitado (staged, unstaged, untracked) | `git diff HEAD` + os untracked de `git status --porcelain`, lidos do disco |
-   | `projeto` · `repo` · `.` | todos os arquivos rastreados | `git ls-files` — leitura completa, sem amostragem |
-   | caminho de pasta | a pasta e tudo dentro | cada arquivo dela |
-   | caminho de arquivo (`doc`, `skill` ou `prompt` na frente escolhe a coluna de § Onde a prova muda de forma) | o arquivo | o arquivo + `grep` de quem o usa |
+## Alvos — passo 1
 
-2. **Snapshot** — `git status` limpo é pré-condição para tudo que escreve: é o que permite desfazer. Sujo → pare e peça para commitar antes. Dispensam: `audit` (nada é escrito) e o alvo que **já é** a alteração pendente — `diff`, ou o arquivo/pasta alvo com a sujeira só dentro dele. Nunca dispensam: `projeto`, e sujeira fora do alvo — é ela que impede desfazer. Em `commit <sha>`, as correções entram no working tree como mudança nova e a **mensagem só recebe uma proposta** — reescrever histórico não é desta skill.
+| Argumento | Alvo | O que se lê |
+|---|---|---|
+| `commit <sha>` · `HEAD` · `HEAD~n` | mensagem **e** diff do commit | `git show <sha>` |
+| `diff` · `alteração` | tudo não commitado (staged, unstaged, untracked) | `git diff HEAD` + os untracked de `git status --porcelain`, lidos do disco |
+| `projeto` · `repo` · `.` | todos os arquivos rastreados | `git ls-files` — leitura completa, sem amostragem |
+| caminho de pasta | a pasta e tudo dentro | cada arquivo dela |
+| caminho de arquivo (`doc`, `skill` ou `prompt` na frente escolhe a coluna de § Onde a prova muda de forma) | o arquivo | o arquivo + `grep` de quem o usa |
 
-3. **Passada** — inventário **do zero**: leia o alvo inteiro, agora, do disco — e releia a doutrina acima, a régua do pilar Princípios. Monte a tabela de novo — não copie linhas da passada anterior nem use a conversa. Cada "não" vira uma linha da tabela do Output final; o mesmo achado em N lugares é 1 linha com os N lugares, e o peso conta por lugar. **Um achado, um pilar** — o mais específico: se uma prova de clareza o nomeia, é dela; Princípios fica com o que só a doutrina cobre (OCP, LSP, ISP, DIP, YAGNI, LoD, Motores, perímetro, limiares). Todo caminho (`ls`), comando (existe) e link (responde) citado pelo alvo é conferido — é a prova "preciso" em qualquer projeto.
+## Pilares e pesos — passo 5
 
-4. **Baldes** — triagem A/B/C do alvo. Todo achado é classificado; nenhum fica só na cabeça.
+Os seis: **Simples · Eficiente · Premium · Humano · IA · Princípios**.
 
-   | Balde | O que é | Faz |
-   |---|---|---|
-   | **A** | dentro do alvo e corrigível sem mudar comportamento | **corrige agora** |
-   | **B** | fora do alvo mas exposto por ele (o helper que importa, o doc que linka) — ou dentro, mas exige mudar comportamento ou decisão de produto | **lista com caminho, não toca**; fica para um ciclo próprio de trabalho |
-   | **C** | pré-existente sem relação com o alvo, ou gosto pessoal sem regra no projeto | **descarta com 1 linha de motivo** |
+| Peso | Quando |
+|---|---|
+| **10 — grave** | um leitor falha: não dá para saber o que é, achar, rodar ou confiar — 1ª linha ausente ou enganosa, comando quebrado, magia, pela metade, 2 fontes da mesma verdade, regra sem dono |
+| **5 — média** | entende-se, mas com esforço que não precisava: forma mais longa, nome que não diz, sobra, legado ao lado do novo, limiar numérico estourado |
+| **2 — leve** | acabamento: formatação, escrita, pequena diferença dos irmãos |
 
-5. **Nota** — por pilar, os seis: Simples, Eficiente, Premium, Humano, IA, Princípios. Cada um: `100 − Σ pesos dos achados de balde A dele`, piso 0. Nota final = a **menor** das seis; nenhum pilar compensa outro.
+## O que esta régua exige a mais
 
-   | Peso | Quando |
-   |---|---|
-   | **10 — grave** | um leitor falha: não dá para saber o que é, achar, rodar ou confiar — 1ª linha ausente ou enganosa, comando quebrado, magia, pela metade, 2 fontes da mesma verdade, regra sem dono |
-   | **5 — média** | entende-se, mas com esforço que não precisava: forma mais longa, nome que não diz, sobra, legado ao lado do novo, limiar numérico estourado |
-   | **2 — leve** | acabamento: formatação, escrita, pequena diferença dos irmãos |
-
-6. **Checks — linha de base** — os do próprio projeto, se existem (`package.json` scripts `lint`, `typecheck`/`tsc`, `test`, `format`; `Makefile` alvos `lint`, `test`, `check`), antes de corrigir (passo 7). Sem checks → diga no output.
-
-7. **Corrige** (força) — todo balde A. Só dentro do alvo. Comportamento idêntico: refatorar não muda o que o alvo faz. Apagar um arquivo inteiro ou renomear um nome público/exportado → **pergunte antes**. Correção que precisaria sair do alvo → pergunte, ou vira B. Nunca `git commit`, nunca `git push`, nunca `--amend`. No fim, os checks de novo: verde não vira vermelho — virou, é seu, corrija antes de seguir.
-
-8. **Repete** os passos 3 → 5 e 7 até uma passada do zero dar **todo pilar ≥ 95**. Em `audit`, o fluxo termina no passo 5. Três passadas seguidas sem a nota subir → pare e mostre o que trava (quase sempre é uma decisão do usuário).
-
-## Output final
-
-```
-/principles <alvo> · força | audit
-Nota: <antes> → <depois>   (Simples · Eficiente · Premium · Humano · IA · Princípios: nn/nn/nn/nn/nn/nn → nn/nn/nn/nn/nn/nn)
-
-| pilar | achado | arquivo:linha | peso | balde | status |
-|---|---|---|---|---|---|
-| … | … | … | 5 | A | corrigido   (audit: aberto) |
-| … | … | … | 10 | B | aberto — fora do alvo |
-| … | … | … | 2 | C | descartado: <motivo> |
-
-Mensagem proposta: <subject>   (só em commit <sha>)
-Passadas: N · Checks: lint ✓ · typecheck ✓ · test ✓   (ou: nenhum no projeto)
-Próximo: revisar o diff e commitar
-```
-
-Em `audit`: `Nota: <antes>` só, sem "depois"; `Passadas: 1`; `Checks:` só a conferência do passo 3 — lint/test não rodam, não há antes/depois; `Próximo: /principles <alvo>` para aplicar.
+- **Passo 3 (passada)** — releia a doutrina acima, que é a régua do pilar Princípios. **Um achado, um pilar:** se uma prova de clareza o nomeia, é dela; Princípios fica com o que só a doutrina cobre (OCP, LSP, ISP, DIP, YAGNI, LoD, Motores, perímetro, limiares). Todo caminho (`ls`), comando (existe) e link (responde) citado pelo alvo é conferido — é a prova "preciso" em qualquer projeto.
+- **Passo 6 (checks)** — os do projeto: `package.json` scripts `lint`, `typecheck`/`tsc`, `test`, `format`; `Makefile` alvos `lint`, `test`, `check`.
+- **Passo 7 (corrige)** — comportamento idêntico significa que refatorar não muda o que o alvo faz. Apagar um arquivo inteiro ou renomear um nome público/exportado → **pergunte antes**.
+- **Output** — em `commit <sha>`, acrescenta a linha `Mensagem proposta: <subject>`; a mensagem só recebe proposta, nunca `--amend`.
 
 # Racionalizações proibidas — PARE se pensar
+
+As do fluxo estão em `references/fluxo-modo-alvo.md`; estas são da doutrina.
 
 | Frase | Realidade |
 |---|---|
@@ -229,7 +205,7 @@ Em `audit`: `Nota: <antes>` só, sem "depois"; `Passadas: 1`; `Checks:` só a co
 | "Simplifiquei, ficou 'bom o suficiente'" | KISS ≠ mediocridade. O piso é o nível #1. BLOQUEADO. |
 | "Premium é adicionar mais" | Isso é escopo novo, não acabamento — e escopo não é desta skill. A régua é o que o alvo **promete**. BLOQUEADO. |
 | "O arquivo já estava ruim, não fui eu" | Passou por ali, é seu. Está no perímetro → sobe. BLOQUEADO. |
-| "Refatoro o projeto inteiro já que estou aqui" · "não é do alvo, mas já que estou aqui" | O limite é o **perímetro** (o que você editou, abriu, atravessou) e o **alvo** — nunca o repositório. Fora deles: balde B (listar) ou C (descartar com motivo), nunca correção silenciosa. BLOQUEADO. |
+| "Refatoro o projeto inteiro já que estou aqui" | O limite é o **perímetro** — o que você editou, abriu, atravessou — nunca o repositório. Fora dele, a triagem A/B/C do fluxo decide: B se este trabalho o expôs, C se não tem relação. BLOQUEADO. |
 | "Só mexi numa linha, não precisa elevar o arquivo" | O arquivo está no perímetro. Regra do saldo: sai melhor do que entrou, ou você declara que já estava no nível #1. BLOQUEADO. |
 | "Abri o arquivo só pra ler, não conta" | Conta. Ler é passar. Se enxergou o problema, ele está no seu perímetro. BLOQUEADO. |
 | "SOLID eu cubro com o SRP" | SOLID são **cinco** — SRP, OCP, LSP, ISP, DIP. O que não é nomeado nunca é revisado. BLOQUEADO. |
@@ -237,13 +213,7 @@ Em `audit`: `Nota: <antes>` só, sem "depois"; `Passadas: 1`; `Checks:` só a co
 | "Cada tela trata do seu jeito, fica mais simples" | KISS local, caos global. A regra tem **um** dono. BLOQUEADO. |
 | "Só puxei o campo lá de dentro, é mais rápido" | LoD. O vizinho **expõe**; você não atravessa. Cada ponto na cadeia é um acoplamento. BLOQUEADO. |
 | "É só um nome, todo mundo entende" | Nome que não diz falha nos dois leitores: o humano abre para descobrir, a IA não acha no grep. BLOQUEADO. |
-| "A nota é 94, arredonda" | A nota é calculada dos achados, não sentida. Abaixo de 95 → outra passada. BLOQUEADO. |
-| "Reavalio de memória, já conheço o alvo" | Cada passada lê o alvo do disco, do zero. Memória herda o erro da passada anterior. BLOQUEADO. |
-| "Li 5 arquivos, o resto deve estar igual" | Leitura completa, sem amostragem. O que não foi lido não foi avaliado. BLOQUEADO. |
 | "Tiro esse `if`, ninguém deve usar" | Correção não muda comportamento. Sem certeza de quem usa → grep, ou vira balde B. BLOQUEADO. |
 | "A IA entende sem cabeçalho" | A IA decide pela 1ª linha se é ali que mexe. Sem cabeçalho, ela abre tudo ou erra o arquivo. BLOQUEADO. |
-| "O lint já estava vermelho, não é meu" | Linha de base no passo 6 justamente para isso: diga o que já estava vermelho no output, e não deixe verde virar vermelho. BLOQUEADO. |
 | "Renomeio o export, depois vejo quem usa" | Nome público/exportado só se renomeia perguntando antes. BLOQUEADO. |
-| "Commito pra não perder" · "amend na mensagem, é rapidinho" | Esta skill nunca commita, nunca dá push, nunca faz `--amend`. Commitar não é desta skill. BLOQUEADO. |
-| "Marco como C pra fechar logo" | C é pré-existente sem relação com o alvo, com 1 linha de motivo — não é gaveta de achado inconveniente. BLOQUEADO. |
 | "Já conheço os princípios, não preciso ler o arquivo" | Modo régua é a leitura desta skill inteira. Sem ela, a invocação não aconteceu. BLOQUEADO. |

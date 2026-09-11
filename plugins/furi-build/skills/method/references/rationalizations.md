@@ -137,7 +137,7 @@
 | "YAGNI, então não faço o que o UC pede" | Inversão. YAGNI mata **especulação**, não requisito nem achado real (balde B). BLOQUEADO. |
 | "Simplifiquei, ficou bom o suficiente" | KISS ≠ mediocridade. O piso é o nível #1 do `/solve`. BLOQUEADO. |
 | "O arquivo já estava ruim, não fui eu" | Passou por ali, é seu. Está no perímetro → sobe. BLOQUEADO. |
-| "Já que estou aqui, refatoro o projeto inteiro" | O limite é o **perímetro** (editado, aberto para entender, dependente do grep, caminho do fluxo), não o repositório. Fora dele é balde C. BLOQUEADO. |
+| "Já que estou aqui, refatoro o projeto inteiro" | O limite é o **perímetro** (editado, aberto para entender, dependente do grep, caminho do fluxo), não o repositório. Fora dele vale a triagem: **B** se este trabalho o expôs, **C** se não tem relação. BLOQUEADO. |
 | "Só mexi numa linha, não precisa elevar o arquivo" | Regra do saldo: nenhum arquivo do perímetro sai como entrou — ou subiu, ou você declara que já estava no nível #1. BLOQUEADO. |
 | "Abri o arquivo só pra ler, não conta" | Ler é passar. Enxergou o problema, ele está no seu perímetro. BLOQUEADO. |
 | "SOLID eu cubro com o SRP" | SOLID são **cinco**. OCP, LSP, ISP e DIP não são opcionais — e o que não é nomeado nunca é revisado. BLOQUEADO. |
