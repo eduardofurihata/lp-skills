@@ -54,7 +54,7 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 
 ## 3 — Review + autenticar a resolução (loop até limpo **ou** rejeita)
 
-1. **Code review do diff** (calibre Step 8 do `/method`): `gh pr diff <n>` → cada arquivo — bugs, edge cases, padrões do projeto (`docs/00-context/technical/patterns.md`), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/08-code-review/<feature>.md`.
+1. **Code review do diff** (calibre Step 8 do `/method`): `gh pr diff <n>` → cada arquivo — bugs, edge cases, padrões do projeto (`.claude/patterns.md` — ou, se o projeto ainda não migrou, o caminho antigo `docs/00-context/technical/patterns.md`; quem migra é o `/method`, Step 4), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/08-code-review/<feature>.md`.
    - **Escopo = o diff.** Os arquivos que o PR toca, mais o que eles chamam direto. Auditoria do repo inteiro **não é este passo**: o que aparecer fora do diff é achado pré-existente e passa pelo `findings.md`.
    - **Princípios, um a um e por nome** (`plugins/furi-build/skills/principles/SKILL.md` — a mesma lista contra a qual o dev escreveu): **SOLID** — **SRP** (responsabilidade única, camadas, >40 linhas), **OCP** (comportamento novo entrou como `if` no meio do que já funcionava?), **LSP** (implementação lança onde o contrato não prevê?), **ISP** (interface maior que o cliente?), **DIP** (regra de negócio importando client de infra?) · **DRY** (duplicou o que já existe? conferir com grep, e o grep é sobre **símbolo que o diff introduz**, não varredura do repo) · **KISS** · **YAGNI** (entrou abstração que nenhum UC pede?) · **LoD / acoplamento / direção de dependências** · **Motores** (a capacidade tem dono, ou o diff criou a segunda fonte da mesma regra?) · **Design**, se o diff tem tela (`plugins/furi-build/skills/ui/SKILL.md`). Violação **sem sintoma observável** é classe **C** no `findings.md`: linha no relatório, nunca card.
    - **Cheque o done doc:** ele declara "reutilizado / descartado / elevado" (Step 10 do `/method`). Diff que cria do zero o que o projeto já tinha, com o done doc silencioso, é sinal de que o § 3.1 do plano não foi feito.
@@ -72,6 +72,13 @@ Com review limpo e resolução autenticada, **aprovar antes de mergear** — o r
 gh pr review <n> --approve --body "<o que foi verificado: review limpo + QA (confiada|re-rodada) + o que o card pedia acontece>"
 ```
 
+**Quem aprova é o § PR `Aprovação:` do `.claude/setup.md`** (lido pelo `/setup` no Step 0 de quem chamou):
+
+| `Aprovação:` | O que muda |
+|---|---|
+| `a própria skill` (default) | o fluxo acima, como está: o review desta skill **é** a aprovação |
+| `<pessoa/time>` | esta skill revisa e registra o review **por comentário** (`gh pr comment`), mas o merge **espera** um review `APPROVED` dessa pessoa — `gh pr view <n> --json reviews --jq '.reviews[] | select(.state=="APPROVED") | .author.login'`. Sem ele, o gap fica **aberto** como *"aprovação pendente de `<quem>`"*, é reportado, e o ciclo **não** mergeia. Não é a skill que o fecha |
+
 > **O GitHub recusa aprovar o próprio PR** (`Can not approve your own pull request`). Autor == usuário → registrar a aprovação como comentário (`gh pr comment <n> --body "<mesmo texto> — aprovação registrada por comentário: o GitHub não permite auto-aprovação"`) e seguir. **Isso não é falha**, e não é motivo para pular o registro.
 
 ```bash
@@ -83,7 +90,7 @@ git checkout <branch> && git fetch origin && git merge origin/<integração>   #
 git push origin <branch>                            # atualiza o PR
 
 # mergeável e (re-)autenticada:
-gh pr merge <n> --merge --delete-branch             # merge commit (padrão do histórico) + apaga a REMOTA
+gh pr merge <n> --<merge|squash|rebase> --delete-branch   # estratégia = § PR `Merge:` do setup (default: merge commit) + apaga a REMOTA
 git checkout <integração> && git pull --ff-only     # traz o merge pro local (e libera a branch p/ delete)
 
 # === apagar a LOCAL — passo OBRIGATÓRIO, não "se sobrar tempo" ===
@@ -131,7 +138,7 @@ Rejeitar é seguro: nada vai para a integração nem para o ar, branch e PR fica
 
 ## 6 — Sem PR aberto
 
-Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-ship:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (fluxo pessoal) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente.
+Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-ship:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (`.claude/setup.md` § PR `Abre PR: não`) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente. Nesse caso o review do diff (§ 3) roda sobre os commits ainda não verificados na integração — a convenção dispensa o PR, não o review.
 
 ## 7 — Cleanup de órfãos (confirm-first)
 
@@ -159,3 +166,5 @@ Listar os órfãos e **perguntar**: *"Esses cards em `06-todo/` não têm PR nem
 - "O `--delete-branch` já apagou a branch" → apagou **só a remota**. A local também sai, com `fetch --prune` depois.
 - "Não consegui aprovar o PR (é meu), então pulo o registro" → NÃO. Registra por comentário e segue: o rastro de que o gate passou fica no PR.
 - "Aprovo primeiro e reviso depois, o merge é o que importa" → NÃO. A aprovação **atesta** o review; aprovar antes é assinar em branco.
+- "Mergeei com a estratégia que eu prefiro" → NÃO. `Merge:` é o § PR do `.claude/setup.md`. Histórico do time não é gosto da skill.
+- "O setup nomeia quem aprova, mas o review está limpo — mergeio" → NÃO. `Aprovação: <pessoa>` ⇒ espera o `APPROVED` dela. Gap aberto é reportado, não pulado.

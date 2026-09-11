@@ -3,6 +3,7 @@ name: jira
 description: Use when working on a Jira card — Step 0 (investigação + reprodução) → /method (implementação) → human check → ship. Instala o /method junto (dependência). Handles /jira finish para modo autônomo.
 argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active card)"
 requires: method
+boundary: setup
 ---
 
 # Jira — Card Workflow
@@ -40,11 +41,18 @@ requires: method
 
 **Objetivo:** entender e reproduzir o problema do card ANTES de implementar. Cada sub-step é bloqueante. Texto objetivo — sem cerimônia.
 
-### 0.1 — Atualizar main
-Trazer a `main` do GitHub para a local: `git checkout main && git pull --ff-only`.
+### 0.1 — Ler as convenções do time e atualizar main
+```bash
+cat .claude/setup.md 2>/dev/null || cat .claude/setup.local.md 2>/dev/null   # do time (versionado) ou só meu (fora do git); lido por caminho
+git checkout main && git pull --ff-only
+```
+Existe (qualquer dos dois — o do time vence) → o **§ Branch** decide o 0.2 e o **§ PR** decide o ship (`references/ship.md`). Não existe → os defaults abaixo, e o `/jira` **não cria** o arquivo: quem cria é o `/setup` (pacote `furi-ship`, usável direto) — ou o time, à mão, pelo template dele. Aplicar o que está escrito é daqui; escrever, não. Em repositório Eduzz onde `.claude/` fica fora do git de propósito, o que vale é o `setup.local.md` — o processo é de quem usa, não do time, e por isso não vai pro repo.
 
-### 0.2 — Criar branch
-Nomenclatura: card único `PROJ-N`; multi-card `PROJ-N-M-...` (números em ordem crescente, prefixo do projeto). Se a branch já existe → `checkout`; senão → `git checkout -b <nome>`. Confirmar com `git branch --show-current`.
+### 0.2 — Criar branch (ou não)
+| § Branch `Trabalho:` | Ação |
+|---|---|
+| `branch por card` (**default** sem setup) | nome pelo padrão `Nome:` do setup — default: card único `PROJ-N`; multi-card `PROJ-N-M-...` (números em ordem crescente, prefixo do projeto). Se a branch já existe → `checkout`; senão → `git checkout -b <nome>`. Confirmar com `git branch --show-current` |
+| `direto na integração` | nenhum `checkout -b`: o trabalho fica na `main` já atualizada; o frontmatter do card (0.3) registra `branch: main` |
 
 ### 0.3 — Registrar o card
 Criar `docs/jira/todo/[CARD-CODE].md` (criar `docs/jira/todo/` e `docs/jira/done/` se não existirem). Buscar os dados via `mcp__atlassian__jira_get_issue` (`issue_key: [CARD-CODE]`) — título, descrição, tipo `BUG`|`FEATURE`, assignee. Frontmatter mínimo:

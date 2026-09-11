@@ -1,6 +1,6 @@
 # lp-skills
 
-Skills do [Furihata](https://github.com/eduardofurihata), distribuídas como plugins que **Claude Code**, **Codex**, **Cursor**, **Copilot** e **VS Code** instalam direto do GitHub — igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em quatro categorias: **Build** (o método: `/principles`, `/ui`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`), **Ship** (a entrega: `/jira-board`, `/card`, `/work`, `/pull-request`, `/homolog`, `/prod`), **Toolbox** (ferramentas avulsas: `/ask`, `/chat`, `/save`, `/sync`…) e **Eduzz** (trabalho).
+Skills do [Furihata](https://github.com/eduardofurihata), distribuídas como plugins que **Claude Code**, **Codex**, **Cursor**, **Copilot** e **VS Code** instalam direto do GitHub — igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em quatro categorias: **Build** (o método: `/principles`, `/ui`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`), **Ship** (a entrega: `/jira-board`, `/setup`, `/infra`, `/card`, `/work`, `/pull-request`, `/homolog`, `/prod`), **Toolbox** (ferramentas avulsas: `/ask`, `/chat`, `/save`, `/sync`…) e **Eduzz** (trabalho).
 
 Este repo é as duas coisas ao mesmo tempo: os **pacotes** (`plugins/<pacote>/`, quatro, um por categoria) com os catálogos que cada cliente lê, e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
 
@@ -24,7 +24,7 @@ O marketplace tem **4 pacotes** (plugins), um por categoria — você instala o 
 
 # 2) instale o pacote que quiser (um, alguns ou todos)
 /plugin install furi-build@lp-skills       # o método (/principles, /ui, /solve, /method, /fast, /todo, /proto)
-/plugin install furi-ship@lp-skills        # a entrega (/jira-board, /card, /work, /pull-request, /homolog, /prod) — puxa o furi-build
+/plugin install furi-ship@lp-skills        # a entrega (/jira-board, /setup, /infra, /card, /work, /pull-request, /homolog, /prod) — puxa o furi-build
 /plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/ask, /chat, /save, /sync, /make-dev…)
 /plugin install eduzz-builder@lp-skills    # skills de trabalho (Eduzz): /jira, /afl, /proof, /video-teams
 ```
@@ -111,12 +111,14 @@ lp-skills/
 ├── .github/workflows/ci.yml  # roda os dois acima: o que está no GitHub é o que foi gerado
 ├── app/                      # Next.js App Router (a LP)
 ├── components/               # React components
-└── lib/                      # categorias + leitor de skills + gerador de comandos
+└── lib/                      # categorias + leitor de skills + grafo de relações + gerador de comandos
 ```
 
 Cada pasta em `plugins/` **é** a raiz de um pacote, e as skills dela moram em `plugins/<pacote>/skills/<slug>/`. A categoria de cada skill é derivada do pacote (`furi-build` → `build`), e o mapa categoria↔pacote sai do catálogo gerado — a LP não repete essa lista. O nome de invocação (`/homolog`) vem do `name` no frontmatter do `SKILL.md`; a dependência cruzada entre pacotes (ship → build, eduzz → build) é derivada do `requires`.
 
-**Critério de pacote:** categoria é dona primeiro — skill de trabalho mora em `eduzz-builder`, antes de qualquer outro critério (o `/proof` não tem dependências, mas audita PRs da Eduzz: é Eduzz). Entre as pessoais, a que não tem `requires` **e** de quem nenhuma outra skill depende ou invoca vai para `furi-toolbox` — funciona sozinha. As que entram no grafo se dividem pelo que tocam: **`furi-ship`** é o `/jira-board` e toda skill que o lista em `requires` — quem fala com board, GitHub ou ambiente (`/card`, `/work`, `/pull-request`, `/homolog`, `/prod`); **`furi-build`** é o resto do grafo (`/principles`, `/ui`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`) — constrói sem saber o que é Jira, PR ou deploy. A dependência só vai de ship para build, nunca o inverso: o `/method` cita `/homolog` e `/prod` como fronteira, não como `requires`.
+**Critério de pacote:** categoria é dona primeiro — skill de trabalho mora em `eduzz-builder`, antes de qualquer outro critério (o `/proof` não tem dependências, mas audita PRs da Eduzz: é Eduzz). Entre as pessoais, a que não tem `requires` **e** de quem nenhuma outra skill depende ou invoca vai para `furi-toolbox` — funciona sozinha. As que entram no grafo se dividem pelo que tocam: **`furi-ship`** é o `/jira-board`, o `/setup`, o `/infra` e toda skill que os lista em `requires` — quem fala com board, GitHub ou ambiente (`/card`, `/work`, `/pull-request`, `/homolog`, `/prod`); **`furi-build`** é o resto do grafo (`/principles`, `/ui`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`) — constrói sem saber o que é Jira, PR ou deploy. A dependência só vai de ship para build, nunca o inverso: o `/method` cita `/homolog`, `/prod` e `/setup` como fronteira, não como `requires`.
+
+**O conhecimento permanente de um projeto mora em `.claude/`, versionado no repositório-alvo** — quatro arquivos, um dono cada: `setup.md` (convenções do time: branch, commit, PR, Jira — `/setup`), `infra.md` (mapa da infra e onde vive cada segredo, nunca o valor — `/infra`), `deploy.md` (processo de deploy — `/prod` via `deploy-context`) e `patterns.md` (padrões de código — `/method` Step 4). Não é a esteira por feature (`docs/01-problem/` … `kanban/`) nem a memória da máquina (`~/.claude/projects/`, onde só o board do Jira mora). Um `.md` solto em `.claude/` não é auto-carregado — cada arquivo é **lido sob demanda, por quem usa algo dele**, nunca via `CLAUDE.md`. Cada um tem uma variante **`<x>.local.md`** — mesmo formato, **nunca versionada** (como o `settings.local.json`) — para o repositório de um time que não usa este processo: o setup de uma pessoa não vai pro git dos outros, e o `/setup` pergunta uma vez qual dos dois é o caso; o do time vence quando os dois existem. Quem está em outro pacote lê por caminho e não cria: o `/method` aplica o § Commit do `setup.md`, o `/jira` da Eduzz aplica o § Branch; escrever é do dono.
 
 ## Workflow do autor
 
@@ -131,7 +133,17 @@ git add -A && git commit && git push   # publicar = dar push
 
 Para o Claude Code e para o Cursor, cada push já é a versão nova (Git SHA / re-index). Para o Codex, veja a seção dele: o usuário precisa reinstalar.
 
-**Skill que depende de outra a invoca via Skill tool** no ponto de uso (`furi-build:<nome>` / `furi-ship:<nome>` / `eduzz-builder:<nome>`) e a lista em `requires` — mencionar não é invocar. Hand-offs ("Próximo: /pull-request") e fronteiras ("isso é o /prod") ficam como menção: o próximo passo é decisão do usuário. Caminho de arquivo dentro de uma skill diz o escopo: `<slug>/references/x.md` é do **mesmo pacote** (resolve no cache instalado); `plugins/<pacote>/skills/<slug>/…` é de **outro pacote** e entra só como menção — o conteúdo chega invocando a skill dona.
+**Skill que depende de outra a invoca via Skill tool** no ponto de uso (`furi-build:<nome>` / `furi-ship:<nome>` / `eduzz-builder:<nome>`) e a lista em `requires` — mencionar não é invocar. Hand-offs ("Próximo: /pull-request") e fronteiras ("isso é o /prod") ficam como menção: o próximo passo é decisão do usuário. Caminho de arquivo dentro de uma skill diz o escopo: `<slug>/references/x.md` é do **mesmo pacote** (resolve no cache instalado); `plugins/<pacote>/skills/<slug>/…` é de **outro pacote** e entra só como menção — o conteúdo chega invocando a skill dona; `docs/…`, `kanban/…`, `.claude/…`, `.github/…`, `.secrets/…` são do **projeto-alvo** — lidos por caminho no repositório onde a skill roda, e ler um deles não cria dependência entre pacotes (o validador conhece essas raízes em `TARGET_PROJECT_ROOTS`).
+
+**As três relações têm campo no frontmatter** — é a regra acima em forma declarada, e é dela que sai o grafo da [LP](https://lp-skills.vercel.app). Todos aceitam `x` ou `[x, y]`, e o `pnpm check` falha se um alvo não for o `name` de nenhuma skill:
+
+| campo | quando usar | efeito |
+|---|---|---|
+| `requires` | a skill **invoca** a outra / não roda sem ela | linha cheia no grafo **e** dependência entre pacotes no manifesto |
+| `handoff` | o **próximo passo** é a outra skill, quando o usuário quiser | linha tracejada no grafo |
+| `boundary` | **fronteira**: isso é assunto da outra skill, não desta | linha pontilhada no grafo |
+
+Só o `requires` vira `dependencies` do pacote: instalar tem que trazer o que a skill **invoca**, não para onde ela encaminha — é o que mantém o `furi-toolbox` avulso, mesmo com o `/sync` entregando para o `/prod`.
 
 **Editando uma skill com feedback imediato** (sem republicar a cada tecla): carregue o pacote em modo dev, in-place, apontando para a raiz dele — carrega o pacote inteiro com todas as skills:
 

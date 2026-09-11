@@ -61,6 +61,8 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > A linha **Cobre** é o que torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC e todo detalhe do Step 4 tem que aparecer ao menos uma vez.
 
+> **Feature com superfície de texto gerado por IA** (derivada no Step 4): ao menos um TC tem o `Resultado:` na **qualidade do texto lido** — lê como a referência #1 do spec (completo, no tom da persona, no idioma do usuário, sem placeholder, sem robótico) — e não só "a resposta aparece". Conta como `Cobre` do detalhe "o que ler bem significa" do Step 4. Sem superfície de texto de IA, nada disso se aplica.
+
 ## Princípios neste step (`principles/SKILL.md`)
 
 - **SRP** — 1 TC = **1 bug único**. Denso (atravessa vários UCs) não é o mesmo que difuso: o TC pode cobrir 4 UCs, mas falha por **um** motivo nomeável.
@@ -82,3 +84,4 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 - [ ] **Princípios declarados** na linha do Gateway Check (SRP · DRY · YAGNI · KISS · Motor pela lente acima)
 - [ ] **Refatoração declarada** na linha própria do Gateway Check
 - [ ] **Design declarado** na linha própria — cobertura de estados × breakpoints e a11y (se a feature tem superfície visual)
+- [ ] **Texto de IA declarado** na linha própria — o TC de qualidade do texto lido existe e cita a referência #1 do spec; ou `❌ N/A — sem superfície de texto gerado por IA, derivado do Step 4`

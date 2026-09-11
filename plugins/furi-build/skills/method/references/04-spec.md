@@ -9,6 +9,7 @@
 - **Pasta:** `docs/04-spec/`
 - **Arquivo:** `<tópico>.md`
 - **Arquivo (feature com superfície visual):** `docs/04-spec/design-system.md` — **vive entre features**, não é por tópico. Ver § Design System abaixo.
+- **Arquivo (padrões de código):** `.claude/patterns.md` — **vive entre features**, é do projeto. Ver § Padrões do projeto abaixo.
 
 ## Design System — o artefato que evolui com o produto
 
@@ -46,6 +47,45 @@ Feature com superfície visual **decide o DS aqui** (doutrina completa: `ui/SKIL
 
 **Superfície visual é DERIVADA aqui** (sim/não), como o escopo de plataforma — nunca declarada pelo usuário. É o que liga ou desliga a linha de **Design** nos gateways seguintes.
 
+## Texto gerado por IA — a outra superfície derivada
+
+**Superfície de texto gerado por IA é DERIVADA aqui** (sim/não), pelo mesmo mecanismo: a feature **produz ou altera texto que o usuário final lê como saída do sistema** — resposta de chat, resumo, e-mail ou notificação gerada, persona/prompt, resposta de RAG, troca de modelo. Nunca declarada pelo usuário; derivada dos UCs. É o que liga ou desliga a linha de **Texto de IA** nos gateways seguintes — e ela nasce `N/A` em feature sem isso, como Design nasce `N/A` sem tela.
+
+Se **sim**, duas decisões entram no loop como gap, e são escritas no spec:
+- **A referência #1** — qual produto lê melhor neste tipo de saída (ChatGPT, Claude, o líder do domínio). "Funcionar" não é a barra; **ganhar do melhor** é.
+- **O que "ler bem" significa aqui** — tom e persona, concisão, formatação, idioma do usuário, **sem truncamento, sem placeholder, sem alucinação, sem robótico**. Isso vira o `Resultado:` de pelo menos um TC no Step 5 e o critério de FAILED no Step 9: texto que lê pior que a referência é teste falho, mesmo com o código certo.
+
+Isso é da **saída lida**, não do modelo nem da infra: prompt, RAG e troca de modelo entram porque mudam o que o usuário lê.
+
+## Padrões do projeto — `.claude/patterns.md`, o artefato que evolui com o código
+
+O nível 1 da hierarquia de decisão ("padrões do projeto") precisa de um lugar onde o padrão esteja **escrito**, não só implícito no código. Esse lugar é **`.claude/patterns.md`** — um arquivo único e cumulativo, versionado, do projeto (não por feature, não da máquina): cada feature **lê, usa e faz crescer**. Mora em `.claude/` junto de `setup.md` (convenções do time — dono `/setup`, `furi-ship`), `deploy.md` e `infra.md`; nenhum deles é auto-carregado — este step o lê por caminho, como lê o `CLAUDE.md`: `cat .claude/patterns.md 2>/dev/null || cat .claude/patterns.local.md 2>/dev/null`. **`patterns.local.md`** é a variante de quem trabalha num repositório de time que não usa este processo (`.claude/` ignorado de propósito; o sinal é existir `setup.local.md` e não `setup.md`) — mesmo formato, fora do git, **não** entra no commit do Step 10. O do time vence quando os dois existem.
+
+```markdown
+# Padrões do projeto
+
+## Estrutura
+- feature-first: `src/features/<área>/{ui,model,api}` · shared só o que 2+ features usam
+
+## Nomenclatura
+- arquivos kebab-case · componentes PascalCase · hooks `use*` · motores `<Coisa>Engine`
+
+## Dados e validação
+- schema Zod na borda (rota/form); dentro do motor o dado já é confiável
+
+## Erros
+- `Result<T, E>` nos motores; `throw` só na borda HTTP
+
+## Esta feature promove
+- `Result<T, E>` — 3 motores tratavam erro de 3 jeitos
+```
+
+**Ordem obrigatória ao decidir:** **seguir** o que está escrito → **estender** (caso novo do mesmo padrão) → **promover** (padrão que esta feature fixou e as próximas vão precisar — escrever aqui, na seção `## Esta feature promove`, e depois consolidar na seção certa). Padrão que vive só na cabeça de quem codou não é padrão: é a próxima inconsistência.
+
+**Projeto sem `patterns.md`?** A primeira feature o **funda** com o mínimo que ela mesma fixou — sem inventar guia de estilo inteiro (YAGNI vale aqui igual). As seguintes o fazem crescer.
+
+**Migração (uma vez por projeto):** o arquivo existe no caminho antigo — `docs/00-context/technical/patterns.md` ou `docs/04-spec/technical/patterns.md` — e não em `.claude/`? `mkdir -p .claude && git mv <caminho-antigo> .claude/patterns.md`, avisar, e o `git mv` entra no commit do Step 10. Se `.claude/` estiver no `.gitignore`, **não decida sozinho**: pode ser o time mantendo processo de agente fora do repo — aí o destino é `patterns.local.md` (e o antigo sai do índice: `git rm --cached`). Quem decide o modo é o `/setup` (`furi-ship`); sem ele, pergunte.
+
 ## Regra central
 
 **Resolva TODAS as decisões autonomamente — sem parar para perguntar ao usuário.**
@@ -54,7 +94,7 @@ Feature com superfície visual **decide o DS aqui** (doutrina completa: `ui/SKIL
 
 A AI resolve cada decisão usando (em ordem de prioridade):
 
-1. **Padrões do projeto** — código existente, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
+1. **Padrões do projeto** — código existente, CLAUDE.md, `.claude/patterns.md`, convenções já adotadas
 2. **Big apps como referência** — big pop tech apps / líderes do mesmo domínio
 3. **Boas práticas de mercado** — padrões consagrados de engenharia de alto nível
 4. **Princípios de engenharia e design** — SOLID completo (SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e Motores (`principles/SKILL.md`); tokens, atomicidade, composição, headless, estados e a11y (`ui/SKILL.md`); Clean Architecture, OWASP, performance, escalabilidade
@@ -73,13 +113,14 @@ REPETIR até zero gaps:
      - Docs steps 1-3
      - Decisões tomadas em rounds anteriores
      - Código existente relevante
-     - CLAUDE.md e docs/04-spec/technical/patterns.md
+     - CLAUDE.md e .claude/patterns.md
 
   2. IDENTIFICAR GAPS — Decisões em aberto:
      Stack/tecnologia | Regras de negócio | UI/UX e consistência visual | Edge cases
      Integrações | Permissões/roles | Dados/schemas | Performance | Segurança
      **Escopo de plataforma** (web/android/ios) — derivado da feature, não declarado
      **Superfície visual** (sim/não) — derivada aqui; se sim, o Design System entra como gap
+     **Superfície de texto gerado por IA** (sim/não) — derivada aqui; se sim, a referência #1 e "o que ler bem significa" entram como gap
      **Design System** — que token/componente já existe? o que será reusado, composto ou **promovido**?
      **Motores** — qual capacidade esta feature exige, e quem é o dono dela?
      **UI/UX obrigatório:** como features similares se comportam no app hoje? como big apps resolvem?
@@ -137,7 +178,7 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 **Este é o step onde a arquitetura é decidida — e onde YAGNI é MAIS BARATO.** Uma abstração recusada aqui custa uma linha; recusada no Step 8 custa reescrever o que já foi codado.
 
 - **YAGNI** — cada decisão declara o **UC que a exige**. Sem UC → não entra, vai para "alternativas descartadas" com o motivo. Camada, flag, config, tabela ou abstração "pro futuro" = especulação.
-- **DRY** — antes de decidir criar, procure: o projeto já resolve isso? (grep + `patterns.md` + CLAUDE.md). Se sim, a decisão é **reusar/estender**, e isso fica escrito.
+- **DRY** — antes de decidir criar, procure: o projeto já resolve isso? (grep + `.claude/patterns.md` + CLAUDE.md). Se sim, a decisão é **reusar/estender**, e isso fica escrito.
 - **SRP** — as fronteiras de módulo/camada saem daqui: quem é dono de quê, o que é service, o que é UI, o que é shared. Fronteira mal desenhada aqui vira o "service que faz tudo" no 7b.
 - **KISS** — entre duas soluções que atingem o nível #1, ganha a mais simples. Complexidade só se paga com requisito, nunca com elegância.
 - **Law of Demeter / acoplamento** — decisões de integração declaram a direção da dependência (`shared → api/web` ok; `api ↔ web` proibido) e **quem fala com quem**. Fronteira mal desenhada aqui vira `a.b.c.d` no 7b.
@@ -157,7 +198,9 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - [ ] **Cada decisão declara qual motor é dono da regra**; motor novo nomeado e com contrato desenhado
 - [ ] Escopo de plataforma derivado (não declarado)
 - [ ] **Superfície visual derivada** (sim/não) — publicada no gateway; é ela que liga/desliga a linha de Design daqui em diante
+- [ ] **Superfície de texto gerado por IA derivada** (sim/não) — publicada no gateway; se sim, a referência #1 e o "ler bem" estão no spec; é ela que liga/desliga a linha de Texto de IA daqui em diante
 - [ ] **Se tem UI:** `docs/04-spec/design-system.md` inventariado; promoções ao DS declaradas; breakpoints e a11y alvo (AA) definidos; benchmark visual citado
+- [ ] **`.claude/patterns.md` lido** (nível 1 da hierarquia); padrões que esta feature fixa **promovidos** a ele — ou declarado que coube nos existentes; projeto sem o arquivo → fundado com o mínimo
 - [ ] Artefato `docs/04-spec/<tópico>.md` existe com conteúdo substantivo
 - [ ] **Princípios declarados** na linha do Gateway Check
 - [ ] **Refatoração declarada** na linha própria do Gateway Check

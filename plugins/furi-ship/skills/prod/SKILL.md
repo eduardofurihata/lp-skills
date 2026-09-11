@@ -2,7 +2,8 @@
 name: prod
 description: 'Use when user invokes /prod to get production live with the updates — working and configured, verified on the production URL, not merely pushed. The single owner of production: declares the prod target and hands it to the reconcile engine, which diagnoses the gap between what is ready and what actually answers in prod, then closes it. On a `dev`+`main` repository it requires homolog to be verified first, ASKS for explicit authorization for THIS release (authority claimed earlier never counts), closes `dev` (committing loose work with explicit paths, never `git add -A`), promotes `dev`→`main`, watches the deploy run to a named outcome, applies configuration to prod AND homolog, smoke-tests every card on the production URL, and closes with the resync `main`→`dev` plus the assert `origin/dev == origin/main`. On a single-branch repository there is no promotion and no gate: it runs the whole cycle — review, approve, merge into `main`, deploy, configure, smoke. Red deploy never announces success; a queued run on an offline self-hosted runner is a QUEUE; a secret value is always asked, never inferred; rollback is offered, never automatic.'
 effort: max
-requires: [jira-board, todo, homolog, pull-request, card]
+requires: [jira-board, setup, todo, homolog, pull-request, card]
+boundary: sync
 argument-hint: "[PR number | KEY-N] | (vazio = diagnosticar e fechar o gap de produção)"
 ---
 
@@ -23,7 +24,7 @@ Não é "dar push na `main`": é **atingir um estado** — produção **no ar, f
 - **`main` é produção.** `dev` é a branch de integração; **homolog** é o ambiente publicado a partir dela — nome de ambiente, nunca de branch.
 - **Duas topologias, um fluxo.** O que muda é o **alvo**; o loop, os motores e as regras são os mesmos.
 - Remote `origin`; o repositório vem do checkout (`gh repo view --json nameWithOwner -q .nameWithOwner`) — não hardcodar.
-- **Board:** o da memória do projeto, via **`/jira-board`**. **Contexto de deploy:** `docs/00-context/technical/deploy.md`, via `references/deploy-context.md`.
+- **Board:** o da memória do projeto, via **`/jira-board`**. **Convenções do time:** `.claude/setup.md`, via **`/setup`** — o `pr-cycle` lê daí `Abre PR`, `Aprovação` e `Merge`. **Contexto de deploy:** `.claude/deploy.md`, via `references/deploy-context.md`. **Onde vive cada segredo:** `.claude/infra.md` (`/infra`), lido pelo `env-config`.
 - **Motores:** `references/` — `reconcile` · `pr-cycle` · `findings` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. Esta skill é a **sede** deles; o `/homolog` consome os mesmos arquivos.
 
 <HARD-GATE>
@@ -43,7 +44,8 @@ Não é "dar push na `main`": é **atingir um estado** — produção **no ar, f
 ## Step 0 — Board, contexto e topologia
 
 1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. Nunca assuma nem pergunte o board aqui.
-2. **`references/deploy-context.md`** — topologia detectada por `git ls-remote --heads origin dev`, doc do projeto lido (ou descoberto e escrito).
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Lê `.claude/setup.md` (e o cria, perguntando o mínimo, se não existir). Devolve `{branch, commit, pr, jira, infra, guidelines, origem}` — o `pr-cycle` usa `pr`. Invocação separada da anterior, com a sua própria pergunta isolada.
+3. **`references/deploy-context.md`** — topologia detectada por `git ls-remote --heads origin dev`, doc do projeto (`.claude/deploy.md`) lido — ou descoberto e escrito.
 
 ## Step 1 — Declarar o alvo
 
@@ -171,6 +173,12 @@ O push do passo 2 é só o **gatilho**: o `reconcile` segue para `deploy-run` (r
 - "Promovo sem verificar homolog, o dev testou na máquina dele" → NÃO. Aquilo provou o código; homolog prova o ambiente.
 - "Verifico homolog por dentro, sem invocar o `/homolog`" → NÃO. Mencionar não é invocar: o pré-requisito fecha com a chamada do `/homolog` via Skill tool — e o mesmo vale para `/todo`, `/pull-request` e `/card` na borda dos motores.
 - "Uso `/sync dev > main` que é mais direto" → é uma ferramenta de **branch**, sem deploy observado, sem configuração e sem smoke. Para **entregar** produção, o caminho é este.
+
+**Convenções do time**
+- "Mergeei com squash porque é mais limpo" → NÃO. A estratégia é o § PR `Merge:` do `.claude/setup.md`, via `/setup`.
+- "Aprovei eu mesmo, embora o setup nomeie quem aprova" → NÃO. `Aprovação: <pessoa/time>` ⇒ o merge **espera** o `APPROVED` dessa pessoa; o gap fica aberto e reportado.
+- "Pulei o `/setup` porque já sei as convenções desta sessão" → NÃO. Leitura é **toda** invocação, como o `/jira-board`.
+- "Anoto onde vive o secret no `deploy.md`, pra não abrir o `infra.md`" → NÃO. Onde vive é o `.claude/infra.md` (`/infra`); o `deploy.md` diz só o **comando** de setar. Dois donos pro mesmo fato é como se perde a verdade.
 
 **Objetivo e motores**
 - "Promovi e o `/prod` acabou" → NÃO. Promoção é um gap; faltam deploy, configuração, verificação e o assert.

@@ -2,7 +2,8 @@
 name: card
 description: 'Use when user invokes /card to create a Jira card on ANY board of the personal Atlassian from a short description — `/card [KEY] <problema>`. Discovers project, board, issue type and active sprint instead of assuming them; writes the card in PM/PO, QA and Designer voice (never dev), with a verifiable "## Como testar"; uploads any reference images sent as attachments; returns the card key + URL. Invokes /solve on activation so the problem is framed at the #1-in-market bar, and writes that bar into the card as a named "## Referência de mercado" — the ambition, never the architecture. Intake only — does not branch, code, or create docs.'
 effort: max
-requires: [jira-board, solve]
+requires: [jira-board, setup, solve]
+handoff: work
 argument-hint: "[KEY] <descrição do card / ideia / bug>"
 ---
 
@@ -56,19 +57,20 @@ Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer com
 - **Projeto:** o da **memória do projeto** (passo 0, via `/jira-board`) ou o do argumento, que sobrescreve. Sempre via `mcp__atlassian__*`.
 - **Tipo de issue:** o que o projeto **tem** — descoberto com `jira_get_project_issue_types`. Nunca chutar um nome ("Tarefa", "Task", "Bug") sem listar.
 - **Board:** vem do `/jira-board` (memória) — não descubra nem pergunte aqui. **Sprint:** sempre descoberto na hora com `jira_get_sprints_from_board` (`state: active`); sprint nunca é lido da memória.
-- **Seção obrigatória:** toda descrição termina com `## Como testar` (passos verificáveis, formato QA).
-- **Idioma:** o do projeto; **default português**.
+- **Seção obrigatória:** toda descrição termina com `## Como testar` (passos verificáveis, formato QA). A `DoD` do § Jira do `/setup` (passo 0) orienta o que esse bloco precisa cobrir.
+- **Idioma:** o `Idioma dos cards` do § Jira do `/setup` (passo 0, lido de `.claude/setup.md`); sem setup, **default português**.
 - Card novo entra **no sprint ativo** por padrão (passo 5), com o status default do board. Não mover status aqui.
 
 > **Um site por vez:** o MCP alcança só o site do `JIRA_URL` configurado. Key que não aparece em `jira_get_all_projects` **não existe neste site** — pode estar em outro (outro servidor MCP). Diga isso; **nunca** aproxime para a key mais parecida.
 
 ## Fluxo
 
-### 0. Board do projeto (SEMPRE, antes de tocar no Jira)
+### 0. Board do projeto e convenções do time (SEMPRE, antes de tocar no Jira)
 
-**Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: lê `.claude/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Daqui o `/card` usa só o **§ Jira** (`Idioma dos cards`, `DoD`).
 
-Nunca assuma o board, nunca pergunte por ele aqui — quem faz isso é o `/jira-board`, e ele é o único dono dessa memória.
+Duas invocações separadas, cada uma com a sua pergunta isolada — uma vez na vida do repositório. Nunca assuma o board nem as convenções, nunca pergunte por eles aqui — quem faz isso é o `/jira-board` e o `/setup`, donos únicos de cada um.
 
 ### 1. Resolver o projeto + entender a intenção
 
@@ -89,7 +91,7 @@ Se for claramente **2+ entregas distintas** → propor split (**1 card = 1 entre
 ### 3. Scan leve (project-aware, time-boxed)
 Um passe **rápido** só pra ancorar — NÃO é o Step 0 do `/work`:
 - `Grep`/`Glob` pelos termos da descrição → achar a **área provável** e a **rota**.
-- `docs/MAP.md` / `docs/00-context/` se ajudar a nomear a área do produto.
+- `docs/MAP.md` / `docs/00-context/` (contexto de produto, se o projeto tiver) se ajudar a nomear a área do produto.
 - **Time-box curto.** Achou → para. **NÃO** leia o fluxo inteiro, **NÃO** reproduza no front, **NÃO** dê nota ≥90 (isso é `/work`).
 
 **A saída do scan é traduzida pra voz dos papéis:** tipo (bug vs melhoria), **área do produto** (tela/fluxo), **rota** e um **"Como testar"** plausível. O achado de arquivo **morre aqui** — serviu pra você entender, não pro card.
@@ -190,7 +192,8 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 
 **Escopo**
 - "Pulei o `/solve` porque o card é pequeno" → NÃO. É **toda** invocação. Ele custa pouco no intake e é o que separa um card "está quebrado" de um card "estamos abaixo do líder".
-- "Já conheço o `/solve` / o `/jira-board`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
+- "Já conheço o `/solve` / o `/jira-board` / o `/setup`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
+- "Escrevi o card em inglês porque o repo é em inglês" → NÃO. Idioma do card é o § Jira do `/setup`; sem setup, português. Código e card são convenções diferentes.
 - "O `/solve` me deu vontade de investigar fundo" → NÃO. Ele sobe a **régua**, não o **tempo**. Scan segue **leve** (Iron Law); investigação é o `/work`.
 - "Vou investigar fundo pra escrever o card perfeito" → NÃO. Scan **leve**. Investigação/reprodução é o `/work`.
 - "Vou criar branch / docs / kanban / mover status" → NÃO. `/card` só cria o card remoto (sprint ativo faz parte — passo 5; status de workflow, não).

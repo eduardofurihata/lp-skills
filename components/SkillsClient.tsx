@@ -7,6 +7,7 @@ import {
   type CategoryFilterValue,
 } from "@/components/CategoryFilter";
 import { SkillGrid } from "@/components/SkillGrid";
+import { SkillGraph } from "@/components/SkillGraph";
 import { BundleInstall } from "@/components/BundleInstall";
 import type { Skill } from "@/lib/skills";
 import { CATEGORIES } from "@/lib/categories";
@@ -40,6 +41,9 @@ export function SkillsClient({ skills }: SkillsClientProps) {
     <TooltipProvider delayDuration={150}>
       <main className="mx-auto w-full max-w-7xl px-6 pb-24 pt-12">
         <BundleInstall counts={counts} />
+        {/* O grafo fica com a lista inteira e só REALÇA a categoria escolhida:
+            tirar os outros nós levaria junto as arestas que dão o contexto. */}
+        <SkillGraph skills={skills} categoryFilter={categoryFilter} />
         <div className="mb-6">
           <CategoryFilter
             value={categoryFilter}

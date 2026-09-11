@@ -15,6 +15,15 @@ const categoryClasses: Record<Category, string> = {
   eduzz: "bg-[color:var(--color-eduzz-soft)] text-[color:var(--color-eduzz)]",
 };
 
+// A mesma decisão em forma de token, para quem pinta sem classe: o SVG do
+// grafo (lib/skill-graph.ts) precisa de valor em stroke/fill, não de bg+text.
+export const CATEGORY_COLOR: Record<Category, string> = {
+  build: "var(--color-text-muted)",
+  ship: "var(--color-ship)",
+  toolbox: "var(--color-toolbox)",
+  eduzz: "var(--color-eduzz)",
+};
+
 export function CategoryBadge({ category }: { category: Category }) {
   return (
     <Badge variant="none" className={categoryClasses[category]}>

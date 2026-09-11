@@ -2,6 +2,8 @@
 name: proof
 description: 'Use when user invokes /proof to code review a PR, diff or branch by auditing the EVIDENCE, not the mechanism — the missing part is proof the change is reached, exercised, and holds in the target env. Three passes (value trace, test proof, world boundary) plus six probes for what the diff cannot show — a secret committed-and-removed, an anti-pattern surviving elsewhere, a new member (package, field, literal) missing where its siblings are listed, a sibling under another guard, a merged or failed read written back, a moved field still read by the old name — audits tests by mutation and fixture fidelity (the spec-named input, both sides of a threshold), stamps the report with the audited SHA and diffs it against the previous one (a fix is unaudited code), and reports per-finding confidence plus what was NOT covered. Runs BEFORE the PR exists; the report (terminal + gitignored `.proof/<scope>.md`) is the deliverable. A PR number is SCOPE, not a destination — commenting requires `--comment`. Never approves, merges or writes code.'
 effort: max
+handoff: fast
+boundary: method
 argument-hint: "[nº da PR | branch | vazio = diff atual] [--comment]"
 ---
 
