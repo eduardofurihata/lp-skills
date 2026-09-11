@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "furi-ship",
+  "version": "0.1.0+1ed7150d16ac",
+  "description": "Skills de entrega do Furihata — /jira-board, /card, /work, /pull-request, /homolog, /prod: do card no Jira até produção. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
+  "author": {
+    "name": "Eduardo Furihata",
+    "url": "https://github.com/eduardofurihata/lp-skills"
+  },
+  "homepage": "https://lp-skills.vercel.app",
+  "repository": "https://github.com/eduardofurihata/lp-skills",
+  "license": "MIT",
+  "keywords": [
+    "jira",
+    "pull-request",
+    "deployment",
+    "delivery"
+  ]
+}

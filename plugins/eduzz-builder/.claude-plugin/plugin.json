@@ -1,0 +1,12 @@
+{
+  "name": "eduzz-builder",
+  "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
+  "author": {
+    "name": "Eduardo Furihata"
+  },
+  "dependencies": [
+    {
+      "name": "furi-build"
+    }
+  ]
+}

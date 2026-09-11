@@ -32,15 +32,15 @@ Siga a **Ordem de Operações do `/method`** (leia `method/SKILL.md` por arquivo
 
 | Step | Reference | /fast roda? |
 |------|-----------|-------------|
-| 1 — Problema | `references/01-problema.md` | ✅ |
-| 2 — User Stories | `references/02-user-stories.md` | ✅ |
-| 3 — Use Cases | `references/03-use-cases.md` | ✅ |
-| 4 — Spec | `references/04-spec.md` | ✅ |
-| 5 — Test Cases (**ESCREVE**, não executa) | `references/05-test-cases.md` | ✅ |
-| 6 — To Do (+ checklist `## Test Cases (QA)`) | `references/06-todo.md` | ✅ |
-| 7a — Plano | `references/07-implementation.md` | ✅ |
-| 7b — Codificar | `references/07-implementation.md` | ✅ |
-| 8 — Code Review (loop até limpo) | `references/08-code-review.md` | ✅ **← PARA AQUI** |
+| 1 — Problema | `method/references/01-problema.md` | ✅ |
+| 2 — User Stories | `method/references/02-user-stories.md` | ✅ |
+| 3 — Use Cases | `method/references/03-use-cases.md` | ✅ |
+| 4 — Spec | `method/references/04-spec.md` | ✅ |
+| 5 — Test Cases (**ESCREVE**, não executa) | `method/references/05-test-cases.md` | ✅ |
+| 6 — To Do (+ checklist `## Test Cases (QA)`) | `method/references/06-todo.md` | ✅ |
+| 7a — Plano | `method/references/07-implementation.md` | ✅ |
+| 7b — Codificar | `method/references/07-implementation.md` | ✅ |
+| 8 — Code Review (loop até limpo) | `method/references/08-code-review.md` | ✅ **← PARA AQUI** |
 | 9 — Run Test (via front) | — | ❌ é do /todo |
 | 10 — Done (card + commit) | — | ❌ não roda |
 

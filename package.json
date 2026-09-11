@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "gen:plugins": "node scripts/generate-plugins.mjs"
+    "typecheck": "tsc --noEmit",
+    "gen:plugins": "node scripts/generate-plugins.mjs",
+    "validate:plugins": "node scripts/validate-plugins.mjs",
+    "check": "pnpm gen:plugins && pnpm validate:plugins && pnpm typecheck"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
