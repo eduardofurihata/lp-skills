@@ -17,7 +17,7 @@ Design não decide **o que** o produto faz — decide se o que ele faz **chega i
 | Invocação | Modo | O que acontece |
 |---|---|---|
 | sem argumento — pelo usuário ou por outra skill | **régua** | Leia este arquivo inteiro agora (sem a leitura, a invocação não aconteceu). Os princípios e as provas abaixo valem para tudo que você tocar daqui em diante. Sem passada, sem nota, sem output final. |
-| com alvo | **alvo** | Fluxo abaixo: inventário → achados → baldes → nota → corrige → repete até passar (passo 8). |
+| com alvo | **alvo** | Fluxo abaixo: os alvos, os pilares e os pesos desta régua, rodando o motor de `../principles/references/fluxo-modo-alvo.md` — inventário → achados → baldes → nota → corrige → repete até todo pilar ≥ 95. |
 
 **A quem se aplica:** todo trabalho com **superfície visual** — uma tela, um componente, um fluxo, um e-mail, um documento gerado. Sem superfície visual, esta doutrina não tem o que cobrar: declare isso uma vez e siga.
 
@@ -54,7 +54,7 @@ Precisou de algo que o DS não tem? **Nesta ordem, sem pular:**
 
 **Componente visual novo nascendo dentro da pasta da feature = dívida de DS.** É o equivalente visual de duplicar lógica em vez de dar um dono à capacidade — e a correção é a mesma: promover, e o chamador passa a só usar.
 
-**O inverso também vale:** se o trabalho revela que um padrão do DS está ruim ou incompleto, isso é **achado**, não conformação — é **balde B** (§ Fluxo, passo 4): fica listado com caminho, não some.
+**O inverso também vale:** se o trabalho revela que um padrão do DS está ruim ou incompleto, isso é **achado**, não conformação — é **balde B** (a triagem A/B/C do fluxo): fica listado com caminho, não some.
 
 **Sem DS no projeto?** O primeiro trabalho o **funda** com o mínimo que ele exige — os tokens e componentes que os casos de uso pedem, nada além (não invente uma paleta inteira para uma tela). Cada trabalho seguinte o faz crescer. É assim que o DS acompanha o produto em vez de nascer grande e morrer desatualizado.
 
@@ -70,7 +70,7 @@ Como decidir na hora:
 |---|---|
 | Padrão existente é bom | Siga. Consistência ganha de preferência pessoal. |
 | Padrão existente é ruim **e está no perímetro** | **Eleve** — e a elevação vale para os outros usos daquele padrão que o perímetro alcança. |
-| Padrão existente é ruim e está **fora** do perímetro | **Balde B** se este trabalho o expôs, **C** se não (§ Fluxo, passo 4). Nunca copiar "para ficar igual". |
+| Padrão existente é ruim e está **fora** do perímetro | **Balde B** se este trabalho o expôs, **C** se não (a triagem A/B/C do fluxo). Nunca copiar "para ficar igual". |
 | Não existe padrão | Os líderes reconhecidos do domínio são a referência, e o que você definir **vira** padrão: promova ao DS. |
 
 ## Moderno não é enfeite — o que se cobra
@@ -97,60 +97,35 @@ O benchmark do nível #1 — o calibre dos líderes do domínio — aplicado ao 
 
 # Fluxo (modo alvo)
 
-1. **Alvo e jeito** — pelo argumento. `audit` (ou "só avalia") em qualquer posição = só relatório, nada é alterado; sem `audit` = **força**: avalia e corrige.
+**Leia `../principles/references/fluxo-modo-alvo.md` agora** — é o motor desta passada: snapshot, inventário do zero, baldes A/B/C, fórmula da nota, checks, correção, repetição até todo pilar ≥ 95 e Output final. É o mesmo motor que o `/principles` roda, e ele é a fonte única dessas regras. Sem essa leitura, o modo alvo não roda. Daqui sai o que é **desta** régua:
 
-   | Argumento | Alvo | O que se lê |
-   |---|---|---|
-   | caminho de componente | o componente | o arquivo + `grep` de quem o usa + o que ele importa do DS |
-   | caminho de pasta · rota · tela | a pasta/rota e tudo que ela renderiza | cada arquivo dela, seguindo a árvore de componentes |
-   | `diff` · `alteração` | a parte visual do não commitado | `git diff HEAD` + os untracked de `git status --porcelain`, lidos do disco |
-   | `commit <sha>` · `HEAD` | a parte visual do commit | `git show <sha>` |
-   | `projeto` · `ds` · `.` | o design system e quem o consome | os tokens, os primitivos, e `git ls-files` dos componentes |
+## Alvos — passo 1
 
-2. **Snapshot** — `git status` limpo é pré-condição para tudo que escreve: é o que permite desfazer. Sujo → pare e peça para commitar antes. Dispensam: `diff` (o alvo é o que está sujo) e `audit` (nada é escrito).
+| Argumento | Alvo | O que se lê |
+|---|---|---|
+| caminho de componente | o componente | o arquivo + `grep` de quem o usa + o que ele importa do DS |
+| caminho de pasta · rota · tela | a pasta/rota e tudo que ela renderiza | cada arquivo dela, seguindo a árvore de componentes |
+| `diff` · `alteração` | a parte visual do não commitado | `git diff HEAD` + os untracked de `git status --porcelain`, lidos do disco |
+| `commit <sha>` · `HEAD` | a parte visual do commit | `git show <sha>` |
+| `projeto` · `ds` · `.` | o design system e quem o consome | os tokens, os primitivos, e `git ls-files` dos componentes |
 
-3. **Passada** — inventário **do zero**: leia o alvo inteiro, agora, do disco — e releia a doutrina acima. Monte a tabela de novo, sem copiar a passada anterior nem usar a conversa. **Primeiro ache o DS** (tokens, primitivos, a convenção do projeto): sem saber o que existe, "faltou token" e "devia reusar" não são verificáveis. Cada "não" vira uma linha da tabela do Output final; o mesmo achado em N lugares é 1 linha com os N lugares, e o peso conta por lugar. **Um achado, um pilar** — o mais específico. Se o app roda, veja a tela nos estados e nos breakpoints; se não roda, a leitura do código é a evidência, e o que não deu para verificar é declarado no output.
+## Pilares e pesos — passo 5
 
-4. **Baldes** — triagem A/B/C do alvo. Todo achado é classificado; nenhum fica só na cabeça.
+Os seis: **Tokens · Atomicidade · Estados · A11y · Consistência · Moderno**. Nenhum compensa outro — tela linda que não navega por teclado não passa.
 
-   | Balde | O que é | Faz |
-   |---|---|---|
-   | **A** | dentro do alvo e corrigível sem mudar comportamento | **corrige agora** |
-   | **B** | fora do alvo mas exposto por ele (o primitivo que ele usa, o padrão que ele copiou) — ou dentro, mas exige decisão de produto ou de DS | **lista com caminho, não toca**; fica para um ciclo próprio de trabalho |
-   | **C** | pré-existente sem relação com o alvo, ou gosto pessoal sem regra no projeto | **descarta com 1 linha de motivo** |
+| Peso | Quando |
+|---|---|
+| **10 — grave** | o usuário trava ou é excluído: estado não desenhado (vazio, erro, carregando), contraste abaixo de AA, controle sem foco visível ou sem nome acessível, quebra no breakpoint de piso, contexto perdido ao voltar |
+| **5 — média** | funciona, mas destoa ou custa manutenção: valor literal no lugar de token, prop booleana de aparência empilhada, nível atômico errado, lógica e apresentação no mesmo arquivo, padrão inventado no lugar do consagrado |
+| **2 — leve** | acabamento: espaçamento fora da escala, peso tipográfico decorativo, motion sem token, densidade acidental |
 
-5. **Nota** — por pilar, os seis: Tokens, Atomicidade, Estados, A11y, Consistência, Moderno. `100 − Σ pesos dos achados de balde A`, piso 0. Nota final = a **menor** das seis; nenhum pilar compensa outro — tela linda que não navega por teclado não passa.
+## O que esta régua exige a mais
 
-   | Peso | Quando |
-   |---|---|
-   | **−10 grave** | o usuário trava ou é excluído: estado não desenhado (vazio, erro, carregando), contraste abaixo de AA, controle sem foco visível ou sem nome acessível, quebra no breakpoint de piso, contexto perdido ao voltar |
-   | **−5 média** | funciona, mas destoa ou custa manutenção: valor literal no lugar de token, prop booleana de aparência empilhada, nível atômico errado, lógica e apresentação no mesmo arquivo, padrão inventado no lugar do consagrado |
-   | **−2 leve** | acabamento: espaçamento fora da escala, peso tipográfico decorativo, motion sem token, densidade acidental |
-
-6. **Checks — linha de base** — os do próprio projeto, se existem (`lint`, `typecheck`, teste de a11y, storybook, visual regression), antes de tocar em qualquer coisa. Sem checks → diga no output.
-
-7. **Corrige** (força) — todo balde A. Só dentro do alvo. Comportamento idêntico: trocar literal por token, desenhar o estado que falta e nomear o controle não mudam o que a tela faz. Criar token ou componente novo no DS, ou renomear algo que outros consomem → **pergunte antes**. Correção que precisaria sair do alvo → pergunte, ou vira B. Nunca `git commit`, nunca `git push`, nunca `--amend`. No fim, os checks de novo: verde não vira vermelho.
-
-8. **Repete** os passos 3 → 5 e 7 até uma passada do zero dar **todo pilar ≥ 95**. `audit` para depois do passo 5. Três passadas seguidas sem a nota subir → pare e mostre o que trava (quase sempre é uma decisão de produto ou de DS).
-
-## Output final
-
-```
-/ui <alvo> · força | audit
-Nota: <antes> → <depois>   (Tokens · Atomicidade · Estados · A11y · Consistência · Moderno: nn/nn/nn/nn/nn/nn → nn/nn/nn/nn/nn/nn)
-
-| pilar | achado | arquivo:linha | peso | balde | status |
-|---|---|---|---|---|---|
-| … | … | … | −5 | A | corrigido   (audit: aberto) |
-| … | … | … | −10 | B | aberto — fora do alvo |
-| … | … | … | −2 | C | descartado: <motivo> |
-
-Não verificado: <o que exigia o app rodando e não rodou>   (ou: nada — tela vista em todos os estados)
-Passadas: N · Checks: lint ✓ · typecheck ✓   (ou: nenhum no projeto)
-Próximo: revisar o diff e commitar
-```
-
-Em `audit`: `Nota: <antes>` só, sem "depois"; `Passadas: 1`; `Checks:` só a conferência do passo 3; `Próximo: /ui <alvo>` para aplicar.
+- **Passo 3 (passada)** — **primeiro ache o DS** (tokens, primitivos, a convenção do projeto): sem saber o que existe, "faltou token" e "devia reusar" não são verificáveis. Se o app roda, veja a tela **nos estados e nos breakpoints**; se não roda, a leitura do código é a evidência, e o que não deu para verificar é declarado no output.
+- **Passo 6 (checks)** — os do projeto: `lint`, `typecheck`, teste de a11y, storybook, visual regression.
+- **Passo 7 (corrige)** — comportamento idêntico significa que trocar literal por token, desenhar o estado que falta e nomear o controle não mudam o que a tela faz. Criar token ou componente novo no DS, ou renomear algo que outros consomem → **pergunte antes**.
+- **Passo 8 (repete)** — o que trava três passadas sem a nota subir aqui é quase sempre uma decisão de produto ou de DS.
+- **Output** — acrescenta a linha `Não verificado: <o que exigia o app rodando e não rodou>` (ou: `nada — tela vista em todos os estados`).
 
 # Racionalizações proibidas — PARE se pensar
 

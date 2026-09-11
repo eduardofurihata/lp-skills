@@ -32,15 +32,13 @@ requires: solve
 
 Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter** e **Motores**) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única da doutrina e das racionalizações proibidas: **`principles/SKILL.md`** (não duplicada aqui — DRY vale para o protocolo também); a **lente de cada step** — o que ela cobra *naquele* step — mora no reference do próprio step, em `## Princípios neste step`.
 
-- **SOLID são cinco, não um.** Declarar só o SRP deixa OCP, LSP, ISP e DIP fora — e o que não é nomeado nunca é revisado.
-- **Motores:** toda capacidade tem **um** dono. Regra espalhada por telas é defeito, não estilo; achou pedaço solto → **absorve**.
 - **Todo Gateway Check publica a linha de princípios** (`- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — <o que a lente deste step cobrou>`). Sem a linha, o gateway não foi publicado — mesma régua da linha de follow-ups.
-- **KISS/YAGNI matam a complexidade *desnecessária*; a *necessária* para o nível #1 continua sendo requisito.** YAGNI nunca é desculpa para entregar menos que o UC pede nem para descartar achado real (isso é balde B).
+- **YAGNI não é desculpa para entregar menos que o UC pede**, nem para descartar achado real — vira balde B em `references/follow-ups.md`.
 - Cobrar só no 7b é tarde: a complexidade especulativa nasce no **Spec (4)** e no **Plano (7a)** e chega no código como fato consumado.
 
 ### Refatoração contínua — a cada passada o código sobe
 
-Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho passa**. O **perímetro** é o arquivo editado, o aberto só para entender, o dependente que o grep revelou e o caminho que o fluxo atravessa. **Dentro dele, refatore bastante**; fora, é balde C.
+Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho passa** — o **perímetro** definido em `principles/SKILL.md` § Refatoração contínua. **Dentro dele, refatore bastante**; fora, vale a triagem de `references/follow-ups.md`: **B** se este trabalho o expôs, **C** se não tem relação.
 
 - **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você **declara** que já estava no nível #1.
 - **Todo Gateway Check publica a linha de refatoração** (`- **Refatoração (tudo por onde passou):** ✅ <N> elevados — <o que subiu>`). Nos Steps 1-6 ela é sobre o **artefato** (doc consolidado, story separada, UC quebrado), e nunca é vazia.
