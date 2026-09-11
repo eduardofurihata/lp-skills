@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { Dirent } from "node:fs";
 import matter from "gray-matter";
-import { CATEGORIES, type Category } from "./categories";
+import { CATEGORIES, CATEGORY_PACKAGE, type Category } from "./categories";
 
 export interface Skill {
   slug: string;
@@ -17,16 +17,22 @@ export interface Skill {
   requires: string[];
 }
 
-const SKILLS_DIR = path.resolve(process.cwd(), "skills");
+const PLUGINS_DIR = path.resolve(process.cwd(), "plugins");
+
+// As skills de uma categoria moram na raiz do pacote dela: plugins/<pacote>/skills/.
+// É o mesmo diretório que Claude Code, Codex e Agent Plugins (Cursor, Copilot,
+// VS Code) escaneiam — não há cópia de distribuição para divergir.
+const skillsDirOf = (category: Category) =>
+  path.join(PLUGINS_DIR, CATEGORY_PACKAGE[category], "skills");
 
 export async function getSkills(): Promise<Skill[]> {
   const buckets = await Promise.all(CATEGORIES.map(readBucket));
   return buckets.flat().sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// Lê um bucket (skills/<category>/*). Bucket ausente/vazio → [].
+// Lê um bucket (plugins/<pacote>/skills/*). Bucket ausente/vazio → [].
 async function readBucket(category: Category): Promise<Skill[]> {
-  const bucketDir = path.join(SKILLS_DIR, category);
+  const bucketDir = skillsDirOf(category);
   let entries: Dirent[];
   try {
     entries = await fs.readdir(bucketDir, { withFileTypes: true });
@@ -48,7 +54,7 @@ async function readSkill(
   category: Category,
   slug: string,
 ): Promise<Skill | null> {
-  const skillPath = path.join(SKILLS_DIR, category, slug);
+  const skillPath = path.join(skillsDirOf(category), slug);
   try {
     const content = await fs.readFile(path.join(skillPath, "SKILL.md"), "utf-8");
     const { data } = matter(content);

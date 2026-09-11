@@ -1,4 +1,4 @@
-import type { Category } from "./categories";
+import { CATEGORY_PACKAGE, type Category } from "./categories";
 
 // Bundle ("builder") — o plugin que empacota uma categoria inteira de skills.
 // Um por categoria: furi-build (o método: /principles, /ui, /solve, /method, /fast, /todo, /proto),
@@ -18,28 +18,29 @@ export interface Bundle {
 const REPO_SLUG = "eduardofurihata/lp-skills";
 const MARKETPLACE = "lp-skills";
 
-// Os pacotes (espelham os plugins gerados em skills/<cat>/.claude-plugin/).
+// Os pacotes. `name` vem de CATEGORY_PACKAGE (derivado do marketplace gerado),
+// para o nome nunca divergir do diretório em plugins/.
 export const BUNDLES: Bundle[] = [
   {
-    name: "furi-build",
+    name: CATEGORY_PACKAGE.build,
     label: "Construir — método e QA",
     category: "build",
     example: "/method",
   },
   {
-    name: "furi-ship",
+    name: CATEGORY_PACKAGE.ship,
     label: "Entregar — Jira, PR e deploy",
     category: "ship",
     example: "/jira-board",
   },
   {
-    name: "furi-toolbox",
+    name: CATEGORY_PACKAGE.toolbox,
     label: "Ferramentas avulsas",
     category: "toolbox",
     example: "/save",
   },
   {
-    name: "eduzz-builder",
+    name: CATEGORY_PACKAGE.eduzz,
     label: "Todas de trabalho (Eduzz)",
     category: "eduzz",
     example: "/jira",

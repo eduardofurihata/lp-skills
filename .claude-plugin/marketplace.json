@@ -9,25 +9,25 @@
   "plugins": [
     {
       "name": "eduzz-builder",
-      "source": "./skills/eduzz",
+      "source": "./plugins/eduzz-builder",
       "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
       "category": "eduzz"
     },
     {
       "name": "furi-build",
-      "source": "./skills/build",
+      "source": "./plugins/furi-build",
       "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
       "category": "build"
     },
     {
       "name": "furi-ship",
-      "source": "./skills/ship",
+      "source": "./plugins/furi-ship",
       "description": "Skills de entrega do Furihata — /jira-board, /card, /work, /pull-request, /homolog, /prod: do card no Jira até produção. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
       "category": "ship"
     },
     {
       "name": "furi-toolbox",
-      "source": "./skills/toolbox",
+      "source": "./plugins/furi-toolbox",
       "description": "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt e mais. Cada uma funciona sozinha, sem depender de outra skill.",
       "category": "toolbox"
     }

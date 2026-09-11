@@ -1,0 +1,67 @@
+name: ci
+
+# O que este workflow protege: o GitHub é a fonte que Claude Code, Codex e Cursor
+# instalam direto. Se um manifesto estiver dessincronizado do frontmatter das
+# skills, o cliente instala silenciosamente a versão errada — sem erro visível.
+# Aqui isso vira build vermelho.
+#
+# Runner HOSTED de propósito (não self-hosted): este check guarda o marketplace
+# público e precisa rodar mesmo com a máquina do autor desligada — um runner
+# self-hosted offline deixaria o check eternamente na fila, que é pior que
+# vermelho, porque parece "pendente" e não "quebrado".
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  plugins:
+    name: manifestos em sync e válidos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # 1) Os manifestos são gerados do frontmatter. Se rodar o gerador mudar
+      #    algum arquivo, é porque o que está commitado NÃO é o que o frontmatter
+      #    produz — alguém editou uma skill sem rodar `pnpm gen:plugins`.
+      - name: gerador não produz diff (manifestos em sync com as skills)
+        run: |
+          pnpm gen:plugins
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::manifestos dessincronizados — rode 'pnpm gen:plugins' e commite o resultado"
+            git status --short
+            git diff
+            exit 1
+          fi
+          echo "ok: manifestos commitados == manifestos gerados"
+
+      # 2) O gerador é idempotente por contrato: rodar 2× produz bytes idênticos.
+      #    Se não for, o artefato muda a cada CI e o passo 1 fica instável.
+      - name: gerador é idempotente
+        run: |
+          pnpm gen:plugins
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::gerador não é idempotente — 2ª rodada mudou arquivos"
+            git status --short
+            exit 1
+          fi
+          echo "ok: 2ª rodada sem diff"
+
+      # 3) Cada pacote tem os 3 manifestos válidos, as skills têm frontmatter, os
+      #    marketplaces apontam para diretórios reais e os caminhos citados existem.
+      - name: pacotes válidos para os 3 clientes
+        run: pnpm validate:plugins
+
+      - name: typecheck da LP
+        run: pnpm typecheck

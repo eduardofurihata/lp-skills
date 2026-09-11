@@ -4,7 +4,7 @@
 
 **Responsabilidade única:** dado um achado fora do escopo do card, dizer **de quem é a ponta**, **qual é a classe** e **qual é o destino**. Não conserta, não abre PR, não mergeia.
 
-> **Não confundir com `skills/build/method/references/follow-ups.md`.** Aquele é a triagem do **dev** (A/B/C, destino: ciclo `/method`, e "vira card" é **proibido** como saída dele). Este é a triagem do **reviewer**, cujo destino pode ser card — e é justamente por isso que ele exige prova. As duas coexistem porque os atores e os destinos são diferentes; fundi-las abriria a rota de escape que mata o loop de convergência do `/method`.
+> **Não confundir com `plugins/furi-build/skills/method/references/follow-ups.md`.** Aquele é a triagem do **dev** (A/B/C, destino: ciclo `/method`, e "vira card" é **proibido** como saída dele). Este é a triagem do **reviewer**, cujo destino pode ser card — e é justamente por isso que ele exige prova. As duas coexistem porque os atores e os destinos são diferentes; fundi-las abriria a rota de escape que mata o loop de convergência do `/method`.
 
 ## Iron Law
 
