@@ -31,7 +31,7 @@ Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Nã
 - **Resultado**: [estado final ou erro]
 ```
 
-## Princípios neste step (`principios.md`)
+## Princípios neste step (`principles/references/principios.md`)
 
 - **SRP** — 1 UC = 1 combinação (ator × fluxo × estado). Agrupar "porque é parecido" destrói a rastreabilidade que os Steps 5 e 9 dependem.
 - **DRY** — tabela de assinaturas **única**, sem duplicata (já é critério do gateway). Dois UCs com o mesmo fluxo e estados diferentes compartilham a descrição, não a copiam.

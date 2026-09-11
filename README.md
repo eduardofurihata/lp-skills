@@ -1,6 +1,6 @@
 # lp-skills
 
-Skills do Claude Code do [Furihata](https://github.com/eduardofurihata), distribuídas como um **Claude Code plugin marketplace** — instala e atualiza igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em quatro categorias: **Build** (o método: `/solve`, `/method`, `/fast`, `/todo`, `/proto`), **Ship** (a entrega: `/jira-board`, `/card`, `/work`, `/pull-request`, `/homolog`, `/prod`), **Toolbox** (ferramentas avulsas: `/ask`, `/chat`, `/save`, `/sync`…) e **Eduzz** (trabalho).
+Skills do Claude Code do [Furihata](https://github.com/eduardofurihata), distribuídas como um **Claude Code plugin marketplace** — instala e atualiza igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em quatro categorias: **Build** (o método: `/principles`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`), **Ship** (a entrega: `/jira-board`, `/card`, `/work`, `/pull-request`, `/homolog`, `/prod`), **Toolbox** (ferramentas avulsas: `/ask`, `/chat`, `/save`, `/sync`…) e **Eduzz** (trabalho).
 
 Este repo é as duas coisas ao mesmo tempo: o **marketplace** (`.claude-plugin/marketplace.json` + **4 plugins**, um por categoria, que empacotam as skills) e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
 
@@ -13,7 +13,7 @@ O marketplace tem **4 pacotes** (plugins), um por categoria — você instala o 
 /plugin marketplace add eduardofurihata/lp-skills
 
 # 2) instale o pacote que quiser (um, alguns ou todos)
-/plugin install furi-build@lp-skills       # o método (/solve, /method, /fast, /todo, /proto)
+/plugin install furi-build@lp-skills       # o método (/principles, /solve, /method, /fast, /todo, /proto)
 /plugin install furi-ship@lp-skills        # a entrega (/jira-board, /card, /work, /pull-request, /homolog, /prod) — puxa o furi-build
 /plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/ask, /chat, /save, /sync, /make-dev…)
 /plugin install eduzz-builder@lp-skills    # skills de trabalho (Eduzz): /jira, /afl, /proof, /video-teams
@@ -60,7 +60,7 @@ lp-skills/
 
 Cada pasta de categoria (`skills/build`, `skills/ship`, `skills/toolbox`, `skills/eduzz`) **é** a raiz de um plugin; o `plugin.json` gerado lá lista as skills da categoria em `skills: ["./<slug>", …]`. A categoria de cada skill é derivada da pasta-pai. O nome de invocação (`/homolog`) vem do `name` no frontmatter do `SKILL.md`; a dependência cruzada entre pacotes (ship → build, eduzz → build) é derivada do `requires`.
 
-**Critério de pasta:** categoria é dona primeiro — skill de trabalho mora em `eduzz/`, antes de qualquer outro critério (o `/proof` não tem dependências, mas audita PRs da Eduzz: é `eduzz/`). Entre as pessoais, a que não tem `requires` **e** de quem nenhuma outra skill depende ou invoca vai para `toolbox/` — funciona sozinha. As que entram no grafo se dividem pelo que tocam: **`ship/`** é o `/jira-board` e toda skill que o lista em `requires` — quem fala com board, GitHub ou ambiente (`/card`, `/work`, `/pull-request`, `/homolog`, `/prod`); **`build/`** é o resto do grafo (`/solve`, `/method`, `/fast`, `/todo`, `/proto`) — constrói sem saber o que é Jira, PR ou deploy. A dependência só vai de ship para build, nunca o inverso: o `/method` cita `/homolog` e `/prod` como fronteira, não como `requires`.
+**Critério de pasta:** categoria é dona primeiro — skill de trabalho mora em `eduzz/`, antes de qualquer outro critério (o `/proof` não tem dependências, mas audita PRs da Eduzz: é `eduzz/`). Entre as pessoais, a que não tem `requires` **e** de quem nenhuma outra skill depende ou invoca vai para `toolbox/` — funciona sozinha. As que entram no grafo se dividem pelo que tocam: **`ship/`** é o `/jira-board` e toda skill que o lista em `requires` — quem fala com board, GitHub ou ambiente (`/card`, `/work`, `/pull-request`, `/homolog`, `/prod`); **`build/`** é o resto do grafo (`/principles`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`) — constrói sem saber o que é Jira, PR ou deploy. A dependência só vai de ship para build, nunca o inverso: o `/method` cita `/homolog` e `/prod` como fronteira, não como `requires`.
 
 ## Workflow do autor
 

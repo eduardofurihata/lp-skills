@@ -149,7 +149,7 @@ REPETIR até 100% limpo:
      - Consistência com codebase?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - Saldo do perímetro (§ 3.5 do plano): tudo por onde o trabalho passou subiu, ou está declarado como já no nível #1?
-     - **Princípios, UM A UM e POR NOME** (`method/references/principios.md`):
+     - **Princípios, UM A UM e POR NOME** (`principles/references/principios.md`):
        · SRP (uma responsabilidade, >40 linhas, lógica+UI juntos, camadas)
        · OCP (comportamento novo entrou como `if` no meio do que já existia?)
        · LSP (implementação lança onde o contrato não prevê?)
@@ -191,7 +191,7 @@ REPETIR até 100% limpo:
 ## Análise de Segurança
 Input validation | Auth | Dados sensíveis | Injection vectors
 
-## Análise de Qualidade (por princípio — `principios.md`)
+## Análise de Qualidade (por princípio — `principles/references/principios.md`)
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|
 | SRP (responsabilidade única, camadas) | ✅/⚠️ | |
@@ -405,7 +405,7 @@ NUNCA batch fixes — corrija CADA bug IMEDIATAMENTE ao encontrar
 NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 NUNCA workaround pra fazer o TC passar — duplicar lógica, regra de negócio no
       componente, `if` especial do cenário de teste: isso viola os princípios
-      (`principios.md`) e é FAILED disfarçado. Todo fix é código e obedece
+      (`principles/references/principios.md`) e é FAILED disfarçado. Todo fix é código e obedece
       SOLID · DRY · KISS · YAGNI · LoD · Motores, igual ao resto — e vai
       PARA O MOTOR, nunca de remendo no chamador. Fix visual segue `design.md`:
       remendo de CSS pra passar o TC também é FAILED disfarçado.

@@ -1,10 +1,10 @@
 # Princípios de Engenharia — Fonte Única (valem em TODOS os steps)
 
-> **Este arquivo é a fonte única.** Nenhum outro arquivo redefine os princípios — todos apontam para cá (DRY aplicado ao próprio protocolo). O que cada step tem é a **lente**: o que o princípio significa *naquele* step.
+> **Este arquivo é a fonte única.** Nenhum outro arquivo redefine os princípios — todos apontam para cá (DRY aplicado ao próprio protocolo). Carregado pela skill **`/principles`** — que o `/solve` invoca na ativação (e, por ele, o `/method`). O que cada step tem é a **lente**: o que o princípio significa *naquele* step.
 
 **Os princípios não são fase — são regime.** Não existe "step de aplicar SOLID". Eles valem do Step 1 ao Step 10, do artefato de texto ao código, ao que você escreve **e** ao que você toca. Quem só cobra no 7b já perdeu: a complexidade especulativa nasce no Spec e no Plano, e chega no código como fato consumado.
 
-> **Irmão deste arquivo:** `design.md` — fonte única dos princípios de **design** (tokens, atomicidade, composição, headless, estados, a11y), com a mesma estrutura e a mesma régua. Feature com superfície visual obedece aos dois.
+> **Irmão deste arquivo:** `method/references/design.md` — fonte única dos princípios de **design** (tokens, atomicidade, composição, headless, estados, a11y), com a mesma estrutura e a mesma régua. Feature com superfície visual obedece aos dois.
 
 ## A lista canônica — SOLID · DRY · KISS · YAGNI · LoD · Motores
 
@@ -53,7 +53,7 @@ Complementos de arquitetura, inseparáveis dos princípios:
 
 **A tensão com YAGNI — resolvida aqui, para não virar desculpa dos dois lados:** motor nasce da capacidade que os **UCs (Step 3) já exigem**. "Motor genérico pro dia que precisar" é abstração especulativa: **BLOQUEADO**. YAGNI proíbe o motor **sem UC**; a doutrina do motor proíbe a capacidade **que já existe** ficar espalhada. E motor **não é framework**: nada de registry, plugin ou DSL interna para atender um UC.
 
-> No front, o equivalente do motor é o **componente do DS**: a capacidade visual tem um dono e se promove para lá em vez de espalhar. Ver `design.md` § *O design system evolui com o produto*.
+> No front, o equivalente do motor é o **componente do DS**: a capacidade visual tem um dono e se promove para lá em vez de espalhar. Ver `method/references/design.md` § *O design system evolui com o produto*.
 
 ## Law of Demeter — fale só com o vizinho
 
@@ -74,7 +74,7 @@ Complementos de arquitetura, inseparáveis dos princípios:
 
 ## A tensão — resolvida de uma vez
 
-**KISS/YAGNI matam a complexidade *desnecessária*. A complexidade *necessária* para o nível #1 (`/solve`) continua sendo requisito.** YAGNI nunca é desculpa para entregar menos do que o UC pede, nem para descartar achado real (isso é balde B — ver `follow-ups.md`). KISS nunca é desculpa para a versão pobre da feature.
+**KISS/YAGNI matam a complexidade *desnecessária*. A complexidade *necessária* para o nível #1 (`/solve`) continua sendo requisito.** YAGNI nunca é desculpa para entregar menos do que o UC pede, nem para descartar achado real (isso é balde B — ver `method/references/follow-ups.md`). KISS nunca é desculpa para a versão pobre da feature.
 
 ## Refatoração contínua — a cada passada o código sobe
 
@@ -87,7 +87,7 @@ Complementos de arquitetura, inseparáveis dos princípios:
 - o **dependente direto** que o grep revelou;
 - o **caminho inteiro** que o fluxo da feature atravessa.
 
-**Dentro do perímetro: refatore bastante, sem timidez.** Fora do perímetro: é balde C (`follow-ups.md`) — o limite é o **caminho percorrido**, não "só a linha que editei" e nem o repositório inteiro.
+**Dentro do perímetro: refatore bastante, sem timidez.** Fora do perímetro: é balde C (`method/references/follow-ups.md`) — o limite é o **caminho percorrido**, não "só a linha que editei" e nem o repositório inteiro.
 
 **O que elevar, por arquivo do perímetro:**
 
@@ -107,7 +107,7 @@ Complementos de arquitetura, inseparáveis dos princípios:
 
 **Não é desculpa para:** reescrever o repositório (fora do perímetro = C), adiar a feature, nem criar abstração que nenhum UC pede (YAGNI continua valendo).
 
-Detalhe operacional por arquivo: `07-implementation.md` § Refatoração Obrigatória. No front, o equivalente é elevar o padrão visual em vez de copiá-lo: `design.md` § *Consistência é lei; mediocridade não é*.
+Detalhe operacional por arquivo: `method/references/07-implementation.md` § Refatoração Obrigatória. No front, o equivalente é elevar o padrão visual em vez de copiá-lo: `method/references/design.md` § *Consistência é lei; mediocridade não é*.
 
 ## Lente por step (o que cobrar em CADA um)
 
@@ -120,8 +120,8 @@ Detalhe operacional por arquivo: `07-implementation.md` § Refatoração Obrigat
 | **5 — Test Cases** | **SRP:** 1 TC = 1 bug único. **DRY:** TC que não puxa cobertura nova é redundante (filtro de significância). **KISS/YAGNI:** teto de 10, `nº TCs == nota` — não invente TC para "ficar completo". **Motor:** o TC exercita o **comportamento do motor pelo front**, nunca a peça interna. **Refatoração:** TC redundante → **funda** (é o próprio filtro de significância). |
 | **6 — To Do** | **SRP:** 1 task = 1 responsabilidade resolvível em 1 prompt. **DRY:** task que recria o que já existe vira task de **reúso** ("estender X"), não de criação. **YAGNI:** task sem UC/TC que a exija sai da lista. **Motor:** cada task declara **qual motor** ela constrói, estende ou absorve — task que espalha a mesma regra por N telas não existe. **Refatoração:** task que recria o existente vira task de **extensão**. |
 | **7a — Plano** | **O portão mais barato do protocolo.** Seções obrigatórias: **Reúso antes de criar (DRY)** — o que já existe e será reutilizado/estendido; arquivo novo só com justificativa de por que nada serve. **O que NÃO vamos construir (YAGNI)** — abstrações/camadas/flags consideradas e descartadas por não ter UC que as exija. **Motores (§ 3.3)** — qual nasce, qual é estendido, qual lógica dispersa será absorvida. **SRP:** cada arquivo do plano declara sua responsabilidade única. **OCP/DIP:** o plano declara os **pontos de extensão** e de quem cada arquivo depende, em que direção. **Refatoração:** o plano **lista o perímetro** (o que será aberto/atravessado) e o que será elevado em cada arquivo. |
-| **7b — Codificar** | Todos na íntegra (SOLID · DRY · KISS · YAGNI · LoD · Motores) + limiares numéricos + **refatoração do perímetro**. A capacidade mora no motor; a mesma regra encontrada fora → **absorve**. Detalhe: `07-implementation.md` § Práticas Obrigatórias. |
-| **8 — Code Review** | Revisar **contra esta mesma lista, princípio a princípio e por nome** — não por proxy, e **os cinco do SOLID**, não só o SRP. **Motor:** a capacidade vazou? existe segunda fonte da mesma regra? o contrato virou tripa exposta? **Refatoração:** confira o **saldo** — todo arquivo do perímetro subiu ou já estava no nível #1. Violação encontrada → triagem A/B/C (`follow-ups.md`): dentro do escopo = corrige agora; escopo novo = ledger. |
+| **7b — Codificar** | Todos na íntegra (SOLID · DRY · KISS · YAGNI · LoD · Motores) + limiares numéricos + **refatoração do perímetro**. A capacidade mora no motor; a mesma regra encontrada fora → **absorve**. Detalhe: `method/references/07-implementation.md` § Práticas Obrigatórias. |
+| **8 — Code Review** | Revisar **contra esta mesma lista, princípio a princípio e por nome** — não por proxy, e **os cinco do SOLID**, não só o SRP. **Motor:** a capacidade vazou? existe segunda fonte da mesma regra? o contrato virou tripa exposta? **Refatoração:** confira o **saldo** — todo arquivo do perímetro subiu ou já estava no nível #1. Violação encontrada → triagem A/B/C (`method/references/follow-ups.md`): dentro do escopo = corrige agora; escopo novo = ledger. |
 | **9 — Run Test** | Todo fix feito para um TC passar obedece os princípios — **workaround que faz o TC passar violando SRP/DRY é FAILED disfarçado**. **Motor:** o fix vai **para o motor**, nunca de remendo no chamador. **Refatoração:** fix novo reabre o perímetro do fix. Qualquer fix invalida o review → volta ao Step 8. |
 | **10 — Done** | O done doc registra o que os princípios produziram: **o que foi reutilizado** (DRY), **o que foi descartado** (YAGNI), **quais motores nasceram, cresceram ou absorveram** e **o que a refatoração do perímetro elevou**. Sem isso, o registro mente sobre como a feature ficou. |
 
@@ -132,10 +132,10 @@ Todo Gateway Check publicado no chat carrega estas linhas — igual à de follow
 ```markdown
 - **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — <1 linha: o que a lente deste step cobrou>
 - **Refatoração (tudo por onde passou):** ✅ <N> elevados — <o que subiu> / nada a elevar — verifiquei <X> e já estava no nível #1
-- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ <o que a lente cobrou>   ← só em feature com superfície visual (`design.md`)
+- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ <o que a lente cobrou>   ← só em feature com superfície visual (`method/references/design.md`)
 ```
 
-Sem elas, o gateway **não foi publicado**. "N/A" não existe: se a lente do step não teve nada a cobrar, escreva o que você verificou e não encontrou. A linha de **Design** é a única condicional — feature sem superfície visual declara isso **uma vez** no Gateway 4→5 e as seguintes herdam (`design.md` § Linha obrigatória).
+Sem elas, o gateway **não foi publicado**. "N/A" não existe: se a lente do step não teve nada a cobrar, escreva o que você verificou e não encontrou. A linha de **Design** é a única condicional — feature sem superfície visual declara isso **uma vez** no Gateway 4→5 e as seguintes herdam (`method/references/design.md` § Linha obrigatória).
 
 ## Racionalizações proibidas
 

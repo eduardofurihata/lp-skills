@@ -20,7 +20,7 @@ REPETIR até 100% limpo:
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível #1?
-     - **Princípios, UM A UM e POR NOME** (`principios.md` — a MESMA lista contra a qual o 7b escreveu):
+     - **Princípios, UM A UM e POR NOME** (`principles/references/principios.md` — a MESMA lista contra a qual o 7b escreveu):
        · **SRP** — arquivo/função/componente faz uma coisa? >40 linhas sem extrair? lógica+UI juntos?
        · **OCP** — comportamento novo entrou como `if`/`case` no meio do que já existia, em vez de composição?
        · **LSP** — alguma implementação lança onde o contrato não prevê, ou exige mais do que ele exige?
@@ -79,7 +79,7 @@ O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer a
 ## Análise de Segurança
 Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 
-## Análise de Qualidade (por princípio — `principios.md`)
+## Análise de Qualidade (por princípio — `principles/references/principios.md`)
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|
 | SRP (responsabilidade única, camadas) | ✅/⚠️ | |

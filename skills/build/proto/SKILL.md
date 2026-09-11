@@ -39,7 +39,7 @@ Protótipo descartável não é desculpa para código torto: a versão escolhida
 - **YAGNI** — 3 versões da tela pedida. Não invente feature nova, config, flag ou "modo" que ninguém pediu para diferenciá-las.
 - **KISS** — a diferença entre as versões é de **proposta** (hierarquia, fluxo, densidade), não de complexidade técnica.
 - **Tokens** — mesmo em protótipo, cor/espaçamento/tipografia vêm do token. Literal cravado é o que faz a versão escolhida nascer torta no `/method`.
-- Detalhe: `method/references/principios.md` (engenharia) e `method/references/design.md` (design).
+- Detalhe: `principles/references/principios.md` (engenharia) e `method/references/design.md` (design).
 
 ## PARE se pensar
 

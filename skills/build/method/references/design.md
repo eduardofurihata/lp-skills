@@ -1,6 +1,6 @@
 # Design — Fonte Única (vale em TODOS os steps de feature com superfície visual)
 
-> **Este arquivo é a fonte única de design.** Nenhum outro arquivo redefine os princípios de design — todos apontam para cá (DRY aplicado ao próprio protocolo). O que cada step tem é a **lente**: o que o princípio significa *naquele* step. Irmão de `principios.md`, mesma régua.
+> **Este arquivo é a fonte única de design.** Nenhum outro arquivo redefine os princípios de design — todos apontam para cá (DRY aplicado ao próprio protocolo). O que cada step tem é a **lente**: o que o princípio significa *naquele* step. Irmão de `principles/references/principios.md`, mesma régua.
 
 **Design não é fase — é regime.** Não existe "step de fazer a UI ficar bonita". Vale do Step 1 ao Step 10: o problema nomeia a fricção, o UC lista os estados, o Spec decide o design system, o código usa token, o review cobra princípio por nome e o teste prova estado por estado.
 
@@ -33,7 +33,7 @@ Precisou de algo que o DS não tem? **Nesta ordem, sem pular:**
 2. **Compor** — dá para montar com o que existe? componha (é o que o `/proto` já faz).
 3. **Promover** — não dá: crie o token/componente **no DS**, não na pasta da feature. Registre em `docs/04-spec/design-system.md` (seção `## Esta feature promove ao DS`) e no done doc do Step 10.
 
-**Componente visual novo nascendo dentro da pasta da feature = dívida de DS.** É o equivalente visual de duplicar lógica em vez de extrair o motor (`principios.md` § Motores) — e a correção é a mesma: promover, e o chamador passa a só usar.
+**Componente visual novo nascendo dentro da pasta da feature = dívida de DS.** É o equivalente visual de duplicar lógica em vez de extrair o motor (`principles/references/principios.md` § Motores) — e a correção é a mesma: promover, e o chamador passa a só usar.
 
 **O inverso também vale:** se a feature revela que um padrão do DS está ruim ou incompleto, isso é **achado**, não conformação — vai para o ledger como **balde B** (`follow-ups.md`), porque este trabalho o expôs.
 
@@ -43,7 +43,7 @@ Precisou de algo que o DS não tem? **Nesta ordem, sem pular:**
 
 > **A regra "siga o padrão existente" vale para consistência, NÃO para qualidade.**
 
-Padrão existente que está abaixo do nível #1 **não se copia**. Ou você o **eleva** (é a refatoração contínua de `principios.md` aplicada à UI — o perímetro é o mesmo: tudo por onde a feature passou), ou ele vira **achado no ledger**. Copiar tela ruim "por consistência" é duplicar código "porque já estava assim": a inconsistência que você evitou custa menos que a mediocridade que você propagou.
+Padrão existente que está abaixo do nível #1 **não se copia**. Ou você o **eleva** (é a refatoração contínua de `principles/references/principios.md` aplicada à UI — o perímetro é o mesmo: tudo por onde a feature passou), ou ele vira **achado no ledger**. Copiar tela ruim "por consistência" é duplicar código "porque já estava assim": a inconsistência que você evitou custa menos que a mediocridade que você propagou.
 
 Como decidir na hora:
 
