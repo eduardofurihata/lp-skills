@@ -1,15 +1,15 @@
 ---
 name: principles
-description: 'Use when user invokes /principles — owner of the quality doctrine: SOLID, DRY, KISS, YAGNI, LoD, Motores and refactoring, plus the clarity bar (simple/minimalist/clean, efficient, premium/professional, easy for humans and AI). With no argument it loads the doctrine for the ongoing work; with a target (projeto, pasta/, arquivo, commit <sha>, diff, doc/skill/prompt) it scores it 0-100 per pillar and fixes it until every pillar is ≥95 — never changes behavior, never commits or pushes; `audit` = report only. Triggers on "força esse commit a ficar simples", "deixa essa pasta clean", "aplica os princípios nesse projeto", "avalia de 0 a 100", "simplifica isso", "deixa isso minimalista". Not for building features nor for committing.'
+description: 'Use when user invokes /principles — owner of the quality doctrine: SOLID, DRY, KISS, YAGNI, LoD, Motores and refactoring, plus the clarity bar for humans and for AI. The bar: simple/minimalist/clean, efficient/precise/optimized, premium/professional/complete/modern, understandable by anyone of any age. With no argument it loads the doctrine for the ongoing work; with a target (projeto, pasta/, arquivo, commit <sha>, diff, doc/skill/prompt) it scores it 0-100 per pillar and fixes it until every pillar is ≥95 — never changes behavior, never commits or pushes; `audit` = report only. Triggers on "força esse commit a ficar simples", "deixa essa pasta clean", "aplica os princípios nesse projeto", "avalia de 0 a 100", "simplifica isso", "deixa isso minimalista". Not for building features nor for committing.'
 effort: max
-argument-hint: "[projeto | pasta/ | arquivo | commit <sha> | diff | doc|skill|prompt <arquivo>] [audit]"
+argument-hint: "[projeto | pasta/ | arquivo | commit <sha> | diff | doc/skill/prompt <arquivo>] [audit]"
 ---
 
-# /principles — SOLID · DRY · KISS · YAGNI · LoD · Motores · refatoração, e a régua simples · eficiente · premium, para gente e para IA
+# /principles — simples, eficiente e premium, para gente e para IA
 
 **Esta skill é a doutrina de qualidade — os princípios de engenharia e a régua de clareza — e é quem força um alvo a cumpri-la.** Cada palavra do padrão é uma prova de sim/não; a nota de 0 a 100 é calculada dos achados, não sentida; cada passada reavalia o alvo do zero, sem herdar a anterior.
 
-Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pediu". A doutrina não decide **o quanto** existe — ela garante que tudo o que existe esteja na forma mais clara e curta, e inteiro.
+Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pediu". A doutrina não decide **o quanto** existe — ela garante que tudo o que existe esteja na forma mais clara e curta, e inteiro. KISS e YAGNI matam a complexidade *desnecessária*; a *necessária* para o **nível #1** (o melhor que existe no mercado) continua sendo requisito.
 
 ## Dois modos
 
@@ -41,12 +41,12 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 | Princípio | Regra | Falha típica |
 |---|---|---|
 | **DRY** | Zero duplicação de lógica **ou de decisão**; uma única fonte de verdade. Antes de criar, **procure** (grep em `shared/`, `lib/`, `components/`, `hooks/`) — reutilizar/estender > recriar. Repetiu 2× já é candidato a extração. | "Copiei e adaptei" |
-| **KISS** | A solução mais simples que atinge o **nível #1** (o melhor que existe no mercado). 5 linhas > 50 linhas. Simplicidade ≠ mediocridade. | "Fiz genérico pra ficar elegante" |
-| **YAGNI** | APENAS o que o requisito acordado exige. Zero abstração especulativa. 3 linhas similares > abstração prematura. | "Deixei preparado pro dia que precisar" |
+| **KISS** | A solução mais simples que atinge o **nível #1**. 5 linhas > 50 linhas. Simplicidade ≠ mediocridade. | "Fiz genérico pra ficar elegante" |
+| **YAGNI** | APENAS o que o requisito acordado exige. Zero abstração especulativa. 3 linhas similares > abstração prematura. Nunca é desculpa para entregar menos que o requisito pede, nem para descartar achado real (vira **balde B** — § Fluxo, passo 4). | "Deixei preparado pro dia que precisar" |
 | **LoD** (Law of Demeter) | Objeto só fala com vizinhos diretos. Seção própria abaixo. | "Só puxei o campo lá de dentro" |
 | **Motores** | Toda capacidade tem **um** dono. Seção própria abaixo. | "Cada tela trata do seu jeito" |
 
-**Como os cinco se amarram no resto:** **OCP** é como o motor cresce (extensão, não `if` novo) · **ISP** e **LoD** são o mesmo contrato pequeno visto de dois lados · **DIP** é a direção das dependências dita por princípio · **LSP** é o que faz o contrato do motor valer para todas as implementações · **SRP** diz **a quem** cada unidade responde, **LoD** diz **com quem** ela fala.
+**Como os cinco do SOLID se amarram no resto:** **OCP** é como o motor cresce (extensão, não `if` novo) · **ISP** e **LoD** são o mesmo contrato pequeno visto de dois lados · **DIP** é a direção das dependências dita por princípio · **LSP** é o que faz o contrato do motor valer para todas as implementações · **SRP** diz **a quem** cada unidade responde, **LoD** diz **com quem** ela fala.
 
 **Separação de camadas é o SRP aplicado à arquitetura:** controller = HTTP, service = lógica, componente = UI — lógica de negócio NUNCA no controller nem no componente. Acoplamento, direção de dependências e ciclos são a **Law of Demeter** (abaixo), fonte única dessas três regras.
 
@@ -80,13 +80,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 
 **Auto-check:** *"Se eu renomear um campo no fim da cadeia, quantos arquivos quebram?"* Mais de um → você está **navegando**, não conversando.
 
-**Por que ele acompanha SOLID e não é detalhe:** sem ele, unidades de responsabilidade única seguem amarradas umas nas outras — e o motor nunca fecha, porque todo mundo alcança o interior de todo mundo. O **contrato pequeno do motor É a Law of Demeter aplicada**.
-
 **O que ele NÃO proíbe:** LoD não veta API fluente do mesmo objeto (`query.where().order().limit()` é **um** vizinho devolvendo a si mesmo), nem exige delegação cega (um wrapper por campo é o oposto: burocracia sem contrato). O que ele proíbe é **atravessar objetos** para alcançar um dado que ninguém expôs.
-
-## Simples não é menos — KISS/YAGNI × o nível #1
-
-**KISS/YAGNI matam a complexidade *desnecessária*. A complexidade *necessária* para o nível #1 continua sendo requisito.** YAGNI nunca é desculpa para entregar menos do que o requisito pede, nem para descartar achado real (isso é **balde B**: fica listado com caminho, não some — § Fluxo, passo 4). KISS nunca é desculpa para a versão pobre.
 
 ## Refatoração contínua — a cada passada o código sobe
 
@@ -117,13 +111,11 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 
 **Regra do saldo:** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível #1** — e você **declara isso** —, ou ele **subiu**.
 
-**Não é desculpa para:** reescrever o repositório (fora do perímetro), adiar o trabalho, nem criar abstração que nenhum caso de uso pede (YAGNI continua valendo).
-
 # A régua de clareza — para gente e para IA
 
 Simples e Eficiente são a lente de SRP, DRY e KISS (§ Princípios de engenharia, acima) para qualquer alvo — commit, pasta, doc; Premium e os dois leitores são o que a doutrina não cobria.
 
-**Toda palavra do padrão tem UMA prova aqui — sinônimo não vira pilar novo (YAGNI):** minimalista e clean → **Simples** (zero sobra) + **Premium** (acabamento) · fácil, qualquer pessoa de qualquer idade → **Humano** (teste do leigo) · objetivo, direto → **Eficiente** (menor forma) · otimizado → **Eficiente** (zero desperdício) · preciso → **Eficiente** (preciso) · completo → **Premium** (nada pela metade + fecha o ciclo) · profissional, moderno → **Premium**. O que não tem prova nomeada não é cobrado.
+**Toda palavra do padrão tem UMA prova aqui — sinônimo não vira pilar novo (YAGNI):** minimalista e clean → **Simples** (zero sobra) + **Premium** (acabamento) · fácil, qualquer pessoa de qualquer idade → **Humano** (teste do leigo) · objetivo, direto → **Eficiente** (menor forma) · otimizado → **Eficiente** (zero desperdício) · preciso → **Eficiente** (preciso) · completo → **Premium** (nada pela metade + fecha o ciclo) · moderno → **Premium** (moderno) · profissional → **Premium** (acabamento). O que não tem prova nomeada não é cobrado.
 
 ## Simples · Eficiente · Premium — cada palavra é uma prova
 
@@ -179,7 +171,7 @@ Premium se mede contra o que o alvo **promete** (nome + 1ª linha), nunca contra
    | caminho de pasta | a pasta e tudo dentro | cada arquivo dela |
    | caminho de arquivo (`doc`, `skill` ou `prompt` na frente escolhe a coluna de § Onde a prova muda de forma) | o arquivo | o arquivo + `grep` de quem o usa |
 
-2. **Snapshot** — `git status` limpo é pré-condição para tudo que escreve: é o que permite desfazer. Sujo → pare e peça para commitar antes. Dispensam: `audit` (nada é escrito) e o alvo que **já é** a alteração pendente — `diff` sempre, e o arquivo ou a pasta alvo quando a sujeira está só neles. `projeto` e sujeira fora do alvo nunca dispensam: é ela que impede desfazer. Em `commit <sha>`, as correções entram no working tree como mudança nova e a **mensagem só recebe uma proposta** — reescrever histórico não é desta skill.
+2. **Snapshot** — `git status` limpo é pré-condição para tudo que escreve: é o que permite desfazer. Sujo → pare e peça para commitar antes. Dispensam: `audit` (nada é escrito) e o alvo que **já é** a alteração pendente — `diff`, ou o arquivo/pasta alvo com a sujeira só dentro dele. Nunca dispensam: `projeto`, e sujeira fora do alvo — é ela que impede desfazer. Em `commit <sha>`, as correções entram no working tree como mudança nova e a **mensagem só recebe uma proposta** — reescrever histórico não é desta skill.
 
 3. **Passada** — inventário **do zero**: leia o alvo inteiro, agora, do disco — e releia a doutrina acima, a régua do pilar Princípios. Monte a tabela de novo — não copie linhas da passada anterior nem use a conversa. Cada "não" vira uma linha da tabela do Output final; o mesmo achado em N lugares é 1 linha com os N lugares, e o peso conta por lugar. **Um achado, um pilar** — o mais específico: se uma prova de clareza o nomeia, é dela; Princípios fica com o que só a doutrina cobre (OCP, LSP, ISP, DIP, YAGNI, LoD, Motores, perímetro, limiares). Todo caminho (`ls`), comando (existe) e link (responde) citado pelo alvo é conferido — é a prova "preciso" em qualquer projeto.
 
@@ -199,7 +191,7 @@ Premium se mede contra o que o alvo **promete** (nome + 1ª linha), nunca contra
    | **5 — média** | entende-se, mas com esforço que não precisava: forma mais longa, nome que não diz, sobra, legado ao lado do novo, limiar numérico estourado |
    | **2 — leve** | acabamento: formatação, escrita, pequena diferença dos irmãos |
 
-6. **Checks — linha de base** — os do próprio projeto, se existem (`package.json` scripts `lint`, `typecheck`/`tsc`, `test`, `format`; `Makefile` alvos `lint`, `test`, `check`), antes de tocar em qualquer coisa. Sem checks → diga no output.
+6. **Checks — linha de base** — os do próprio projeto, se existem (`package.json` scripts `lint`, `typecheck`/`tsc`, `test`, `format`; `Makefile` alvos `lint`, `test`, `check`), antes de corrigir (passo 7). Sem checks → diga no output.
 
 7. **Corrige** (força) — todo balde A. Só dentro do alvo. Comportamento idêntico: refatorar não muda o que o alvo faz. Apagar um arquivo inteiro ou renomear um nome público/exportado → **pergunte antes**. Correção que precisaria sair do alvo → pergunte, ou vira B. Nunca `git commit`, nunca `git push`, nunca `--amend`. No fim, os checks de novo: verde não vira vermelho — virou, é seu, corrija antes de seguir.
 
