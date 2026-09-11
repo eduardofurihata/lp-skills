@@ -1,0 +1,34 @@
+{
+  "name": "eduzz-builder",
+  "version": "0.1.0+codex.2466a1efbd52",
+  "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
+  "author": {
+    "name": "Eduardo Furihata",
+    "url": "https://github.com/eduardofurihata"
+  },
+  "homepage": "https://lp-skills.vercel.app",
+  "repository": "https://github.com/eduardofurihata/lp-skills",
+  "license": "MIT",
+  "keywords": [
+    "eduzz",
+    "jira",
+    "workflow",
+    "development"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Eduzz Builder",
+    "shortDescription": "Fluxos de trabalho da Eduzz.",
+    "longDescription": "Trabalhe em cards, AFLs, provas e vídeos da Eduzz com os fluxos especializados do Furihata.",
+    "developerName": "Eduardo Furihata",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Conduza este trabalho da Eduzz com o Eduzz Builder."
+    ],
+    "brandColor": "#10B981"
+  }
+}

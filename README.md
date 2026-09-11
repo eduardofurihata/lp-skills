@@ -1,8 +1,8 @@
 # lp-skills
 
-Skills do Claude Code do [Furihata](https://github.com/eduardofurihata), distribuídas como um **Claude Code plugin marketplace** — instala e atualiza igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em quatro categorias: **Build** (o método: `/principles`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`), **Ship** (a entrega: `/jira-board`, `/card`, `/work`, `/pull-request`, `/homolog`, `/prod`), **Toolbox** (ferramentas avulsas: `/ask`, `/chat`, `/save`, `/sync`…) e **Eduzz** (trabalho).
+Skills do [Furihata](https://github.com/eduardofurihata), distribuídas como marketplaces nativos do **Claude Code** e do **Codex** — instala e atualiza igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em quatro categorias: **Build** (o método: `/principles`, `/solve`, `/method`, `/fast`, `/todo`, `/proto`), **Ship** (a entrega: `/jira-board`, `/card`, `/work`, `/pull-request`, `/homolog`, `/prod`), **Toolbox** (ferramentas avulsas: `/ask`, `/chat`, `/save`, `/sync`…) e **Eduzz** (trabalho).
 
-Este repo é as duas coisas ao mesmo tempo: o **marketplace** (`.claude-plugin/marketplace.json` + **4 plugins**, um por categoria, que empacotam as skills) e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
+Este repo é as duas coisas ao mesmo tempo: os **marketplaces** (`.claude-plugin/marketplace.json` para Claude Code e `.agents/plugins/marketplace.json` para Codex, ambos com **4 plugins**, um por categoria) e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
 
 ## Para usuários
 
@@ -32,12 +32,45 @@ Prefere escolher visualmente? Acesse a [LP](https://lp-skills.vercel.app), filtr
 
 > **Para um time/projeto:** adicione o marketplace no `.claude/settings.json` do projeto (`extraKnownMarketplaces`) para que todo mundo o conheça ao clonar; cada dev instala as skills que precisa.
 
+## Para usuários do Codex
+
+O marketplace do Codex usa os mesmos quatro pacotes, mas com manifestos nativos do Codex. Depois que uma versão do repositório contendo `.agents/plugins/marketplace.json` estiver publicada no GitHub, instale tudo globalmente na máquina assim:
+
+```bash
+# 1) adicione o marketplace uma vez; ele fica salvo em ~/.codex/config.toml
+codex plugin marketplace add eduardofurihata/lp-skills --ref main
+
+# 2) instale todos os pacotes
+codex plugin add furi-build@lp-skills
+codex plugin add furi-ship@lp-skills
+codex plugin add furi-toolbox@lp-skills
+codex plugin add eduzz-builder@lp-skills
+
+# 3) confira o estado global
+codex plugin list --marketplace lp-skills
+
+# 4) quando houver uma nova publicação
+codex plugin marketplace upgrade lp-skills
+codex plugin add furi-build@lp-skills
+codex plugin add furi-ship@lp-skills
+codex plugin add furi-toolbox@lp-skills
+codex plugin add eduzz-builder@lp-skills
+```
+
+Para testar ou desenvolver no checkout local antes de publicar, substitua o primeiro comando por `codex plugin marketplace add /caminho/absoluto/para/lp-skills`. Os pacotes instalados ficam disponíveis em novos projetos e novas conversas do Codex; abra uma conversa nova após instalar ou atualizar para ela carregar as skills.
+
 ## Estrutura
 
 ```
 lp-skills/
 ├── .claude-plugin/
 │   └── marketplace.json    # catálogo do marketplace — 1 plugin por categoria (GERADO)
+├── .agents/plugins/
+│   └── marketplace.json    # catálogo nativo do Codex — 1 plugin por categoria (GERADO)
+├── plugins/                # pacotes nativos do Codex, gerados a partir de skills/
+│   └── <builder>/
+│       ├── .codex-plugin/plugin.json
+│       └── skills/<skill>/SKILL.md
 ├── skills/                 # source of truth
 │   ├── build/              # = plugin furi-build (raiz) — o método
 │   │   ├── .claude-plugin/plugin.json   # empacota as skills abaixo (GERADO)
@@ -52,7 +85,7 @@ lp-skills/
 │       ├── .claude-plugin/plugin.json   # (GERADO)
 │       └── <skill>/SKILL.md
 ├── scripts/
-│   └── generate-plugins.mjs   # gera os plugin.json + o marketplace.json do frontmatter
+│   └── generate-plugins.mjs   # gera os pacotes e marketplaces de Claude Code e Codex
 ├── app/                    # Next.js App Router (a LP)
 ├── components/             # React components
 └── lib/                    # categorias + leitor de skills + gerador de comandos
@@ -64,14 +97,14 @@ Cada pasta de categoria (`skills/build`, `skills/ship`, `skills/toolbox`, `skill
 
 ## Workflow do autor
 
-**Fonte única = o frontmatter dos `SKILL.md`.** Os manifestos são gerados, nunca escritos à mão:
+**Fonte única = o frontmatter dos `SKILL.md`.** Os manifestos e cópias de distribuição são gerados, nunca escritos à mão:
 
 ```bash
-pnpm gen:plugins    # lê skills/**/SKILL.md → escreve marketplace.json + os plugin.json
-git add -A && git commit && git push   # publicar = dar push (versionamento por git-SHA)
+pnpm gen:plugins    # lê skills/**/SKILL.md → escreve os marketplaces e pacotes dos dois clientes
+git add -A && git commit && git push   # publicar = dar push
 ```
 
-Cada push vira uma versão nova (não há `version` fixado); os usuários recebem no próximo `/plugin marketplace update`.
+Para o Claude Code, cada push vira uma versão nova por Git SHA. Para o Codex, o gerador acrescenta ao semver um cachebuster derivado do conteúdo de cada categoria; após `codex plugin marketplace upgrade lp-skills`, rode novamente `codex plugin add <pacote>@lp-skills` para atualizar o cache instalado.
 
 **Skill que depende de outra a invoca via Skill tool** no ponto de uso (`furi-build:<nome>` / `furi-ship:<nome>` / `eduzz-builder:<nome>`) e a lista em `requires` — mencionar não é invocar. Hand-offs ("Próximo: /pull-request") e fronteiras ("isso é o /prod") ficam como menção: o próximo passo é decisão do usuário. Caminho de arquivo dentro de uma skill diz o escopo: `<slug>/references/x.md` é do **mesmo pacote** (resolve no cache instalado); `skills/<cat>/<slug>/…` é de **outro pacote** e entra só como menção — o conteúdo chega invocando a skill dona.
 

@@ -1,0 +1,34 @@
+{
+  "name": "furi-build",
+  "version": "0.1.0+codex.66d213417aeb",
+  "description": "Skills de construção do Furihata — /principles, /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+  "author": {
+    "name": "Eduardo Furihata",
+    "url": "https://github.com/eduardofurihata"
+  },
+  "homepage": "https://lp-skills.vercel.app",
+  "repository": "https://github.com/eduardofurihata/lp-skills",
+  "license": "MIT",
+  "keywords": [
+    "development",
+    "planning",
+    "quality",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Furi Build",
+    "shortDescription": "Método de construção, QA e commit local.",
+    "longDescription": "Conduza o trabalho do problema ao commit local com o método de engenharia do Furihata.",
+    "developerName": "Eduardo Furihata",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Conduza esta feature com o método Furi Build."
+    ],
+    "brandColor": "#8B5CF6"
+  }
+}
