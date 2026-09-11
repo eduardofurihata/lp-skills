@@ -12,6 +12,9 @@
 //      eles o cliente não sabe quando invocar
 //   4. os 2 marketplaces apontam para diretórios que existem
 //   5. todo caminho `plugins/…md` citado dentro de uma skill resolve no disco
+//   6. todo alvo de `requires`/`handoff`/`boundary` é o `name` de uma skill que
+//      existe — um typo some do grafo da LP e da dependência entre pacotes sem
+//      dar erro em lugar nenhum
 //
 // Uso: node scripts/validate-plugins.mjs   (exit 1 em qualquer falha)
 import fs from "node:fs";
@@ -44,6 +47,17 @@ const NAME_RE = /^(?!.*(--|\.\.))[a-z0-9]([a-z0-9.-]{0,62}[a-z0-9])?$/;
 
 const errors = [];
 const fail = (where, msg) => errors.push(`${where}: ${msg}`);
+
+// As relações declaradas por cada skill, para o check (6) — que só pode rodar
+// depois de conhecer o `name` de TODAS as skills de TODOS os pacotes.
+const declared = []; // { file, name, relations: { [campo]: string[] } }
+const RELATION_FIELDS = ["requires", "handoff", "boundary"];
+
+// Campo de relação: string ("method") ou lista. Espelha lib/skills.ts.
+const parseList = (value) =>
+  (typeof value === "string" ? [value] : Array.isArray(value) ? value : [])
+    .filter((v) => typeof v === "string" && v.trim())
+    .map((v) => v.trim());
 
 function readJson(file) {
   try {
@@ -128,6 +142,27 @@ for (const pkg of packages) {
       fail(r, "frontmatter sem `name` (é o nome de invocação)");
     if (typeof data.description !== "string" || !data.description.trim())
       fail(r, "frontmatter sem `description` (é o gatilho de invocação)");
+
+    declared.push({
+      file: r,
+      name: typeof data.name === "string" ? data.name.trim() : slug,
+      relations: Object.fromEntries(
+        RELATION_FIELDS.map((f) => [f, parseList(data[f])]),
+      ),
+    });
+  }
+}
+
+// (6) as relações apontam para skills que existem.
+const known = new Set(declared.map((d) => d.name));
+for (const { file, name, relations } of declared) {
+  for (const field of RELATION_FIELDS) {
+    for (const target of relations[field]) {
+      if (target === name)
+        fail(file, `\`${field}\` aponta para a própria skill: ${target}`);
+      else if (!known.has(target))
+        fail(file, `\`${field}: ${target}\` — nenhuma skill tem esse \`name\``);
+    }
   }
 }
 
@@ -164,6 +199,10 @@ function walk(dir, out = []) {
 }
 
 // Diretórios que pertencem ao projeto-alvo, não a este repo.
+// `.claude`, `.github` e `.secrets` entram porque as skills citam arquivos que
+// moram lá NO PROJETO (`.claude/setup.md`, `.claude/deploy.md`,
+// `.github/pull_request_template.md`, `.secrets/README.md`) — sem isso a regex
+// abaixo os trataria como caminho de skill e cobraria existência aqui.
 const TARGET_PROJECT_ROOTS = new Set([
   "docs",
   "kanban",
@@ -176,6 +215,9 @@ const TARGET_PROJECT_ROOTS = new Set([
   "tests",
   "test",
   "node_modules",
+  ".claude",
+  ".github",
+  ".secrets",
 ]);
 
 for (const pkg of packages) {
@@ -237,5 +279,5 @@ const total = packages.reduce(
 );
 console.log(
   `validate-plugins: ok — ${packages.length} pacotes, ${total} skills, ` +
-    `3 manifestos cada, 2 marketplaces, caminhos citados resolvem.`,
+    `3 manifestos cada, 2 marketplaces, caminhos citados e relações resolvem.`,
 );

@@ -31,7 +31,9 @@ git ls-remote --heads origin main
 
 ## 2 — O doc do projeto
 
-**`docs/00-context/technical/deploy.md`** — versionado no repositório, ao lado do `patterns.md` que o review já consome.
+**`.claude/deploy.md`** — versionado no repositório, na mesma casa do `.claude/setup.md` (convenções do time — `/setup`), do `.claude/infra.md` (mapa da infra — `/infra`) e do `.claude/patterns.md` (padrões de código — `/method` Step 4). É a casa do conhecimento **permanente** do projeto: nada ali é por feature, nada ali é da máquina. Um `.md` solto em `.claude/` não é auto-carregado — só entra quando alguém o lê por caminho, como este motor faz. **Do time ou só meu:** o `/setup` (Step 0 de quem chega aqui) decidiu o modo deste repositório — `setup.md` existe ⇒ este doc é `deploy.md`, versionado; só `setup.local.md` existe ⇒ este doc é **`deploy.local.md`**, fora do git (repositório de um time que não usa este processo). Leitura: `cat .claude/deploy.md 2>/dev/null || cat .claude/deploy.local.md 2>/dev/null`; o do time vence. Se este motor rodar sem o `/setup`, no modo time confira `git check-ignore -v .claude/deploy.md`.
+
+Fronteira com o `infra.md`: **este doc é processo** (como sobe, como checa, como seta, como volta); **o `infra.md` é inventário** (o que existe, sob qual conta, onde vive cada segredo). Onde vive uma variável se lê lá; como setá-la, aqui.
 
 ```markdown
 # Deploy — <projeto>
@@ -50,8 +52,8 @@ duas branches (`dev` + `main`) | branch única (`main`)
 gh run list --branch <branch> --limit 5
 gh run watch <id> --exit-status
 
-## Configuração         <!-- por ambiente: ONDE vive e COMO se seta. Nunca o valor -->
-- Env vars / secrets: <onde> · comando: <como>
+## Configuração         <!-- por ambiente: COMO se seta. ONDE cada segredo vive é o `.claude/infra.md`. Nunca o valor -->
+- Env vars / secrets: comando: <como> (ex.: `vercel env add <NOME> production` · `gh secret set <NOME>`) · onde vive cada um: `.claude/infra.md`
 - Migrations: <comando>
 - Feature flags: <onde/como>
 - Seeds: <comando>
@@ -77,6 +79,7 @@ self-hosted em <onde> · como conferir se está online: <comando/observação>
 
 | Estado | O que fazer |
 |---|---|
+| **Doc no caminho antigo** (`docs/00-context/technical/deploy.md`) e nada em `.claude/deploy.md` | migrar antes de qualquer outra coisa: `mkdir -p .claude && git mv docs/00-context/technical/deploy.md .claude/deploy.md`. Avisar (é arquivo versionado — entra no commit de quem chamou). No modo **só meu** o destino é `deploy.local.md` e o `git mv` vira `git rm --cached` + `mv` (o antigo estava versionado; o novo não fica). Depois, um dos três estados abaixo |
 | **Doc existe e confere** com a topologia detectada | ler e seguir. **Zero pergunta.** |
 | **Doc não existe** | § 4 — inferir, perguntar o resto, escrever |
 | **Doc existe e divergiu** (URL morta, workflow renomeado, `dev` passou a existir, topologia mudou) | reportar **o que mudou**, corrigir o doc (perguntando só o não-derivável) e seguir. **Nunca** seguir com contexto que você sabe estar errado |
@@ -96,13 +99,13 @@ self-hosted em <onde> · como conferir se está online: <comando/observação>
 
 **Perguntar** — só o que não é derivável de arquivo nenhum:
 - as **URLs** de cada ambiente;
-- **onde vivem** os secrets de cada ambiente (painel da plataforma? `gh secret`? gerenciador?);
+- **como se seta** um secret em cada ambiente (comando ou painel) — *onde vive* cada um não se pergunta aqui: é o `.claude/infra.md` (`/infra`), e se ele não existe é o `env-config` quem o invoca na hora de aplicar;
 - as **rotas críticas** do smoke, se não houver rota óbvia;
 - **onde está** o runner self-hosted e como conferir se está online.
 
 Apresentar separado, sempre — *"inferi isto (destas fontes); preciso que você confirme aquilo"*. **Zero URL inventada, zero comando chutado.** Não sabe e não perguntou → o campo fica explicitamente vazio no doc, e quem consumir sabe que falta.
 
-Escrever o doc, avisar que foi criado (é arquivo versionado — entra no commit de quem chamou).
+Escrever o doc no arquivo do modo — `deploy.md` (avisar que é versionado: entra no commit de quem chamou) ou `deploy.local.md` (avisar que fica fora do git).
 
 ## 5 — Como se sabe que o commit está no ar
 
@@ -117,5 +120,7 @@ Nenhum projeto é obrigado a expor endpoint de versão por causa desta skill —
 - "Não achei a URL de homolog, chuto pelo padrão do projeto" → NÃO. **Pergunta.** URL inventada = smoke passando em lugar nenhum, ou falhando por engano.
 - "Escrevo o valor do secret no doc para não perguntar de novo" → NÃO. **Nunca.** O doc diz onde e como; o valor é pedido na hora.
 - "Guardo isso na memória da máquina, como o `/jira-board`" → NÃO. Board é preferência de quem usa; deploy é conhecimento do time, e tem que ser versionado e revisável.
+- "`.claude/` é do Claude, é coisa local, não versiono" → NÃO. `.claude/deploy.md`, `setup.md`, `infra.md` e `patterns.md` são do **time**; só `settings.local.json`, `plans/` e `worktrees/` são pessoais. Está no `.gitignore`? O `/setup` propõe a correção (`.claude/*` + negações) — não mude o doc de lugar.
+- "Anoto no `deploy.md` onde vive cada secret, é tudo configuração" → NÃO. Onde vive é inventário (`infra.md`); aqui é o comando de setar. Um fato, um dono.
 - "Pergunto tudo, é mais seguro" → NÃO (o oposto). O que está em `.github/workflows/` você **lê**. Perguntar o derivável é a fricção que faz a skill ser abandonada.
 - "`dev` existe local, então a topologia é de duas branches" → NÃO. Sem `origin/dev` não há para onde abrir PR nem o que deployar. Reporta a local, não a promove.

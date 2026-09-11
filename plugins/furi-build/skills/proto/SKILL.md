@@ -3,6 +3,7 @@ name: proto
 description: 'Use when user invokes /proto to recreate a screen in 3 versions, each on a temporary parallel route in the same app ({rota-original}-v1/-v2/-v3), respecting the app design system, covering mobile and desktop at the project breakpoints, at /solve quality — designed as the screen SHOULD be, not as it is. Triggers on "recria essa tela em 3 versões", "redesenha essa tela", "prototipa variações dessa tela", "quero comparar opções de UI". Ends with the 3 URLs and a recommendation so the user picks one; the chosen version is implemented later by /method or /fast.'
 effort: max
 requires: solve
+handoff: [method, fast]
 argument-hint: "[rota, tela ou print]"
 ---
 

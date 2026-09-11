@@ -18,6 +18,7 @@ Dono **único** da memória de projeto do Jira. Toda skill de Jira (`/card`, `/w
 ## Contrato
 
 - **Memória por projeto.** Cada repositório tem a sua — o board do `vibe-nivee` não vaza pro `vibe-alkaline-man`. Nada de board hardcoded em skill nenhuma.
+- **Memória da máquina ≠ convenção do time.** O board é coordenada de quem usa e mora aqui, em `~/.claude/projects/…`. Como o time trabalha (branch, commit, PR, idioma dos cards) é do time e mora **versionado** em `.claude/setup.md`, dono `/setup`. Um não guarda o do outro.
 - **Default, não trava.** O que está na memória é o **padrão** do repo. Key explícita no argumento de quem chamou (`/card ALK bug X`) **vence** e **não** reescreve a memória.
 - **Um site por vez.** O MCP alcança só o site do `JIRA_URL` configurado. Key/link de outro site → **avise e não grave**; nunca aproxime pra key mais parecida.
 - **Só grava o que foi validado.** Key confirmada em `jira_get_all_projects`, board em `jira_get_agile_boards`. Sem validação, não grava.

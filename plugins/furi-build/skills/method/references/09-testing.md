@@ -168,6 +168,8 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
      b. CADA TC do batch: executar DO ZERO via ferramenta apropriada
      c. PASSED (com screenshot/evidência) ou FAILED (motivo)
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota do motivo.
+        → TC de **texto gerado por IA** (Step 5): a evidência é a saída REAL lida no front (screenshot/transcrição);
+          texto que lê pior que a referência #1 do spec = FAILED. "O código rodou e o texto apareceu" NÃO é PASSED.
      d. Bug → CLASSIFICAR (ver `follow-ups.md`):
         - dentro do escopo documentado → **balde A**: corrigir AGORA. ATENÇÃO: qualquer fix invalida
           o ciclo → RESETE todos os `- [x]` do checklist de QA para `- [ ]` (vai retestar TUDO do zero)

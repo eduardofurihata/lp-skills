@@ -85,7 +85,7 @@ const PACKAGES = [
     name: "furi-ship",
     category: "ship",
     description:
-      "Skills de entrega do Furihata — /jira-board, /card, /work, /pull-request, /homolog, /prod: do card no Jira até produção. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
+      "Skills de entrega do Furihata — /jira-board, /setup, /infra, /card, /work, /pull-request, /homolog, /prod: do card no Jira até produção, com as convenções do time e o mapa da infra versionados em .claude/. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
     keywords: ["jira", "pull-request", "deployment", "delivery"],
     codex: {
       displayName: "Furi Ship",
@@ -141,8 +141,9 @@ function firstSentence(desc) {
   return sentence;
 }
 
-// `requires` no frontmatter: string ("method") ou lista (["a","b"]). Espelha lib/skills.ts.
-function parseRequires(value) {
+// Campo de relação no frontmatter: string ("method") ou lista (["a","b"]).
+// Espelha parseList() de lib/skills.ts.
+function parseList(value) {
   if (typeof value === "string") {
     const v = value.trim();
     return v ? [v] : [];
@@ -228,6 +229,8 @@ function pruneLegacy(slugsByPackage) {
 }
 
 // 1ª passada: lê todas as skills (name, description, requires, pacote).
+// `handoff` e `boundary` também moram no frontmatter, mas são desenho do grafo
+// da LP (lib/skill-graph.ts), não empacotamento — este script não os lê.
 const skills = []; // { slug, pkg, category, name, description, requires }
 const slugsByPackage = Object.fromEntries(PACKAGES.map((p) => [p.name, []]));
 
@@ -252,7 +255,7 @@ for (const pkg of PACKAGES) {
       category: pkg.category,
       name: typeof data.name === "string" ? data.name : slug,
       description: firstSentence(data.description),
-      requires: parseRequires(data.requires),
+      requires: parseList(data.requires),
     });
     slugsByPackage[pkg.name].push(slug);
   }
@@ -268,6 +271,11 @@ const packageOfName = new Map(skills.map((s) => [s.name, s.pkg]));
 // furi-ship depende de furi-build. Dentro do mesmo pacote não há dep: ele já
 // traz todas as skills. Só o manifesto do Claude Code tem esse campo — o schema
 // do Agent Plugins v1 é `additionalProperties: false` e não define dependências.
+//
+// SÓ `requires` conta aqui, nunca `handoff` nem `boundary`. Instalar um pacote
+// tem que trazer o que as skills dele INVOCAM; para onde elas encaminham é
+// decisão do usuário. Ler `handoff` faria o /sync (toolbox, que encaminha para
+// o /prod) puxar o furi-ship, e o pacote das avulsas deixaria de ser avulso.
 function crossPackageDeps(pkgName) {
   const others = new Set();
   for (const s of skills) {

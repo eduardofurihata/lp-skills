@@ -2,7 +2,8 @@
 name: homolog
 description: 'Use when user invokes /homolog to get everything that is ready live on the homolog environment — working and configured, not merely merged. Declares the homolog target (environment homolog, integration branch `dev`) and hands it to the reconcile engine, which diagnoses the gap between what is ready and what actually answers on the homolog URL, then closes it: opens a PR for work committed without one, runs `/todo` when QA is pending, reviews the diff, APPROVES the PR, fixes small problems in place or REJECTS a raw one and bounces the card back to the dev, splits oversized scope into cards, merges into `dev` and deletes the branch (remote AND local), watches the deploy run to a named outcome (green/red/queued — a self-hosted runner offline is a QUEUE, never a success), applies the environment configuration the change needs (env vars, secrets, migrations, feature flags, seeds — a secret value is always asked, never inferred), and finally verifies on the homolog URL that EVERY card that should be live is live and working. Never touches `main`: production is `/prod`. On a single-branch repository there is no homolog environment, so it says so and forwards to `/prod`.'
 effort: max
-requires: [jira-board, todo, pull-request, card, prod]
+requires: [jira-board, setup, todo, pull-request, card, prod]
+handoff: prod
 argument-hint: "[PR number | KEY-N] | (vazio = diagnosticar e fechar o gap de homolog)"
 ---
 
@@ -24,7 +25,8 @@ Não é "mergear PR": é **atingir um estado** — o que está pronto está **no
 - **`main` não é assunto desta skill.** Produção é o **`/prod`**, com autorização explícita a cada release.
 - Remote `origin`; o repositório vem do próprio checkout (`gh repo view --json nameWithOwner -q .nameWithOwner`) — não hardcodar.
 - **Board:** o da memória do projeto, via **`/jira-board`**, nunca hardcoded. Via `mcp__atlassian__*`.
-- **Contexto de deploy:** `docs/00-context/technical/deploy.md`, via **`prod/references/deploy-context.md`**. Topologia é detectada (`git ls-remote`), nunca assumida.
+- **Convenções do time:** `.claude/setup.md`, via **`/setup`** — o `pr-cycle` lê daí `Abre PR`, `Aprovação` (quem precisa dar `APPROVED` antes do merge) e `Merge` (estratégia). Nunca hardcoded, nunca "o que eu prefiro".
+- **Contexto de deploy:** `.claude/deploy.md`, via **`prod/references/deploy-context.md`**. Topologia é detectada (`git ls-remote`), nunca assumida. Onde vive cada segredo: `.claude/infra.md` (`/infra`), lido pelo `env-config`.
 
 <HARD-GATE>
 1. **Objetivo é estado, não ação.** Sem smoke verde na URL de homolog, o `/homolog` **não** terminou — mesmo com tudo mergeado.
@@ -41,8 +43,9 @@ Não é "mergear PR": é **atingir um estado** — o que está pronto está **no
 ## Step 0 — Board, contexto e guard de topologia
 
 1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. É de lá que sai a `<KEY>` dos cards, o prefixo da branch e os comentários/transições. Nunca assuma o board nem pergunte por ele aqui.
-2. **`prod/references/deploy-context.md`** — topologia + processo de deploy do projeto.
-3. **Guard de topologia — antes de qualquer outra coisa:**
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Lê `.claude/setup.md` (e o cria, perguntando o mínimo, se não existir). Devolve `{branch, commit, pr, jira, infra, guidelines, origem}` — o `pr-cycle` usa `pr`. Invocação separada da anterior, com a sua própria pergunta isolada.
+3. **`prod/references/deploy-context.md`** — topologia + processo de deploy do projeto (`.claude/deploy.md`).
+4. **Guard de topologia — antes de qualquer outra coisa:**
 
 | Topologia | Ação |
 |---|---|
@@ -117,7 +120,12 @@ Os motores que ele aciona vivem em `prod/references/`: `pr-cycle` · `findings` 
 - "A skill se chama `/homolog`, então existe uma branch `homolog`" → NÃO. **Não existe branch `homolog`** — é o **AMBIENTE**, publicado a partir da `dev`. A base de PR e o alvo de merge são `dev`; buscar PRs com base `homolog` devolve lista vazia e parece "nada a mergear".
 - "Todo projeto meu tem `dev`, assumo" → NÃO. `git ls-remote` a **toda** invocação.
 - "Não achei a URL de homolog, chuto pelo padrão" → NÃO. Pergunta, ou declara que falta. URL inventada = smoke em lugar nenhum.
-- "Anoto o valor do secret no `deploy.md` pra não perguntar de novo" → NÃO. Nunca. Vaza em commit e sobrevive a `git rm`.
+- "Anoto o valor do secret no `deploy.md` (ou no `infra.md`) pra não perguntar de novo" → NÃO. Nunca. Vaza em commit e sobrevive a `git rm`.
+
+**Convenções do time**
+- "Mergeei com squash porque é mais limpo" → NÃO. A estratégia é o § PR `Merge:` do `.claude/setup.md`, via `/setup`. Preferência pessoal não é convenção.
+- "Aprovei eu mesmo, embora o setup nomeie quem aprova" → NÃO. `Aprovação: <pessoa/time>` ⇒ o merge **espera** o `APPROVED` dessa pessoa; o gap fica aberto e reportado — não é a skill que o fecha.
+- "Pulei o `/setup` porque já sei as convenções desta sessão" → NÃO. Leitura é **toda** invocação, como o `/jira-board`.
 
 **Board**
 - "Assumi o board de sempre / o do outro repositório" → NÃO. Esta skill não tem board padrão: é o da **memória deste repositório**, via `/jira-board`.

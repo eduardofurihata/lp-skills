@@ -1,6 +1,7 @@
 # Deploy — lp-skills
 
 > Escrito pelo `deploy-context.md` (`/prod`). Tudo abaixo foi **inferido** dos arquivos do repositório — nenhum item precisou ser perguntado, e nenhum valor de secret aparece aqui.
+> **Processo**, não inventário: o que existe e onde vive cada segredo é o `.claude/infra.md` (`/infra`); as convenções do time, o `.claude/setup.md` (`/setup`).
 
 ## Topologia
 
@@ -11,7 +12,7 @@ Consequência: não existe ambiente de homolog. O `/homolog` não trabalha neste
 
 | Ambiente | Branch | URL | Dispara por |
 |---|---|---|---|
-| prod | `main` | https://lp-skills.vercel.app | push em `main` → **integração Git da Vercel** (não há `.github/`; deploy é da plataforma) |
+| prod | `main` | https://lp-skills.vercel.app | push em `main` → **integração Git da Vercel** (deploy é da plataforma; o `.github/workflows/ci.yml` só confere os manifestos gerados — não deploya) |
 
 Projeto Vercel: `lp-skills` (`.vercel/project.json` → `prj_OIEX4hHuHPmxL4ccd84KPM71Tsd4`).
 Preview: a Vercel cria um deploy de preview por branch/PR — não usado hoje, já que só existe `main`.
@@ -28,7 +29,7 @@ Vercel CLI presente na máquina: `50.32.1`. **Não existe `gh run`** para este p
 
 ## Configuração
 
-- **Env vars / secrets:** **nenhuma**. Não há `.env`, `.env.example` nem leitura de `process.env` de app — a LP lê o frontmatter dos `SKILL.md` do próprio repositório em build time (`lib/skills.ts`). Se algum dia houver, vivem em *Vercel → Project → Settings → Environment Variables* (`vercel env add <NOME> production`), e o **valor é sempre perguntado**, nunca escrito aqui.
+- **Env vars / secrets:** **nenhuma** (inventário: `.claude/infra.md`). Não há `.env`, `.env.example` nem leitura de `process.env` de app — a LP lê o frontmatter dos `SKILL.md` do próprio repositório em build time (`lib/skills.ts`). Se algum dia houver, o comando para setar é `vercel env add <NOME> production` (*Vercel → Project → Settings → Environment Variables*), onde cada uma vive fica registrado no `infra.md`, e o **valor é sempre perguntado**, nunca escrito em nenhum dos dois.
 - **Migrations:** **nenhuma** — projeto sem banco (sem `prisma/`, `drizzle/`, `migrations/`).
 - **Feature flags:** nenhuma.
 - **Seeds:** nenhum.

@@ -4,6 +4,7 @@ description: Use when user invokes /method, when starting feature work, or befor
 effort: max
 argument-hint: "[feature-name]"
 requires: solve
+boundary: [homolog, prod, setup]
 ---
 
 # /method — Protocolo de Engenharia Rigorosa
@@ -49,6 +50,7 @@ Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho pa
 Feature com **superfície visual** (derivada no Step 4, nunca declarada pelo usuário) obedece a **`ui/SKILL.md`**: tokens como fonte única, atomicidade, composição > configuração, headless, todos os estados, Lei de Jakob, consistência semântica, preservação de contexto, fluxos modulares — e **WCAG AA como piso**.
 
 - **O design system evolui com o produto:** precisou de algo que ele não tem → **reusar → compor → promover** (criar no DS, nunca na pasta da feature), registrando em `docs/04-spec/design-system.md`.
+- **Texto gerado por IA é a outra superfície derivada** no Step 4 (resposta de chat, resumo, persona, RAG, notificação gerada): se a feature tem, o spec nomeia a **referência #1** e o que "ler bem" significa, o Step 5 tem um TC com resultado na **qualidade do texto lido**, e no Step 9 texto pior que a referência é **FAILED** — mesmo com o código certo. Sem essa superfície, a linha é `N/A`, como Design sem tela. Detalhe: `references/04-spec.md` § Texto gerado por IA.
 - **Consistência é lei; mediocridade não é.** Padrão existente abaixo do nível #1 **não se copia** — eleva-se ou vira achado no ledger. É essa a diferença entre UI consistente e UI que nunca melhora.
 - **Gateway de feature com UI publica a linha de design** (`- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ …`). Sem superfície visual: declare `❌ N/A` **uma vez**, no Gateway 4→5.
 
@@ -239,6 +241,10 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 - `references/follow-ups.md` — Ledger de Follow-ups, triagem A/B/C, Gate de Convergência e o loop até o passe seco
 - `references/inventario-docs.md` — protocolo do inventário inicial
 - `references/01-problema.md` até `references/10-done.md` — detalhamento por step
+
+**Arquivos do projeto que o protocolo lê por caminho** (sem depender de quem os cria — como já lê o `CLAUDE.md`):
+- `.claude/patterns.md` — padrões de código do projeto; lido no Step 4 e **feito crescer** por ele (dono: este protocolo). Caminhos antigos migram no Step 4.
+- `.claude/setup.md` § Commit — convenção de commit e posição da key do card; lido no Step 10, **se existir**. Dono: `/setup` (pacote `furi-ship`) — este protocolo aplica o que está escrito e **não cria** o arquivo; sem ele, Conventional Commits. O resto do setup (branch, PR, Jira) não é assunto daqui.
 
 **Abra o reference relevante ao iniciar cada step. Não tente executar de memória.**
 

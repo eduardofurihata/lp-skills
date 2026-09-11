@@ -1,8 +1,10 @@
 ---
 name: work
-description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone, NOT the Eduzz /jira. Discovers the project board from the card key, syncs the integration branch `dev` from GitHub and branches off it (gh→dev→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
+description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone, NOT the Eduzz /jira. Discovers the project board from the card key (/jira-board) and the team conventions from `.claude/setup.md` (/setup: work directly on the integration branch or branch per card, branch naming), syncs the integration branch from GitHub and branches off it when the setup says so (gh→integração→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
 effort: max
-requires: [jira-board, method, solve]
+requires: [jira-board, setup, method, solve]
+handoff: pull-request
+boundary: jira
 argument-hint: "[KEY-N] | (empty = continuar card ativo)"
 ---
 
@@ -38,18 +40,20 @@ Nenhum desses passos é lugar de "adianto um código". Entender aqui é o que fa
 
 - **Qualquer projeto** do Atlassian pessoal, sempre via `mcp__atlassian__*`. A key sai do argumento (`ALK-42` → projeto `ALK`) ou da **memória do projeto** quando o argumento não traz uma — **nada hardcoded**.
 - **Board vem do `/jira-board`** (passo 0, dependência obrigatória), que lê a memória do projeto e pergunta só na primeira vez. Não descubra nem pergunte o board aqui. Projeto sem board ágil → segue sem sprint, e avisa.
+- **Modo de trabalho e nome da branch vêm do `/setup`** (passo 0, dependência obrigatória), que lê `.claude/setup.md` § Branch — versionado no repositório, do time. `branch por card` ou `direto na integração`: **nada hardcoded aqui**, nem "default", nem "exceção". Pedido explícito na sessão ("hoje quero branch") vence para esta invocação e não reescreve o arquivo.
 - **Status de "em andamento" é descoberto, nunca inventado** — o nome varia por projeto ("Em andamento", "In Progress", "Doing"…). A mecânica de descobrir e aplicar, e o que fazer quando o workflow não tem equivalente, é do **`prod/references/jira-sync.md`** (fonte única).
 - Card não encontrado → o projeto pode estar em **outro site Atlassian** (o MCP alcança só o site do seu `JIRA_URL`). Diga isso; não aproxime para outra key.
-- Branch base = **`dev`** (não `main`). Regra de criação: **gh → dev → branch**.
+- Branch base = a **integração** (`dev`; ou `main`, em branch única — detectada, nunca assumida). Regra de criação: **gh → integração → branch**.
   > **Padrão:** `dev` é a **branch** de integração, o que vem antes da `main`. **homolog** é o **ambiente** publicado a partir dela — nome de ambiente, nunca de branch. "Mergeei na dev" = integrado; "está em homolog" = no ar.
 - O `/method` trabalha SEMPRE na branch atual e **nunca cria branch** — por isso a branch nasce AQUI, antes de invocá-lo.
 
 ## Fluxo
 
-### 0. Board do projeto (SEMPRE, antes de tudo)
-**Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória, junto do `/solve` e do `/method`: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+### 0. Board do projeto e convenções do time (SEMPRE, antes de tudo)
+1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória, junto do `/solve` e do `/method`: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: ele lê `.claude/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Devolve `{branch: {modo, nome}, commit, pr, jira, infra, guidelines, origem}` — o passo 2 usa `branch`, o passo 6 usa `pr`.
 
-Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não** a reescreve. No modo CONTINUE (argumento vazio), o board da memória é o que resolve site e prefixo de branch ao retomar o card ativo. Nunca assuma o board nem pergunte por ele aqui.
+Duas invocações separadas, cada uma com a sua pergunta isolada (uma vez na vida do repositório). Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não** a reescreve. No modo CONTINUE (argumento vazio), o board da memória é o que resolve site e prefixo de branch ao retomar o card ativo. Nunca assuma o board nem as convenções, nem pergunte por eles aqui.
 
 ### 1. Buscar o card
 `mcp__atlassian__jira_get_issue` (`issue_key: KEY-N`): título, descrição, tipo, `## Como testar`, assignee, **anexos**. Colar a descrição **real** do card; se houver ambiguidade, listar ≥2 interpretações (insumo do passo 4).
@@ -58,17 +62,22 @@ Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não
 > Tem **anexo de imagem**? Baixe (`jira_download_attachments` / `jira_get_issue_images`) e leia antes de decidir: é o que o solicitante viu.
 
 ### 2. gh → integração → branch (REGRA DE OURO)
-A branch de integração vem da **topologia**, nunca assumida — `git ls-remote --heads origin dev` vazio ⇒ branch única, e a integração é `main` (detalhe: `prod/references/deploy-context.md`). Nunca branchar de integração stale — trazer tudo e resolver conflito antes:
+A branch de integração vem da **topologia**, nunca assumida — `git ls-remote --heads origin dev` vazio ⇒ branch única, e a integração é `main` (detalhe: `prod/references/deploy-context.md`). Nunca trabalhar sobre integração stale — trazer tudo e resolver conflito antes:
 ```bash
-git checkout dev
+git checkout <integração>
 git fetch origin
-git merge origin/dev        # gh → dev: traz o remoto; CONFLITO → resolver (entender os 2 lados)
-git checkout -b <branch>    # dev → branch (a partir da dev atual e limpa)
-git branch --show-current   # confirmar
+git merge origin/<integração>   # gh → integração: traz o remoto; CONFLITO → resolver (entender os 2 lados)
 ```
-Nome da branch: derivado do card — `<key-minúscula>-<n>` (ex.: `niv-12`, `alk-42`), ou `<key>-<n>-slug-curto`. Multi-card: `<key>-<n>-<m>` (ordem crescente). Branch já existe → `checkout` nela.
-> **Manter a branch atualizada:** se `origin/dev` andar durante o trabalho, trazer pra branch (`git merge origin/dev`, resolvendo conflitos) — o `/method` revê e testa o resultado integrado. Branch nunca fica pra trás de `dev`.
-> **Exceção (Eduardo trabalha direto em `dev`):** se a intenção for não usar branch, pular o `checkout -b` e seguir na `dev` (após o sync acima). **Default = criar branch** (fluxo dos devs).
+O que acontece depois vem do **§ Branch do `/setup`** (passo 0) — a lógica mora lá, aqui só se aplica:
+
+| `Trabalho:` no setup | Ação | Branch de trabalho |
+|---|---|---|
+| `branch por card` | `git checkout -b <nome>` a partir da integração limpa (branch já existe → `checkout` nela); `git branch --show-current` confirma | a feature branch |
+| `direto na integração` | nenhum `checkout -b` | a própria integração, já sincronizada |
+
+Nome da branch: o padrão `Nome:` do setup, com `<key>`/`<n>`/`<slug>` do card — default `<key-minúscula>-<n>` (ex.: `niv-12`, `alk-42`) ou `<key>-<n>-slug-curto`; multi-card `<key>-<n>-<m>` (ordem crescente).
+> **Manter a branch atualizada** (só em `branch por card`): se `origin/<integração>` andar durante o trabalho, trazer pra branch (`git merge origin/<integração>`, resolvendo conflitos) — o `/method` revê e testa o resultado integrado. Branch nunca fica pra trás da integração.
+> Pedido explícito nesta sessão ("hoje quero branch" num repo `direto`) vence **para esta invocação** e não reescreve o setup — mudar o padrão é `/setup branch`.
 
 ### 3. Mover o card → em andamento
 - Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue`.
@@ -98,10 +107,12 @@ Dar uma **nota 0–100** à clareza do que precisa ser feito:
 ```
 ✅ /work KEY-N — implementado, revisado, testado e commitado (local).
    Projeto: <KEY>  ·  Board: <nome do board> [memória do projeto | argumento]
-   Branch:  <branch>
+   Setup:   <branch por card | direto na integração> [arquivo | criado agora]
+   Branch:  <branch>  [feature branch | direto na integração]
    Commit:  <hash>
    Kanban:  kanban/10-done/<feature>.md
-   Próximo: /pull-request  (push + PR pra dev + espelha no card)
+   Próximo: /pull-request  (push + PR pra integração + espelha no card)      ← § PR `Abre PR: sim`
+            /homolog — ou /prod, em branch única (o que está na integração vai ao ar)   ← § PR `Abre PR: não`
 ```
 
 ## Red Flags — STOP
@@ -110,12 +121,15 @@ Dar uma **nota 0–100** à clareza do que precisa ser feito:
 - "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira-board`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
 - "Pulei o passo 0 porque já sei o board desta sessão" → NÃO. A leitura da memória é **toda** invocação.
 - "Assumi o board de sempre" → NÃO. Board vem do `/jira-board`; a key, do argumento ou da memória; sprint e transições são **descobertos** na hora.
+- "Assumi que crio branch (é o fluxo dos devs)" / "assumi que trabalho direto (é o meu repo)" → NÃO. O modo vem do **`/setup`** § Branch, lido do `.claude/setup.md` a cada invocação. Sem arquivo, o `/setup` pergunta — uma vez na vida do repositório.
+- "Já sei o setup desta sessão, sigo sem invocar" → NÃO. Mencionar não é invocar; a leitura é **toda** vez.
+- "O usuário pediu branch hoje, atualizei o `.claude/setup.md`" → NÃO. Override de sessão vale pra invocação. Só `/setup branch` reescreve o arquivo.
 - "O status 'Em andamento' não existe nesse projeto, então inventei um" → NÃO. Escolha entre as transições que existem; nenhuma equivalente → avisa e segue.
-- "Branchei de `dev` sem trazer o remoto" → NÃO. **gh → dev → branch**, sempre.
+- "Branchei de `dev` sem trazer o remoto" → NÃO. **gh → integração → branch**, sempre.
 - "Branchei de `homolog`" → NÃO existe branch `homolog`. É o **ambiente**; a branch de integração é `dev` (ou `main`, em branch única).
 - "Todo projeto meu tem `dev`, dou `checkout dev`" → NÃO. `git ls-remote` primeiro: em branch única o `checkout dev` falha e o fluxo trava na largada.
 - "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
-- "Já conheço o `/solve` / o `/jira-board` / o `/method`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
+- "Já conheço o `/solve` / o `/jira-board` / o `/setup` / o `/method`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
 - "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes** de implementar.
 - "O card não falou de motor, então espalho a regra" → NÃO. O card fala de produto; a arquitetura é derivada no `/method`, e capacidade tem **um** dono.

@@ -38,7 +38,7 @@ Os alvos existentes:
 
 **`deploy-context.md`**, sempre, antes de tudo: topologia detectada (`git ls-remote`), doc do projeto lido (ou descoberto e escrito). O alvo declarado pela skill é **validado** contra a topologia real — alvo incompatível (ex.: `/homolog` em branch única) é recusado pela própria skill, antes de chegar aqui.
 
-Board do Jira: **`/jira-board`**, também no Passo 0 de quem chama.
+Board do Jira: **`/jira-board`**, também no Passo 0 de quem chama. Convenções do time: **`/setup`**, idem — o `pr-cycle` lê daí `Abre PR`, `Aprovação` e `Merge`; onde vive cada segredo: `.claude/infra.md`, lido pelo `env-config` (que invoca o `/infra` se o arquivo faltar).
 
 ## Passo 1 — Diagnosticar (e PUBLICAR antes de agir)
 

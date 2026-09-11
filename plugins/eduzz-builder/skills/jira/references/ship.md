@@ -18,6 +18,7 @@ git push origin [branch]      # ex.: PROJ-36
 ```
 
 ### 3 — Criar PR
+O **§ PR do `.claude/setup.md`** (lido no 0.1) decide: `Abre PR: não` → **pule este passo** (o push do § 2 já integrou; siga para o § 4). `Template: <arquivo>` (ex.: `.github/pull_request_template.md`) → o corpo segue **as seções desse arquivo**, preenchidas — o `## O que foi feito` em linguagem leiga continua obrigatório dentro dele. Sem setup → exatamente como abaixo.
 ```bash
 gh pr create --title "[tipo]([CARD-CODE]): [título conciso]" --body "$(cat <<'EOF'
 ## O que foi feito

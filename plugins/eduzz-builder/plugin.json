@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "eduzz-builder",
-  "version": "0.1.0+f74c9a3b14a1",
+  "version": "0.1.0+385a67f241c3",
   "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
   "author": {
     "name": "Eduardo Furihata",

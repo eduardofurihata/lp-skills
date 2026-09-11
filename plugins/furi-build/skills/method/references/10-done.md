@@ -6,7 +6,7 @@
 
 ## Princípios neste step (`principles/SKILL.md`)
 
-O done doc registra **o que os princípios produziram** — as 5 linhas da seção § Conteúdo — Resumo Final: o que foi reutilizado (DRY), o que foi descartado (YAGNI), quais motores nasceram, cresceram ou absorveram, o que a refatoração do perímetro elevou e o que o DS ganhou. Sem elas o registro mente sobre **como a feature ficou**.
+O done doc registra **o que os princípios produziram** — as 6 linhas da seção § Conteúdo — Resumo Final: o que foi reutilizado (DRY), o que foi descartado (YAGNI), quais motores nasceram, cresceram ou absorveram, o que a refatoração do perímetro elevou, o que o DS ganhou e o que o `.claude/patterns.md` ganhou. Sem elas o registro mente sobre **como a feature ficou**.
 
 ## Pré-requisitos (AMBOS)
 
@@ -34,15 +34,16 @@ O done doc registra **o que os princípios produziram** — as 5 linhas da seç�
 - **Status final dos TCs** — **checklist completo por TC** (`- [x] TC-N`), copiado da seção `## Test Cases (QA)` do card de to-do, + contagem total (todos PASSED)
 - **Ledger de Follow-ups final** — tabela completa copiada da seção `## Follow-ups` do card de to-do (todos `RESOLVIDO-NO-STEP` / `RESOLVIDO-POR-CICLO` / `DESCARTADO`, **zero `ABERTO`**), com link do done doc de cada ciclo
 - **Conteúdo do todo incorporado** — tasks completadas do `kanban/06-todo/`
-- **Princípios — o que produziram** (`principles/SKILL.md`), 5 linhas, sem prosa:
+- **Princípios — o que produziram** (`principles/SKILL.md`), 6 linhas, sem prosa:
   - **Reutilizado (DRY):** o que existia e foi estendido em vez de recriado (do § 3.1 do plano)
   - **Descartado (YAGNI):** o que foi considerado e não construído (do § 3.2 do plano)
   - **Motores (§ 3.3):** quais nasceram, quais cresceram, que lógica dispersa foi absorvida
   - **Elevado (refatoração do perímetro, § 3.5):** o que estava abaixo do nível #1 no caminho percorrido e subiu — e o que já estava no nível #1
   - **DS ganhou** (`ui/SKILL.md`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
+  - **Patterns ganhou** (`.claude/patterns.md`): padrões de código **promovidos** no Step 4. Nada promovido → escreva que a feature coube nos padrões existentes.
 - **Commit SHA** — hash do commit criado neste step (ver abaixo)
 
-> Sem essas 5 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo `/method` (e o review do `/homolog`) precisa saber. A linha do DS é o que impede a próxima feature de reinventar o que esta acabou de promover.
+> Sem essas 6 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo `/method` (e o review do `/homolog`) precisa saber. A linha do DS é o que impede a próxima feature de reinventar o que esta acabou de promover.
 
 ## Gate de Convergência — ANTES de qualquer ação do Step 10
 
@@ -85,11 +86,12 @@ Todo folder = só trabalho ativo. Feature done → o card sai de `06-todo` e pas
 Só agora, com **o card já movido e o done doc já escrito**, faça **um único commit** de tudo (código + artefatos) na **branch atual** (NUNCA crie branch — ver `SKILL.md`):
 
 ```bash
+cat .claude/setup.md 2>/dev/null || cat .claude/setup.local.md 2>/dev/null   # § Commit: convenção + onde a key entra (do time, ou só meu; lido por caminho)
 git add -A
 git commit -m "feat(<escopo>): <descrição da feature>"
 ```
 
-- Mensagem em **Conventional Commits** (`feat` / `fix` / `refactor` / `docs` … `(<escopo>)` = área da feature).
+- Mensagem na **convenção do § Commit do `.claude/setup.md`**, quando o arquivo existe. Sem ele, **Conventional Commits** (`feat` / `fix` / `refactor` / `docs` … `(<escopo>)` = área da feature) — o default de sempre. A **key do card** entra onde o § Commit disser (no escopo `feat(NIV-12): …`, no início `NIV-12 feat: …`, em trailer `Jira: NIV-12`, ou não entra) e **vem do nome da branch atual** (`niv-12-login` → `NIV-12`); branch sem key → commit sem key, dito no report. O `/method` **lê** o setup e **não o cria**: quem cria é o `/setup` (`furi-ship`) — ou o próprio time, à mão.
 - **`git add -A` pega tudo de uma vez:** código, docs (01-09), card de done e a remoção (`rm`) do card de todo entram no MESMO commit.
 - **NUNCA commite antes de mover o card.** Commitar o código primeiro e só depois mover o card força um segundo commit — exatamente o erro que esta ordem evita.
 - **SHA é nota de bastidor:** o commit já É o registro (está no `git log`). Anotar o SHA no done doc é opcional e **não justifica um segundo commit** só para gravá-lo.
@@ -111,7 +113,7 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - [ ] Cada item de balde **B** fechado por ciclo `/method` próprio (invocado via Skill tool; 1→10, com `/solve`, sem commit) com done doc linkado
 - [ ] Cada item de balde **C** com justificativa registrada no ledger
 - [ ] Done doc referencia todos os artefatos (docs 1-9) e contém o **ledger de follow-ups final**
-- [ ] Done doc registra as **5 linhas de princípios**: reutilizado (DRY) · descartado (YAGNI) · **motores** · **elevado** (refatoração do perímetro) · **DS ganhou** (se tem UI)
+- [ ] Done doc registra as **6 linhas de princípios**: reutilizado (DRY) · descartado (YAGNI) · **motores** · **elevado** (refatoração do perímetro) · **DS ganhou** (se tem UI) · **Patterns ganhou**
 - [ ] Card de `kanban/06-todo/<tópico>.md` deletado (card movido para `10-done`) — **ANTES do commit**
 - [ ] Artefato `kanban/10-done/<tópico>.md` existe com conteúdo substantivo
 - [ ] **UM único commit** na branch atual (Conventional Commits) capturando código + docs (01-09) + card de done + remoção do todo + **todos os ciclos de follow-up** — sem commit adiantado do código, sem commit extra depois

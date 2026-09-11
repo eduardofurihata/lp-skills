@@ -56,3 +56,13 @@ next-env.d.ts
 __pycache__/
 *.pyc
 /prod-*.png
+
+# Claude Code — o pessoal fica fora. O que é do time fica DENTRO e versionado:
+# .claude/setup.md (convenções — /setup), .claude/infra.md (mapa da infra — /infra),
+# .claude/deploy.md (processo de deploy — /prod) e .claude/patterns.md (padrões — /method).
+# Nunca ignore `.claude/` inteiro: `!x` sob um diretório excluído não reinclui nada no git.
+# `*.local.md` é a variante "só minha" dos quatro (setup/infra/deploy/patterns) — nunca versionada.
+/.claude/settings.local.json
+/.claude/*.local.md
+/.claude/plans/
+/.claude/worktrees/

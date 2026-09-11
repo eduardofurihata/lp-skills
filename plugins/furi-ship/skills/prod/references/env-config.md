@@ -12,7 +12,9 @@
 
 | Entrada | Saída |
 |---|---|
-| alvo + o `## DevOps` do(s) PR(s) da release + `deploy-context.md` | `aplicados[]` + `pendentes[]` (com o motivo de cada pendente) |
+| alvo + o `## DevOps` do(s) PR(s) da release + `deploy-context.md` (**como** se seta) + `.claude/infra.md` (**onde** vive cada segredo) | `aplicados[]` + `pendentes[]` (com o motivo de cada pendente) |
+
+**Dois arquivos, dois fatos.** `.claude/deploy.md` (`deploy-context.md`) diz o **comando** para setar em cada ambiente; `.claude/infra.md` (`/infra`) diz **onde** cada variável vive — localmente (`.secrets/…`), no ambiente (painel, `gh secret`, gerenciador) e como se obtém. `infra.md` não existe → **invoque o `/infra`** via Skill tool (`furi-ship:infra`; a forma curta `infra` também resolve) antes de aplicar qualquer coisa: ele mapeia o `.secrets/` e os provedores e escreve o arquivo. Mencionar não é invocar.
 
 ## 1 — De onde vem a lista
 
@@ -35,7 +37,7 @@ Reunir a lista de **todos** os PRs que entraram no ambiente desde o último depl
 | Tipo | Como se confere o que já existe | Como se aplica |
 |---|---|---|
 | **Env var** (não sensível) | listagem do ambiente conforme o `deploy.md` | seta pelo comando do `deploy.md`; valor derivável (URL, flag, nome) pode ser proposto — **confirmando** com o usuário |
-| **Secret** | listar **nomes**, nunca valores | **pergunta o valor** ao usuário e aplica. Zero exceção |
+| **Secret** | listar **nomes**, nunca valores; onde cada um vive: `.claude/infra.md` § Onde vive cada segredo | **pergunta o valor** ao usuário e aplica. Zero exceção |
 | **Migration** | estado de migration do ambiente (comando do `deploy.md`) | roda as pendentes; é **etapa do release**, depois do deploy do código |
 | **Feature flag** | onde o `deploy.md` registra | liga/desliga o que a mudança exige |
 | **Seed** | o que a feature precisa existir no banco para aparecer | roda o seed registrado |
@@ -44,12 +46,12 @@ Reunir a lista de **todos** os PRs que entraram no ambiente desde o último depl
 
 ## 3 — Secret: o único caminho
 
-1. Identificar **o nome** da variável e **onde** ela vive (do `deploy.md`).
+1. Identificar **o nome** da variável e **onde** ela vive (`cat .claude/infra.md 2>/dev/null || cat .claude/infra.local.md 2>/dev/null` → § Onde vive cada segredo — sem nenhum dos dois, `/infra` primeiro). O `infra.md` diz também **como se obtém** (painel, comando) — é o que vai na pergunta do passo 3, para o usuário saber onde buscar.
 2. Conferir se já existe no ambiente — **pelo nome**. Existe e a mudança não pede troca → nada a fazer.
 3. Falta → **perguntar**:
-   > "O PR `<n>` exige `<NOME_DA_VAR>` em `<ambiente>` (vive em `<onde>`). Não tenho esse valor. Me passa o valor, ou você prefere setar direto lá?"
+   > "O PR `<n>` exige `<NOME_DA_VAR>` em `<ambiente>` (vive em `<onde>`; obtém-se em `<como>`). Não tenho esse valor. Me passa o valor, ou você prefere setar direto lá?"
 4. Aplicar pelo comando do `deploy.md`.
-5. **Não escrever o valor** em nenhum lugar: nem no `deploy.md`, nem no card, nem no kanban, nem no relatório, nem no commit. O que se registra é *"`<NOME>` configurada em `<ambiente>`"*.
+5. **Não escrever o valor** em nenhum lugar: nem no `deploy.md`, nem no `infra.md`, nem no card, nem no kanban, nem no relatório, nem no commit. O que se registra é *"`<NOME>` configurada em `<ambiente>`"*. Variável **nova** que o `infra.md` ainda não mapeia → acrescente a linha dela lá (nome + onde vive + como se obtém — nunca o valor); é o `/infra` quem confere no próximo diff.
 
 **Nunca:** gerar valor plausível para destravar · copiar valor do `.env` local para o ambiente (promove segredo de dev a prod sem ninguém decidir) · reaproveitar o valor de homolog em prod.
 
@@ -67,7 +69,8 @@ Não deu para aplicar (o usuário não tinha o valor, o acesso não é seu, a pl
 - "Criei a env var com um valor plausível" → NÃO. Valor de secret **nunca** é inferido. Pergunte.
 - "Copiei do meu `.env` local" → NÃO. Isso promove segredo de desenvolvimento a produção sem ninguém decidir.
 - "Uso em prod o mesmo valor de homolog" → NÃO. São ambientes distintos por definição; se fossem iguais não haveria dois.
-- "Anoto o valor no `deploy.md` para não perguntar de novo" → NÃO. **Nunca.** Vaza em commit e sobrevive a `git rm`.
+- "Anoto o valor no `deploy.md` (ou no `infra.md`) para não perguntar de novo" → NÃO. **Nunca.** Vaza em commit e sobrevive a `git rm`.
+- "Não tem `infra.md`, mas eu sei onde vive, sigo" → NÃO. Sem o arquivo, `/infra` primeiro — mapa na cabeça é o que faz a próxima pessoa perguntar de novo.
 - "O PR não tem seção DevOps, então não há configuração" → NÃO. Confira o diff (`process.env`, migrations, seeds) e reporte o que achou.
 - "Rodo a migration antes do deploy, para o banco estar pronto" → NÃO. Quebra a versão que está rodando agora. Código no ar primeiro.
 - "Configurei só o ambiente que estou soltando" → NÃO, quando é release de prod: o resync iguala as branches e homolog fica mentindo.

@@ -2,6 +2,7 @@
 name: sync
 description: 'Use when user invokes /sync with a branch expression like "main > dev", "dev = main", "feat/x = dev = main" or "A = B > C gh = local" — a notation for synchronizing git branches. `=` means bidirectional convergence (both branches end at the SAME commit, nobody loses work); `>` means one-way flow (left goes into right, and the right NEVER flows back into the left — the source stays untouched). Chained `=` forms an equality group that converges together, not in pairs. `gh = local` declares that every mentioned branch must be identical locally and on GitHub. Resolves conflicts by reading and understanding both sides, never ours/theirs blind, and always reports them. Never uses --force, reset --hard, rebase, or branch deletion. Typical uses: "main > dev" (hotfix down into a dirty integration branch), "dev > main" (prod deploy), "gh = local" (unstick local/remote divergence).'
 effort: max
+handoff: prod
 argument-hint: "<expressão> — ex: main > dev | dev = main | A = B > C gh = local"
 ---
 

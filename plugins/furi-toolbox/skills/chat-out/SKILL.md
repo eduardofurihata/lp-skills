@@ -1,6 +1,7 @@
 ---
 name: chat-out
 description: Use when exiting /chat read-only mode to restore full read/write capabilities without losing conversation context
+handoff: chat
 ---
 
 # Exit Chat Mode

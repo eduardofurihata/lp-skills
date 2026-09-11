@@ -47,6 +47,9 @@
 **Alternativas descartadas:** uma skill só (`/deploy <ambiente>`) — o usuário pediu explicitamente dois comandos nomeados pelo destino, e nome de destino é o que carrega a consequência ("prod" avisa o que "deploy" esconde).
 
 ### D-06 — Contexto de deploy vive **no projeto**, versionado
+
+> ⚠️ **CAMINHO SUPERSEDED (2026-09-11) — o doc passou a ser `.claude/deploy.md`.** `docs/00-context/technical/` ficava encostado na esteira numerada de discovery do `/method` (`01-problem` … `05-test-cases`) e parecia doc por feature; o `/method` nem conhecia a pasta. O conhecimento **permanente** do projeto agora tem casa própria em `.claude/`, com um dono por arquivo: `setup.md` (convenções do time — `/setup`), `infra.md` (mapa da infra — `/infra`), `deploy.md` (este — `deploy-context`) e `patterns.md` (padrões de código — `/method` Step 4, que também unificou o caminho: antes o `/method` lia `docs/04-spec/technical/patterns.md` e o `/prod` lia `docs/00-context/technical/patterns.md`). A decisão de fundo — **versionado no projeto, nunca na memória da máquina** — permanece; o `deploy-context.md` migra o arquivo antigo com `git mv` na primeira invocação. Ver `docs/04-spec/setup-infra.md`.
+
 **Decisão:** `docs/00-context/technical/deploy.md`, versionado no repositório-alvo. **Não** em `~/.claude/projects/<slug>/memory/`.
 **Justificativa:** o processo de deploy é conhecimento do **projeto** — o time inteiro depende dele e ele muda por PR, com revisão. O board do Jira é o oposto (preferência da máquina de quem usa), e é por isso que o `/jira-board` usa memória.
 **Referência:** padrão do próprio projeto — `merge:80` já consome `docs/00-context/technical/patterns.md`; o irmão natural fica ao lado.

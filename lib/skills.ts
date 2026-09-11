@@ -14,7 +14,11 @@ export interface Skill {
   hasScripts: boolean;
   hasData: boolean;
   category: Category;
+  // As três camadas de relação entre skills, todas no mesmo formato
+  // string-ou-lista. Ver lib/skill-graph.ts para o que cada uma significa.
   requires: string[];
+  handoff: string[];
+  boundary: string[];
 }
 
 const PLUGINS_DIR = path.resolve(process.cwd(), "plugins");
@@ -56,7 +60,10 @@ async function readSkill(
 ): Promise<Skill | null> {
   const skillPath = path.join(skillsDirOf(category), slug);
   try {
-    const content = await fs.readFile(path.join(skillPath, "SKILL.md"), "utf-8");
+    const content = await fs.readFile(
+      path.join(skillPath, "SKILL.md"),
+      "utf-8",
+    );
     const { data } = matter(content);
     const subdirs = await fs.readdir(skillPath, { withFileTypes: true });
     const hasDir = (name: string) =>
@@ -75,17 +82,25 @@ async function readSkill(
       hasScripts: hasDir("scripts"),
       hasData: hasDir("data"),
       category,
-      requires: parseRequires(data.requires),
+      requires: parseList(data.requires),
+      handoff: parseList(data.handoff),
+      boundary: parseList(data.boundary),
     };
   } catch {
     return null;
   }
 }
 
-// `requires` no frontmatter pode ser string ("method") ou lista (["a","b"]).
-function parseRequires(value: unknown): string[] {
-  if (typeof value === "string") return [value];
+// Campo de relação no frontmatter: string ("method") ou lista (["a","b"]).
+// Espelha parseList() de scripts/generate-plugins.mjs.
+function parseList(value: unknown): string[] {
+  if (typeof value === "string") {
+    const v = value.trim();
+    return v ? [v] : [];
+  }
   if (Array.isArray(value))
-    return value.filter((v): v is string => typeof v === "string");
+    return value
+      .filter((v): v is string => typeof v === "string" && v.trim() !== "")
+      .map((v) => v.trim());
   return [];
 }

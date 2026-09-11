@@ -106,6 +106,7 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 - **Verificar direção de dependências:** shared → api/web ok. api → web ou web → api proibido.
 - **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-spec/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `ui/SKILL.md`.
 - **Ordem ao precisar de algo visual:** **reusar** o que o DS tem → **compor** do que ele tem → **promover** (criar no DS, nunca na pasta da feature).
+- **Padrões de código:** `.claude/patterns.md` (lido no Step 4) é lei para **consistência** — estrutura, nomenclatura, validação, erros. Não é lei para qualidade: padrão ruim no perímetro se eleva, e a elevação é **promovida** ao arquivo (Step 4, seção `## Esta feature promove`), não deixada implícita.
 - **i18n (se configurado):** TODA string user-facing nova/alterada DEVE ser chave de tradução, nunca literal. Strings literais hardcoded em projeto com i18n = bug, mesmo se texto estiver "correto".
 
 ### Práticas Obrigatórias
