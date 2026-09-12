@@ -1,7 +1,7 @@
 {
   "name": "furi-toolbox",
-  "version": "0.1.0+codex.aa86f9e0a11c",
-  "description": "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+  "version": "0.1.0+codex.14d4eb090d3d",
+  "description": "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata"
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Furi Toolbox",
     "shortDescription": "Ferramentas avulsas para o fluxo de desenvolvimento.",
-    "longDescription": "Use atalhos e utilitários independentes para conversar, salvar, sincronizar e preparar projetos.",
+    "longDescription": "Use atalhos e utilitários independentes para conversar, salvar, sincronizar, preparar projetos e baixar gravações.",
     "developerName": "Eduardo Furihata",
     "category": "Productivity",
     "capabilities": [

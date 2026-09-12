@@ -101,13 +101,13 @@ const PACKAGES = [
     name: "furi-toolbox",
     category: "toolbox",
     description:
-      "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+      "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
     keywords: ["utilities", "git", "productivity", "workflow"],
     codex: {
       displayName: "Furi Toolbox",
       shortDescription: "Ferramentas avulsas para o fluxo de desenvolvimento.",
       longDescription:
-        "Use atalhos e utilitários independentes para conversar, salvar, sincronizar e preparar projetos.",
+        "Use atalhos e utilitários independentes para conversar, salvar, sincronizar, preparar projetos e baixar gravações.",
       category: "Productivity",
       brandColor: "#F59E0B",
       defaultPrompt: "Use a ferramenta Furi mais adequada para esta tarefa.",
@@ -117,13 +117,13 @@ const PACKAGES = [
     name: "eduzz-builder",
     category: "eduzz",
     description:
-      "Skills de trabalho (Eduzz) — /jira, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
+      "Skills de trabalho (Eduzz) — /jira, /proof. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
     keywords: ["eduzz", "jira", "workflow", "development"],
     codex: {
       displayName: "Eduzz Builder",
       shortDescription: "Fluxos de trabalho da Eduzz.",
       longDescription:
-        "Trabalhe em cards, provas e vídeos da Eduzz com os fluxos especializados do Furihata.",
+        "Trabalhe em cards e provas da Eduzz com os fluxos especializados do Furihata.",
       category: "Productivity",
       brandColor: "#10B981",
       defaultPrompt: "Conduza este trabalho da Eduzz com o Eduzz Builder.",

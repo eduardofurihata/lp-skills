@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "eduzz-builder",
-  "version": "0.1.0+e468f4997fb2",
-  "description": "Skills de trabalho (Eduzz) — /jira, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
+  "version": "0.1.0+6bde70a6b78f",
+  "description": "Skills de trabalho (Eduzz) — /jira, /proof. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata/lp-skills"
