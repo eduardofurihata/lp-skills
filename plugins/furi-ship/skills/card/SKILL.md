@@ -1,17 +1,17 @@
 ---
 name: card
-description: 'Use when user invokes /card to create a Jira card on ANY board of the personal Atlassian from a short description — `/card [KEY] <problema>`. Discovers project, board, issue type and active sprint instead of assuming them; writes the card in PM/PO, QA and Designer voice (never dev), with a verifiable "## Como testar"; uploads any reference images sent as attachments; returns the card key + URL. Invokes /solve on activation so the problem is framed at the 10x-above-the-#1 bar, and writes that bar into the card as a named "## Referência de mercado" — the ambition, never the architecture. Intake only — does not branch, code, or create docs.'
+description: 'Use when user invokes /card to create a Jira card on ANY board from a short description — `/card [KEY] <problema>` — a MODIFIER of the ship pipeline, not a target: alone it creates the card and ends; composed with a target in any order (`/card /prod "…"`, `/prod /card "…"`) it creates the card and delegates to the target with the new key, which then runs its loop; composed with /repro (`/repro /card "…"`) the reproduction runs first and the "## Como testar" is written from the observed steps. Discovers project, board and active sprint via /jira (issue types come from the project jira.md), writes the card in PM/PO, QA and Designer voice (never dev), uploads reference images (the MCP CAN — `jira_update_issue` + `attachments`), returns key + URL. Invokes /solve on activation so the problem is framed at the 10x-above-the-#1 bar, written into the card as a named "## Referência de mercado" — the ambition, never the architecture. The pipeline NEVER creates a card on its own — only this modifier does, when the user types it. Refuses, with the reason, when `.claude/ship-setup/setup.md § Jira → Rastreamento` is not Jira.'
 effort: max
-requires: [jira-board, setup, solve]
+requires: [jira, setup, solve, work, pull-request, homolog, prod]
 handoff: work
-argument-hint: "[KEY] <descrição do card / ideia / bug>"
+argument-hint: "[KEY] <descrição do card / ideia / bug> [/work | /pull-request | /homolog | /prod]"
 ---
 
-# /card — Criar card no Jira (qualquer board)
+# /card — Criar card no Jira (modificador do pipeline)
 
-Cria um card no **projeto que você indicar** (Atlassian pessoal) a partir de uma descrição curta, **considerando o contexto do projeto** via um **scan leve** do código/docs — pra ancorar a área do produto, a rota e um "Como testar" plausível.
+**Modificador**, não alvo. Cria um card no **projeto do repositório** (ou no que você indicar) a partir de uma descrição curta, **considerando o contexto do projeto** via um **scan leve** do código/docs — pra ancorar a área do produto, a rota e um "Como testar" plausível. Sozinho, cria e para. Composto com um alvo (`/card /prod "…"`, `/prod /card "…"` — a ordem digitada não importa), cria e **delega ao alvo com a key nova**, que roda o loop dele. Composto com `/repro`, a reprodução vem **antes**, e o `## Como testar` nasce dos passos observados.
 
-> **Escopo: intake puro — e calibrado.** Só cria o card remoto. NÃO cria branch, NÃO cria docs/kanban, NÃO implementa, NÃO investiga fundo. O que o `/solve` muda: o card nasce com a **régua do nível 10x escrita nele**. Pra trabalhar o card depois → `/work <KEY>-<N>`.
+> **Escopo: intake puro — e calibrado.** Só cria o card remoto. NÃO cria branch, NÃO cria docs/kanban, NÃO implementa, NÃO investiga fundo. O que o `/solve` muda: o card nasce com a **régua do nível 10x escrita nele**. **O pipeline nunca cria card sozinho** — só este modificador, quando você o digita; achado de review vira linha de relatório, nunca card automático.
 
 ## Iron Law
 
@@ -54,9 +54,9 @@ Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer com
 
 ## Convenções (CONTRATO — descobrir, nunca assumir)
 
-- **Projeto:** o da **memória do projeto** (passo 0, via `/jira-board`) ou o do argumento, que sobrescreve. Sempre via `mcp__atlassian__*`.
+- **Projeto:** o da **memória do projeto** (passo 0, via `/jira`) ou o do argumento, que sobrescreve. Sempre via `mcp__atlassian__*`.
 - **Tipo de issue:** o que o projeto **tem** — descoberto com `jira_get_project_issue_types`. Nunca chutar um nome ("Tarefa", "Task", "Bug") sem listar.
-- **Board:** vem do `/jira-board` (memória) — não descubra nem pergunte aqui. **Sprint:** sempre descoberto na hora com `jira_get_sprints_from_board` (`state: active`); sprint nunca é lido da memória.
+- **Board:** vem do `/jira` (memória) — não descubra nem pergunte aqui. **Sprint:** sempre descoberto na hora com `jira_get_sprints_from_board` (`state: active`); sprint nunca é lido da memória.
 - **Seção obrigatória:** toda descrição termina com `## Como testar` (passos verificáveis, formato QA). A `DoD` do § Jira do `/setup` (passo 0) orienta o que esse bloco precisa cobrir.
 - **Idioma:** o `Idioma dos cards` do § Jira do `/setup` (passo 0, lido de `.claude/ship-setup/setup.md`); sem setup, **default português**.
 - Card novo entra **no sprint ativo** por padrão (passo 5), com o status default do board. Não mover status aqui.
@@ -67,10 +67,13 @@ Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer com
 
 ### 0. Board do projeto e convenções do time (SEMPRE, antes de tocar no Jira)
 
-1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
-2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: lê `.claude/ship-setup/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Daqui o `/card` usa só o **§ Jira** (`Idioma dos cards`, `DoD`).
+1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `jira` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: lê `.claude/ship-setup/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Daqui o `/card` usa só o **§ Jira** (`Rastreamento`, `Idioma dos cards`, `DoD`).
+3. **`pipeline/references/composicao.md`** — a ordem de execução é fixa, `repro → card → alvo`: `/repro` no argumento **sem reprodução feita** → delegue ao `/repro` primeiro (`Skill(skill: "repro", args: "/card <verbos restantes> <descrição>")`) e **não rode**; alvo no argumento → crie o card (passos 1-5) e delegue no passo 6.
 
-Duas invocações separadas, cada uma com a sua pergunta isolada — uma vez na vida do repositório. Nunca assuma o board nem as convenções, nunca pergunte por eles aqui — quem faz isso é o `/jira-board` e o `/setup`, donos únicos de cada um.
+**`Rastreamento` ≠ `Jira`** (kanban local, nenhum) → **recuse com o motivo nomeado**: *"Este repositório não usa Jira (`Rastreamento: <x>`); não há onde criar o card."* Com alvo no argumento, delegue mesmo assim, sem key: `Skill(skill: "<alvo>", args: "<descrição>")` — o pipeline roda sem card, dito em voz alta.
+
+Duas invocações separadas, cada uma com a sua pergunta isolada — uma vez na vida do repositório. Nunca assuma o board nem as convenções, nunca pergunte por eles aqui — quem faz isso é o `/jira` e o `/setup`, donos únicos de cada um.
 
 ### 1. Resolver o projeto + entender a intenção
 
@@ -80,7 +83,7 @@ Duas invocações separadas, cada uma com a sua pergunta isolada — uma vez na 
 
 **Com key:** ela **vence** o board da memória e **não** o reescreve — a memória segue apontando pro board padrão do repo. Diga a procedência no report.
 
-**Sem key:** use a key que veio do `/jira-board` (passo 0). Não há inferência a fazer nem pergunta a repetir — a memória já resolveu isso na primeira vez.
+**Sem key:** use a key que veio do `/jira` (passo 0). Não há inferência a fazer nem pergunta a repetir — a memória já resolveu isso na primeira vez.
 
 Descrição vazia → pedir 1 linha do que é o card e parar.
 Se for claramente **2+ entregas distintas** → propor split (**1 card = 1 entrega**) antes de criar.
@@ -96,6 +99,8 @@ Um passe **rápido** só pra ancorar — NÃO é o Step 0 do `/work`:
 
 **A saída do scan é traduzida pra voz dos papéis:** tipo (bug vs melhoria), **área do produto** (tela/fluxo), **rota** e um **"Como testar"** plausível. O achado de arquivo **morre aqui** — serviu pra você entender, não pro card.
 
+**Reprodução na conversa** (`/repro /card`): o `/repro` acabou de reproduzir e o dev viu — a superfície, o ponto de partida, os passos e o trigger estão no bloco dele. **Não refaça o scan nem a reprodução**: é dali que saem a área, a rota e, principalmente, o `## Como testar` — com os passos **observados**, em voz de QA, e o resultado esperado sendo o que o líder do domínio entrega ali.
+
 ### 4. Compor o card
 - **Título:** conciso, imperativo, PT (≤ ~80 chars).
 - **Descrição (markdown), nesta ordem:**
@@ -109,12 +114,12 @@ Um passe **rápido** só pra ancorar — NÃO é o Step 0 do `/work`:
   - **`## Como resolver`** (OBRIGATÓRIO) — bloco, não linha:
     - a instrução literal **"Rode `/method` e `/solve` para resolver o problema deste card."**;
     - o enquadramento: **o alvo não é "funcionar", e nem empatar com o #1 — é entregar 10x acima dele**, sendo o calibre dos big pop tech apps o piso. Se a base atual não chega lá, **refazer é decisão válida**, não desperdício.
-  - **`## Como testar`** (OBRIGATÓRIO, e sempre a última seção) — formato QA: **pré-condição → passos → resultado esperado**, tudo observável no front.
+  - **`## Como testar`** (OBRIGATÓRIO, e sempre a última seção) — formato QA: **pré-condição → passos → resultado esperado**, tudo observável no front. Com reprodução na conversa, os passos são os **observados** (usuário, ponto de partida, cada clique/chamada, o trigger) e o "resultado esperado" é o comportamento correto — não "não dá erro".
 
 > **Referência genérica não é referência.** "seguir o padrão de mercado", "como os apps modernos fazem" e "melhores práticas" não dizem nada a quem vai executar. **Nomeie o produto.** Não há líder óbvio no domínio? Nomeie o mais próximo e diga por que ele serve de régua — mas a seção nunca fica no vago.
 
 ### 5. Criar no Jira
-Descobrir o tipo antes: `mcp__atlassian__jira_get_project_issue_types` (`project_key`) → escolher o que **existe** e cabe (bug vs tarefa/melhoria). Depois:
+O tipo vem da **estrutura** que o `/jira` devolveu (`estrutura.tipoBug` para bug, `estrutura.tipoResto` para o resto — o `.claude/ship-setup/jira.md`). Sem estrutura mapeada (o `/jira` acabou de gravar só o board), descubra: `mcp__atlassian__jira_get_project_issue_types` (`project_key`) → escolher o que **existe** e cabe — nunca chutar. Depois:
 
 ```
 mcp__atlassian__jira_create_issue
@@ -124,7 +129,7 @@ mcp__atlassian__jira_create_issue
   description: <markdown com ## Referência de mercado, ## Como resolver e terminando em ## Como testar>
 ```
 
-**Adicionar ao sprint ativo (DEFAULT):** o `boardId` **já veio do `/jira-board`** no passo 0 — use ele, não chame `jira_get_agile_boards`. Redescobrir o board é exatamente a ida ao servidor que a memória existe pra eliminar.
+**Adicionar ao sprint ativo (DEFAULT):** o `boardId` **já veio do `/jira`** no passo 0 — use ele, não chame `jira_get_agile_boards`. Redescobrir o board é exatamente a ida ao servidor que a memória existe pra eliminar.
 
 > **Exceção:** key explícita no argumento (passo 1) aponta pra **outro** projeto, e o board da memória não pertence a ele. Só nesse caso descubra com `jira_get_agile_boards` (`project_key` do argumento).
 
@@ -160,19 +165,21 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
    Anexos: <N>/<N>
    URL: <link>
 
-   Resolver: /work <KEY>-<N>  (roda /method + /solve)
+   Resolver: /work <KEY>-<N>  (roda /method + /solve)   ·   até produção: /prod <KEY>-<N>
 ```
+
+**Composto com um alvo** (`/card /prod "…"`, ou o `/prod` que delegou para cá): depois do report, **delegue** — `Skill(skill: "<alvo>", args: "<verbos restantes> <KEY>-<N>")`. Chamada real, não "seguir de memória". O alvo roda o loop dele com a key nova; o estágio `card` chega fechado. **Sozinho**, encerra aqui — sem invocar nada.
 
 ## Red Flags — STOP
 
 **Projeto e convenções**
-- "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira-board`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
+- "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
 - "Pulei o passo 0 porque já sei o board desta sessão" → NÃO. A leitura da memória é **toda** invocação.
-- "O usuário passou `ALK`, então atualizei a memória" → NÃO. Argumento é **override**, não redefinição. Só o `/jira-board` com argumento troca o board.
-- "Assumi o projeto de sempre" → NÃO. Key vem do `/jira-board` (memória) ou do argumento; nunca de palpite.
+- "O usuário passou `ALK`, então atualizei a memória" → NÃO. Argumento é **override**, não redefinição. Só o `/jira` com argumento troca o board.
+- "Assumi o projeto de sempre" → NÃO. Key vem do `/jira` (memória) ou do argumento; nunca de palpite.
 - "Chutei o tipo `Tarefa`" → NÃO. Liste com `jira_get_project_issue_types` e escolha entre os que existem.
 - "A key não apareceu, usei a mais parecida" → NÃO. Não existe neste site → **avise**; pode estar em outro site Atlassian.
-- "Chamei `jira_get_agile_boards` pra achar o sprint" → NÃO. O `boardId` veio do `/jira-board` no passo 0. Só a key por argumento — que aponta pra outro projeto — justifica descobrir outro board.
+- "Chamei `jira_get_agile_boards` pra achar o sprint" → NÃO. O `boardId` veio do `/jira` no passo 0. Só a key por argumento — que aponta pra outro projeto — justifica descobrir outro board.
 - "Criei sem dizer em qual board" → NÃO. O report sempre diz projeto e sprint.
 
 **Voz**
@@ -192,11 +199,16 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 
 **Escopo**
 - "Pulei o `/solve` porque o card é pequeno" → NÃO. É **toda** invocação. Ele custa pouco no intake e é o que separa um card "está quebrado" de um card "estamos abaixo do líder".
-- "Já conheço o `/solve` / o `/jira-board` / o `/setup`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
+- "Já conheço o `/solve` / o `/jira` / o `/setup`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Escrevi o card em inglês porque o repo é em inglês" → NÃO. Idioma do card é o § Jira do `/setup`; sem setup, português. Código e card são convenções diferentes.
 - "O `/solve` me deu vontade de investigar fundo" → NÃO. Ele sobe a **régua**, não o **tempo**. Scan segue **leve** (Iron Law); investigação é o `/work`.
 - "Vou investigar fundo pra escrever o card perfeito" → NÃO. Scan **leve**. Investigação/reprodução é o `/work`.
 - "Vou criar branch / docs / kanban / mover status" → NÃO. `/card` só cria o card remoto (sprint ativo faz parte — passo 5; status de workflow, não).
+- "`Rastreamento: kanban local`, então crio o card no kanban" → NÃO. Sem Jira, recusa com o motivo. O kanban local é do `/method`.
+- "`/card /prod`, criei o card e parei" → NÃO. Composto com alvo, cria **e delega** com a key. Parar é só sozinho.
+- "`/repro /card`, refaço a reprodução pra escrever o card" → NÃO. O `/repro` já rodou; o `## Como testar` sai do bloco dele na conversa.
+- "`/prod /card` — não fui digitado, ignoro" → NÃO. O `/prod` delega para cá (`composicao.md`); a ordem de execução é fixa.
+- "Achei um bug no review do `/homolog`, crio o card" → NÃO. O pipeline **nunca cria card sozinho**. Só este modificador, quando o usuário o digita.
 - "1 card gigante com 3 entregas" → NÃO. 1 card = 1 entrega; proponha split.
 - "Crio sem checar duplicata" → cheque antes (passo 2).
 - "Deixei no backlog sem avisar" → NÃO. Default é **sprint ativo**; backlog só sem sprint ativo — e **avisa no report**.

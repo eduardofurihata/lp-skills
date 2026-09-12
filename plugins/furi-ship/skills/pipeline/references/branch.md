@@ -1,8 +1,8 @@
 # Branch — da integração sincronizada à branch de trabalho (gh → integração → branch)
 
-> **Fonte única da mecânica de branch.** `/work` (passo 2) e `/repro` (§ 2) apontam para cá; nenhum dos dois reescreve o fetch/merge, os três modos, o lote aberto, o nome da branch nem o "manter atualizada". Quem chamou já invocou o `/setup` (modo e nome) — este motor só **aplica**.
+> **Fonte única da mecânica de branch.** **Motor de estágio:** invocado pelo `reconcile.md` quando o estágio `branch` está aberto — para qualquer alvo, e também pelo `/repro` sozinho (que precisa estar na branch certa para reproduzir). Ninguém reescreve o fetch/merge, os três modos, o lote aberto, o nome da branch nem o "manter atualizada". Quem chamou já invocou o `/setup` (modo e nome) — este motor só **aplica**. **Sem card** (`rastreamento` ≠ Jira, ou objetivo sem key): `branch por card`/`acumula cards` usam o slug do objetivo no lugar de `<key>-<n>`; `direto na integração` não muda nada.
 
-**Responsabilidade única:** deixar o checkout na branch de trabalho certa, sincronizada com `origin/<integração>`, antes de qualquer código. Não decide o modo (é do `/setup` § Branch), não descobre a topologia (é do `prod/references/deploy-context.md` § 1 — este motor a consome), não commita, não pusha, não abre PR. O `/method` **nunca cria branch**: a branch nasce aqui.
+**Responsabilidade única:** deixar o checkout na branch de trabalho certa, sincronizada com `origin/<integração>`, antes de qualquer código. Não decide o modo (é do `/setup` § Branch), não descobre a topologia (é do `pipeline/references/deploy-context.md` § 1 — este motor a consome), não commita, não pusha, não abre PR. O `/method` **nunca cria branch**: a branch nasce aqui.
 
 ## Iron Law
 
@@ -12,11 +12,11 @@
 
 | Entrada | Saída |
 |---|---|
-| `branch: {modo, nome}` do `/setup` (Step 0 de quem chamou — pedido explícito na sessão vence **para esta invocação** e não reescreve o arquivo) · `<KEY>-<N>` do card (+ slug curto, se o padrão `Nome:` tiver) · a **integração** resolvida pelo `prod/references/deploy-context.md` § 1 | checkout na branch de trabalho, sincronizada com `origin/<integração>` · `{integração, branch, modo, lote: {aberto, cards[]}, origem: arquivo \| criado agora \| override de sessão}` para o report de quem chamou |
+| `branch: {modo, nome}` do `/setup` (Step 0 de quem chamou — pedido explícito na sessão vence **para esta invocação** e não reescreve o arquivo) · `<KEY>-<N>` do card (+ slug curto, se o padrão `Nome:` tiver) — ou só o slug do objetivo, sem card · a **integração** resolvida pelo `pipeline/references/deploy-context.md` § 1 | checkout na branch de trabalho, sincronizada com `origin/<integração>` · `{integração, branch, modo, lote: {aberto, cards[]}, origem: arquivo \| criado agora \| override de sessão}` para o report de quem chamou |
 
 ## 1 — gh → integração
 
-A branch de integração vem da **topologia**, nunca assumida — resolvida pelo `prod/references/deploy-context.md` § 1 (base dos PRs recentes → `dev` → default do GitHub; branch parada que nenhum PR mira não conta). Nunca trabalhar sobre integração stale — trazer tudo e resolver conflito antes:
+A branch de integração vem da **topologia**, nunca assumida — resolvida pelo `pipeline/references/deploy-context.md` § 1 (base dos PRs recentes → `dev` → default do GitHub; branch parada que nenhum PR mira não conta). Nunca trabalhar sobre integração stale — trazer tudo e resolver conflito antes:
 ```bash
 partida=$(git branch --show-current)   # em `branch acumula cards`, é daqui que se decide o lote (§ 3)
 git fetch origin

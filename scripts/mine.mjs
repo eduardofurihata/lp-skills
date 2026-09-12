@@ -5,6 +5,8 @@
 // Artefatos (docs/01-05-*, kanban/06-11-*): roda as regras do hook (modo artefato) e classifica cada
 // item: positivo-verdadeiro · envelhecido (o arquivo/linha existia quando o artefato foi escrito —
 // git history) · ambiguo (basename com vários candidatos) · falso-positivo-template · a-classificar.
+// Inclui as regras de COBERTURA (vac-cobertura.mjs), que nascem `note`: é aqui que a fase de
+// instrumentação vira dado antes de virar bloqueio.
 // Transcrições: cada mensagem de gate do assistente é conferida com o ledger da sessão inteira
 // (R-1…R-12) — positivos verdadeiros por construção (o transcript é a verdade).
 // Saída: report.json, summary.md (regra × classe) e samples/ com até 5 propostas por célula, já no
@@ -19,6 +21,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const RULES = path.join(ROOT, "plugins/furi-toolbox/skills/vac/scripts");
 const { analyze, loadGates, sections, gateOf, EVIDENCE_RE, describe } = await import(path.join(RULES, "vac-rules.mjs"));
 const { updateLedger, ledgerChecks } = await import(path.join(RULES, "vac-ledger.mjs"));
+const { cobertura, elisao } = await import(path.join(RULES, "vac-cobertura.mjs"));
 
 const arg = (f, d) => {
   const i = process.argv.indexOf(f);
@@ -65,6 +68,10 @@ function linesAtArtifactCommit(artifactRel, fileRel) {
 }
 
 function classify(item, text, fileRel) {
+  // Cobertura nasce `note` por desenho (fase de instrumentação) — classificar é justamente o que
+  // decide se ela merece virar `block`. A aritmética não tem leitura alternativa; o resto, sim.
+  if (item.rule === "cobertura-delta" || item.rule === "cobertura-faltando") return "positivo-verdadeiro";
+  if (item.rule === "cobertura-checkbox" || item.rule === "cobertura-elisao") return "a-classificar";
   if (item.severity !== "block") return "note";
   if (item.rule === "coord") {
     if (/ambíguo/.test(item.detail)) return "ambiguo";
@@ -94,8 +101,12 @@ console.error(`artefatos: ${files.length}`);
 for (const abs of files) {
   const text = fs.readFileSync(abs, "utf8");
   const rel = path.relative(REPO, abs);
-  const items = analyze(text, { roots: [REPO], mode: "artifact", artifactAbs: abs }).filter((i) => i.severity === "block");
-  for (const it of items) report.push({ source: "artefato", file: rel, rule: it.rule, text: it.text, detail: it.detail, class: classify(it, text, rel), body: text });
+  const items = [
+    ...analyze(text, { roots: [REPO], mode: "artifact", artifactAbs: abs }).filter((i) => i.severity === "block"),
+    ...cobertura(text, { artifactAbs: abs }),
+    ...elisao(text),
+  ];
+  for (const it of items) report.push({ source: "artefato", file: rel, rule: it.rule, text: it.text, detail: it.detail, severity: it.severity, class: classify(it, text, rel), body: text });
 }
 
 const GATE_TEXT_RE = /Gateway Check|Audit P[ré]|Audit Pós|Gate de Converg|Veredicto|Checklist Final|\/homolog — |\/prod — /i;
@@ -132,9 +143,13 @@ if (TRANSCRIPTS && fs.existsSync(TRANSCRIPTS)) {
     }
     fs.closeSync(fd);
     for (const text of gateMsgs) {
-      const items = [...analyze(text, { roots: [REPO], mode: "stop" }), ...ledgerChecks(text, { roots: [REPO], gates, ledger, input: {} })].filter((i) => i.severity === "block");
+      const items = [
+        ...[...analyze(text, { roots: [REPO], mode: "stop" }), ...ledgerChecks(text, { roots: [REPO], gates, ledger, input: {} })].filter((i) => i.severity === "block"),
+        ...cobertura(text),
+        ...elisao(text),
+      ];
       const ledgerSpec = { reads: [], taskCreate: ledger.tasks.create, taskCompleted: ledger.tasks.updateCompleted, taskList: ledger.tasks.list, headings: ledger.headings.filter((h) => /Audit/i.test(h)).map((h) => `## ${h}`).slice(0, 4) };
-      for (const it of items) report.push({ source: "transcript", file: f, rule: it.rule, text: it.text, detail: it.detail, class: it.rule.startsWith("coord") || it.rule === "pointer" || it.rule === "claim" ? classify(it, text, "") : "positivo-verdadeiro", body: text, ledger: ledgerSpec });
+      for (const it of items) report.push({ source: "transcript", file: f, rule: it.rule, text: it.text, detail: it.detail, severity: it.severity, class: it.rule.startsWith("cobertura") || it.rule.startsWith("coord") || it.rule === "pointer" || it.rule === "claim" ? classify(it, text, "") : "positivo-verdadeiro", body: text, ledger: ledgerSpec });
     }
   }
 }
@@ -147,7 +162,7 @@ for (const r of report) {
   matrix[r.rule][r.class] = (matrix[r.rule][r.class] || 0) + 1;
 }
 const classes = [...new Set(report.map((r) => r.class))].sort();
-const md = [`# Mineração — ${REPO}`, "", `${files.length} artefatos${TRANSCRIPTS ? ` · transcrições em ${TRANSCRIPTS}` : ""} · ${report.length} itens bloqueantes`, "", `| regra | ${classes.join(" | ")} |`, `|---|${classes.map(() => "---").join("|")}|`];
+const md = [`# Mineração — ${REPO}`, "", `${files.length} artefatos${TRANSCRIPTS ? ` · transcrições em ${TRANSCRIPTS}` : ""} · ${report.length} itens (${report.filter((r) => r.severity !== "note").length} bloqueantes, ${report.filter((r) => r.severity === "note").length} em instrumentação)`, "", `| regra | ${classes.join(" | ")} |`, `|---|${classes.map(() => "---").join("|")}|`];
 for (const [rule, byClass] of Object.entries(matrix)) md.push(`| \`${rule}\` | ${classes.map((c) => byClass[c] || 0).join(" | ")} |`);
 fs.writeFileSync(path.join(OUT, "summary.md"), md.join("\n") + "\n");
 
@@ -158,9 +173,11 @@ for (const r of report) {
   perCell[key] = (perCell[key] || 0) + 1;
   if (perCell[key] > MAX_PER_CELL || r.class === "note" || r.class === "n/a-lote") continue;
   n++;
-  const expect = r.class.startsWith("falso-positivo") || r.class === "envelhecido" ? "pass" : "block";
+  // Regra em fase de instrumentação (nasce `note`) ainda NÃO bloqueia: o sample tem de esperar `pass`,
+  // senão o golden set cobra do hook um comportamento que ninguém ligou.
+  const expect = r.severity === "note" || r.class.startsWith("falso-positivo") || r.class === "envelhecido" ? "pass" : "block";
   const cmd = r.source === "artefato" ? "check-artifact" : "check-stop";
-  const front = [`cmd: ${JSON.stringify(cmd)}`, `expect: ${JSON.stringify(expect)}`, `must: ${JSON.stringify(expect === "block" ? [r.text.slice(0, 60)] : [])}`, `class: ${JSON.stringify(r.class)}`, `origin: ${JSON.stringify(`${path.basename(REPO)} ${r.source} ${r.file} — ${r.rule}: ${r.text.slice(0, 80)}`)}`];
+  const front = [`cmd: ${JSON.stringify(cmd)}`, `expect: ${JSON.stringify(expect)}`, `must: ${JSON.stringify(expect === "block" ? [r.text.slice(0, 60)] : [])}`, `rule: ${JSON.stringify(r.rule)}`, `class: ${JSON.stringify(r.class)}`, `origin: ${JSON.stringify(`${path.basename(REPO)} ${r.source} ${r.file} — ${r.rule}: ${r.text.slice(0, 80)}`)}`];
   if (cmd === "check-artifact") front.push(`artifact: ${JSON.stringify(r.file.replace(/^.*?(docs|kanban)\//, "$1/"))}`);
   if (r.ledger) front.push(`ledger: ${JSON.stringify(r.ledger)}`);
   const slug = `${r.rule}-${r.class}-${String(perCell[key]).padStart(2, "0")}`.replace(/[^\w-]+/g, "-");

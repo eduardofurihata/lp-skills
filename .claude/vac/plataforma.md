@@ -6,6 +6,8 @@ Mapa escrito à mão a partir da exploração de 2026-09-12 (sessão lp-skills).
 
 - Hooks de skill (frontmatter `hooks:`) registram para todos os 33 eventos do binário, mas na prática `SubagentStop` não dispara de hook de skill — dispara de settings/plugin — verificado em: 2.1.269 · 2026-09-12
 - Eventos que disparam de hook de skill: `UserPromptSubmit`, `SubagentStart` (injeta `additionalContext`), `Stop`, `PostToolUse` (inclusive matcher `Agent`) — verificado em: 2.1.269 · 2026-09-12
+- `UserPromptSubmit` entrega o texto do prompt no campo **`prompt`** — a doc do plugin-dev (`hook-development/scripts/test-hook.sh:78`) mostra `user_prompt`, que NÃO é o campo real — verificado em: 2.1.269 · 2026-09-12
+- `--safe-mode` desliga os hooks de plugin; `--plugin-dir <dir>` sozinho os registra e dispara (é como testar hook sem commit) — verificado em: 2.1.269 · 2026-09-12
 - Input base de todo hook: `session_id`, `transcript_path`, `cwd`, `prompt_id?` (UUID por prompt do usuário) — verificado em: 2.1.269 · 2026-09-12
 - `Stop`: `stop_hook_active`, `last_assistant_message?`; `SubagentStop`: + `agent_id`, `agent_transcript_path`, `agent_type` — verificado em: 2.1.269 · 2026-09-12
 - `SessionStart.source` ∈ {`startup`, `resume`, `clear`, `compact`, `fork`} — o matcher casa contra `source` — verificado em: 2.1.269 · 2026-09-12

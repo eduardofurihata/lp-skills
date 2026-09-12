@@ -1,120 +1,116 @@
 ---
 name: work
-description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone. Discovers the project board from the card key (/jira-board) and the team conventions from `.claude/ship-setup/setup.md` (/setup: work directly on the integration branch, one branch per card, or one branch accumulating cards — an open batch keeps its first-card name and the new card enters through its own commit), syncs the integration branch from GitHub and branches off it — or stays on the open batch — as the setup says (gh→integração→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) with the card key to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
+description: 'Use when user invokes /work [KEY-N] to get the work committed locally — implemented, reviewed and QA-tested — whatever stage it is at now. The first target of the ship pipeline: declares "up to the `commit` stage" and hands it to the reconcile engine, which diagnoses where the work is (card? branch? already committed?) and closes only what is open, in order: the branch engine (gh→integração→branch, as `.claude/ship-setup/setup.md` says — one branch per card, one batch branch, or directly on the integration branch), then the work-cycle engine, which moves the card to in-progress, asks only when the card is ambiguous, and runs /method (which invokes /solve) with the card key. Works on ANY Jira board (via /jira) and on repositories WITHOUT Jira (the objective is the description given, or the work already in the tree). Composes with the modifiers in any order: `/work /repro KEY-N` = `/repro /work KEY-N` (reproduce first, human sees the bug, fix, human sees the fix); `/card /work "…"` creates the card and then works it. Stops at the local commit and never pushes; `/pull-request`, `/homolog` and `/prod` are the farther targets of the same pipeline.'
 effort: max
-requires: [jira-board, setup, method, solve]
+requires: [jira, setup, pipeline, method, solve]
 handoff: pull-request
-argument-hint: "[KEY-N] | (empty = continuar card ativo)"
+argument-hint: "[KEY-N | descrição] [/repro] [/card] | (vazio = continuar o card ativo)"
 ---
 
-# /work — Trabalhar um card do Jira (do todo ao commit)
+# /work — o trabalho commitado localmente, de onde ele estiver
 
-Pega um card de **qualquer board** do Atlassian pessoal e leva até o **commit local** na feature branch, **10x acima da referência #1 do mercado**. **Skill standalone do projeto pessoal.** Carrega o `/solve` na ativação e reusa o `/method` (que o recarrega) como protocolo de engenharia.
+O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o trabalho do objetivo implementado, revisado, testado e **em commit local** na branch de trabalho — não uma sequência de passos. Onde ele está agora é o que o loop descobre; o que falta é o que o loop fecha. **10x acima da referência #1 do mercado**: carrega o `/solve` na ativação e o `/method` (via `work-cycle`) o recarrega.
 
-> 🚫 NÃO faz push, NÃO abre PR, NÃO mergeia. Termina no **commit local** (Step 10 do `/method`). Ship é o `/pull-request` depois.
+> 🚫 NÃO faz push, NÃO abre PR, NÃO mergeia. A faixa deste alvo termina no estágio `commit`. Os alvos seguintes da mesma escada são `/pull-request` → `/homolog` → `/prod` — cada um leva o trabalho **de onde estiver** até o próprio estágio.
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/work` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão — **10x acima da referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/work` é quem leva o card até o commit **nesse nível** — e o `/method` (passo 5) recarrega o mesmo `/solve` quando rodar. Depois disso, siga o Fluxo a partir do passo 0.
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/work` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão — **10x acima da referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois disso, o Step 0.
 
 ## Iron Law
 
-> **Precisão > tokens > velocidade.** Mire **10x acima da referência #1 do mercado** (padrão do `/solve`, carregado aqui na ativação e recarregado pelo `/method`). "É simples, pulo" = a violação.
-> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** (tudo por onde passa sobe) e o **design** (tokens, atomicidade, estados, a11y — quando tem tela) vêm juntos e valem em **todos** os steps, não só no código — doutrina em `plugins/furi-build/skills/principles/SKILL.md` e lente por step nos references do `/method` (`plugins/furi-build/skills/method/references/`, design incluído — pacote `furi-build`, carregados pelo `/method` que o `/work` invoca). Card "pequeno" não relaxa nenhum deles.
-
-## Disciplina em todos os passos
-
-Os passos 1-4 são **preparação**: é neles que o card vira entendimento — qual **capacidade** ele pede, **qual motor é dono** dela (ou qual falta) e se a feature tem **superfície visual**. O passo 5 é onde o regime roda inteiro: o `/method` cobra princípios, motores, refatoração e design **declarados em cada gateway**, step a step, até o commit.
-
-Nenhum desses passos é lugar de "adianto um código". Entender aqui é o que faz o `/method` não escorregar lá na frente.
+> **Precisão > tokens > velocidade.** Mire **10x acima da referência #1 do mercado** (padrão do `/solve`). "É simples, pulo" = a violação.
+> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** e o **design** (quando tem tela) valem em **todos** os steps — doutrina em `plugins/furi-build/skills/principles/SKILL.md`, lente por step nos references do `/method` (pacote `furi-build`, carregados pelo `/method` que o `work-cycle` invoca). Card "pequeno" não relaxa nenhum deles.
+>
+> **O alvo é estado, não etapa.** `/work` num card já commitado é gap zero, dito com a evidência. `/work` num card sem branch cria a branch, entende, implementa e commita — sem mandar ninguém "rodar outra coisa antes".
 
 ## Argument parsing
 
-| Arg | Modo | Ação |
-|-----|------|------|
-| `KEY-N` (ou URL do card) | START | roda do zero pra esse card, em **qualquer** projeto |
-| vazio | CONTINUE | detecta a branch/card ativo e retoma de onde parou |
+`composicao.md` (`pipeline/references/composicao.md`) primeiro: o argumento pode trazer um **modificador** (`/repro`, `/card`) ou um **alvo mais distante** (`/pull-request`, `/homolog`, `/prod`).
+
+| Arg | O que acontece |
+|---|---|
+| `KEY-N` (ou URL do card) | objetivo = o card, em **qualquer** projeto |
+| `<descrição>` sem key | objetivo = o trabalho descrito — projeto sem Jira, ou trabalho sem card |
+| vazio | CONTINUE: objetivo = o card/trabalho da branch atual (`docs/jira/todo/*.md` cuja `branch:` é a atual, ou o feature em `kanban/07-implementation/`); nenhum → "Nenhum trabalho ativo. Use `/work KEY-N` ou `/work <descrição>`" |
+| `… /repro` | funde: o estágio `reprodução` entra antes do `commit`, com as duas paradas humanas |
+| `… /card` | funde: o estágio `card` entra antes de `branch` — o card é criado e vira o objetivo |
+| `… /pull-request` · `/homolog` · `/prod` | vence o mais distante: `Skill(skill: "<ele>", args: "<o resto>")` e este alvo **não roda** |
 
 ## Convenções (CONTRATO)
 
-- **Qualquer projeto** do Atlassian pessoal, sempre via `mcp__atlassian__*`. A key sai do argumento (`ALK-42` → projeto `ALK`) ou da **memória do projeto** quando o argumento não traz uma — **nada hardcoded**.
-- **Board vem do `/jira-board`** (passo 0, dependência obrigatória), que lê a memória do projeto e pergunta só na primeira vez. Não descubra nem pergunte o board aqui. Projeto sem board ágil → segue sem sprint, e avisa.
-- **Modo de trabalho e nome da branch vêm do `/setup`** (passo 0, dependência obrigatória), que lê `.claude/ship-setup/setup.md` § Branch — versionado no repositório, do time. `branch por card`, `branch acumula cards` ou `direto na integração`: **nada hardcoded aqui**, nem "default", nem "exceção". Pedido explícito na sessão ("hoje quero branch") vence para esta invocação e não reescreve o arquivo — o passo 6 oferece `/setup branch` se for pra virar padrão.
-- **Status de "em andamento" é descoberto, nunca inventado** — o nome varia por projeto ("Em andamento", "In Progress", "Doing"…). A mecânica de descobrir e aplicar, e o que fazer quando o workflow não tem equivalente, é do **`prod/references/jira-sync.md`** (fonte única).
-- Card não encontrado → o projeto pode estar em **outro site Atlassian** (o MCP alcança só o site do seu `JIRA_URL`). Diga isso; não aproxime para outra key.
-- **Branch base e branch de trabalho são do motor `references/branch.md`** (fonte única): a integração resolvida pelo `prod/references/deploy-context.md` § 1 (base dos PRs recentes, depois `dev`, depois o default do GitHub; branch parada que nenhum PR mira não conta), nunca assumida; depois o modo do `/setup`. Regra de criação: **gh → integração → branch**.
-- O `/method` trabalha SEMPRE na branch atual e **nunca cria branch** — por isso a branch nasce AQUI, antes de invocá-lo.
+- **Qualquer projeto** do Atlassian, via `mcp__atlassian__*`. A key sai do argumento ou da **memória do projeto** — nada hardcoded. **Sem Jira** (`/setup` § Jira `Rastreamento` ≠ Jira) o pipeline roda inteiro sem card.
+- **Board e estrutura do Jira vêm do `/jira`**; **modo de trabalho e nome da branch vêm do `/setup`** § Branch (`branch por card` · `branch acumula cards` · `direto na integração`) — Step 0, dependências obrigatórias, lidas a **cada** invocação. Pedido explícito na sessão ("hoje quero branch") vence para esta invocação e não reescreve o arquivo; a saída oferece `/setup branch` se for pra virar padrão.
+- **A branch nasce no estágio `branch`** (`pipeline/references/branch.md`), antes de qualquer código; **`<integração>` é detectada** (`pipeline/references/deploy-context.md` § 1), nunca assumida. O `/method` **nunca cria branch**.
+- **Status e comentário no card são do `jira-sync`**, que lê o `jira.md` do projeto — nunca inventados aqui.
 
-## Fluxo
+<HARD-GATE>
+1. **Diagnóstico publicado antes de qualquer ação** — a faixa inteira (`card?` → `branch` → `reprodução?` → `commit`), estágio a estágio, com a evidência.
+2. NÃO implemente fora do `/method` — o `work-cycle` o invoca via Skill tool, com o objetivo como argumento. Código sem review frio e sem QA não vira commit.
+3. NÃO pushe. A faixa termina em `commit`.
+4. NÃO crie card por iniciativa própria. O estágio `card` só existe com `/card` composto.
+5. NÃO mande o usuário "rodar outra skill antes": estágio aberto é gap que o loop fecha.
+</HARD-GATE>
 
-### 0. Board do projeto e convenções do time (SEMPRE, antes de tudo)
-1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória, junto do `/solve` e do `/method`: ele lê a memória do projeto e, se não houver board gravado, pergunta e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
-2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: ele lê `.claude/ship-setup/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Devolve `{branch: {modo, nome}, commit, pr, jira, infra, guidelines, origem}` — o passo 2 usa `branch`, o passo 6 usa `pr`.
+---
 
-Duas invocações separadas, cada uma com a sua pergunta isolada (uma vez na vida do repositório). Key explícita no argumento (`ALK-42`) **vence** o que veio da memória e **não** a reescreve. No modo CONTINUE (argumento vazio), o board da memória é o que resolve site e prefixo de branch ao retomar o card ativo. Nunca assuma o board nem as convenções, nem pergunte por eles aqui.
+## Step 0 — Jira, convenções, contexto e composição
 
-### 1. Buscar o card
-`mcp__atlassian__jira_get_issue` (`issue_key: KEY-N`): título, descrição, tipo, `## Como testar`, assignee, **anexos**. Colar a descrição **real** do card; se houver ambiguidade, listar ≥2 interpretações (insumo do passo 4).
+1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `jira` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{rastreamento, site, key, boardId, boardName, url, estrutura, origem}` — com `rastreamento ≠ Jira`, devolve isso e o pipeline segue sem card.
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Devolve `{branch: {modo, nome}, commit, pr, jira: {rastreamento, …}, infra, guidelines, origem, arquivo}` — o `branch.md` usa `branch`; o `/method` usa `commit`. Duas invocações separadas, cada uma com a sua pergunta isolada (uma vez na vida do repositório).
+3. **`pipeline/references/deploy-context.md`** § 1 — `<integração>` detectada (e o `deploy.md` lido, se existir).
+4. **`pipeline/references/composicao.md`** — o alvo efetivo: estágios e paradas dos modificadores presentes, o verbo tirado do argumento, o objetivo limpo.
 
-> **O card vem em voz de PM/PO, QA ou Designer** (`/card`), não de dev — ele diz **o quê** e **por quê**, com rota, comportamento esperado e referência visual. Traduza isso para a **capacidade** que a feature exige. Card não é spec técnica: se ele prescrever solução, isso é ruído, não contrato — quem deriva arquitetura é o `/method`.
-> Tem **anexo de imagem**? Baixe (`jira_download_attachments` / `jira_get_issue_images`) e leia antes de decidir: é o que o solicitante viu.
+## Step 1 — Declarar o alvo e entregar ao `reconcile`
 
-### 2. gh → integração → branch (REGRA DE OURO)
-A mecânica é do **`references/branch.md`** (motor de branch), fonte única — siga-o, não o reescreva aqui. Entrada: `branch: {modo, nome}` do `/setup` (passo 0 — pedido explícito nesta sessão, "hoje quero branch" num repo `direto`, vence **para esta invocação** e não reescreve o arquivo; no passo 6 você **oferece** gravar), a key do card e a integração resolvida pelo `prod/references/deploy-context.md` § 1. Saída: o checkout na branch de trabalho — feature branch, lote aberto ou a própria integração — sincronizada com `origin/<integração>`, e `{integração, branch, modo, lote, origem}` para o report do passo 6. É nela que o `/method` (passo 5) trabalha; ele **nunca** cria branch.
-
-### 3. Mover o card → em andamento
-- Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue`.
-- Status: mover o card para o **equivalente a "em andamento"** no workflow daquele projeto ("Em andamento", "In Progress", "Doing"…). A mecânica é do **`prod/references/jira-sync.md`**, fonte única — siga-o, não o reescreva aqui.
-- **Nenhuma equivalente no workflow?** Avise e siga — o trabalho não trava por causa de status. Nunca invente nome de transição nem force uma que signifique outra coisa.
-
-### 4. GATE de perguntas (analisar — perguntar SÓ se necessário)
-Entender o card lendo o **código** relevante. Ao fazer isso, já mapeie duas coisas que o `/method` vai cobrar: **qual motor é dono da regra** (ou qual falta) e **se a feature tem superfície visual** — entendimento, não implementação.
-
-Dar uma **nota 0–100** à clareza do que precisa ser feito:
-- **< 90, ou ambiguidade real** (2 caminhos opostos, requisito de produto faltando, decisão que só o usuário julga) → **PARAR e perguntar** (`AskUserQuestion`) ANTES de implementar. Só seguir com a resposta.
-- **≥ 90 e sem ambiguidade** → seguir direto. **Não invente pergunta.**
-
-> O gate é **pré-implementação** e é sobre *produto/escopo*. Dúvida de *implementação* resolve pela hierarquia (padrão do projeto > big apps > boas práticas) e documenta no spec — não vira pergunta ao usuário.
-
-### 5. Rodar o /method
-**Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve), **passando o card como argumento** (`KEY-N`). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória. Ele:
-1. chama o **`/solve`** (padrão 10x acima do #1 do mercado) na ativação — é assim que "resolve com /method e /solve" acontece;
-2. roda discovery (1–5) → To Do (6) → Plano (7a) → Codificar (7b) → Code Review (8) → Run Test / QA via front (9) → Done (10);
-3. trabalha **na branch do passo 2** (nunca cria branch), com seus próprios gateways e audits — cada um declarando **princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores)**, **refatoração do perímetro** e, se a feature tem tela, **design** (tokens, atomicidade, estados, a11y);
-4. **converge os follow-ups antes de fechar:** todo achado fora de escopo vira ciclo `/method` completo (com `/solve`) até o **passe seco** — o card sai sem ponta solta (Regra Inviolável 7);
-5. fecha no **Step 10**: um único commit local com código + docs + card em `kanban/10-done/` — **incluindo os ciclos de follow-up** (ciclo aninhado não commita sozinho) — com a key do **card ativo** (o argumento) onde o § Commit mandar. Num lote, a branch é do 1º card; o commit é do card de hoje.
-
-**Não duplicar nada do `/method` aqui** — ele é o dono do protocolo. `/work` só prepara (branch + card + perguntas) e delega.
-
-### 6. Encerrar
 ```
-✅ /work KEY-N — implementado, revisado, testado e commitado (local).
-   Projeto: <KEY>  ·  Board: <nome do board> [memória do projeto | argumento]
+alvo = {
+  atéOEstágio:   commit
+  ambiente:      —
+  branch:        a de trabalho (modo do /setup § Branch, nome pelo branch.md)
+  fonteDoDelta:  o objetivo (KEY-N · descrição · o que já está na árvore)
+  gate:          —
+  paradas:       [] ∪ as dos modificadores
+}
+```
+
+Entregue ao **`pipeline/references/reconcile.md`**, que faz o resto: publica o diagnóstico da faixa **antes** de agir, fecha os estágios abertos na ordem — `card` (`/card`, só se composto) → `branch` (`branch.md`) → `reprodução` (`/repro`, só se composto) → `commit` (`work-cycle.md` → `/method`) — re-diagnostica a cada um, e para no `commit`.
+
+Os motores vivem em `pipeline/references/`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de trabalho precisar mudar, ela muda no motor, para os quatro alvos de uma vez. Na borda, o `work-cycle` invoca o **`/method`** (`furi-build:method`) e, quando a QA está pendente, o **`/todo`** (`furi-build:todo`) — via Skill tool, nunca reproduzidos de memória.
+
+## Saída
+
+```
+✅ /work <KEY-N | objetivo> — commitado localmente (implementado, revisado, testado)
+   Diagnóstico: <N> estágios · <n> já fechados · <m> fechados agora  [paradas: <repro: 2 | nenhuma>]
+   Projeto: <KEY> · Board: <nome> [memória | argumento]   |   sem Jira (Rastreamento: <x>)
    Setup:   <branch por card | branch acumula cards | direto na integração> [arquivo | criado agora | override de sessão]
    Branch:  <branch>  [feature branch | lote: <n> cards — <keys, dos commits> | direto na integração]
    Commit:  <hash>
    Kanban:  kanban/10-done/<feature>.md
-   Próximo: /pull-request  (push · abre ou atualiza o PR — ou só pusha, se § PR `Abre PR: não` · espelha em cada card)
+   Jira:    <em andamento (transição) | — sem Jira>
+   Próximo: /pull-request (push + PR) · /homolog · /prod — cada um leva daqui até o próprio estágio
 ```
 
-Houve override de sessão no passo 2? Uma linha a mais, **oferecendo** — nunca gravando: *"Hoje foi `<modo>`; quer que vire o padrão deste repositório?"* — um "sim" e você invoca `/setup branch` (skill interna: o usuário não a digita).
+Houve override de sessão no estágio `branch`? Uma linha a mais, **oferecendo** — nunca gravando: *"Hoje foi `<modo>`; quer que vire o padrão deste repositório?"* — um "sim" e você invoca `/setup branch`.
+
+**Gap zero** (já estava commitado): `✅ /work KEY-N — já commitado: <hash> em <branch>, kanban/10-done/<feature>.md tests: passed. Nada a fazer. Próximo: /pull-request.`
+
+**Estágio que resistiu** (parada sem resposta, `/method` sem convergir): `⚠️ /work KEY-N — parou em <estágio>: <por quê> · Destrava: <o quê>`.
 
 ## Red Flags — STOP
 
-- "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira-board`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
-- "Pulei o passo 0 porque já sei o board desta sessão" → NÃO. A leitura da memória é **toda** invocação.
-- "Assumi o board de sempre" → NÃO. Board vem do `/jira-board`; a key, do argumento ou da memória; sprint e transições são **descobertos** na hora.
-- "Assumi que crio branch (é o fluxo dos devs)" / "assumi que trabalho direto (é o meu repo)" → NÃO. O modo vem do **`/setup`** § Branch, lido do `.claude/ship-setup/setup.md` a cada invocação. Sem arquivo, o `/setup` pergunta — uma vez na vida do repositório.
-- "Já sei o setup desta sessão, sigo sem invocar" → NÃO. Mencionar não é invocar; a leitura é **toda** vez.
-- "O usuário pediu branch hoje, atualizei o `.claude/ship-setup/setup.md`" → NÃO. Override de sessão vale pra invocação. Só `/setup branch` reescreve o arquivo.
-- "O status 'Em andamento' não existe nesse projeto, então inventei um" → NÃO. Escolha entre as transições que existem; nenhuma equivalente → avisa e segue.
-- "Resolvi a branch de cabeça (`checkout dev`, `checkout main`, branchei de `homolog`, renomeei o lote)" → NÃO. Passo 2 é o motor `references/branch.md`: integração pela topologia, modo pelo `/setup`, lote pelos PRs — e as red flags dele valem aqui.
-- "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
-- "Invoquei o `/method` sem passar o card; ele tira a key da branch" → NÃO. Num lote a branch é do 1º card e o commit sairia com a key errada. O argumento é `KEY-N`.
-- "Já conheço o `/solve` / o `/jira-board` / o `/setup` / o `/method`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
-- "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
-- "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes** de implementar.
-- "O card não falou de motor, então espalho a regra" → NÃO. O card fala de produto; a arquitetura é derivada no `/method`, e capacidade tem **um** dono.
-- "O card tinha print anexado, mas nem abri" → NÃO. O anexo é o que o solicitante viu; leia antes de decidir.
-- "Refatoro/arrumo a UI depois que o PR passar" → NÃO. Refatoração e design são regime, cobrados gateway a gateway dentro do `/method`.
-- "Terminei, já abro o PR / dou push" → NÃO. `/work` para no **commit local**. Ship é `/pull-request`.
+- "Descobri/perguntei o board direto aqui" → NÃO. Step 0 é o `/jira`; ele é o único dono da memória e da estrutura.
+- "Pulei o Step 0 porque já sei o board/setup desta sessão" → NÃO. Mencionar não é invocar; a leitura é **toda** invocação.
+- "Assumi que crio branch (é o fluxo dos devs)" / "assumi que trabalho direto (é o meu repo)" → NÃO. O modo vem do **`/setup`** § Branch. Sem arquivo, o `/setup` pergunta — uma vez na vida do repositório.
+- "O usuário pediu branch hoje, atualizei o `.claude/ship-setup/setup.md`" → NÃO. Override de sessão vale pra invocação. Só `/setup branch` reescreve.
+- "Comecei pelo `/method`, a branch eu vejo depois" → NÃO. O diagnóstico vem primeiro; `branch` fecha antes de `commit`. O `/method` nunca cria branch.
+- "Resolvi a branch de cabeça (`checkout dev`, `checkout main`, renomeei o lote)" → NÃO. É o motor `branch.md`: integração pela topologia, modo pelo `/setup`, lote pelos PRs.
+- "Já está commitado, mas rodo o `/method` de novo pra garantir" → NÃO. Gap zero se declara com a evidência; não se refaz.
+- "Não tem card, então não dá pra trabalhar" → NÃO. Sem Jira o objetivo é a descrição ou o que está na árvore. Nem tudo tem card.
+- "Não tem card, então crio um" → NÃO. Só com `/card` composto. O pipeline nunca cria card sozinho.
+- "`/work /repro`, então rodo o `/repro` inteiro antes" → NÃO. É **um** loop: o estágio `reprodução` e a parada entram na faixa deste alvo (`composicao.md`).
+- "Digitaram `/work /prod`, faço o `/work` e aviso" → NÃO. Vence o mais distante: delega ao `/prod` e não roda.
+- "Já conheço o `/solve` / o `/jira` / o `/setup` / o `/method`, sigo sem invocar" → NÃO. Skill entra pelo Skill tool, **toda** vez.
+- "Terminei, já abro o PR / dou push" → NÃO. `/work` para no **commit local**. Push é a faixa do `/pull-request`.
+- "Copio as regras do `work-cycle` pra dentro daqui, fica mais direto" → NÃO. Vivem no motor, para os quatro alvos. Divergência aqui é a duplicação renascendo.

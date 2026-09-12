@@ -1,6 +1,6 @@
 # Deploy Context — a topologia e o processo de deploy DESTE projeto
 
-> **Fonte única do contexto de deploy.** `/homolog`, `/prod`, `pull-request`, `work` e `repro` (os dois via o motor `work/references/branch.md`) perguntam a topologia aqui; ninguém assume `dev`, ninguém chuta comando de deploy.
+> **Fonte única do contexto de deploy.** `/homolog`, `/prod`, `pull-request`, `work` e `repro` (os dois via o motor `pipeline/references/branch.md`) perguntam a topologia aqui; ninguém assume `dev`, ninguém chuta comando de deploy.
 
 **Responsabilidade única:** responder *"qual é a topologia deste repositório e como o deploy funciona aqui?"* — lendo o doc do projeto, ou descobrindo e escrevendo-o na primeira vez.
 
@@ -16,27 +16,31 @@
 
 ## 1 — Detectar a topologia (SEMPRE, toda invocação)
 
-A integração é a branch **para onde o trabalho converge de fato** — nunca "a que se chama `dev`". Três evidências, nesta ordem; a primeira que responde decide:
+A integração é a branch **para onde o trabalho converge de fato** — nunca "a que se chama `dev`". `dev` + `main` é só o **nosso padrão**: um projeto pode integrar em `develop`, `staging`, `homologacao` e produzir em `master`. Quatro evidências, nesta ordem; a primeira que responde decide:
 
 ```bash
+grep -E '^\| (homolog|prod) ' .claude/ship-setup/deploy.md 2>/dev/null     # 0. o doc já registrou os nomes REAIS (gravados numa detecção anterior) — é a evidência, se existir
 gh pr list --state all --limit 20 --json baseRefName -q '.[].baseRefName' | sort | uniq -c | sort -rn   # 1. para onde os PRs vão
-git ls-remote --heads origin dev develop                                                              # 2. a branch de integração com o nome de sempre existe?
+git ls-remote --heads origin dev develop staging homolog homologacao                                  # 2. uma branch de integração com nome usual existe?
 gh repo view --json defaultBranchRef -q .defaultBranchRef.name                                        # 3. a default do GitHub (onde os PRs caem por padrão)
-git ls-remote --heads origin main master                                                              # produção: `main`, senão `master`
+git ls-remote --heads origin main master production                                                   # produção: `main`, senão `master`, senão `production`
 ```
 
 | Evidência | Integração |
 |---|---|
+| o `deploy.md` já tem a linha do ambiente com a branch | **ela** — e a evidência 1 só **confirma**; divergiu → § 3, nunca troca em silêncio |
 | os PRs recentes miram, em maioria, uma branch | **ela** (`dev`, `develop`, `homolog`, `staging`, `main` — o nome não importa, o uso importa) |
-| sem PR que responda, mas `dev`/`develop` existe em `origin` | **`dev`** (ou `develop`) |
+| sem PR que responda, mas uma das usuais existe em `origin` | **ela** — e se existir mais de uma (`dev` e `staging`), **pergunte** qual é a integração; não pegue a primeira |
 | nada disso | a **default** do GitHub |
+
+O nome detectado é o que fica **gravado** no `## Ambientes` do doc (§ 2) — é o "registrar no setup" que o pipeline lê nas próximas vezes. A partir daí todo motor escreve `<integração>`/`<produção>` e lê o nome real daqui.
 
 Produção = `main` em `origin`; senão `master`; senão a default. **A default não é produção por definição** — time que abre PR contra `dev` costuma deixar `dev` como default justamente para os PRs caírem nela (caso real: `vibe-nivee`, default `dev`, produção `main`). Integração ≠ produção ⇒ **duas branches**; integração = produção ⇒ **branch única**.
 
 | Topologia | Consequência |
 |---|---|
-| **duas branches** | integração = ambiente homolog · `main` = produção |
-| **branch única** | único ambiente é **prod**; `/homolog` não trabalha aqui, `/pull-request` mira a integração (= `main`), `/work` branca dela |
+| **duas branches** | `<integração>` = ambiente homolog · `<produção>` = produção; a escada tem os dois blocos de ambiente e o estágio `promovido` |
+| **branch única** | único ambiente é **prod**; `/homolog` não trabalha aqui, os estágios de homolog e `promovido` não existem; o `pr-publish` mira `<produção>` |
 
 - **Branch morta não é integração.** Candidata que nenhum PR recente mira e que está **parada** — `git log -1 --format=%ci origin/<b>` há mais de 90 dias, ou `git rev-list --count origin/<b>..origin/<produção>` nas centenas — é legado: reporte e ignore. Caso real: `labzz-afl` tem `origin/homolog` parada desde 2026-04, 4.394 commits atrás da `main`, e 19 dos 20 últimos PRs vão para `main` — é **branch única**.
 - **`dev` existe só local, não em `origin`** → conta como **branch única** para efeito de PR e deploy (não há para onde abrir PR remoto). Reporte a existência local, não a promova a integração sozinho.
@@ -53,14 +57,14 @@ Fronteira com o `infra.md`: **este doc é processo** (como sobe, como checa, com
 # Deploy — <projeto>
 
 ## Topologia
-duas branches (`dev` + `main`) | branch única (`main`)
+duas branches (`<integração>` + `<produção>`) | branch única (`<produção>`)      <!-- os nomes REAIS detectados no § 1 — ex.: `dev` + `main`, `develop` + `master` -->
 
-## Ambientes
+## Ambientes                <!-- é daqui que o pipeline lê "tem homolog?" e o nome real de cada branch -->
 | Ambiente | Branch | URL | Dispara por |
 |---|---|---|---|
-| homolog | `dev`  | https://…  | push em `dev` → `.github/workflows/<x>.yml` (runner self-hosted) |
-| prod    | `main` | https://…  | push em `main` → `.github/workflows/<y>.yml` (runner self-hosted) |
-<!-- branch única: só a linha de prod -->
+| homolog | `<integração>` | https://…  | push em `<integração>` → `.github/workflows/<x>.yml` (runner self-hosted) |
+| prod    | `<produção>`   | https://…  | push em `<produção>` → `.github/workflows/<y>.yml` (runner self-hosted) |
+<!-- branch única: só a linha de prod. Ambiente extra (staging, preview): mais uma linha, na ordem da escada -->
 
 ## Como checar          <!-- comandos EXATOS, copiáveis; não descrição -->
 gh run list --branch <branch> --limit 5
@@ -134,7 +138,7 @@ Nenhum projeto é obrigado a expor endpoint de versão por causa desta skill —
 - "O doc já existe, então não confiro a topologia" → NÃO. Reconferir é barato; doc stale manda a skill agir no ambiente errado.
 - "Não achei a URL de homolog, chuto pelo padrão do projeto" → NÃO. **Pergunta.** URL inventada = smoke passando em lugar nenhum, ou falhando por engano.
 - "Escrevo o valor do secret no doc para não perguntar de novo" → NÃO. **Nunca.** O doc diz onde e como; o valor é pedido na hora.
-- "Guardo isso na memória da máquina, como o `/jira-board`" → NÃO. Board é preferência de quem usa; deploy é conhecimento do time, e tem que ser versionado e revisável.
+- "Guardo isso na memória da máquina, como o `/jira`" → NÃO. Board é preferência de quem usa; deploy é conhecimento do time, e tem que ser versionado e revisável.
 - "`.claude/` é do Claude, é coisa local, não versiono" → NÃO. `.claude/ship-setup/deploy.md`, `setup.md`, `infra.md` e `patterns.md` são do **time**; só `settings.local.json`, `plans/` e `worktrees/` são pessoais. Está no `.gitignore`? O `/setup` propõe a correção (`.claude/*` + negações) — não mude o doc de lugar.
 - "Anoto no `deploy.md` onde vive cada secret, é tudo configuração" → NÃO. Onde vive é inventário (`infra.md`); aqui é o comando de setar. Um fato, um dono.
 - "Pergunto tudo, é mais seguro" → NÃO (o oposto). O que está em `.github/workflows/` você **lê**. Perguntar o derivável é a fricção que faz a skill ser abandonada.

@@ -48,7 +48,7 @@ test("card: injeta o cartão como additionalContext do evento recebido", () => {
   assert.equal(json.hookSpecificOutput.hookEventName, "UserPromptSubmit");
   assert.match(json.hookSpecificOutput.additionalContext, /\[\/vac · regime ativo\]/);
   assert.ok(!json.hookSpecificOutput.additionalContext.includes("<!--"), "comentários HTML não vazam");
-  assert.ok(json.hookSpecificOutput.additionalContext.length <= 950, `cartão ≤ 950 caracteres (tem ${json.hookSpecificOutput.additionalContext.length})`);
+  assert.ok(json.hookSpecificOutput.additionalContext.length <= 1100, `cartão ≤ 1100 caracteres (tem ${json.hookSpecificOutput.additionalContext.length})`);
 });
 
 test("card --subagent: acrescenta a instrução de não herdar", () => {

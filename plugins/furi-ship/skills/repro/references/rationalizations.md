@@ -8,8 +8,8 @@
 
 | Frase | Realidade |
 |-------|-----------|
-| "Já sei o board / o setup desta sessão, sigo sem invocar" | Mencionar não é invocar. `/jira-board` e `/setup` entram pelo Skill tool **toda** vez. |
-| "`git checkout main && git pull`, como sempre" | A integração vem da topologia (`deploy-context.md` § 1) e a branch do motor `work/references/branch.md`. `main` pode nem ser a integração. |
+| "Já sei o board / o setup desta sessão, sigo sem invocar" | Mencionar não é invocar. `/jira` e `/setup` entram pelo Skill tool **toda** vez. |
+| "`git checkout main && git pull`, como sempre" | A integração vem da topologia (`deploy-context.md` § 1) e a branch do motor `pipeline/references/branch.md`. `main` pode nem ser a integração. |
 | "Já conheço o `/method`, sigo sem invocar" | Mencionar não é invocar. O `/method` entra pelo Skill tool, **toda** vez — sem a chamada, não há Gate Check, gateways nem audits. BLOQUEADO. |
 
 ## Entender o problema (§ 4)

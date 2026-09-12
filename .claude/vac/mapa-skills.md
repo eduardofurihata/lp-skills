@@ -65,56 +65,62 @@ Cada bullet aponta `arquivo:linha — "trecho"`; um ponteiro que o scan não enc
 
 ## furi-ship:card
 
-- frontmatter — context: inline · effort: max · requires: jira-board, setup, solve · handoff: work — plugins/furi-ship/skills/card/SKILL.md:4 — "effort: max"
-- artefatos: docs/00-context — plugins/furi-ship/skills/card/SKILL.md:94 — "- `docs/MAP.md` / `docs/00-context/` (contexto de produto, se o projeto tiver) s"
-- invoca/cita: furi-build:solve, furi-ship:jira-board, furi-ship:setup — plugins/furi-ship/skills/card/SKILL.md:22 — "**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/card` for ativado, a PR"
+- frontmatter — context: inline · effort: max · requires: jira, setup, solve, work, pull-request, homolog, prod · handoff: work — plugins/furi-ship/skills/card/SKILL.md:4 — "effort: max"
+- artefatos: docs/00-context — plugins/furi-ship/skills/card/SKILL.md:97 — "- `docs/MAP.md` / `docs/00-context/` (contexto de produto, se o projeto tiver) s"
+- invoca/cita: furi-build:solve, furi-ship:jira, furi-ship:setup — plugins/furi-ship/skills/card/SKILL.md:22 — "**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/card` for ativado, a PR"
 
 ## furi-ship:homolog
 
-- frontmatter — context: inline · effort: max · requires: jira-board, setup, todo, pull-request, card, prod · handoff: prod — plugins/furi-ship/skills/homolog/SKILL.md:4 — "effort: max"
-- gate: "✅ /homolog — homolog no ar e verificad" — plugins/furi-ship/skills/homolog/SKILL.md:78 — "## ✅ /homolog — homolog no ar e verificado"
-- artefatos: kanban/08-code-review — plugins/furi-ship/skills/homolog/SKILL.md:83 — "- Review:   limpo (kanban/08-code-review/<feature>.md)"
-- invoca/cita: furi-build:todo, furi-ship:card, furi-ship:jira-board, furi-ship:pull-request, furi-ship:setup — plugins/furi-ship/skills/homolog/SKILL.md:71 — "Os motores que ele aciona vivem em `prod/references/`: `pr-cycle` · `findings` ·"
+- frontmatter — context: inline · effort: max · requires: jira, setup, pipeline, todo, infra · handoff: prod — plugins/furi-ship/skills/homolog/SKILL.md:4 — "effort: max"
+- gate: "✅ /homolog — homolog no ar e verificad" — plugins/furi-ship/skills/homolog/SKILL.md:82 — "## ✅ /homolog — homolog no ar e verificado"
+- artefatos: kanban/08-code-review — plugins/furi-ship/skills/homolog/SKILL.md:87 — "- Review:   limpo (kanban/08-code-review/<feature>.md)"
+- invoca/cita: furi-ship:jira, furi-ship:setup — plugins/furi-ship/skills/homolog/SKILL.md:50 — "1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `"
 
 ## furi-ship:infra
 
 - frontmatter — context: inline · effort: max · boundary: prod, setup — plugins/furi-ship/skills/infra/SKILL.md:4 — "effort: max"
 - invoca/cita: furi-ship:setup — plugins/furi-ship/skills/infra/SKILL.md:46 — "**Do time ou só meu** — o modo é o que o `/setup` decidiu para este repositório "
 
-## furi-ship:jira-board
+## furi-ship:jira
 
-- frontmatter — context: inline · effort: max · user-invocable: false — plugins/furi-ship/skills/jira-board/SKILL.md:4 — "effort: max"
+- frontmatter — context: inline · effort: max · boundary: setup — plugins/furi-ship/skills/jira/SKILL.md:4 — "effort: max"
+- invoca/cita: furi-ship:setup — plugins/furi-ship/skills/jira/SKILL.md:63 — "`Rastreamento: Jira` (ou linha ausente num setup anterior a esta versão — trate "
+
+## furi-ship:pipeline
+
+- frontmatter — context: inline · effort: max · user-invocable: false — plugins/furi-ship/skills/pipeline/SKILL.md:4 — "effort: max"
+- gate: "Smoke" — plugins/furi-ship/skills/pipeline/references/deploy-context.md:79 — "## Smoke pós-deploy"
+- artefatos: docs/00-context, docs/01-problem, docs/02-user-stories, docs/03-use-cases, docs/04-spec, docs/05-test-cases, kanban/06-todo, kanban/07-implementation, kanban/08-code-review, kanban/09-run-test, kanban/10-done, kanban/11-ship — plugins/furi-ship/skills/pipeline/references/deploy-context.md:100 — "| **Doc no caminho antigo** (`.claude/deploy.md` — a raiz de `.claude/`, antes d"
+- invoca/cita: furi-build:method, furi-build:todo, furi-ship:infra — plugins/furi-ship/skills/pipeline/references/reconcile.md:3 — "> **A porta única.** Os quatro alvos — `/work`, `/pull-request`, `/homolog`, `/p"
 
 ## furi-ship:prod
 
-- frontmatter — context: inline · effort: max · requires: jira-board, setup, todo, homolog, pull-request, card · boundary: sync — plugins/furi-ship/skills/prod/SKILL.md:4 — "effort: max"
-- gate: "✅ /prod — produção no ar e verificad" — plugins/furi-ship/skills/prod/SKILL.md:119 — "## ✅ /prod — produção no ar e verificada"
-- gate: "Smoke" — plugins/furi-ship/skills/prod/references/deploy-context.md:75 — "## Smoke pós-deploy"
-- artefatos: docs/00-context, docs/01-problem, docs/02-user-stories, docs/03-use-cases, docs/04-spec, docs/05-test-cases, kanban/06-todo, kanban/07-implementation, kanban/08-code-review, kanban/09-run-test, kanban/10-done, kanban/11-ship — plugins/furi-ship/skills/prod/references/deploy-context.md:96 — "| **Doc no caminho antigo** (`.claude/deploy.md` — a raiz de `.claude/`, antes d"
-- invoca/cita: furi-build:todo, furi-ship:card, furi-ship:homolog, furi-ship:infra, furi-ship:jira-board, furi-ship:pull-request, furi-ship:setup — plugins/furi-ship/skills/prod/references/pr-cycle.md:15 — "2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → **invoque o `/"
+- frontmatter — context: inline · effort: max · requires: jira, setup, pipeline, todo, infra · boundary: sync — plugins/furi-ship/skills/prod/SKILL.md:4 — "effort: max"
+- gate: "✅ /prod — produção no ar e verificad" — plugins/furi-ship/skills/prod/SKILL.md:89 — "## ✅ /prod — produção no ar e verificada"
+- invoca/cita: furi-ship:jira, furi-ship:setup — plugins/furi-ship/skills/prod/SKILL.md:51 — "1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `"
 
 ## furi-ship:pull-request
 
-- frontmatter — context: inline · effort: max · requires: jira-board, setup · handoff: homolog · boundary: prod — plugins/furi-ship/skills/pull-request/SKILL.md:4 — "effort: max"
-- artefatos: docs/01-problem, docs/05-test-cases, kanban/09-run-test, kanban/10-done, kanban/11-ship — plugins/furi-ship/skills/pull-request/SKILL.md:76 — "- Docs do feature: `docs/01-problem` … `docs/05-test-cases` + `kanban/09-run-tes"
-- invoca/cita: furi-ship:jira-board, furi-ship:setup — plugins/furi-ship/skills/pull-request/SKILL.md:57 — "**Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a form"
+- frontmatter — context: inline · effort: max · requires: jira, setup, pipeline · handoff: homolog · boundary: prod — plugins/furi-ship/skills/pull-request/SKILL.md:4 — "effort: max"
+- artefatos: kanban/11-ship — plugins/furi-ship/skills/pull-request/SKILL.md:84 — "- Kanban: kanban/11-ship/<feature>.md"
+- invoca/cita: furi-ship:jira, furi-ship:setup — plugins/furi-ship/skills/pull-request/SKILL.md:54 — "1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `"
 
 ## furi-ship:repro
 
-- frontmatter — context: inline · effort: max · requires: jira-board, setup, solve, method, pull-request · handoff: homolog — plugins/furi-ship/skills/repro/SKILL.md:4 — "effort: max"
-- artefatos: docs/04-spec, kanban/10-done, kanban/11-ship — plugins/furi-ship/skills/repro/references/human-check.md:31 — "- Saída que só nasce no clique → diga **o que ele deve ler** quando clicar e **c"
-- invoca/cita: furi-build:method, furi-build:solve, furi-ship:jira-board, furi-ship:pull-request, furi-ship:setup — plugins/furi-ship/skills/repro/SKILL.md:41 — "| `method` | re-invocar o `/method` (Skill tool — `furi-build:method`, com `KEY-"
+- frontmatter — context: inline · effort: max · requires: jira, setup, pipeline, solve, work, pull-request, homolog, prod, card — plugins/furi-ship/skills/repro/SKILL.md:4 — "effort: max"
+- artefatos: docs/04-spec — plugins/furi-ship/skills/repro/references/human-check.md:31 — "- Saída que só nasce no clique → diga **o que ele deve ler** quando clicar e **c"
+- invoca/cita: furi-build:method, furi-build:solve, furi-ship:jira, furi-ship:setup — plugins/furi-ship/skills/repro/references/rationalizations.md:5 — "> A fase de implementação/testes roda no `/method` — skill separada, invocada vi"
 
 ## furi-ship:setup
 
-- frontmatter — context: inline · effort: max · user-invocable: false · boundary: jira-board, prod, infra — plugins/furi-ship/skills/setup/SKILL.md:4 — "effort: max"
-- artefatos: docs/01-problem, docs/05-test-cases, kanban/10-done — plugins/furi-ship/skills/setup/SKILL.md:44 — "`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de en"
+- frontmatter — context: inline · effort: max · boundary: jira, prod, infra — plugins/furi-ship/skills/setup/SKILL.md:4 — "effort: max"
+- artefatos: docs/01-problem, docs/05-test-cases, kanban/10-done — plugins/furi-ship/skills/setup/SKILL.md:46 — "`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de en"
 
 ## furi-ship:work
 
-- frontmatter — context: inline · effort: max · requires: jira-board, setup, method, solve · handoff: pull-request — plugins/furi-ship/skills/work/SKILL.md:4 — "effort: max"
-- artefatos: kanban/10-done — plugins/furi-ship/skills/work/SKILL.md:85 — "5. fecha no **Step 10**: um único commit local com código + docs + card em `kanb"
-- invoca/cita: furi-build:method, furi-build:solve, furi-ship:jira-board, furi-ship:setup — plugins/furi-ship/skills/work/SKILL.md:80 — "**Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta"
+- frontmatter — context: inline · effort: max · requires: jira, setup, pipeline, method, solve · handoff: pull-request — plugins/furi-ship/skills/work/SKILL.md:4 — "effort: max"
+- artefatos: kanban/07-implementation, kanban/10-done — plugins/furi-ship/skills/work/SKILL.md:35 — "| vazio | CONTINUE: objetivo = o card/trabalho da branch atual (`docs/jira/todo/"
+- invoca/cita: furi-build:method, furi-build:solve, furi-build:todo, furi-ship:jira, furi-ship:setup — plugins/furi-ship/skills/work/SKILL.md:79 — "Os motores vivem em `pipeline/references/`. **Não reimplemente nenhum aqui** — s"
 
 ## furi-toolbox:ask
 
@@ -164,7 +170,7 @@ Cada bullet aponta `arquivo:linha — "trecho"`; um ponteiro que o scan não enc
 - gate: "Gateway Check" — plugins/furi-toolbox/skills/vac/scripts/samples/012-gateway-9-10-sem-audit-publicado.md:10 — "## Gateway Check — Step 9 → Step 10"
 - gate: "✅ /homolog — homolog no ar e verificad" — plugins/furi-toolbox/skills/vac/scripts/samples/015-smoke-sem-navegacao.md:10 — "## ✅ /homolog — homolog no ar e verificado"
 - gate: "Audit Pós" — plugins/furi-toolbox/skills/vac/scripts/samples/018-tool-tasklist-sem-chamada.md:10 — "## Audit Pós-Execução — Execução 1:1"
-- artefatos: docs/01-05, docs/01-problem, docs/05-test-cases, kanban/06-11, kanban/06-todo, kanban/08-code-review, kanban/09-run-test — plugins/furi-toolbox/skills/vac/SKILL.md:49 — "7. **Deixe o hook conferir o barato.** No `Stop`, no `Write`/`Edit` de artefato "
+- artefatos: docs/01-05, docs/01-problem, docs/03-use-cases, docs/05-test-cases, kanban/06-11, kanban/06-todo, kanban/08-code-review, kanban/09-run-test, kanban/10-done, kanban/11-ship — plugins/furi-toolbox/skills/vac/SKILL.md:49 — "7. **Deixe o hook conferir o barato.** No `Stop`, no `Write`/`Edit` de artefato "
 - task list: TaskCreate, TaskList, TaskUpdate — plugins/furi-toolbox/skills/vac/SKILL.md:3 — "description: 'Use when user invokes /vac — vacina contra alucinação. Turns on th"
 - invoca/cita: furi-build:solve, furi-toolbox:vac-verifier — plugins/furi-toolbox/skills/vac/scripts/vac-samples.test.mjs:10 — "//   ledger: {"reads": ["lib/x.ts"], "bash": ["pnpm typecheck"], "skills": ["fur"
 - subagente: chama Agent(...) — plugins/furi-toolbox/skills/vac/SKILL.md:57 — "Agent("

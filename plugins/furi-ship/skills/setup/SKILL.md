@@ -1,28 +1,29 @@
 ---
 name: setup
-description: 'Use when any ship skill needs the team conventions of THIS repository — the single owner of `.claude/ship-setup/setup.md` (versioned in the target repo, read on demand, never via CLAUDE.md nor machine memory): branch policy (work directly on the integration branch, one branch per card, or one branch accumulating cards with a single PR per batch; branch naming and case), commit convention (Conventional Commits, where the card key goes), PR policy (open a PR or push without one, who approves, merge strategy, template), team Jira conventions (card language, DoD — the board itself stays in /jira-board), infra pointers and external guidelines. Reads the file on EVERY invocation; if absent, infers what is derivable (git log, gh api branch protection and merge settings, CODEOWNERS, PR template, CONTRIBUTING), asks only what is not, writes the file from a template — as the team file `.claude/ship-setup/setup.md` (versioned) or, when the repo keeps `.claude/` out of git on purpose and the process is one person''s, as `.claude/ship-setup/setup.local.md` (same format, never versioned; the team file wins when both exist). Never declares topology (git ls-remote), environments (`.claude/ship-setup/deploy.md`), the infra map (`.claude/ship-setup/infra.md`) or code patterns (`.claude/patterns.md`). Invoked at Step 0 by /work, /repro, /card, /pull-request, /homolog and /prod. Internal — hidden from the `/` menu (`user-invocable: false`), invoked by those skills via the Skill tool; to see the conventions or change one section, the user asks in plain words ("mostra o setup", "muda o setup: branch por card") and the model invokes it with the section as argument.'
+description: 'Use when user invokes /setup to see or configure how THIS repository ships — the single owner of `.claude/ship-setup/setup.md` (versioned in the target repo, read on demand, never via CLAUDE.md nor machine memory): branch policy (work directly on the integration branch, one branch per card, or one branch accumulating cards with a single PR per batch; branch naming and case), commit convention (Conventional Commits, where the card key goes), PR policy (open a PR or push without one, who approves, merge strategy, template), tracking (Jira, local kanban or none — without Jira the whole pipeline runs with no card), card language and DoD (the board and the Jira structure stay with /jira), infra pointers and external guidelines. `/setup` on a repository with no file runs the whole discovery: infers what is derivable (git log, gh api branch protection and merge settings, CODEOWNERS, PR template, CONTRIBUTING), asks only what is not, writes the file from a template — as the team file `.claude/ship-setup/setup.md` (versioned) or, when the repo keeps `.claude/` out of git on purpose and the process is one person''s, as `.claude/ship-setup/setup.local.md` (same format, never versioned; the team file wins when both exist) — and points to `/infra` and `/jira` for the rest of a new project. `/setup <section>` rewrites one section. Never declares topology or branch names (detected and recorded in `.claude/ship-setup/deploy.md`), the Jira structure (`.claude/ship-setup/jira.md`), the infra map (`.claude/ship-setup/infra.md`) or code patterns (`.claude/patterns.md`). Also invoked at Step 0 by every pipeline target (/work, /pull-request, /homolog, /prod) and modifier (/repro, /card) via the Skill tool — the file is read on EVERY invocation. Triggers on "como esse repo trabalha", "configura o processo de entrega daqui", "aqui abre PR?", "mostra o setup", "começa um projeto novo".'
 effort: max
-boundary: [jira-board, prod, infra]
-argument-hint: "(vazio = mostrar o setup gravado) | branch | commit | pr | jira | infra | guidelines"
-user-invocable: false
+boundary: [jira, prod, infra]
+argument-hint: "(vazio = mostrar o setup gravado, ou criá-lo num repo novo) | branch | commit | pr | jira | infra | guidelines"
 ---
 
 # /setup — As convenções do time neste repositório
 
-Dono **único** de `.claude/ship-setup/setup.md`. Toda skill de entrega (`/work`, `/repro`, `/card`, `/pull-request`, `/homolog`, `/prod`) começa passando por aqui — nenhuma delas assume, descobre ou pergunta convenção por conta própria. O `/method` (§ Commit) **lê o arquivo por caminho** e aplica o que está escrito; criar e editar é daqui.
+Dono **único** de `.claude/ship-setup/setup.md`. Todo alvo do pipeline (`/work`, `/pull-request`, `/homolog`, `/prod`) e todo modificador (`/repro`, `/card`) começa passando por aqui — nenhum deles assume, descobre ou pergunta convenção por conta própria. É daqui que o pipeline sabe **quais estágios existem neste projeto**: se a branch sobe por PR ou por push (§ PR) e se há Jira para rastrear (§ Jira `Rastreamento`) — o resto do fluxo (tem homolog? qual o nome real da branch de integração?) é detectado e gravado no `.claude/ship-setup/deploy.md`, e o `/setup` aponta para lá em vez de repetir. O `/method` (§ Commit) **lê o arquivo por caminho** e aplica o que está escrito; criar e editar é daqui.
+
+**Começar um projeto:** `/setup` num repositório sem o arquivo roda a descoberta inteira (passos 0-4) e, no fim, oferece os dois vizinhos que um projeto novo ainda não tem — `/infra` (mapa da infra) e `/jira` (board e estrutura do Jira, quando `Rastreamento: Jira`).
 
 > **Escopo: só convenção do time.** Não cria card, não cria branch, não abre PR, não mexe em ambiente. Resolve *como este time trabalha neste repositório* e devolve isso pra quem chamou.
 
 ## Iron Law
 
-> **Perguntar uma vez, versionar no projeto, reconferir sempre.** Convenção de trabalho é conhecimento do **time** — versionado, revisável em PR, igual para todo mundo que clona. Não é preferência da máquina de quem usa (isso é o board, e mora no `/jira-board`). O arquivo é lido **sempre**, explicitamente, no início. "Já está no contexto" não é leitura.
+> **Perguntar uma vez, versionar no projeto, reconferir sempre.** Convenção de trabalho é conhecimento do **time** — versionado, revisável em PR, igual para todo mundo que clona. Não é preferência da máquina de quem usa (isso é o board, e mora no `/jira`). O arquivo é lido **sempre**, explicitamente, no início. "Já está no contexto" não é leitura.
 
 ## Contrato
 
 - **Por repositório.** O `vibe-nivee` abre branch por card; o `lp-skills` trabalha direto na `main`. Cada um tem o seu `.claude/ship-setup/setup.md`; nada de convenção hardcoded em skill nenhuma.
-- **Do time ou só meu.** `.claude/ship-setup/setup.md` é **do time** — versionado, igual para quem clona. `.claude/ship-setup/setup.local.md` é **só meu** — mesmo formato, **nunca** vai pro git (como o `settings.local.json`). Serve ao repositório de um time que **não usa** este processo: o setup de uma pessoa seria lixo para os outros, e nem por isso deixa de existir. Regra de leitura: **o do time existe → é ele que vale**, sem sobreposição local; não existe → o local; nenhum → descobrir, e o passo 0 decide **onde** gravar. Vale para os quatro arquivos (`setup`, `infra`, `deploy`, `patterns`).
-- **Declarado ≠ detectado.** O arquivo declara **política**. O que é fato do repositório é detectado na hora e **nunca** escrito aqui: a branch de integração vem do `prod/references/deploy-context.md` § 1 (base dos PRs recentes, `dev`, default do GitHub); a key do card vem do argumento do `/work` ou do nome da branch atual; os cards de um lote vêm dos **commits** da branch.
-- **Default, não trava.** O que está no arquivo é o padrão do repo. Pedido explícito na sessão ("hoje quero branch", "abre PR desta vez") **vence para esta invocação** e **não** reescreve o arquivo. Só `/setup <seção>` reescreve — e quem recebeu o override (`/work`) **oferece** essa edição no fim, em vez de repetir o pedido amanhã. Esta skill é **interna** (`user-invocable: false`): o usuário não a digita — pede em prosa ("muda o setup: branch por card") e o modelo a invoca com a seção como argumento.
+- **Do time ou só meu.** `.claude/ship-setup/setup.md` é **do time** — versionado, igual para quem clona. `.claude/ship-setup/setup.local.md` é **só meu** — mesmo formato, **nunca** vai pro git (como o `settings.local.json`). Serve ao repositório de um time que **não usa** este processo: o setup de uma pessoa seria lixo para os outros, e nem por isso deixa de existir. Regra de leitura: **o do time existe → é ele que vale**, sem sobreposição local; não existe → o local; nenhum → descobrir, e o passo 0 decide **onde** gravar. Vale para os cinco arquivos (`setup`, `jira`, `infra`, `deploy`, `patterns`).
+- **Declarado ≠ detectado.** O arquivo declara **política**. O que é fato do repositório é detectado na hora e **nunca** escrito aqui: a branch de integração vem do `pipeline/references/deploy-context.md` § 1 (base dos PRs recentes, `dev`, default do GitHub); a key do card vem do argumento do `/work` ou do nome da branch atual; os cards de um lote vêm dos **commits** da branch.
+- **Default, não trava.** O que está no arquivo é o padrão do repo. Pedido explícito na sessão ("hoje quero branch", "abre PR desta vez") **vence para esta invocação** e **não** reescreve o arquivo. Só `/setup <seção>` reescreve — e quem recebeu o override (`/work`) **oferece** essa edição no fim, em vez de repetir o pedido amanhã.
 - **Só grava o confirmado.** Inferência **ordena** as opções; quem decide é o usuário (uma vez na vida do repositório).
 - **Consistência é obrigatória:** `Trabalho: direto na integração` ⇒ `Abre PR: não` ⇒ `Aprovação`, `Merge` e `Template` ficam `—`. Contradição não é gravada. `branch por card` e `branch acumula cards` esperam `Abre PR: sim`, mas aceitam `não` — a branch sobe por push, sem PR.
 - **Lido sob demanda, por quem usa.** Nunca via `CLAUDE.md`, `@import` ou `.claude/rules/` — esses entram em **toda** sessão, inclusive nas que não commitam nem entregam nada.
@@ -31,23 +32,24 @@ Dono **único** de `.claude/ship-setup/setup.md`. Toda skill de entrega (`/work`
 
 | Coisa | Onde mora | Por quê |
 |---|---|---|
-| Topologia (`dev`+`main` ou branch única) | `prod/references/deploy-context.md` § 1 (base dos PRs recentes, `dev`, default do GitHub), toda invocação | fato, não política — declarado apodrece |
+| Topologia, nome real das branches, se há ambiente de homolog | `.claude/ship-setup/deploy.md § Ambientes` — detectado por `pipeline/references/deploy-context.md` § 1 (base dos PRs recentes, `dev`/`develop`, default do GitHub) e gravado lá | fato, não política — e já tem casa; um segundo dono é como a verdade se perde |
 | Os cards de um lote (branch que acumula) | os commits da branch: `git log origin/<integração>..HEAD --no-merges` (subject + trailer `Jira:`) | derivado a cada uso — anotado apodrece a cada card |
-| Board, site, key do Jira | `~/.claude/projects/<slug>/memory/jira-board.md` (`/jira-board`) | coordenada de quem usa, não do time |
-| Tipo de issue, sprint, transições | descobertos a cada uso (`/card`, `/work`) | mudam quando alguém mexe no workflow |
-| URL de ambiente, comando de deploy, runner, rollback | `.claude/ship-setup/deploy.md` (`prod/references/deploy-context.md`) | processo de deploy tem dono próprio |
+| Board, site, key do Jira | `~/.claude/projects/<slug>/memory/jira.md` (`/jira`) | coordenada de quem usa, não do time |
+| Colunas do board, tipos de issue, etapa do pipeline → status, manhas do MCP | `.claude/ship-setup/jira.md` (`/jira`) | estrutura do Jira tem dono próprio; aqui só se ela existe (`Rastreamento`) |
+| Sprint ativo | descoberto a cada uso (`/card`) | muda toda semana |
+| URL de ambiente, comando de deploy, runner, rollback | `.claude/ship-setup/deploy.md` (`pipeline/references/deploy-context.md`) | processo de deploy tem dono próprio |
 | Provedores, contas, onde vive cada segredo | `.claude/ship-setup/infra.md` (`/infra`) | inventário de infra tem dono próprio |
 | Padrões de código | `.claude/patterns.md` (`/method` Step 4) | cresce com o código, não com o processo |
 
 ## Onde mora
 
-`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de entrega no repositório-alvo: `setup.md` (este), `infra.md` (`/infra`) e `deploy.md` (`deploy-context`), com as variantes `.local.md` ao lado. O `.claude/patterns.md` (padrões de código, dono `/method`, pacote `furi-build`) fica na raiz de `.claude/`: o build não conhece o ship e não escreve numa pasta com esse nome. É a casa do conhecimento **permanente** do projeto: o que não é por feature (`docs/01-problem/` … `docs/05-test-cases/`, `kanban/`) e não é da máquina (`~/.claude/projects/`).
+`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de entrega no repositório-alvo: `setup.md` (este), `jira.md` (`/jira`), `infra.md` (`/infra`) e `deploy.md` (`deploy-context`), com as variantes `.local.md` ao lado. O `.claude/patterns.md` (padrões de código, dono `/method`, pacote `furi-build`) fica na raiz de `.claude/`: o build não conhece o ship e não escreve numa pasta com esse nome. É a casa do conhecimento **permanente** do projeto: o que não é por feature (`docs/01-problem/` … `docs/05-test-cases/`, `kanban/`) e não é da máquina (`~/.claude/projects/`).
 
 Por que `.claude/` e não `CLAUDE.md`: um `.md` solto em `.claude/` **não** é carregado automaticamente — só `CLAUDE.md`, `settings.json`, `rules/`, `skills/`, `agents/` e `commands/` são. É exatamente o que se quer: o arquivo só entra quando alguém o lê por caminho. **Nunca** o mova para `.claude/rules/` nem o importe do `CLAUDE.md`.
 
 Diferente da memória, o diretório pode não existir: `mkdir -p .claude/ship-setup` antes de gravar.
 
-**Duas variantes, um formato:** `setup.md` é do time e versionado; `setup.local.md` é só de quem usa e fica fora do git — para o repositório de um time que não adota este processo (o `.claude/` ignorado de propósito é o sinal). A mesma regra vale para `infra`, `deploy` e `patterns`; o modo é decidido **uma vez por repositório**, aqui, no passo 0.
+**Duas variantes, um formato:** `setup.md` é do time e versionado; `setup.local.md` é só de quem usa e fica fora do git — para o repositório de um time que não adota este processo (o `.claude/` ignorado de propósito é o sinal). A mesma regra vale para `jira`, `infra`, `deploy` e `patterns`; o modo é decidido **uma vez por repositório**, aqui, no passo 0.
 
 ## Fluxo
 
@@ -71,7 +73,7 @@ ls .claude/ship-setup/setup.md .claude/ship-setup/setup.local.md 2>/dev/null
   Do time — corrijo o `.gitignore` (`.claude/*` + negações) e gravo `.claude/ship-setup/setup.md`
 ```
 
-O candidato provável vem do contexto: remote de organização que não é do usuário + `.claude/` ignorado de propósito (com comentário, com exceções tipo `!.claude/settings.json`) ⇒ **"só meu" primeiro**. Repo do próprio usuário ⇒ "do time" primeiro. A resposta define o modo **deste repositório** para os quatro arquivos (`setup`, `infra`, `deploy`, `patterns`) — o `/infra`, o `deploy-context` e o `/method` seguem o que você decidiu aqui.
+O candidato provável vem do contexto: remote de organização que não é do usuário + `.claude/` ignorado de propósito (com comentário, com exceções tipo `!.claude/settings.json`) ⇒ **"só meu" primeiro**. Repo do próprio usuário ⇒ "do time" primeiro. A resposta define o modo **deste repositório** para os cinco arquivos (`setup`, `jira`, `infra`, `deploy`, `patterns`) — o `/jira`, o `/infra`, o `deploy-context` e o `/method` seguem o que você decidiu aqui.
 
 Correção do `.gitignore` quando o modo é **time** e `.claude/` está ignorado:
 
@@ -98,7 +100,7 @@ cat .claude/ship-setup/setup.md 2>/dev/null || cat .claude/ship-setup/setup.loca
 
 **Existe e tem as seis seções** (`## Branch`, `## Commit`, `## PR`, `## Jira`, `## Infra`, `## Guidelines`) → passo 5. Não chame `gh` nem `git log` pra "reconfirmar": a convenção não mudou desde a última vez, e a ida ao GitHub é o custo que esta skill existe pra eliminar.
 
-**Não existe, ou está incompleto** → passo 2. Incompleto = seção faltando; preencha só o que falta, preservando o resto. O arquivo gravado no passo 4 é o do **modo** decidido no passo 0.
+**Não existe, ou está incompleto** → passo 2. Incompleto = seção faltando **ou campo obrigatório faltando** (ex.: `Rastreamento:` e `Estrutura:` no § Jira de um setup anterior a esta versão); preencha só o que falta, preservando o resto. O arquivo gravado no passo 4 é o do **modo** decidido no passo 0.
 
 ### 2. Inferir (antes de perguntar) — e citar a fonte de cada item
 
@@ -114,15 +116,17 @@ cat .claude/ship-setup/setup.md 2>/dev/null || cat .claude/ship-setup/setup.loca
 | `.github/CODEOWNERS` | candidato a "quem aprova" | um único dono para `*` que é o próprio usuário ⇒ candidato a `a própria skill` |
 | `.github/pull_request_template.md` (ou `PULL_REQUEST_TEMPLATE.md`, `.github/PULL_REQUEST_TEMPLATE/`) | template de PR | existe → candidato a `Template:` |
 | `CONTRIBUTING.md` | confirma ou contradiz tudo acima | cite o trecho; contradição entre doc e `git log` é pergunta, não escolha |
-| board do `/jira-board` (Step 0 anterior) + `jira_search` de 2–3 cards | idioma dos cards | texto dos cards decide; sem board → `—` |
+| board gravado pelo `/jira` (Step 0 anterior) · `ls kanban/ docs/jira/ 2>/dev/null` | **Rastreamento** | board gravado ⇒ `Jira`; sem board e `kanban/` na raiz ⇒ `kanban local`; nenhum dos dois ⇒ entra na pergunta 1 |
+| board do `/jira` (Step 0 anterior) + `jira_search` de 2–3 cards | idioma dos cards | texto dos cards decide; sem board → `—` |
 
-`<integração>` vem do `prod/references/deploy-context.md` § 1 (base dos PRs recentes, `dev`, default do GitHub) — a mesma regra de todo mundo. Sem remote GitHub ou `gh` não autenticado → pule as linhas de `gh`, diga por quê, e pergunte o que elas responderiam.
+`<integração>` vem do `pipeline/references/deploy-context.md` § 1 (base dos PRs recentes, `dev`, default do GitHub) — a mesma regra de todo mundo. Sem remote GitHub ou `gh` não autenticado → pule as linhas de `gh`, diga por quê, e pergunte o que elas responderiam.
 
 ### 3. Perguntar (AskUserQuestion) — uma vez, isolada, no máximo três perguntas numa chamada
 
 1. **Trabalho:** direto na integração, branch por card ou branch acumula cards? *(inferência ordena: 40 commits diretos e 1 PR ⇒ "direto" primeiro; PRs com várias keys no título ⇒ "acumula" primeiro)*
 2. **Aprovação:** a própria skill (`/homolog`/`/prod` revisam e aprovam) ou uma pessoa/time? *(só se `Abre PR: sim`)*
 3. **Merge:** merge, squash ou rebase? *(só se o GitHub tem mais de uma habilitada)*
+4. **Rastreamento:** Jira, kanban local ou nenhum? *(só quando a inferência não decidiu — sem board gravado e sem `kanban/`; substitui a 3 quando as duas se aplicam, para não passar de três)*
 
 Com candidato provável, a pergunta **confirma**, não abre menu:
 
@@ -149,7 +153,7 @@ Quem chamou precisa de:
 
 ```
 { branch: {modo, nome}, commit: {convenção, key}, pr: {abre, aprovação, merge, template},
-  jira: {idioma, dod}, infra: {mapa, processo, conta}, guidelines, origem, arquivo }
+  jira: {rastreamento, idioma, dod, estrutura}, infra: {mapa, processo, conta}, guidelines, origem, arquivo }
 ```
 
 `arquivo` = `time` (`.claude/ship-setup/setup.md`) ou `local` (`.claude/ship-setup/setup.local.md`) — é o que diz ao `/infra`, ao `deploy-context` e ao `/method` em qual par de arquivos escrever neste repositório.
@@ -158,29 +162,30 @@ Quem chamou precisa de:
 
 Report de uma linha:
 ```
-⚙️ Setup (<do time | só meu>): <direto na integração | branch por card | branch acumula cards> · <convenção>[ +key <posição>] · PR <não | sim · merge <x> · aprova: <y>> · cards <idioma>   [arquivo | criado agora]
+⚙️ Setup (<do time | só meu>): <direto na integração | branch por card | branch acumula cards> · <convenção>[ +key <posição>] · PR <não | sim · merge <x> · aprova: <y>> · <Jira <idioma> | kanban local | sem rastreamento>   [arquivo | criado agora]
 ```
 
 ## Como cada consumidor aplica
 
-| Skill | Usa | Aplica |
+| Quem | Usa | Aplica |
 |---|---|---|
-| `/work`, `/repro` (via o motor `work/references/branch.md`) | § Branch, § PR | `branch por card` → `checkout -b` com o padrão de nome; `branch acumula cards` → fica na branch atual se ela é um **lote aberto** (sem PR mergeado), senão `checkout -b`; `direto` → fica na integração. `Próximo:` = `/pull-request` sempre — é ele quem decide, pelo `Abre PR:`, se abre PR ou só pusha (o `/repro` o invoca depois do human check) |
-| `/card` | § Jira | idioma do card; a `DoD` orienta o `## Como testar` |
-| `/pull-request` | § PR, § Commit | `Abre PR: não` → pusha, espelha no Jira e **não abre PR**; PR já aberto para a branch → **atualiza** (título e `## Cards` derivados dos commits); `Template:` → corpo nas seções do arquivo; keys no título conforme § Commit |
-| `/homolog`, `/prod` (`pr-cycle`) | § PR | `Merge:` decide `--merge/--squash/--rebase`; `Aprovação: <pessoa>` → merge **espera** o `APPROVED` dela |
-| `/method` (por caminho) | § Commit | mensagem do Step 10 na convenção; key do **card ativo** (passada pelo `/work`), senão a do nome da branch |
+| o loop (`pipeline/references/reconcile.md`) | § PR `Abre PR`, § Jira `Rastreamento` | monta a escada deste projeto: `Abre PR: não` ⇒ o estágio `pr` não existe (a branch sobe por push); `Rastreamento` ≠ Jira ⇒ o estágio `card` não existe e o `jira-sync` é no-op declarado |
+| `branch.md` (estágio `branch`) | § Branch, § PR | `branch por card` → `checkout -b` com o padrão de nome; `branch acumula cards` → fica na branch atual se ela é um **lote aberto** (sem PR mergeado), senão `checkout -b`; `direto` → fica na integração |
+| `/card` (modificador) | § Jira | recusa com motivo se `Rastreamento` ≠ Jira; idioma do card; a `DoD` orienta o `## Como testar` |
+| `pr-publish.md` (estágios `push`, `pr`) | § PR, § Commit | `Abre PR: não` → pusha, espelha no Jira e **não abre PR**; PR já aberto para a branch → **atualiza** (título e `## Cards` derivados dos commits); `Template:` → corpo nas seções do arquivo; keys no título conforme § Commit |
+| `pr-cycle.md` (estágio `integrado`) | § PR | `Merge:` decide `--merge/--squash/--rebase`; `Aprovação: <pessoa>` → merge **espera** o `APPROVED` dela |
+| `/method` (por caminho) | § Commit | mensagem do Step 10 na convenção; key do **card ativo** (passada pelo `work-cycle`), senão a do nome da branch |
 
 Quem lê por caminho **aplica o que está escrito** e, sem arquivo, mantém o próprio default — **não cria** o arquivo. Criar é aqui.
 
-## Modo direto (o usuário pede em prosa; o modelo invoca com o argumento)
+## Modo direto — `/setup` digitado pelo usuário
 
-Esta skill é **interna** (`user-invocable: false`): não aparece no menu `/` e o usuário não a digita — quem a invoca são as skills de entrega no Step 0 e, quando o usuário pede em prosa, o modelo. "Mostra o setup daqui" ⇒ argumento vazio; "muda o setup: branch por card" / "aqui não abre PR" ⇒ `branch` / `pr`. O `.md` também pode ser editado à mão — é um arquivo do repositório.
+Além do Step 0 das outras skills, o usuário digita `/setup` para ver ou configurar o processo; em prosa ("muda o setup: branch por card", "aqui não abre PR") o modelo invoca com a seção como argumento. O `.md` também pode ser editado à mão — é um arquivo do repositório.
 
 | Arg | Ação |
 |---|---|
-| vazio | Mostra o setup gravado, seção a seção — e **qual** está valendo (`setup.md` do time ou `setup.local.md` só meu). Não existe → roda o fluxo (passos 0-4). |
-| `branch` · `commit` · `pr` · `jira` · `infra` · `guidelines` | Mostra o valor atual da seção, pergunta o novo, valida a consistência com as outras e **reescreve só aquela seção** — confirmando antes/depois. |
+| vazio | Mostra o setup gravado, seção a seção — e **qual** está valendo (`setup.md` do time ou `setup.local.md` só meu), mais o fluxo consolidado que o pipeline vai montar (PR ou push · homolog sim/não e as branches, lidos do `deploy.md` se existir · Jira sim/não). Não existe → **projeto novo**: roda o fluxo (passos 0-4) e, ao gravar, oferece `/infra` e `/jira` como próximos passos — sem invocá-los sozinho. |
+| `branch` · `commit` · `pr` · `jira` · `infra` · `guidelines` | Mostra o valor atual da seção, pergunta o novo, valida a consistência com as outras e **reescreve só aquela seção** — confirmando antes/depois. `jira` aqui é o § Jira deste arquivo (rastreamento, idioma, DoD); as colunas e o mapa etapa→status são `/jira`. |
 
 Editar uma seção é a única situação em que o arquivo é reescrito. Override por argumento numa **outra** skill nunca reescreve nada.
 
@@ -188,10 +193,12 @@ Editar uma seção é a única situação em que o arquivo é reescrito. Overrid
 
 - "Já li o setup nesta sessão, sigo sem invocar" → NÃO. A leitura é explícita, **toda** invocação. Contexto de sessão não é arquivo.
 - "Não existe, então assumo branch por card (é o fluxo dos devs)" → NÃO. Inferência ordena; o usuário decide. Uma pergunta é barata; branch errada no repo errado, não.
-- "Anoto aqui que o repo é `dev`+`main`" → NÃO. Topologia é do `deploy-context.md` § 1, toda vez. Declarada, apodrece no dia em que a `dev` some.
+- "Anoto aqui que o repo é `dev`+`main`" / "anoto o nome da branch de homolog" → NÃO. Topologia e nomes reais são detectados pelo `deploy-context.md` § 1 e **já ficam gravados** no `deploy.md § Ambientes`, na mesma pasta. Aqui só o ponteiro.
 - "Anoto aqui quais cards estão na branch" → NÃO. Os cards de um lote são os **commits** da branch (`git log origin/<integração>..HEAD --no-merges`). Anotado, apodrece a cada card novo — o título do PR #173 do `labzz-afl` listava 5 cards quando os commits já carregavam 11.
 - "Gravei `branch por card` com `Abre PR: não`, é contradição" → NÃO é. É branch que sobe por push, sem PR (o `/pull-request` pusha e não abre). Só `direto na integração` força `não`.
-- "Anoto o board aqui pra não depender do `/jira-board`" → NÃO. Board é coordenada de quem usa; mora na memória da máquina.
+- "Anoto o board aqui pra não depender do `/jira`" → NÃO. Board é coordenada de quem usa; mora na memória da máquina.
+- "Anoto aqui as colunas do board e qual status cada etapa usa" → NÃO. É `.claude/ship-setup/jira.md`, dono `/jira`. Aqui só se o projeto **tem** Jira.
+- "Não tem board, então o pipeline não roda" → NÃO. `Rastreamento: kanban local` ou `nenhum` é projeto válido: o pipeline roda inteiro sem card, e ninguém pergunta board.
 - "Anoto a URL de homolog / o comando de deploy / o runner" → NÃO. É `.claude/ship-setup/deploy.md`, dono `deploy-context.md`.
 - "Anoto a conta da Vercel / onde está a chave do Neon" → NÃO. É `.claude/ship-setup/infra.md`, dono `/infra`.
 - "Anoto que o projeto usa Zod e feature-first" → NÃO. É `.claude/patterns.md`, dono `/method` Step 4.

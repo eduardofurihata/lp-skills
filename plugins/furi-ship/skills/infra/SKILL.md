@@ -8,7 +8,7 @@ argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 
 # /infra — O mapa da infra deste projeto
 
-Dono **único** de `.claude/ship-setup/infra.md`. Responde *"o que este projeto usa de infra, onde, sob qual conta — e onde vive cada segredo"*. É o **inventário**; o **processo** (como sobe, como checa, como volta) é o `.claude/ship-setup/deploy.md`, do `prod/references/deploy-context.md`, e **aplicar** configuração é o `prod/references/env-config.md`. Aqui não se seta variável, não se faz deploy, não se cria conta.
+Dono **único** de `.claude/ship-setup/infra.md`. Responde *"o que este projeto usa de infra, onde, sob qual conta — e onde vive cada segredo"*. É o **inventário**; o **processo** (como sobe, como checa, como volta) é o `.claude/ship-setup/deploy.md`, do `pipeline/references/deploy-context.md`, e **aplicar** configuração é o `pipeline/references/env-config.md`. Aqui não se seta variável, não se faz deploy, não se cria conta.
 
 > **Escopo: inventário sem valor.** O arquivo é versionado. Identificador entra; credencial, nunca.
 

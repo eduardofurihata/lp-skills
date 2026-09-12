@@ -319,7 +319,7 @@ function taskDirCompleted(input) {
         /* arquivo parcial */
       }
     }
-    return { total, completed };
+    return total ? { total, completed } : undefined; // diretório só com .lock/.highwatermark não é "0 de 0 concluídas"
   } catch {
     return undefined;
   }
