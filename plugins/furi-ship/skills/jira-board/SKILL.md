@@ -1,6 +1,6 @@
 ---
 name: jira-board
-description: 'Use when any Jira skill needs to know WHICH board this repository belongs to — the single owner of the project-scoped Jira memory. Reads `~/.claude/projects/<slug>/memory/jira-board.md` on EVERY invocation; if the board is not recorded yet, asks the user (offering the real boards from MCP, or a pasted board link), validates it against the site, writes it to memory and indexes it in MEMORY.md. Invoked at Step 0 by /card, /work, /pull-request, /homolog and /prod. Internal — hidden from the `/` menu (`user-invocable: false`), invoked by those skills via the Skill tool; to see or switch the board, the user asks in plain words ("qual é o board daqui?", "troca o board pra ALK") and the model invokes it with the argument.'
+description: 'Use when any Jira skill needs to know WHICH board this repository belongs to — the single owner of the project-scoped Jira memory. Reads `~/.claude/projects/<slug>/memory/jira-board.md` on EVERY invocation; if the board is not recorded yet, asks the user (offering the real boards from MCP, or a pasted board link), validates it against the site, writes it to memory and indexes it in MEMORY.md. Invoked at Step 0 by /card, /work, /repro, /pull-request, /homolog and /prod. Internal — hidden from the `/` menu (`user-invocable: false`), invoked by those skills via the Skill tool; to see or switch the board, the user asks in plain words ("qual é o board daqui?", "troca o board pra ALK") and the model invokes it with the argument.'
 effort: max
 argument-hint: "(vazio = mostrar o board gravado) | <KEY> | <link do board>"
 user-invocable: false
@@ -8,7 +8,7 @@ user-invocable: false
 
 # /jira-board — O board do Jira deste repositório
 
-Dono **único** da memória de projeto do Jira. Toda skill de Jira (`/card`, `/work`, `/pull-request`, `/homolog`, `/prod`) começa passando por aqui — nenhuma delas descobre, assume ou pergunta o board por conta própria.
+Dono **único** da memória de projeto do Jira. Toda skill de Jira (`/card`, `/work`, `/repro`, `/pull-request`, `/homolog`, `/prod`) começa passando por aqui — nenhuma delas descobre, assume ou pergunta o board por conta própria.
 
 > **Escopo: só board/projeto/site.** Não cria card, não move status, não toca em branch. Resolve *onde* o trabalho vive e devolve isso pra quem chamou.
 
@@ -127,7 +127,7 @@ Board padrão deste repositório: **<KEY>** — <nome do projeto>, board `<ID>` 
 URL: <link completo>  ·  Site: `<site>.atlassian.net`
 
 **Why:** o link não é derivável do código nem do git remote — sem isso toda skill de Jira
-(`/card`, `/work`, `/pull-request`, `/homolog`, `/prod`) volta a perguntar ou a adivinhar o projeto.
+(`/card`, `/work`, `/repro`, `/pull-request`, `/homolog`, `/prod`) volta a perguntar ou a adivinhar o projeto.
 
 **How to apply:** é o **default** do repositório, não uma trava. Key explícita no argumento
 (`/card ALK bug X`) vence e **não** reescreve este arquivo. Tipo de issue, sprint e transições

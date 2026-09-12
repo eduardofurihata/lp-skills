@@ -48,7 +48,7 @@ mcp__atlassian__jira_transition_issue   issue_key: <KEY>-<N>   transition_id: <i
 
 | Estado alcançado | Quem chama | Rótulo no comentário | Transição alvo |
 |---|---|---|---|
-| Trabalho começou | `/work` | — | equivalente a "em andamento" |
+| Trabalho começou | `/work`, `/repro` | — | equivalente a "em andamento" |
 | PR aberto ou atualizado, em revisão — **em cada card da branch** | `/pull-request` | `PR: <URL>` · `Branch: <branch>` | equivalente a "em revisão" / "code review" |
 | Publicado sem PR (§ PR `Abre PR: não`) — em cada card da branch | `/pull-request` | `Publicado em: <branch> @ <hash>` · `Branch: <branch>` | equivalente a "em revisão" / "code review" — a convenção dispensa o PR, não o review |
 | Mergeado na integração | `pr-cycle.md` | `Merged em <integração>: <commit>` | equivalente a "verificar" / pós-merge |

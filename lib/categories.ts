@@ -7,16 +7,15 @@
 // scripts/generate-plugins.mjs (a fonte) + label aqui + cor em CategoryBadge.
 import marketplace from "../.claude-plugin/marketplace.json";
 
-export type Category = "build" | "ship" | "toolbox" | "eduzz";
+export type Category = "build" | "ship" | "toolbox";
 
 // Ordem de exibição na LP (o catálogo gerado é ordenado por nome de pacote).
-export const CATEGORIES: Category[] = ["build", "ship", "toolbox", "eduzz"];
+export const CATEGORIES: Category[] = ["build", "ship", "toolbox"];
 
 export const CATEGORY_LABELS: Record<Category, string> = {
   build: "Build",
   ship: "Ship",
   toolbox: "Toolbox",
-  eduzz: "Eduzz",
 };
 
 // Pacote (diretório em plugins/) de cada categoria — DERIVADO do marketplace

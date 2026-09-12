@@ -22,11 +22,10 @@
 // Também PODA artefatos dos modelos antigos (skills/ como raiz de plugin,
 // 1-plugin-por-skill, bundles/), já que este script é a autoridade dos gerados.
 //
-// Modelo: 1 pacote por categoria — 4, não 25. A categoria de cada skill é
-// derivada do pacote em que ela mora. Categoria é dona primeiro: skill de
-// trabalho é `eduzz`, antes de qualquer critério. Entre as pessoais, `toolbox` é
-// a das avulsas — sem `requires` e sem ninguém que dependa delas — por isso o
-// pacote nasce sem `dependencies`; `ship` é quem toca board/GitHub/ambiente
+// Modelo: 1 pacote por categoria — 3, não 25. A categoria de cada skill é
+// derivada do pacote em que ela mora. `toolbox` é a das avulsas — sem
+// `requires` e sem ninguém que dependa delas — por isso o pacote nasce sem
+// `dependencies`; `ship` é quem toca board/GitHub/ambiente
 // (`jira-board` e quem o lista em `requires`) e depende de `build` (o método),
 // nunca o inverso. Skill empacotada segue sendo chamada por `/method` (forma
 // curta resolve sem ambiguidade); a namespaced `/furi-build:method` também.
@@ -60,7 +59,7 @@ const PACKAGE_VERSION = JSON.parse(
   fs.readFileSync(path.join(ROOT, "package.json"), "utf8"),
 ).version;
 const MARKETPLACE_DESCRIPTION =
-  "Skills do Claude Code do Furihata — build (o método), ship (a entrega), ferramentas avulsas e Eduzz.";
+  "Skills do Claude Code do Furihata — build (o método), ship (a entrega) e ferramentas avulsas.";
 
 // Os pacotes, na ordem em que o catálogo os lista. `category` é o id que a LP
 // usa (lib/categories.ts) e é derivado daqui: o pacote é a unidade física.
@@ -69,7 +68,7 @@ const PACKAGES = [
     name: "furi-build",
     category: "build",
     description:
-      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que o furi-ship puxa.",
     keywords: ["development", "planning", "quality", "workflow"],
     codex: {
       displayName: "Furi Build",
@@ -85,7 +84,7 @@ const PACKAGES = [
     name: "furi-ship",
     category: "ship",
     description:
-      "Skills de entrega do Furihata — /card, /work, /pull-request, /homolog, /prod e /infra (por baixo, invocadas por elas e fora do menu: /jira-board e /setup): do card no Jira até produção, com as convenções do time e o mapa da infra versionados em .claude/. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
+      "Skills de entrega do Furihata — /card, /work, /repro, /pull-request, /homolog, /prod e /infra (por baixo, invocadas por elas e fora do menu: /jira-board e /setup): do card no Jira até produção, com as convenções do time e o mapa da infra versionados em .claude/. Puxa junto o furi-build (o /work e o /repro rodam o /method; /card e os motores usam /solve e /todo).",
     keywords: ["jira", "pull-request", "deployment", "delivery"],
     codex: {
       displayName: "Furi Ship",
@@ -111,22 +110,6 @@ const PACKAGES = [
       category: "Productivity",
       brandColor: "#F59E0B",
       defaultPrompt: "Use a ferramenta Furi mais adequada para esta tarefa.",
-    },
-  },
-  {
-    name: "eduzz-builder",
-    category: "eduzz",
-    description:
-      "Skills de trabalho (Eduzz) — /repro. Puxa junto o furi-build (o /repro roda o /method e o /solve).",
-    keywords: ["eduzz", "jira", "workflow", "development"],
-    codex: {
-      displayName: "Eduzz Builder",
-      shortDescription: "Fluxos de trabalho da Eduzz.",
-      longDescription:
-        "Trabalhe em cards da Eduzz com os fluxos especializados do Furihata.",
-      category: "Productivity",
-      brandColor: "#10B981",
-      defaultPrompt: "Conduza este trabalho da Eduzz com o Eduzz Builder.",
     },
   },
 ];

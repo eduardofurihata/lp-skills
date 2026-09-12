@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-build",
   "version": "0.1.0+2cb10521949d",
-  "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+  "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que o furi-ship puxa.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata/lp-skills"
