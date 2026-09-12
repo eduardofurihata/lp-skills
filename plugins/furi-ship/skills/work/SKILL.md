@@ -60,26 +60,7 @@ Duas invocações separadas, cada uma com a sua pergunta isolada (uma vez na vid
 > Tem **anexo de imagem**? Baixe (`jira_download_attachments` / `jira_get_issue_images`) e leia antes de decidir: é o que o solicitante viu.
 
 ### 2. gh → integração → branch (REGRA DE OURO)
-A branch de integração vem da **topologia**, nunca assumida — resolvida pelo `prod/references/deploy-context.md` § 1 (base dos PRs recentes → `dev` → default do GitHub; branch parada que nenhum PR mira não conta). Nunca trabalhar sobre integração stale — trazer tudo e resolver conflito antes:
-```bash
-partida=$(git branch --show-current)   # em `branch acumula cards`, é daqui que se decide o lote (abaixo)
-git fetch origin
-git checkout <integração>
-git merge origin/<integração>   # gh → integração: traz o remoto; CONFLITO → resolver (entender os 2 lados)
-```
-O que acontece depois vem do **§ Branch do `/setup`** (passo 0) — a lógica mora lá, aqui só se aplica:
-
-| `Trabalho:` no setup | Ação | Branch de trabalho |
-|---|---|---|
-| `branch por card` | `git checkout -b <nome>` a partir da integração limpa (branch já existe → `checkout` nela); `git branch --show-current` confirma | a feature branch |
-| `branch acumula cards` | `$partida` é um **lote aberto** → `git checkout $partida && git merge <integração>` (o card entra nela); senão → `git checkout -b <nome>`, como em `branch por card` | a branch do lote |
-| `direto na integração` | nenhum `checkout -b` | a própria integração, já sincronizada |
-
-**Lote aberto** = `$partida` não é a integração, tem key no nome, e **nenhum PR dela foi mergeado ou fechado** (`gh pr list --head $partida --state merged --json number` e `--state closed` vazios). PR mergeado encerra o lote: o próximo card nasce em branch nova. Branch sem PR ainda também é lote aberto.
-
-Nome da branch: o padrão `Nome:` do setup, com `<key>`/`<n>`/`<slug>` do card — a **caixa do placeholder é a do nome** (`<key>-<n>` → `niv-12`; `<KEY>-<n>` → `AV-2192`; `-slug` curto, se o padrão tiver). Em `branch acumula cards` o nome é o do **1º card e não muda**: os cards do lote são os **commits** da branch — cada um com a key do **seu** card (passo 5) — e é deles que o `/pull-request` deriva o título e o `## Cards` do PR. Renomear a branch a cada card não linka nada no Jira (o parser exige a key completa: em `AV-2192-2218` ele lê só `AV-2192`) e quebra preview URL, clone e worktree.
-> **Manter a branch atualizada** (`branch por card` e `branch acumula cards`): se `origin/<integração>` andar durante o trabalho, trazer pra branch (`git merge origin/<integração>`, resolvendo conflitos) — o `/method` revê e testa o resultado integrado. Branch nunca fica pra trás da integração.
-> Pedido explícito nesta sessão ("hoje quero branch" num repo `direto`) vence **para esta invocação** e não reescreve o setup — no passo 6 você **oferece** gravar (o usuário pede em prosa e você invoca `/setup branch`; ele não digita, a skill é interna); mudar o padrão é decisão dele.
+A mecânica é do **`references/branch.md`** (motor de branch), fonte única — siga-o, não o reescreva aqui. Entrada: `branch: {modo, nome}` do `/setup` (passo 0 — pedido explícito nesta sessão, "hoje quero branch" num repo `direto`, vence **para esta invocação** e não reescreve o arquivo; no passo 6 você **oferece** gravar), a key do card e a integração resolvida pelo `prod/references/deploy-context.md` § 1. Saída: o checkout na branch de trabalho — feature branch, lote aberto ou a própria integração — sincronizada com `origin/<integração>`, e `{integração, branch, modo, lote, origem}` para o report do passo 6. É nela que o `/method` (passo 5) trabalha; ele **nunca** cria branch.
 
 ### 3. Mover o card → em andamento
 - Assignee (se ainda não for o executor): `mcp__atlassian__jira_update_issue`.
@@ -127,12 +108,8 @@ Houve override de sessão no passo 2? Uma linha a mais, **oferecendo** — nunca
 - "Já sei o setup desta sessão, sigo sem invocar" → NÃO. Mencionar não é invocar; a leitura é **toda** vez.
 - "O usuário pediu branch hoje, atualizei o `.claude/ship-setup/setup.md`" → NÃO. Override de sessão vale pra invocação. Só `/setup branch` reescreve o arquivo.
 - "O status 'Em andamento' não existe nesse projeto, então inventei um" → NÃO. Escolha entre as transições que existem; nenhuma equivalente → avisa e segue.
-- "Branchei de `dev` sem trazer o remoto" → NÃO. **gh → integração → branch**, sempre.
-- "Branchei de `homolog`" → NÃO. `homolog` é o **ambiente**; a integração é a que o `deploy-context.md` § 1 resolve — e uma branch remota com esse nome que nenhum PR mira é legado parado, não integração.
-- "Todo projeto meu tem `dev`, dou `checkout dev`" → NÃO. Resolva a integração primeiro (`deploy-context.md` § 1): em branch única o `checkout dev` falha e o fluxo trava na largada.
+- "Resolvi a branch de cabeça (`checkout dev`, `checkout main`, branchei de `homolog`, renomeei o lote)" → NÃO. Passo 2 é o motor `references/branch.md`: integração pela topologia, modo pelo `/setup`, lote pelos PRs — e as red flags dele valem aqui.
 - "Deixo o `/method` criar a branch" → ele **não cria**. A branch nasce no passo 2.
-- "Card novo no lote, renomeio a branch pra `AV-2192-2218`" → NÃO. O nome fica no 1º card. O card entra pelo **commit** (com a key dele) e o `/pull-request` atualiza o PR. Rename não linka no Jira e quebra preview, clone e worktree.
-- "Modo `acumula`, o PR da branch já foi mergeado, sigo nela" → NÃO. PR mergeado **encerra o lote**; o card nasce em branch nova.
 - "Invoquei o `/method` sem passar o card; ele tira a key da branch" → NÃO. Num lote a branch é do 1º card e o commit sairia com a key errada. O argumento é `KEY-N`.
 - "Já conheço o `/solve` / o `/jira-board` / o `/setup` / o `/method`, sigo sem invocar" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Card claro, mas pergunto mesmo assim" → NÃO. ≥90 e sem ambiguidade → segue. Pergunta só quando a resposta **muda o que será feito**.
