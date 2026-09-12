@@ -24,6 +24,13 @@ Reconstruir o mesmo estado da reprodução original (Step 0):
 ### 3 — Screenshot do estado pré-trigger
 Screenshot mostrando a tela com o trigger visível e o contexto completo — idêntico ao ponto de gatilho do bug original.
 
+### 3b — Se o card mexeu em texto gerado por IA
+Superfície de texto gerado por IA (derivada no Step 4 do `/method`) = **sim**? Então o human check não é só "o trigger está na tela": o que o usuário vai julgar é a **saída**, e **é aqui que o "funciona, mas lê mal" aparece** — o clique dá certo, o texto lê torto. Prepare a leitura, não só o clique:
+
+- Saída já visível na tela → **transcreva-a inteira** no bloco abaixo (ele não deve precisar rolar para julgar).
+- Saída que só nasce no clique → diga **o que ele deve ler** quando clicar e **contra qual referência** (`docs/04-spec/<tópico>.md` § Texto gerado por IA).
+- Nunca resuma a saída com as suas palavras: o que ele valida é o que o produto escreveu.
+
 ### 4 — Publicar no chat e PARAR COMPLETAMENTE
 
 ```markdown
@@ -35,6 +42,8 @@ Executei todos os passos do fluxo original. O ambiente está idêntico ao ponto 
 (URL atual: [url])
 
 Comportamento esperado agora (corrigido): [o que deve acontecer agora que o bug foi corrigido]
+
+**O que ler na saída:** tom/persona · completa até o fecho · no idioma do usuário · sem placeholder · sem invenção — a barra é [referência #1 nomeada no spec]   ← só com superfície de texto gerado por IA
 
 Screenshot do estado atual: [evidência]
 

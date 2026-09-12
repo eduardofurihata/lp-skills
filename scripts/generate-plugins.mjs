@@ -117,13 +117,13 @@ const PACKAGES = [
     name: "eduzz-builder",
     category: "eduzz",
     description:
-      "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
+      "Skills de trabalho (Eduzz) — /jira, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
     keywords: ["eduzz", "jira", "workflow", "development"],
     codex: {
       displayName: "Eduzz Builder",
       shortDescription: "Fluxos de trabalho da Eduzz.",
       longDescription:
-        "Trabalhe em cards, AFLs, provas e vídeos da Eduzz com os fluxos especializados do Furihata.",
+        "Trabalhe em cards, provas e vídeos da Eduzz com os fluxos especializados do Furihata.",
       category: "Productivity",
       brandColor: "#10B981",
       defaultPrompt: "Conduza este trabalho da Eduzz com o Eduzz Builder.",

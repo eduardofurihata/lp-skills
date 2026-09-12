@@ -51,11 +51,37 @@ Feature com superfície visual **decide o DS aqui** (doutrina completa: `ui/SKIL
 
 **Superfície de texto gerado por IA é DERIVADA aqui** (sim/não), pelo mesmo mecanismo: a feature **produz ou altera texto que o usuário final lê como saída do sistema** — resposta de chat, resumo, e-mail ou notificação gerada, persona/prompt, resposta de RAG, troca de modelo. Nunca declarada pelo usuário; derivada dos UCs. É o que liga ou desliga a linha de **Texto de IA** nos gateways seguintes — e ela nasce `N/A` em feature sem isso, como Design nasce `N/A` sem tela.
 
-Se **sim**, duas decisões entram no loop como gap, e são escritas no spec:
-- **A referência #1** — qual produto lê melhor neste tipo de saída (ChatGPT, Claude, o líder do domínio). "Funcionar" não é a barra; **ganhar do melhor** é.
-- **O que "ler bem" significa aqui** — tom e persona, concisão, formatação, idioma do usuário, **sem truncamento, sem placeholder, sem alucinação, sem robótico**. Isso vira o `Resultado:` de pelo menos um TC no Step 5 e o critério de FAILED no Step 9: texto que lê pior que a referência é teste falho, mesmo com o código certo.
+### O produto antes da feature — a derivação em dois níveis
+
+Antes de derivar a feature, derive o **produto**, exatamente como este step já faz com plataforma ("o projeto tem app mobile?"): **o core deste produto é IA?** Sinais verificáveis, não opinião — SDK de LLM nas dependências, prompts ou templates de saída versionados no repositório, serviço/rota de agente ou de chat, e o que o `CLAUDE.md`/README declara que o produto é.
+
+**Produto cujo core é IA ⇒ a superfície da feature nasce `sim`.** Isso não é veredicto: a derivação continua sendo feita e publicada no Gateway 4 → 5. O que muda é o ponto de partida — e, com ele, de que lado fica o ônus da prova. Produto sem isso ⇒ deriva do zero, como sempre.
+
+Derivou o produto? O achado é **padrão do projeto**: registre-o em `.claude/patterns.md` (§ Esta feature promove), para as próximas features não re-derivarem o mesmo fato — **registro do que foi derivado, nunca declaração que substitua a derivação**. Sem o arquivo, deriva-se de novo; nada se perde.
+
+### Se `sim`: a referência #1 e o que "ler bem" significa
+
+Duas decisões entram no loop como gap, e são escritas no spec:
+- **A referência #1** — qual produto lê melhor neste tipo de saída (ChatGPT, Claude, o líder do domínio). Ela é o **piso**: "funcionar" não é a barra, e **empatar também não** — a barra é ler melhor que o melhor.
+- **O que "ler bem" significa aqui** — tom e persona, concisão, formatação, idioma do usuário, **sem truncamento, sem placeholder, sem alucinação, sem robótico**. Isso vira o `Resultado:` de pelo menos um TC no Step 5 e o critério de FAILED no Step 9: texto que lê **igual ou pior** que a referência é teste falho, mesmo com o código certo.
 
 Isso é da **saída lida**, não do modelo nem da infra: prompt, RAG e troca de modelo entram porque mudam o que o usuário lê.
+
+### Se `não`: a justificativa é nomeada
+
+`sim` se paga sozinho — a referência #1 e o "ler bem" entram no spec e são cobrados até o Step 9. `não` é a resposta barata, e por isso é a que se cobra. Quem deriva `não` escreve no spec **duas afirmações nomeadas**:
+
+1. **Qual saída esta feature produz ou altera** — a tela, o registro, o número, o arquivo, o e-mail, o log.
+2. **Por que o usuário final não a lê como saída do sistema** — porque ninguém a vê, porque quem a vê é outro sistema, ou porque o texto é escrito por pessoa (ou é constante) e a feature apenas o transporta.
+
+Sem as duas, a derivação não aconteceu e o **Gateway 4 → 5 está BLOQUEADO**. "Não tem tela", "é backend", "é infra" não são justificativa: nenhuma das três fala da saída. E num produto cujo core é IA, a justificativa diz também **por que esta feature é a exceção**.
+
+| Racionalização proibida | Realidade |
+|------------------------|-----------|
+| "É só troca de modelo / ajuste de prompt / RAG — isso é infra" | O que o usuário lê mudou. É **sim**, e a referência #1 entra no spec. |
+| "Não tem tela, logo não tem superfície de texto" | Superfície de texto ≠ superfície visual. E-mail, push, webhook lido por humano, resposta que vira mensagem no WhatsApp — todos contam. |
+| "O texto quem escreve é o modelo, não eu" | O usuário não lê o modelo, lê o seu produto. Quem entrega a saída responde por ela. |
+| "É uma saída curta — um título, uma tag, um resumo de uma linha" | Tamanho não é critério. Se o usuário lê, vale a barra. |
 
 ## Padrões do projeto — `.claude/patterns.md`, o artefato que evolui com o código
 
@@ -84,13 +110,15 @@ O nível 1 da hierarquia de decisão ("padrões do projeto") precisa de um lugar
 
 **Projeto sem `patterns.md`?** A primeira feature o **funda** com o mínimo que ela mesma fixou — sem inventar guia de estilo inteiro (YAGNI vale aqui igual). As seguintes o fazem crescer.
 
+O arquivo também é onde fica registrado o que a derivação do **produto** já apurou (§ Texto gerado por IA — "o core deste produto é IA?"), para as próximas features não re-derivarem o mesmo fato. É **registro do derivado**, não declaração: a derivação de cada feature continua acontecendo e sendo publicada no gateway.
+
 **Migração (uma vez por projeto):** o arquivo existe no caminho antigo — `docs/00-context/technical/patterns.md` ou `docs/04-spec/technical/patterns.md` — e não em `.claude/`? `mkdir -p .claude && git mv <caminho-antigo> .claude/patterns.md`, avisar, e o `git mv` entra no commit do Step 10. Se `.claude/` estiver no `.gitignore`, **não decida sozinho**: pode ser o time mantendo processo de agente fora do repo — aí o destino é `patterns.local.md` (e o antigo sai do índice: `git rm --cached`). Quem decide o modo é o `/setup` (`furi-ship`); sem ele, pergunte.
 
 ## Regra central
 
 **Resolva TODAS as decisões autonomamente — sem parar para perguntar ao usuário.**
 
-**Para a SOLUÇÃO técnica: REFERÊNCIAS DE QUALIDADE são OBRIGATÓRIAS.** Big pop tech apps, players do mesmo domínio do negócio, OU qualquer outra referência relevante (mesmo de outro segmento) que contribua para a análise — a solução padrão de mercado é a baseline para competir no nível #1. Complexidade aceitável para atingir essa qualidade é REQUISITO, não obstáculo.
+**Para a SOLUÇÃO técnica: REFERÊNCIAS DE QUALIDADE são OBRIGATÓRIAS.** Big pop tech apps, players do mesmo domínio do negócio, OU qualquer outra referência relevante (mesmo de outro segmento) que contribua para a análise — a solução padrão de mercado é a **baseline** — o piso a partir do qual se compete; a barra é 10x acima dela. Complexidade aceitável para atingir essa qualidade é REQUISITO, não obstáculo.
 
 A AI resolve cada decisão usando (em ordem de prioridade):
 
@@ -120,7 +148,8 @@ REPETIR até zero gaps:
      Integrações | Permissões/roles | Dados/schemas | Performance | Segurança
      **Escopo de plataforma** (web/android/ios) — derivado da feature, não declarado
      **Superfície visual** (sim/não) — derivada aqui; se sim, o Design System entra como gap
-     **Superfície de texto gerado por IA** (sim/não) — derivada aqui; se sim, a referência #1 e "o que ler bem significa" entram como gap
+     **Superfície de texto gerado por IA** (sim/não) — derivada aqui, começando pelo **produto** (core de IA ⇒ nasce `sim`);
+       se sim, a referência #1 e "o que ler bem significa" entram como gap; se não, a saída nomeada e o porquê de não ser lida
      **Design System** — que token/componente já existe? o que será reusado, composto ou **promovido**?
      **Motores** — qual capacidade esta feature exige, e quem é o dono dela?
      **UI/UX obrigatório:** como features similares se comportam no app hoje? como big apps resolvem?
@@ -180,7 +209,7 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - **YAGNI** — cada decisão declara o **UC que a exige**. Sem UC → não entra, vai para "alternativas descartadas" com o motivo. Camada, flag, config, tabela ou abstração "pro futuro" = especulação.
 - **DRY** — antes de decidir criar, procure: o projeto já resolve isso? (grep + `.claude/patterns.md` + CLAUDE.md). Se sim, a decisão é **reusar/estender**, e isso fica escrito.
 - **SRP** — as fronteiras de módulo/camada saem daqui: quem é dono de quê, o que é service, o que é UI, o que é shared. Fronteira mal desenhada aqui vira o "service que faz tudo" no 7b.
-- **KISS** — entre duas soluções que atingem o nível #1, ganha a mais simples. Complexidade só se paga com requisito, nunca com elegância.
+- **KISS** — entre duas soluções que atingem o nível 10x, ganha a mais simples. Complexidade só se paga com requisito, nunca com elegância.
 - **Law of Demeter / acoplamento** — decisões de integração declaram a direção da dependência (`shared → api/web` ok; `api ↔ web` proibido) e **quem fala com quem**. Fronteira mal desenhada aqui vira `a.b.c.d` no 7b.
 - **OCP** — onde a solução vai precisar crescer? O **ponto de extensão é decisão**, não improviso do 7b. Sem isso, o crescimento vira `if` novo no meio do que já funcionava.
 - **DIP** — decisões declaram dependência de **abstração**, não de implementação: o motor define o contrato, a infra (banco, HTTP, lib) implementa. Direção aponta ao domínio.
@@ -198,9 +227,9 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - [ ] **Cada decisão declara qual motor é dono da regra**; motor novo nomeado e com contrato desenhado
 - [ ] Escopo de plataforma derivado (não declarado)
 - [ ] **Superfície visual derivada** (sim/não) — publicada no gateway; é ela que liga/desliga a linha de Design daqui em diante
-- [ ] **Superfície de texto gerado por IA derivada** (sim/não) — publicada no gateway; se sim, a referência #1 e o "ler bem" estão no spec; é ela que liga/desliga a linha de Texto de IA daqui em diante
+- [ ] **Superfície de texto gerado por IA derivada** (sim/não) — publicada no gateway, a partir do **produto** (core de IA ⇒ nasce `sim`). **`sim`** → a referência #1 e o "ler bem" estão no spec. **`não`** → o spec nomeia **a saída que a feature produz** e **por que o usuário final não a lê como saída do sistema** ("não tem tela / é backend / é infra" não conta). É ela que liga/desliga a linha de Texto de IA daqui em diante
 - [ ] **Se tem UI:** `docs/04-spec/design-system.md` inventariado; promoções ao DS declaradas; breakpoints e a11y alvo (AA) definidos; benchmark visual citado
-- [ ] **`.claude/patterns.md` lido** (nível 1 da hierarquia); padrões que esta feature fixa **promovidos** a ele — ou declarado que coube nos existentes; projeto sem o arquivo → fundado com o mínimo
+- [ ] **`.claude/patterns.md` lido** (nível 1 da hierarquia); padrões que esta feature fixa **promovidos** a ele — ou declarado que coube nos existentes; projeto sem o arquivo → fundado com o mínimo. Derivação de produto já registrada nele é **ponto de partida**, nunca substituto da derivação desta feature
 - [ ] Artefato `docs/04-spec/<tópico>.md` existe com conteúdo substantivo
 - [ ] **Princípios declarados** na linha do Gateway Check
 - [ ] **Refatoração declarada** na linha própria do Gateway Check

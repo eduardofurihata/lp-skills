@@ -29,7 +29,7 @@ argument-hint: "[feature-name]"
 
 ## Como rodar
 
-Siga a **Ordem de Operações do `/method`** (leia `method/SKILL.md` por arquivo — o `/fast` **não invoca** o `/method`: ele **é** o protocolo, lido dos mesmos references). A PRIMEIRA ação é **invocar o `/solve`** — via **Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve), padrão de qualidade — referência #1 do mercado. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois: Inventário de Docs → Gate Check → TaskCreate → executar os steps em sequência, publicando o **Gateway Check** de cada um no chat. **A diferença é só parar no Step 8.**
+Siga a **Ordem de Operações do `/method`** (leia `method/SKILL.md` por arquivo — o `/fast` **não invoca** o `/method`: ele **é** o protocolo, lido dos mesmos references). A PRIMEIRA ação é **invocar o `/solve`** — via **Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve), padrão de qualidade — **10x acima da referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois: Inventário de Docs → Gate Check → TaskCreate → executar os steps em sequência, publicando o **Gateway Check** de cada um no chat. **A diferença é só parar no Step 8.**
 
 | Step | Reference | /fast roda? |
 |------|-----------|-------------|

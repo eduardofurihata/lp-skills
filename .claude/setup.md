@@ -1,7 +1,7 @@
 # Setup — lp-skills
 
 > Convenções operacionais do time neste repositório. Dono: `/setup`. Lido **sob demanda** por quem usa
-> (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod` via `/setup`; `/method` § Commit e `/jira` § Branch/§ PR por caminho).
+> (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod` via `/setup`; `/method` § Commit por caminho).
 > Nunca por `CLAUDE.md`/`@import`/`.claude/rules/`, nunca da memória da máquina.
 > NÃO mora aqui: topologia (detectada: `git ls-remote`) · board do Jira (`/jira-board`) · mapa da infra
 > (`.claude/infra.md`) · ambientes e deploy (`.claude/deploy.md`) · padrões de código (`.claude/patterns.md`).

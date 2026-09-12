@@ -23,11 +23,11 @@ boundary: [homolog, prod, setup]
 
 **Tokens são baratos.** Bug em produção, retrabalho, bronca do usuário, perda de confiança — caros. Trade-off explícito: prefira gastar 10× mais tokens e acertar do que 1× token e errar.
 
-## Padrão de Qualidade — Referência #1 do Mercado
+## Padrão de Qualidade — 10x a Referência #1 do Mercado
 
-> O padrão é o do **`/solve`** (invocado na ativação): ser o **#1 do mercado**, no calibre dos **big pop tech apps** — nunca o "bom o suficiente". O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
+> O padrão é o do **`/solve`** (invocado na ativação): **10x acima do #1 do mercado** — o calibre dos **big pop tech apps** é o piso, nunca o "bom o suficiente" e nunca o empate. O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
 
-**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual e sem merge para `main` sem autorização (regras acima).
+**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto — o alvo é 10x acima dele. Se a base atual não chega lá, **refaça do zero** — reescrever para chegar ao nível 10x é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual e sem merge para `main` sem autorização (regras acima).
 
 ### Princípios de engenharia — regime, não fase
 
@@ -41,7 +41,7 @@ Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, L
 
 Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho passa** — o **perímetro** definido em `principles/SKILL.md` § Refatoração contínua. **Dentro dele, refatore bastante**; fora, vale a triagem de `references/follow-ups.md`: **B** se este trabalho o expôs, **C** se não tem relação.
 
-- **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você **declara** que já estava no nível #1.
+- **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você **declara** que já estava no nível 10x.
 - **Todo Gateway Check publica a linha de refatoração** (`- **Refatoração (tudo por onde passou):** ✅ <N> elevados — <o que subiu>`). Nos Steps 1-6 ela é sobre o **artefato** (doc consolidado, story separada, UC quebrado), e nunca é vazia.
 - Detalhe: `principles/SKILL.md` § Refatoração contínua e `references/07-implementation.md`.
 
@@ -50,13 +50,13 @@ Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho pa
 Feature com **superfície visual** (derivada no Step 4, nunca declarada pelo usuário) obedece a **`ui/SKILL.md`**: tokens como fonte única, atomicidade, composição > configuração, headless, todos os estados, Lei de Jakob, consistência semântica, preservação de contexto, fluxos modulares — e **WCAG AA como piso**.
 
 - **O design system evolui com o produto:** precisou de algo que ele não tem → **reusar → compor → promover** (criar no DS, nunca na pasta da feature), registrando em `docs/04-spec/design-system.md`.
-- **Texto gerado por IA é a outra superfície derivada** no Step 4 (resposta de chat, resumo, persona, RAG, notificação gerada): se a feature tem, o spec nomeia a **referência #1** e o que "ler bem" significa, o Step 5 tem um TC com resultado na **qualidade do texto lido**, e no Step 9 texto pior que a referência é **FAILED** — mesmo com o código certo. Sem essa superfície, a linha é `N/A`, como Design sem tela. Detalhe: `references/04-spec.md` § Texto gerado por IA.
-- **Consistência é lei; mediocridade não é.** Padrão existente abaixo do nível #1 **não se copia** — eleva-se ou vira achado no ledger. É essa a diferença entre UI consistente e UI que nunca melhora.
+- **Texto gerado por IA é a outra superfície derivada** no Step 4 (resposta de chat, resumo, persona, RAG, notificação gerada): se a feature tem, o spec nomeia a **referência #1** e o que "ler bem" significa, o Step 5 tem um TC com resultado na **qualidade do texto lido**, e no Step 9 texto que **não ganha** da referência é **FAILED** — mesmo com o código certo. A evidência do Step 9 é a **saída inteira transcrita**, não o screenshot do começo. Sem essa superfície, a linha é `N/A`, como Design sem tela — mas **derivar `não` custa justificativa nomeada**: qual saída a feature produz e por que o usuário final não a lê ("não tem tela" não é resposta). A derivação começa pelo **produto**: core de IA ⇒ a superfície nasce `sim`. Detalhe: `references/04-spec.md` § Texto gerado por IA.
+- **Consistência é lei; mediocridade não é.** Padrão existente abaixo do nível 10x **não se copia** — eleva-se ou vira achado no ledger. É essa a diferença entre UI consistente e UI que nunca melhora.
 - **Gateway de feature com UI publica a linha de design** (`- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ …`). Sem superfície visual: declare `❌ N/A` **uma vez**, no Gateway 4→5.
 
-Auto-check em cada gateway: *"Um líder do domínio assinaria isto — e assinaria esta tela?"* Se não → não está pronto.
+Auto-check em cada gateway: *"O líder do domínio trocaria o dele por isto — e a tela dele por esta?"* Se não → não está pronto.
 
-**PARE se pensar:** "é só um MVP" · "depois a gente melhora" · "tá bom o suficiente" · "deixa o legado como está pra não refazer".
+**PARE se pensar:** "é só um MVP" · "igualei o líder, tá ótimo" · "10x é força de expressão" · "depois a gente melhora" · "tá bom o suficiente" · "deixa o legado como está pra não refazer".
 
 ## Regras Invioláveis (fecham brechas conhecidas)
 
@@ -64,7 +64,7 @@ Auto-check em cada gateway: *"Um líder do domínio assinaria isto — e assinar
 2. **Retrofit puro é PROIBIDO.** Código escrito fora do `/method` → você volta ao Step 1. O código vira *insumo* de Step 3 (Verificação de Realidade), nunca substituto.
 3. **Bypass granular = bypass igual.** "Pula Gate + mobile, roda 7+9" = violação completa. Ou roda 100% ou não iniciou.
 4. **"Trivial / 1 botão / outros já funcionam assim" NÃO é exceção.** Gate Check vale para TODAS as features — "não existe tarefa pequena demais".
-5. **Escopo de plataforma é DERIVADO** (Step 4 + Verificação de Realidade), nunca declarado pelo usuário.
+5. **Escopo de plataforma e superfícies são DERIVADOS** (Step 4 + Verificação de Realidade), nunca declarados pelo usuário — plataforma, superfície **visual** e superfície de **texto gerado por IA**. Derivação de produto já registrada no `.claude/patterns.md` é ponto de partida, nunca veredicto; e derivar que **não** existe superfície de texto exige nomear a saída que a feature produz e dizer por que o usuário final não a lê.
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 1→10; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `plugins/furi-ship/skills/prod/references/findings.md`), nunca saída do dev. Ver `references/follow-ups.md`.
 
@@ -98,7 +98,7 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. O `/solve`, por sua vez, invoca o **`/principles`** — a doutrina (princípios de engenharia + provas de clareza), válida do Step 1 ao 10; a lente de cada step está no reference do step (`references/<step>.md` § Princípios neste step). Chamada real, não "seguir de memória": **sem as duas chamadas visíveis (`solve` → `principles`), a ativação não aconteceu.** O `/solve` define o nível; o `/principles` define a régua; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — **10x acima da referência #1 do mercado**. O `/solve`, por sua vez, invoca o **`/principles`** — a doutrina (princípios de engenharia + provas de clareza), válida do Step 1 ao 10; a lente de cada step está no reference do step (`references/<step>.md` § Princípios neste step). Chamada real, não "seguir de memória": **sem as duas chamadas visíveis (`solve` → `principles`), a ativação não aconteceu.** O `/solve` define o nível; o `/principles` define a régua; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
 
 ### 1. Inventário de Docs (UMA vez, antes de qualquer step)
 
@@ -222,6 +222,8 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "é só uma cor, hardcode não faz mal" / "o DS não tem, crio na pasta da feature"
 - "a11y / mobile / estado vazio depois"
 - "o screenshot do happy path já prova" / "design é subjetivo, não dá pra cobrar em gateway"
+- "não tem tela, então não tem texto de IA a testar" / "é só troca de modelo / prompt / RAG, isso é infra"
+- "o texto apareceu, marco PASSED" / "boto mais uma linha no prompt e o TC passa"
 
 **Todas significam: PARE. Releia `references/rationalizations.md`. Execute do jeito certo.**
 

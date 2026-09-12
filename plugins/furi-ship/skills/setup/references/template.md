@@ -6,7 +6,7 @@ Copie o bloco abaixo para `.claude/setup.md` na raiz do repositório-alvo — ou
 # Setup — <projeto>
 
 > Convenções operacionais do time neste repositório. Dono: `/setup`. Lido **sob demanda** por quem usa
-> (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod` via `/setup`; `/method` § Commit e `/jira` § Branch/§ PR por caminho).
+> (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod` via `/setup`; `/method` § Commit por caminho).
 > Nunca por `CLAUDE.md`/`@import`/`.claude/rules/`, nunca da memória da máquina.
 > NÃO mora aqui: topologia (detectada: `git ls-remote`) · board do Jira (`/jira-board`) · mapa da infra
 > (`.claude/infra.md`) · ambientes e deploy (`.claude/deploy.md`) · padrões de código (`.claude/patterns.md`).
@@ -57,7 +57,7 @@ Copie o bloco abaixo para `.claude/setup.md` na raiz do repositório-alvo — ou
 |---|---|
 | `Trabalho: direto na integração` | `Nome: —` · `Abre PR: não` · `Aprovação: —` · `Merge: —` · `Template: —` |
 | `Trabalho: branch por card` | `Abre PR: sim` (o `/pull-request` é o caminho de integração) |
-| `Abre PR: não` | `/pull-request` **para** e encaminha para `/homolog`/`/prod`; `/jira` (Eduzz) pula o `gh pr create` |
+| `Abre PR: não` | `/pull-request` **para** e encaminha para `/homolog`/`/prod` |
 | `Aprovação: <pessoa/time>` | `/homolog` e `/prod` revisam por comentário e **esperam** o `APPROVED` dessa pessoa antes de mergear |
 
 ## Exemplo real — `lp-skills`

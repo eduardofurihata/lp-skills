@@ -2,7 +2,7 @@
 
 ## Princípios neste step (`principles/SKILL.md`)
 
-Revisar **contra a lista, princípio a princípio e por nome** — não por proxy, e **os cinco do SOLID**, não só o SRP. É o que a tabela `## Análise de Qualidade` do 8b cobra linha a linha (e a `## Análise de Design`, com superfície visual): a capacidade vazou do motor? existe segunda fonte da mesma regra? o contrato virou tripa exposta? o **saldo do perímetro** fecha — todo arquivo que a passada tocou subiu ou já estava no nível #1? Violação encontrada entra na triagem A/B/C (`follow-ups.md`): dentro do escopo, corrige agora; escopo novo, ledger.
+Revisar **contra a lista, princípio a princípio e por nome** — não por proxy, e **os cinco do SOLID**, não só o SRP. É o que a tabela `## Análise de Qualidade` do 8b cobra linha a linha (e a `## Análise de Design`, com superfície visual): a capacidade vazou do motor? existe segunda fonte da mesma regra? o contrato virou tripa exposta? o **saldo do perímetro** fecha — todo arquivo que a passada tocou subiu ou já estava no nível 10x? Violação encontrada entra na triagem A/B/C (`follow-ups.md`): dentro do escopo, corrige agora; escopo novo, ledger.
 
 ## 8a — Revisão em Loop
 
@@ -23,7 +23,7 @@ REPETIR até 100% limpo:
      - Acessibilidade (se frontend)?
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
-     - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível #1?
+     - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível 10x?
      - **Princípios, UM A UM e POR NOME** (`principles/SKILL.md` — a MESMA lista contra a qual o 7b escreveu):
        · **SRP** — arquivo/função/componente faz uma coisa? >40 linhas sem extrair? lógica+UI juntos?
        · **OCP** — comportamento novo entrou como `if`/`case` no meio do que já existia, em vez de composição?
@@ -46,7 +46,7 @@ REPETIR até 100% limpo:
        · **Preservação de contexto** — voltar apaga? filtro/rascunho/scroll sobrevivem?
        · **A11y (AA)** — contraste, foco visível, teclado, nome acessível, alvo ≥24px?
        · **DS** — componente visual novo nasceu na pasta da feature em vez de ser **promovido**?
-     - **Nível referência #1:** está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"? ("Um líder do domínio assinaria isto — e assinaria esta tela?")
+     - **Nível 10x:** o calibre dos big pop tech apps / líderes do domínio é o **piso** — isto está 10x acima dele, ou só "funciona"? ("O líder do domínio trocaria o dele por isto — e a tela dele por esta?")
   6. Problema encontrado → CLASSIFICAR e agir:
      - dentro do escopo documentado (docs 01-04) → **balde A**: corrigir IMEDIATAMENTE → voltar ao 1
      - escopo novo que este trabalho criou/tocou/expôs → **balde B**: registrar ABERTO no ledger
@@ -98,7 +98,7 @@ Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 | Motores (§ 3.3 — um dono por capacidade) | ✅/⚠️ | |
 | Refatoração (saldo do perímetro, § 3.5) | ✅/⚠️ | |
 | Naming + consistência com o codebase | ✅/⚠️ | |
-| Nível vs. referência #1 (big pop tech apps) | ✅/⚠️ | |
+| Nível 10x (o #1 do domínio é o piso) | ✅/⚠️ | |
 
 Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio não revisado.
 
@@ -144,7 +144,7 @@ Nenhum? → "nenhum follow-up emitido neste review".
 
 - [ ] Veredicto **APROVADO** em 8b
 - [ ] Zero issues pendentes (balde A)
-- [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível #1) — nenhuma linha em branco
+- [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível 10x) — nenhuma linha em branco
 - [ ] **`## Análise de Design` preenchida por princípio** (se tem UI) — nenhuma linha em branco
 - [ ] **Princípios declarados** na linha do Gateway Check
 - [ ] **Refatoração declarada** na linha própria do Gateway Check

@@ -1,26 +1,25 @@
 ---
 name: work
-description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone, NOT the Eduzz /jira. Discovers the project board from the card key (/jira-board) and the team conventions from `.claude/setup.md` (/setup: work directly on the integration branch or branch per card, branch naming), syncs the integration branch from GitHub and branches off it when the setup says so (gh→integração→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
+description: 'Use when user invokes /work [KEY-N] to take a Jira card from todo to committed-locally on ANY board (personal Atlassian) — standalone. Discovers the project board from the card key (/jira-board) and the team conventions from `.claude/setup.md` (/setup: work directly on the integration branch or branch per card, branch naming), syncs the integration branch from GitHub and branches off it when the setup says so (gh→integração→branch), moves the card to in-progress, asks clarifying questions if the card is ambiguous, then runs /method (which invokes /solve) to implement + review + QA + commit on the branch. Stops at the local commit; ship is /pull-request + /homolog (and /prod for production).'
 effort: max
 requires: [jira-board, setup, method, solve]
 handoff: pull-request
-boundary: jira
 argument-hint: "[KEY-N] | (empty = continuar card ativo)"
 ---
 
 # /work — Trabalhar um card do Jira (do todo ao commit)
 
-Pega um card de **qualquer board** do Atlassian pessoal e leva até o **commit local** na feature branch, no nível da referência #1 do mercado. **Skill standalone do projeto pessoal** — NÃO é o `/jira` (esse é Eduzz, outro contexto, fica fora daqui). Carrega o `/solve` na ativação e reusa o `/method` (que o recarrega) como protocolo de engenharia.
+Pega um card de **qualquer board** do Atlassian pessoal e leva até o **commit local** na feature branch, **10x acima da referência #1 do mercado**. **Skill standalone do projeto pessoal.** Carrega o `/solve` na ativação e reusa o `/method` (que o recarrega) como protocolo de engenharia.
 
 > 🚫 NÃO faz push, NÃO abre PR, NÃO mergeia. Termina no **commit local** (Step 10 do `/method`). Ship é o `/pull-request` depois.
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/work` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/work` é quem leva o card até o commit **nesse nível** — e o `/method` (passo 5) recarrega o mesmo `/solve` quando rodar. Depois disso, siga o Fluxo a partir do passo 0.
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/work` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão — **10x acima da referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/work` é quem leva o card até o commit **nesse nível** — e o `/method` (passo 5) recarrega o mesmo `/solve` quando rodar. Depois disso, siga o Fluxo a partir do passo 0.
 
 ## Iron Law
 
-> **Precisão > tokens > velocidade.** Mire ser a **referência #1 do mercado** (padrão do `/solve`, carregado aqui na ativação e recarregado pelo `/method`). "É simples, pulo" = a violação.
+> **Precisão > tokens > velocidade.** Mire **10x acima da referência #1 do mercado** (padrão do `/solve`, carregado aqui na ativação e recarregado pelo `/method`). "É simples, pulo" = a violação.
 > Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** (tudo por onde passa sobe) e o **design** (tokens, atomicidade, estados, a11y — quando tem tela) vêm juntos e valem em **todos** os steps, não só no código — doutrina em `plugins/furi-build/skills/principles/SKILL.md` e lente por step nos references do `/method` (`plugins/furi-build/skills/method/references/`, design incluído — pacote `furi-build`, carregados pelo `/method` que o `/work` invoca). Card "pequeno" não relaxa nenhum deles.
 
 ## Disciplina em todos os passos
@@ -95,7 +94,7 @@ Dar uma **nota 0–100** à clareza do que precisa ser feito:
 
 ### 5. Rodar o /method
 **Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória. Ele:
-1. chama o **`/solve`** (padrão #1 do mercado) na ativação — é assim que "resolve com /method e /solve" acontece;
+1. chama o **`/solve`** (padrão 10x acima do #1 do mercado) na ativação — é assim que "resolve com /method e /solve" acontece;
 2. roda discovery (1–5) → To Do (6) → Plano (7a) → Codificar (7b) → Code Review (8) → Run Test / QA via front (9) → Done (10);
 3. trabalha **na branch do passo 2** (nunca cria branch), com seus próprios gateways e audits — cada um declarando **princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores)**, **refatoração do perímetro** e, se a feature tem tela, **design** (tokens, atomicidade, estados, a11y);
 4. **converge os follow-ups antes de fechar:** todo achado fora de escopo vira ciclo `/method` completo (com `/solve`) até o **passe seco** — o card sai sem ponta solta (Regra Inviolável 7);
@@ -117,7 +116,6 @@ Dar uma **nota 0–100** à clareza do que precisa ser feito:
 
 ## Red Flags — STOP
 
-- "Vou usar o `/jira`" → NÃO. `/jira` é Eduzz. `/work` é o fluxo pessoal (kanban local + `/method`), **standalone** — e serve **qualquer board**, o que não o transforma no `/jira`.
 - "Descobri/perguntei o board direto aqui" → NÃO. Passo 0 é o `/jira-board`; ele é o único dono da memória do projeto. Skill que pergunta o board por conta própria pergunta de novo amanhã.
 - "Pulei o passo 0 porque já sei o board desta sessão" → NÃO. A leitura da memória é **toda** invocação.
 - "Assumi o board de sempre" → NÃO. Board vem do `/jira-board`; a key, do argumento ou da memória; sprint e transições são **descobertos** na hora.
