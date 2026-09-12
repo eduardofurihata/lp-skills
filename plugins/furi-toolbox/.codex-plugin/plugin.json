@@ -1,6 +1,6 @@
 {
   "name": "furi-toolbox",
-  "version": "0.1.0+codex.adb1b6116002",
+  "version": "0.1.0+codex.aa86f9e0a11c",
   "description": "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt e mais. Cada uma funciona sozinha, sem depender de outra skill.",
   "author": {
     "name": "Eduardo Furihata",
