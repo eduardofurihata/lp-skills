@@ -1,6 +1,6 @@
 # Deploy Context — a topologia e o processo de deploy DESTE projeto
 
-> **Fonte única do contexto de deploy.** `/homolog`, `/prod`, `pull-request` e `work` perguntam a topologia aqui; ninguém assume `dev`, ninguém chuta comando de deploy.
+> **Fonte única do contexto de deploy.** `/homolog`, `/prod`, `pull-request`, `work` e `repro` (os dois via o motor `work/references/branch.md`) perguntam a topologia aqui; ninguém assume `dev`, ninguém chuta comando de deploy.
 
 **Responsabilidade única:** responder *"qual é a topologia deste repositório e como o deploy funciona aqui?"* — lendo o doc do projeto, ou descobrindo e escrevendo-o na primeira vez.
 

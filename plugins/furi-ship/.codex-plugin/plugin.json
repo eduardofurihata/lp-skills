@@ -1,7 +1,7 @@
 {
   "name": "furi-ship",
-  "version": "0.1.0+codex.caa681f6d146",
-  "description": "Skills de entrega do Furihata — /card, /work, /pull-request, /homolog, /prod e /infra (por baixo, invocadas por elas e fora do menu: /jira-board e /setup): do card no Jira até produção, com as convenções do time e o mapa da infra versionados em .claude/. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
+  "version": "0.1.0+codex.12d6de8dd743",
+  "description": "Skills de entrega do Furihata — /card, /work, /repro, /pull-request, /homolog, /prod e /infra (por baixo, invocadas por elas e fora do menu: /jira-board e /setup): do card no Jira até produção, com as convenções do time e o mapa da infra versionados em .claude/. Puxa junto o furi-build (o /work e o /repro rodam o /method; /card e os motores usam /solve e /todo).",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata"
