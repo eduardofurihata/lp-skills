@@ -15,7 +15,7 @@ Distinção `[novo]` vs `[legacy]` (decide se roda Step 8 — Code Review):
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/todo` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) — é o padrão que o code review (Phase 2) e qualquer fix (Phase 3) cobram: referência #1 do mercado. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois, siga o Checklist.
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/todo` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) — é o padrão que o code review (Phase 2) e qualquer fix (Phase 3) cobram: **10x acima da referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Depois, siga o Checklist.
 
 <HARD-GATE>
 NÃO marque test cases como PASSED sem executar via front.
@@ -148,7 +148,7 @@ REPETIR até 100% limpo:
      - Performance (N+1, re-renders, memory leaks)?
      - Consistência com codebase?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
-     - Saldo do perímetro (§ 3.5 do plano): tudo por onde o trabalho passou subiu, ou está declarado como já no nível #1?
+     - Saldo do perímetro (§ 3.5 do plano): tudo por onde o trabalho passou subiu, ou está declarado como já no nível 10x?
      - **Princípios, UM A UM e POR NOME** (`principles/SKILL.md`):
        · SRP (uma responsabilidade, >40 linhas, lógica+UI juntos, camadas)
        · OCP (comportamento novo entrou como `if` no meio do que já existia?)
@@ -316,6 +316,10 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
         - Screenshot como prova de cada PASSED
      c. PASSED (com screenshot) ou FAILED (motivo detalhado)
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<feature>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota.
+        → TC de **texto gerado por IA** (Step 5): a evidência é a saída REAL — **transcrição integral**
+          colada em `kanban/09-run-test/<feature>.md`, com o screenshot junto. Texto que lê **igual ou pior**
+          que a referência #1 do spec = FAILED; "rodou e o texto apareceu" NÃO é PASSED.
+          Formato e critérios: `method/references/09-testing.md` § Evidência de texto.
      d. Bug encontrado → CLASSIFICAR primeiro (A/B/C — ver method/references/follow-ups.md):
         - escopo novo que este trabalho expôs → balde B: registrar ABERTO no ledger
           (`## Follow-ups` do card de to-do). NÃO corrige aqui — vira ciclo /method na Phase 4
@@ -338,8 +342,10 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
 - Tasks individuais esperadas (do Audit Pré): **N**
 - Tasks individuais com status `completed`: **C** — listar (TaskID → TC-ID)
 - TCs com evidência (screenshot path em `kanban/09-run-test/<tópico>.md`): **E** — listar (TC-ID → path)
+- TCs de **texto gerado por IA** com **transcrição integral** colada em `kanban/09-run-test/<tópico>.md`: **T** — listar (TC-ID → bloco) · `N/A` sem essa superfície
 - Ratio C == N? ✅ / ❌ — tasks pendentes: [listar]
 - Ratio E == N? ✅ / ❌ — TCs sem screenshot: [listar]
+- Ratio T == TCs de texto de IA? ✅ / ❌ / N/A — TCs só com screenshot: [listar]
 - Status agregado: **N PASSED**, **0 FAILED**, **0 NOT_RUN**, **0 SKIPPED**, **0 BLOCKED** ✅ / ❌
 - Último ciclo sem mudanças de código? ✅ / ❌
 - **Veredicto:** ✅ LIBERADO para Phase 4 (Done) / ❌ BLOQUEADO — voltar ao Loop
@@ -353,6 +359,7 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
 | "TC X é redundante com Y que já rodou" | NÃO. Sem herança. Execute X. BLOQUEADO. |
 | "Marco os 2 faltantes PASSED e documento depois" | NÃO. Sem evidência = NOT_RUN. BLOQUEADO. |
 | "Reporto parcial enquanto os últimos rodam" | NÃO. Audit ✅ antes de QUALQUER report. BLOQUEADO. |
+| "O screenshot do chat já mostra a resposta" | NÃO. Screenshot recorta: truncamento, repetição e fecho ficam fora do quadro. Sem transcrição integral, o TC de texto é NOT_RUN. BLOQUEADO. |
 
 **MOBILE = ANDROID E iOS, SEMPRE.** Nenhuma feature mobile pode ser marcada PASSED rodando em apenas uma plataforma. Se a iOS não estiver disponível na máquina, peça ao usuário antes de marcar PASSED — não invente.
 

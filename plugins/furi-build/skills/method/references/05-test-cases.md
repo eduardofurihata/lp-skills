@@ -61,7 +61,9 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > A linha **Cobre** é o que torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC e todo detalhe do Step 4 tem que aparecer ao menos uma vez.
 
-> **Feature com superfície de texto gerado por IA** (derivada no Step 4): ao menos um TC tem o `Resultado:` na **qualidade do texto lido** — lê como a referência #1 do spec (completo, no tom da persona, no idioma do usuário, sem placeholder, sem robótico) — e não só "a resposta aparece". Conta como `Cobre` do detalhe "o que ler bem significa" do Step 4. Sem superfície de texto de IA, nada disso se aplica.
+> **Feature com superfície de texto gerado por IA** (derivada no Step 4): ao menos um TC tem o `Resultado:` na **qualidade do texto lido** — lê **melhor que** a referência #1 do spec (completo, no tom da persona, no idioma do usuário, sem placeholder, sem robótico) — e não só "a resposta aparece". Conta como `Cobre` do detalhe "o que ler bem significa" do Step 4. Sem superfície de texto de IA, nada disso se aplica.
+>
+> Esse TC é **um dos N**, não um TC extra — a nota e o teto de 10 não mudam (é lente de cobertura, como Design). E a **prova** dele não é screenshot: é a **transcrição integral da saída** (`09-testing.md` § Evidência de texto).
 
 ## Princípios neste step (`principles/SKILL.md`)
 
@@ -72,6 +74,7 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 - **Motor** — o TC exercita o **comportamento do motor pelo front**, nunca a peça interna. TC que precisa espiar estado interno está testando implementação, não comportamento.
 - **Refatoração** — TC redundante → **funda**. É o próprio filtro de significância aplicado como faxina, não como corte cego.
 - **Design** (se tem UI) — a cobertura contempla **estados** (vazio, carregando, erro, sucesso, limite) e **breakpoints do projeto** e a11y. Isso é **lente de cobertura, não TC extra**: um TC denso cobre a tela em mobile e desktop; dois TCs gêmeos por breakpoint violam o teto e o filtro de significância.
+- **Texto de IA** (se tem essa superfície) — o `Resultado:` do TC é **o que se lê**, não "a resposta aparece"; e a prova é a saída inteira, não o screenshot do começo. TC cujo resultado observável é "retornou 200" não cobre texto: cobre transporte.
 
 ## Gateway 5 → 6
 

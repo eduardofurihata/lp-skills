@@ -32,7 +32,7 @@ A lente do Step 7 não é uma lista à parte — ela **é** a estrutura deste ar
 ## 3. Estratégia de Implementação
 - Ordem de tasks (de 06-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
 - **Referência big apps:** como as big pop tech apps / líderes do domínio resolvem este problema de UX?
-- **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? A linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é **lei para consistência** — e **não para qualidade**: padrão abaixo do nível #1 se **eleva** ou vira achado no ledger, nunca se copia. Ver `ui/SKILL.md` § *Consistência é lei; mediocridade não é*.
+- **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? A linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é **lei para consistência** — e **não para qualidade**: padrão abaixo do nível 10x se **eleva** ou vira achado no ledger, nunca se copia. Ver `ui/SKILL.md` § *Consistência é lei; mediocridade não é*.
 - **Responsabilidade por arquivo (SRP):** para CADA arquivo a criar/modificar, uma frase — o que ele faz. Não coube em uma frase → o arquivo está fazendo duas coisas.
 
 ## 3.1 Reúso antes de criar (DRY) — OBRIGATÓRIO
@@ -76,7 +76,7 @@ O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um 
 
 | Arquivo do perímetro | Por que entra | O que será elevado |
 |---|---|---|
-| `caminho/arquivo.ts` | editado / lido p/ entender / dependente do grep / no caminho do fluxo | duplicação → motor · naming · >40 linhas · morto · `a.b.c.d` · **ou** "já está no nível #1" |
+| `caminho/arquivo.ts` | editado / lido p/ entender / dependente do grep / no caminho do fluxo | duplicação → motor · naming · >40 linhas · morto · `a.b.c.d` · **ou** "já está no nível 10x" |
 
 ## 4. Mapa de Test Cases → Código
 - Para CADA TC: qual código atende, edge cases, validações necessárias
@@ -141,7 +141,7 @@ Aplique os princípios acima (SOLID completo, DRY, KISS, YAGNI, LoD, Motores) ao
 
 **Dentro do perímetro, refatore bastante — sem timidez.** Fora dele, é balde C (`follow-ups.md`): o limite é o **caminho percorrido**, não o repositório.
 
-Para CADA arquivo do perímetro, escaneie e eleve ao nível #1:
+Para CADA arquivo do perímetro, escaneie e eleve ao nível 10x:
 - **Capacidade espalhada** → **absorve no motor** (§ 3.3) e o chamador passa a só chamar
 - **Lógica duplicada** → extraia helper/util — e se for capacidade, é motor
 - **Tamanho:** services >400 linhas, componentes >300, funções >40 → divida
@@ -152,9 +152,9 @@ Para CADA arquivo do perímetro, escaneie e eleve ao nível #1:
 - **Comentários enganosos** → corrija/remova
 - **TODO/FIXME resolúveis** → resolva agora ou deixe com contexto
 - **Código morto** → delete completamente. Sem `_unused`, sem `// removed`, sem re-export
-- **Padrão visual abaixo do nível #1** (se tem UI) → eleve, não copie (`ui/SKILL.md`)
+- **Padrão visual abaixo do nível 10x** (se tem UI) → eleve, não copie (`ui/SKILL.md`)
 
-**Regra do saldo (é o que o gateway cobra):** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível #1** — e você **declara isso** —, ou ele **subiu**.
+**Regra do saldo (é o que o gateway cobra):** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível 10x** — e você **declara isso** —, ou ele **subiu**.
 
 **Banco de Dados (quando aplicável):**
 - Migrações versionadas (`npx prisma migrate dev --name descritivo`)
@@ -224,7 +224,7 @@ Para CADA arquivo alterado:
 - [ ] Todas tasks do checklist marcadas
 - [ ] tsc/lint passam
 - [ ] **Checklist de princípios percorrido por arquivo do perímetro** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD · Motores) — `principles/SKILL.md`
-- [ ] **Refatoração do perímetro executada** com a **regra do saldo**: cada arquivo subiu, ou está declarado como já no nível #1
+- [ ] **Refatoração do perímetro executada** com a **regra do saldo**: cada arquivo subiu, ou está declarado como já no nível 10x
 - [ ] Capacidade espalhada **absorvida no motor**; chamadores passaram a só chamar
 - [ ] **Se tem UI:** zero valor literal (tokens), composição > configuração, headless, **todos** os estados implementados, a11y AA, breakpoints do projeto — `ui/SKILL.md`
 - [ ] Desvios de § 3.1/§ 3.2/§ 3.3/§ 3.4 registrados no plano (não em silêncio)

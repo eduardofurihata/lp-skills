@@ -15,6 +15,9 @@
 //   6. todo alvo de `requires`/`handoff`/`boundary` é o `name` de uma skill que
 //      existe — um typo some do grafo da LP e da dependência entre pacotes sem
 //      dar erro em lugar nenhum
+//   7. pacotes irmãos não se citam: `furi-ship` (o fluxo pessoal) e
+//      `eduzz-builder` (o trabalho) compartilham a base `furi-build`, não o
+//      vocabulário — nenhum dos dois nomeia uma skill do outro
 //
 // Uso: node scripts/validate-plugins.mjs   (exit 1 em qualquer falha)
 import fs from "node:fs";
@@ -50,7 +53,7 @@ const fail = (where, msg) => errors.push(`${where}: ${msg}`);
 
 // As relações declaradas por cada skill, para o check (6) — que só pode rodar
 // depois de conhecer o `name` de TODAS as skills de TODOS os pacotes.
-const declared = []; // { file, name, relations: { [campo]: string[] } }
+const declared = []; // { file, pkg, name, relations: { [campo]: string[] } }
 const RELATION_FIELDS = ["requires", "handoff", "boundary"];
 
 // Campo de relação: string ("method") ou lista. Espelha lib/skills.ts.
@@ -145,6 +148,7 @@ for (const pkg of packages) {
 
     declared.push({
       file: r,
+      pkg,
       name: typeof data.name === "string" ? data.name.trim() : slug,
       relations: Object.fromEntries(
         RELATION_FIELDS.map((f) => [f, parseList(data[f])]),
@@ -263,6 +267,77 @@ for (const pkg of packages) {
   }
 }
 
+// (7) pacotes irmãos não se citam.
+//
+// `furi-ship` é a entrega pessoal e `eduzz-builder` é o trabalho: dois contextos
+// paralelos que dependem da MESMA base (`furi-build`) e não devem se conhecer.
+// A dependência vertical (ship→build, eduzz→build) fica; o que não pode é a
+// conversa lateral — uma skill de um nomear uma skill do outro, nem para dizer
+// "não sou você". Skill se distingue afirmando o próprio contexto.
+const BLIND_PAIRS = [["furi-ship", "eduzz-builder"]];
+
+// Uma CITAÇÃO de skill é `/nome` isolado. O que vem antes não pode ser parte de
+// um caminho (letra, dígito ou ponto) e o que vem depois não pode continuá-lo,
+// senão a checagem acusaria `atlassian.net/jira/software` (URL),
+// `servers/jira.py` e `.claude/setup.md` (arquivos), `spec/card/issue` (prosa)
+// e `/jira-board` (outra skill) como se fossem menções à skill `/jira`.
+const citation = (name) =>
+  new RegExp(String.raw`(?<![A-Za-z0-9.])/${name}(?![A-Za-z0-9./-])`);
+
+const namesByPackage = new Map();
+const packageOfSkill = new Map();
+for (const { pkg, name } of declared) {
+  namesByPackage.set(pkg, [...(namesByPackage.get(pkg) ?? []), name]);
+  packageOfSkill.set(name, pkg);
+}
+
+const blindOf = new Map();
+for (const [a, b] of BLIND_PAIRS) {
+  blindOf.set(a, [...(blindOf.get(a) ?? []), b]);
+  blindOf.set(b, [...(blindOf.get(b) ?? []), a]);
+}
+
+// (7a) o frontmatter. A relação declarada aponta pelo `name`, sem barra — é a
+// aresta que aparece desenhada no grafo da LP, e o varredor de texto abaixo
+// não a enxerga.
+for (const { file, pkg, relations } of declared) {
+  const blind = blindOf.get(pkg) ?? [];
+  for (const field of RELATION_FIELDS)
+    for (const target of relations[field]) {
+      const targetPkg = packageOfSkill.get(target);
+      if (targetPkg && blind.includes(targetPkg))
+        fail(
+          file,
+          `\`${field}: ${target}\` aponta para o pacote irmão \`${targetPkg}\` — ` +
+            `${pkg} e ${targetPkg} não se conhecem`,
+        );
+    }
+}
+
+// (7b) o texto das skills.
+for (const pair of BLIND_PAIRS) {
+  for (const [self, sibling] of [pair, [...pair].reverse()]) {
+    const forbidden = namesByPackage.get(sibling) ?? [];
+    const skillsDir = path.join(PLUGINS_DIR, self, "skills");
+    if (!forbidden.length || !fs.existsSync(skillsDir)) continue;
+
+    for (const file of walk(skillsDir)) {
+      const rel = path.relative(ROOT, file);
+      const lines = fs.readFileSync(file, "utf8").split("\n");
+      for (const target of forbidden) {
+        const re = citation(target);
+        const at = lines.findIndex((line) => re.test(line));
+        if (at >= 0)
+          fail(
+            rel,
+            `linha ${at + 1} cita \`/${target}\`, do pacote irmão \`${sibling}\` — ` +
+              `${self} e ${sibling} não se conhecem`,
+          );
+      }
+    }
+  }
+}
+
 if (errors.length) {
   console.error(`validate-plugins: ${errors.length} problema(s)\n`);
   for (const e of errors) console.error(`  ✗ ${e}`);
@@ -279,5 +354,6 @@ const total = packages.reduce(
 );
 console.log(
   `validate-plugins: ok — ${packages.length} pacotes, ${total} skills, ` +
-    `3 manifestos cada, 2 marketplaces, caminhos citados e relações resolvem.`,
+    `3 manifestos cada, 2 marketplaces, caminhos citados e relações resolvem, ` +
+    `pacotes irmãos não se citam.`,
 );

@@ -9,7 +9,7 @@ argument-hint: "[projeto | pasta/ | arquivo | commit <sha> | diff | doc/skill/pr
 
 **Esta skill é a doutrina de qualidade — os princípios de engenharia e a régua de clareza — e é quem força um alvo a cumpri-la.** Cada palavra do padrão é uma prova de sim/não; a nota de 0 a 100 é calculada dos achados, não sentida; cada passada reavalia o alvo do zero, sem herdar a anterior.
 
-Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pediu". A doutrina não decide **o quanto** existe — ela garante que tudo o que existe esteja na forma mais clara e curta, e inteiro. KISS e YAGNI matam a complexidade *desnecessária*; a *necessária* para o **nível #1** (o melhor que existe no mercado) continua sendo requisito.
+Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pediu". A doutrina não decide **o quanto** existe — ela garante que tudo o que existe esteja na forma mais clara e curta, e inteiro. KISS e YAGNI matam a complexidade *desnecessária*; a *necessária* para o **nível 10x** — o #1 do mercado é só o piso, o alvo é uma ordem de grandeza acima dele — continua sendo requisito. E **10x quase sempre é remover, não acrescentar**: a barra sobe o resultado, nunca o tamanho.
 
 ## Dois modos
 
@@ -41,7 +41,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 | Princípio | Regra | Falha típica |
 |---|---|---|
 | **DRY** | Zero duplicação de lógica **ou de decisão**; uma única fonte de verdade. Antes de criar, **procure** (grep em `shared/`, `lib/`, `components/`, `hooks/`) — reutilizar/estender > recriar. Repetiu 2× já é candidato a extração. | "Copiei e adaptei" |
-| **KISS** | A solução mais simples que atinge o **nível #1**. 5 linhas > 50 linhas. Simplicidade ≠ mediocridade. | "Fiz genérico pra ficar elegante" |
+| **KISS** | A solução mais simples que atinge o **nível 10x**. 5 linhas > 50 linhas. Simplicidade ≠ mediocridade; 10x ≠ mais código. | "Fiz genérico pra ficar elegante" |
 | **YAGNI** | APENAS o que o requisito acordado exige. Zero abstração especulativa. 3 linhas similares > abstração prematura. Nunca é desculpa para entregar menos que o requisito pede, nem para descartar achado real (vira **balde B** na triagem A/B/C do fluxo). | "Deixei preparado pro dia que precisar" |
 | **LoD** (Law of Demeter) | Objeto só fala com vizinhos diretos. Seção própria abaixo. | "Só puxei o campo lá de dentro" |
 | **Motores** | Toda capacidade tem **um** dono. Seção própria abaixo. | "Cada tela trata do seu jeito" |
@@ -109,7 +109,7 @@ Simples nunca é "entregar menos"; premium nunca é "adicionar o que ninguém pe
 | TODO/FIXME resolúvel | resolva agora |
 | `a.b.c.d` / ciclo / direção invertida | contrato (LoD, DIP) |
 
-**Regra do saldo:** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível #1** — e você **declara isso** —, ou ele **subiu**.
+**Regra do saldo:** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível 10x** — e você **declara isso** —, ou ele **subiu**.
 
 # A régua de clareza — para gente e para IA
 
@@ -202,11 +202,12 @@ As do fluxo estão em `references/fluxo-modo-alvo.md`; estas são da doutrina.
 | "Duplicar é mais rápido que entender o que existe" | DRY. Procure primeiro (grep). Duplicata é dívida com juros. BLOQUEADO. |
 | "É genérico demais mas fica elegante" | KISS. Elegância que ninguém pediu é complexidade. BLOQUEADO. |
 | "YAGNI, então não faço o que o requisito pede" | Inversão. YAGNI mata especulação, não requisito nem achado real (balde B). BLOQUEADO. |
-| "Simplifiquei, ficou 'bom o suficiente'" | KISS ≠ mediocridade. O piso é o nível #1. BLOQUEADO. |
+| "Simplifiquei, ficou 'bom o suficiente'" | KISS ≠ mediocridade. O **piso** é o #1 do mercado; a **barra** é 10x acima dele. BLOQUEADO. |
 | "Premium é adicionar mais" | Isso é escopo novo, não acabamento — e escopo não é desta skill. A régua é o que o alvo **promete**. BLOQUEADO. |
+| "A barra é 10x, então engordo a solução" | Inversão. 10x é o **resultado**, não o tamanho — quase sempre se chega lá **removendo**. Sem caso de uso que exija, não entra (YAGNI). BLOQUEADO. |
 | "O arquivo já estava ruim, não fui eu" | Passou por ali, é seu. Está no perímetro → sobe. BLOQUEADO. |
 | "Refatoro o projeto inteiro já que estou aqui" | O limite é o **perímetro** — o que você editou, abriu, atravessou — nunca o repositório. Fora dele, quem decide é a triagem A/B/C do fluxo. BLOQUEADO. |
-| "Só mexi numa linha, não precisa elevar o arquivo" | O arquivo está no perímetro. Regra do saldo: sai melhor do que entrou, ou você declara que já estava no nível #1. BLOQUEADO. |
+| "Só mexi numa linha, não precisa elevar o arquivo" | O arquivo está no perímetro. Regra do saldo: sai melhor do que entrou, ou você declara que já estava no nível 10x. BLOQUEADO. |
 | "Abri o arquivo só pra ler, não conta" | Conta. Ler é passar. Se enxergou o problema, ele está no seu perímetro. BLOQUEADO. |
 | "SOLID eu cubro com o SRP" | SOLID são **cinco** — SRP, OCP, LSP, ISP, DIP. O que não é nomeado nunca é revisado. BLOQUEADO. |
 | "É só um `if` a mais, não precisa de motor" | O `if` é a **segunda fonte** da mesma regra. Absorve no motor. BLOQUEADO. |

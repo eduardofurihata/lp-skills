@@ -1,9 +1,8 @@
 ---
 name: jira
-description: Use when working on a Jira card — Step 0 (investigação + reprodução) → /method (implementação) → human check → ship. Instala o /method junto (dependência). Handles /jira finish para modo autônomo.
+description: Use when working on an Eduzz Jira card — Step 0 (investigação + reprodução) → /method (implementação) → human check → ship. Instala o /method junto (dependência). Handles /jira finish para modo autônomo.
 argument-hint: "[CARD-CODE] | finish [CARD-CODE] | (empty to continue active card)"
 requires: method
-boundary: setup
 ---
 
 # Jira — Card Workflow
@@ -11,7 +10,7 @@ boundary: setup
 **Esta skill é FERRO.** Vale para TODA a conversa.
 **Violating the letter of the rules is violating the spirit of the rules.**
 **Precisão > tokens > velocidade.** Tokens são baratos. Bug em produção é caro.
-**Padrão de qualidade #1:** mire ser a referência #1 do mercado — o padrão das big pop tech apps / líderes do domínio é a baseline (o piso, não o teto). Complexidade pra atingir esse nível é requisito, não obstáculo.
+**Padrão de qualidade — 10x:** mire **10x acima da referência #1 do mercado** — o padrão das big pop tech apps / líderes do domínio é a baseline (o piso, não o teto; o alvo é 10x acima dele). Complexidade pra atingir esse nível é requisito, não obstáculo.
 
 > O protocolo de engenharia é o **`/method`**, instalado junto com o `/jira` (dependência). O `/jira` cuida da investigação (Step 0), aciona o `/method` para implementar, e fecha com human check + ship.
 
@@ -46,7 +45,7 @@ boundary: setup
 cat .claude/setup.md 2>/dev/null || cat .claude/setup.local.md 2>/dev/null   # do time (versionado) ou só meu (fora do git); lido por caminho
 git checkout main && git pull --ff-only
 ```
-Existe (qualquer dos dois — o do time vence) → o **§ Branch** decide o 0.2 e o **§ PR** decide o ship (`references/ship.md`). Não existe → os defaults abaixo, e o `/jira` **não cria** o arquivo: quem cria é o `/setup` (pacote `furi-ship`, usável direto) — ou o time, à mão, pelo template dele. Aplicar o que está escrito é daqui; escrever, não. Em repositório Eduzz onde `.claude/` fica fora do git de propósito, o que vale é o `setup.local.md` — o processo é de quem usa, não do time, e por isso não vai pro repo.
+Existe (qualquer dos dois — o do time vence) → o **§ Branch** decide o 0.2 e o **§ PR** decide o ship (`references/ship.md`). Não existe → os defaults abaixo, e o `/jira` **não cria** o arquivo — quem escreve é o time, à mão ou pelo template dele. Aplicar o que está escrito é daqui; escrever, não. Em repositório Eduzz onde `.claude/` fica fora do git de propósito, o que vale é o `setup.local.md` — o processo é de quem usa, não do time, e por isso não vai pro repo.
 
 ### 0.2 — Criar branch (ou não)
 | § Branch `Trabalho:` | Ação |

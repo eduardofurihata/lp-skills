@@ -38,7 +38,7 @@ O done doc registra **o que os princípios produziram** — as 6 linhas da seç�
   - **Reutilizado (DRY):** o que existia e foi estendido em vez de recriado (do § 3.1 do plano)
   - **Descartado (YAGNI):** o que foi considerado e não construído (do § 3.2 do plano)
   - **Motores (§ 3.3):** quais nasceram, quais cresceram, que lógica dispersa foi absorvida
-  - **Elevado (refatoração do perímetro, § 3.5):** o que estava abaixo do nível #1 no caminho percorrido e subiu — e o que já estava no nível #1
+  - **Elevado (refatoração do perímetro, § 3.5):** o que estava abaixo do nível 10x no caminho percorrido e subiu — e o que já estava no nível 10x
   - **DS ganhou** (`ui/SKILL.md`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
   - **Patterns ganhou** (`.claude/patterns.md`): padrões de código **promovidos** no Step 4. Nada promovido → escreva que a feature coube nos padrões existentes.
 - **Commit SHA** — hash do commit criado neste step (ver abaixo)

@@ -62,7 +62,7 @@ Precisou de algo que o DS não tem? **Nesta ordem, sem pular:**
 
 > **A regra "siga o padrão existente" vale para consistência, NÃO para qualidade.**
 
-Padrão existente que está abaixo do nível #1 **não se copia**. Ou você o **eleva** — é a refatoração contínua aplicada à UI, e o perímetro é o mesmo: tudo por onde o trabalho passou —, ou ele vira **achado**. Copiar tela ruim "por consistência" é duplicar código "porque já estava assim": a inconsistência que você evitou custa menos que a mediocridade que você propagou.
+Padrão existente que está abaixo do **nível 10x** não se copia — e a barra não é o #1 do domínio: é 10x acima dele. Ou você o **eleva** — é a refatoração contínua aplicada à UI, e o perímetro é o mesmo: tudo por onde o trabalho passou —, ou ele vira **achado**. Copiar tela ruim "por consistência" é duplicar código "porque já estava assim": a inconsistência que você evitou custa menos que a mediocridade que você propagou.
 
 Como decidir na hora:
 
@@ -75,7 +75,7 @@ Como decidir na hora:
 
 ## Moderno não é enfeite — o que se cobra
 
-O benchmark do nível #1 — o calibre dos líderes do domínio — aplicado ao **visual**, não só ao comportamento:
+O benchmark — o calibre dos líderes do domínio como **piso**, e 10x acima dele como alvo — aplicado ao **visual**, não só ao comportamento:
 
 - **Hierarquia** — o olho sabe onde olhar primeiro. **Um** elemento primário por tela; se tudo grita, nada é ouvido.
 - **Escala de espaçamento** — espaçamento vem da escala do DS, e proximidade agrupa (Gestalt). Tela apertada e tela vazada são o mesmo defeito: espaçamento sem intenção.
@@ -87,11 +87,11 @@ O benchmark do nível #1 — o calibre dos líderes do domínio — aplicado ao 
 - **A11y — WCAG AA é piso, não meta:** contraste 4.5:1 (texto) e 3:1 (elementos de UI), foco visível, alvo de toque ≥24px, navegação completa por teclado, nome acessível em todo controle, ordem de leitura coerente.
 - **Responsivo** — nos **breakpoints do projeto**, com **320px como piso**. Mobile não é desktop encolhido; desktop não é mobile esticado; nada quebra no meio do caminho.
 
-**Auto-check antes de entregar:** *"Um líder do domínio assinaria esta tela?"* Se não → não está pronta.
+**Auto-check antes de entregar:** *"O líder do domínio trocaria a tela dele por esta?"* Se não → não está pronta.
 
 ## O nível — antes de julgar
 
-**No modo alvo, invoque o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) **antes do passo 3**. É ele quem define o **nível #1** deste domínio: quem são os líderes reconhecidos e qual é o calibre que a tela precisa alcançar. Sem isso, "moderno" e "abaixo do nível #1" viram gosto pessoal — e esta skill vira opinião, não régua.
+**No modo alvo, invoque o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) **antes do passo 3**. É ele quem define o **nível 10x** deste domínio: quem são os líderes reconhecidos, que são o piso, e quanto a tela precisa passar deles. Sem isso, "moderno" e "abaixo do nível 10x" viram gosto pessoal — e esta skill vira opinião, não régua.
 
 **No modo régua, não invoque nada.** Quem carregou a régua já está num trabalho com o nível definido; reinvocar só fecharia um ciclo sem acrescentar nada. A chamada é do modo alvo, e só dele.
 

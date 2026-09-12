@@ -8,7 +8,7 @@ argument-hint: "(vazio = mostrar o setup gravado) | branch | commit | pr | jira 
 
 # /setup — As convenções do time neste repositório
 
-Dono **único** de `.claude/setup.md`. Toda skill de entrega (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod`) começa passando por aqui — nenhuma delas assume, descobre ou pergunta convenção por conta própria. O `/method` (§ Commit) e o `/jira` da Eduzz (§ Branch, § PR) **leem o arquivo por caminho** e aplicam o que está escrito; criar e editar é daqui.
+Dono **único** de `.claude/setup.md`. Toda skill de entrega (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod`) começa passando por aqui — nenhuma delas assume, descobre ou pergunta convenção por conta própria. O `/method` (§ Commit) **lê o arquivo por caminho** e aplica o que está escrito; criar e editar é daqui.
 
 > **Escopo: só convenção do time.** Não cria card, não cria branch, não abre PR, não mexe em ambiente. Resolve *como este time trabalha neste repositório* e devolve isso pra quem chamou.
 
@@ -164,7 +164,6 @@ Report de uma linha:
 | `/pull-request` | § PR, § Commit | `Abre PR: não` → **para** e encaminha; `Template:` → corpo nas seções do arquivo; key no título conforme § Commit |
 | `/homolog`, `/prod` (`pr-cycle`) | § PR | `Merge:` decide `--merge/--squash/--rebase`; `Aprovação: <pessoa>` → merge **espera** o `APPROVED` dela |
 | `/method` (por caminho) | § Commit | mensagem do Step 10 na convenção, key vinda do nome da branch |
-| `/jira` Eduzz (por caminho) | § Branch, § PR | `direto` → fica na `main`; `Abre PR: não` → ship sem `gh pr create` |
 
 Quem lê por caminho **aplica o que está escrito** e, sem arquivo, mantém o próprio default — **não cria** o arquivo. Criar é aqui.
 

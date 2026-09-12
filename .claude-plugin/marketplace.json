@@ -10,7 +10,7 @@
     {
       "name": "eduzz-builder",
       "source": "./plugins/eduzz-builder",
-      "description": "Skills de trabalho (Eduzz) — /jira, /afl, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve; o /afl roda o /jira).",
+      "description": "Skills de trabalho (Eduzz) — /jira, /proof, /video-teams. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
       "category": "eduzz"
     },
     {

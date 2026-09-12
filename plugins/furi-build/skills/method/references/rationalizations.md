@@ -135,10 +135,11 @@
 | "Duplicar é mais rápido que entender o que já existe" | DRY: procure primeiro (grep em shared/lib/components/hooks). Duplicata é dívida com juros — e o § 3.1 do plano existe pra isso. BLOQUEADO. |
 | "Ficou genérico demais, mas é elegante" | KISS: elegância que nenhum UC pediu é complexidade. BLOQUEADO. |
 | "YAGNI, então não faço o que o UC pede" | Inversão. YAGNI mata **especulação**, não requisito nem achado real (balde B). BLOQUEADO. |
-| "Simplifiquei, ficou bom o suficiente" | KISS ≠ mediocridade. O piso é o nível #1 do `/solve`. BLOQUEADO. |
+| "Simplifiquei, ficou bom o suficiente" | KISS ≠ mediocridade. O **piso** é o #1 do `/solve`; a **barra** é 10x acima dele. BLOQUEADO. |
+| "A barra é 10x, então engordo a solução" | Inversão. 10x é o **resultado**, não o tamanho — quase sempre se chega lá **removendo**. Sem UC que exija, não entra (YAGNI). BLOQUEADO. |
 | "O arquivo já estava ruim, não fui eu" | Passou por ali, é seu. Está no perímetro → sobe. BLOQUEADO. |
 | "Já que estou aqui, refatoro o projeto inteiro" | O limite é o **perímetro** (editado, aberto para entender, dependente do grep, caminho do fluxo), não o repositório. Fora dele vale a triagem: **B** se este trabalho o expôs, **C** se não tem relação. BLOQUEADO. |
-| "Só mexi numa linha, não precisa elevar o arquivo" | Regra do saldo: nenhum arquivo do perímetro sai como entrou — ou subiu, ou você declara que já estava no nível #1. BLOQUEADO. |
+| "Só mexi numa linha, não precisa elevar o arquivo" | Regra do saldo: nenhum arquivo do perímetro sai como entrou — ou subiu, ou você declara que já estava no nível 10x. BLOQUEADO. |
 | "Abri o arquivo só pra ler, não conta" | Ler é passar. Enxergou o problema, ele está no seu perímetro. BLOQUEADO. |
 | "SOLID eu cubro com o SRP" | SOLID são **cinco**. OCP, LSP, ISP e DIP não são opcionais — e o que não é nomeado nunca é revisado. BLOQUEADO. |
 | "É só mais um `if`, não precisa de motor" | O `if` é a **segunda fonte** da mesma regra. Absorve no motor (§ 3.3 do plano). BLOQUEADO. |
@@ -166,6 +167,22 @@
 | "Inventei um padrão melhor que o consagrado" | Lei de Jakob: o usuário aprendeu em outro produto. Desvio exige motivo escrito no Spec, não gosto. BLOQUEADO. |
 | "Design é subjetivo, não dá pra cobrar em gateway" | Token, nível atômico, estados, contraste e breakpoint são **verificáveis**. É isso que se cobra. BLOQUEADO. |
 | "A feature é pequena, não precisa mexer no DS" | Então ela **reusa**. Se não reusa nem compõe, **promove**. "Pequena" não cria exceção. BLOQUEADO. |
+
+## Categoria 13 — Texto gerado por IA (`04-spec.md` § Texto gerado por IA)
+
+> Vale para feature com **superfície de texto gerado por IA**, derivada no Step 4 pelo mesmo mecanismo da visual — a partir do **produto** (core de IA ⇒ nasce `sim`). Cobrada em três gateways: **4 → 5** (a derivação), **5 → 6** (o TC) e **9 → 10** (a saída real).
+
+| Frase | Realidade |
+|-------|-----------|
+| "Não tem tela, então não tem texto de IA a testar" | Superfície de texto ≠ superfície visual. E-mail, push, webhook lido por humano, resposta que vira mensagem no WhatsApp contam. BLOQUEADO. |
+| "É troca de modelo / ajuste de prompt / RAG — isso é infra" | Mudou o que o usuário lê. É `sim`, e a referência #1 entra no spec. BLOQUEADO. |
+| "Derivei que não tem superfície" (sem dizer qual saída a feature produz) | Derivação sem as duas afirmações nomeadas não aconteceu. BLOQUEADO. |
+| "O texto quem escreve é o modelo, não eu" | O usuário não lê o modelo, lê o seu produto. Quem entrega a saída responde por ela. BLOQUEADO. |
+| "O texto apareceu, marco PASSED" | Apareceu ≠ lê bem. O critério é a referência #1 do spec. BLOQUEADO. |
+| "O screenshot do chat prova a resposta" | Screenshot recorta. A evidência é a **transcrição integral**. BLOQUEADO. |
+| "Ficou bom o suficiente pra um chat interno" | A barra é a referência #1, e ela não muda com o público. BLOQUEADO. |
+| "Acrescento uma instrução no prompt e o TC passa" | Remendo de CSS da saída de IA: verde neste caso, quebrado no próximo. **FAILED disfarçado**. BLOQUEADO. |
+| "A qualidade do texto é subjetiva, não dá pra cobrar em gateway" | Truncamento, placeholder, idioma, alucinação e fecho são **verificáveis** na saída colada. É isso que se cobra. BLOQUEADO. |
 
 ## Red Flags — Frases-Gatilho que Obrigam STOP
 
@@ -217,5 +234,7 @@ Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PA
 - "a11y depois" / "desktop primeiro, mobile numa próxima" / "estado vazio se sobrar tempo"
 - "o screenshot do happy path já prova"
 - "design é subjetivo, não dá pra cobrar em gateway"
+- "não tem tela, então não tem texto de IA" / "é troca de modelo, isso é infra"
+- "o texto apareceu, marco PASSED" / "boto mais uma linha no prompt e o TC passa"
 
 **Todas essas frases significam: PARE. Reative o protocolo. Execute do jeito certo.**

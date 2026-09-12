@@ -102,7 +102,7 @@ Sem `✅ CONVERGIU` publicado no chat, o Gateway/Checklist Final do Step 10 não
 
 Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por um remendo:
 
-1. **Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve), para o item. Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou. A primeira ação do `/method` é invocar o `/solve` — mesmo padrão de qualidade (referência #1 do mercado).
+1. **Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve), para o item. Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou. A primeira ação do `/method` é invocar o `/solve` — mesmo padrão de qualidade (10x acima da referência #1 do mercado).
 2. **Steps 1 → 9 completos** para o item, com seus próprios artefatos (`docs/01-problem/<f>.md` … `kanban/09-run-test/<f>.md`), gateways publicados e Gate Check inicial. Tópico próprio, arquivos próprios — não enfie no `<tópico>` da feature-pai.
 3. **Step 10 do ciclo — INTEIRO, MENOS O COMMIT.** Cria `kanban/10-done/<f>.md`, deleta `kanban/06-todo/<f>.md`, e para.
 4. **Marca no ledger da feature-pai:** `RESOLVIDO-POR-CICLO` + link do done doc.
