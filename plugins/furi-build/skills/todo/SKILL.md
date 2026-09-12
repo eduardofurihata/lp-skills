@@ -2,7 +2,7 @@
 name: todo
 description: 'Use when ready to run QA on features queued in kanban/06-todo/ (cards created by /fast, pending front-validation). Executes testing via front (step 9) and promotes passing features to kanban/10-done/ with `tests: passed`'
 effort: max
-requires: [method, solve]
+requires: [method, solve, blind]
 argument-hint: "[feature-name or 'all']"
 ---
 
@@ -166,6 +166,9 @@ REPETIR até 100% limpo:
          preservação de contexto · a11y AA · promoveu ao DS em vez de soltar na feature
   6. Problema encontrado → corrigir IMEDIATAMENTE → voltar ao 1
   7. Loop até ZERO issues — NÃO aceitar "bom o suficiente"
+  8. Revisão fria (`/blind review`) — só com 1-7 limpos; bundle por comando, saída integral no relatório,
+     `RESULTADO: 0 A` no bundle atual fecha o loop; achado A → corrigir → voltar ao 1.
+     Receita e regras: `method/references/08-code-review.md` § Revisão fria.
 ```
 
 ### Relatório (OBRIGATÓRIO)
@@ -205,8 +208,13 @@ Input validation | Auth | Dados sensíveis | Injection vectors
 | Design (tokens · estados · a11y — se tem tela) | ✅/⚠️ | |
 (linha em branco = princípio não revisado)
 
+## Revisão Fria (`/blind review`)
+- Carimbo do bundle (sha256) | Rodadas | Independência: SIM / NÃO (inline, sem binário `claude`)
+> <saída integral da última rodada>
+| # | Achado (do revisor) | Balde sugerido | Balde final | Justificativa (obrigatória quando rebaixa A) |
+
 ## Veredicto Final
-- Status: APROVADO / REQUER correções
+- Status: APROVADO / REQUER correções (APROVADO exige `RESULTADO: 0 A` da revisão fria no bundle atual)
 - Confiança: Alta/Média/Baixa
 - Notas para o teste: pontos críticos
 ```
@@ -318,8 +326,9 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<feature>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota.
         → TC de **texto gerado por IA** (Step 5): a evidência é a saída REAL — **transcrição integral**
           colada em `kanban/09-run-test/<feature>.md`, com o screenshot junto. Texto que lê **igual ou pior**
-          que a referência #1 do spec = FAILED; "rodou e o texto apareceu" NÃO é PASSED.
-          Formato e critérios: `method/references/09-testing.md` § Evidência de texto.
+          que a referência #1 do spec = FAILED; "rodou e o texto apareceu" NÃO é PASSED. Quem compara é o
+          **juiz cego** (`/blind pair`, 2 ordens, `RESULTADO: A` = PASSED), nunca o autor.
+          Formato, critérios e receita do juiz: `method/references/09-testing.md` § Evidência de texto.
      d. Bug encontrado → CLASSIFICAR primeiro (A/B/C — ver method/references/follow-ups.md):
         - escopo novo que este trabalho expôs → balde B: registrar ABERTO no ledger
           (`## Follow-ups` do card de to-do). NÃO corrige aqui — vira ciclo /method na Phase 4
@@ -345,7 +354,9 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
 - TCs de **texto gerado por IA** com **transcrição integral** colada em `kanban/09-run-test/<tópico>.md`: **T** — listar (TC-ID → bloco) · `N/A` sem essa superfície
 - Ratio C == N? ✅ / ❌ — tasks pendentes: [listar]
 - Ratio E == N? ✅ / ❌ — TCs sem screenshot: [listar]
+- TCs de texto de IA com **veredicto do juiz cego** (`/blind pair`, 2 ordens) colado integral: **J** — listar (TC-ID → RESULTADO) · `N/A` sem essa superfície
 - Ratio T == TCs de texto de IA? ✅ / ❌ / N/A — TCs só com screenshot: [listar]
+- Ratio J == T? ✅ / ❌ / N/A — TCs julgados pelo autor ou em uma ordem só: [listar]
 - Status agregado: **N PASSED**, **0 FAILED**, **0 NOT_RUN**, **0 SKIPPED**, **0 BLOCKED** ✅ / ❌
 - Último ciclo sem mudanças de código? ✅ / ❌
 - **Veredicto:** ✅ LIBERADO para Phase 4 (Done) / ❌ BLOQUEADO — voltar ao Loop

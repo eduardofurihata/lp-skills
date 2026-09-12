@@ -18,6 +18,9 @@
 //   7. pacotes irmãos não se citam: `furi-ship` (o fluxo pessoal) e
 //      `eduzz-builder` (o trabalho) compartilham a base `furi-build`, não o
 //      vocabulário — nenhum dos dois nomeia uma skill do outro
+//   8. skill interna (`user-invocable: false` — fora do menu `/`) é alvo do
+//      `requires` de pelo menos uma skill: interna que ninguém invoca é skill
+//      morta, e o usuário não tem como chamá-la
 //
 // Uso: node scripts/validate-plugins.mjs   (exit 1 em qualquer falha)
 import fs from "node:fs";
@@ -150,6 +153,7 @@ for (const pkg of packages) {
       file: r,
       pkg,
       name: typeof data.name === "string" ? data.name.trim() : slug,
+      internal: data["user-invocable"] === false,
       relations: Object.fromEntries(
         RELATION_FIELDS.map((f) => [f, parseList(data[f])]),
       ),
@@ -168,6 +172,16 @@ for (const { file, name, relations } of declared) {
         fail(file, `\`${field}: ${target}\` — nenhuma skill tem esse \`name\``);
     }
   }
+}
+
+// (8) skill interna tem quem a invoque.
+const required = new Set(declared.flatMap((d) => d.relations.requires));
+for (const { file, name, internal } of declared) {
+  if (internal && !required.has(name))
+    fail(
+      file,
+      `\`user-invocable: false\` sem nenhuma skill listando \`${name}\` em \`requires\` — fora do menu \`/\` e sem quem a invoque`,
+    );
 }
 
 // (4) os marketplaces apontam para diretórios que existem.
@@ -280,7 +294,7 @@ const BLIND_PAIRS = [["furi-ship", "eduzz-builder"]];
 // um caminho (letra, dígito ou ponto) e o que vem depois não pode continuá-lo,
 // senão a checagem acusaria `atlassian.net/jira/software` (URL),
 // `servers/jira.py` e `.claude/setup.md` (arquivos), `spec/card/issue` (prosa)
-// e `/jira-board` (outra skill) como se fossem menções à skill `/jira`.
+// e `/jira-board` (outra skill) como se fossem menções a uma skill `/jira`.
 const citation = (name) =>
   new RegExp(String.raw`(?<![A-Za-z0-9.])/${name}(?![A-Za-z0-9./-])`);
 

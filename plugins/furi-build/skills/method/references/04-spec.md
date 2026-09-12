@@ -65,6 +65,8 @@ Duas decisões entram no loop como gap, e são escritas no spec:
 - **A referência #1** — qual produto lê melhor neste tipo de saída (ChatGPT, Claude, o líder do domínio). Ela é o **piso**: "funcionar" não é a barra, e **empatar também não** — a barra é ler melhor que o melhor.
 - **O que "ler bem" significa aqui** — tom e persona, concisão, formatação, idioma do usuário, **sem truncamento, sem placeholder, sem alucinação, sem robótico**. Isso vira o `Resultado:` de pelo menos um TC no Step 5 e o critério de FAILED no Step 9: texto que lê **igual ou pior** que a referência é teste falho, mesmo com o código certo.
 
+No `docs/04-spec/<tópico>.md`, essas duas decisões moram sob o heading **exato** `## Texto gerado por IA`, como `**Referência #1:**` e `**Ler bem significa:**` (um critério por linha). O heading é contrato: o Step 9 extrai a seção **verbatim** (`sed`) e a entrega ao **juiz cego** (`/blind pair`) como a única régua — seção que não existe com esse nome é régua que o juiz não recebe.
+
 Isso é da **saída lida**, não do modelo nem da infra: prompt, RAG e troca de modelo entram porque mudam o que o usuário lê.
 
 ### Se `não`: a justificativa é nomeada

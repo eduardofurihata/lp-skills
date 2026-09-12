@@ -2,12 +2,14 @@
 name: method
 description: Use when user invokes /method, when starting feature work, or before any code change and `docs/01-problem/` through `docs/04-spec/` lacks artifact for the feature. Triggers on phrases like "implementa X", "novo feature", "fix não trivial". Not for typos, config tweaks, or read-only questions.
 effort: max
-argument-hint: "[feature-name]"
-requires: solve
+argument-hint: "[KEY-N] [feature-name]"
+requires: [solve, blind]
 boundary: [homolog, prod, setup]
 ---
 
 # /method — Protocolo de Engenharia Rigorosa
+
+> **Argumento:** `[KEY-N]` é o **card ativo** — a key que o Step 10 põe no commit (é assim que o `/work` a entrega; numa branch que acumula cards, o nome da branch é só o do 1º card, e a key certa é esta). `[feature-name]` é o `<tópico>` dos artefatos (`docs/…/<tópico>.md`, `kanban/…/<tópico>.md`); sem ele, derive um slug curto do card ou do pedido. Sem `KEY-N`, a key vem do nome da branch (`references/10-done.md` § 2).
 
 > 🚫 **NÃO crie branch nem worktree paralelo.** Trabalhe SEMPRE na branch e no worktree atual. Proibido `git checkout -b`, `git switch -c`, `git branch <nome>`, `git worktree add`, a opção `isolation: "worktree"` em subagents, ou qualquer criação/troca de branch / abertura de worktree. Toda a implementação acontece na branch e no diretório em que a conversa começou.
 
@@ -73,6 +75,8 @@ Auto-check em cada gateway: *"O líder do domínio trocaria o dele por isto — 
 9. **Refatoração é regime.** A cada passada, o código do **perímetro** sobe (regra do saldo). Linha própria em todo Gateway Check; sem ela, o gateway não foi publicado. "Só mexi numa linha", "abri só pra ler", "refatoro numa PR separada depois" = BLOQUEADO.
 
 10. **Design é regime, e o DS evolui com o produto.** Feature com superfície visual obedece a `ui/SKILL.md`, declara a linha de design em todo gateway e **promove ao DS** o que não couber em reúso ou composição. "Copio a tela existente por consistência" (estando ruim), "a11y/mobile/estado vazio depois", "hardcodei a cor, é só uma" = BLOQUEADO.
+
+11. **Quem escreve não dá a própria nota.** Onde o veredicto é julgamento, ele vem de uma sessão que não viu esta (`/blind`, mesmo pacote): o Step 8 só fecha com a **revisão fria** (`/blind review`, `RESULTADO: 0 A` no bundle atual — `references/08-code-review.md` § Revisão fria) e o TC de texto gerado por IA só passa com o **juiz cego** (`/blind pair`, a nossa contra a referência #1 sem rótulo, duas ordens, `RESULTADO: A` — `references/09-testing.md` § Evidência de texto). Entrada verbatim, saída integral, veredicto vinculante — discordância vai ao lado, com justificativa. "Eu mesmo julgo, conheço os critérios", "o cego não entendeu o contexto", "rodei uma ordem só" = BLOQUEADO.
 
 Lista completa de racionalizações + contra-argumentos: ver `references/rationalizations.md`.
 
@@ -164,6 +168,8 @@ Implementar (7) → Code Review (8) → Testing (9)
 
 QUALQUER mudança de código (fix de bug, correção de review) invalida a validação anterior. O ciclo SÓ encerra com testing 100% PASSED e ZERO mudanças no último passe.
 
+O Step 8 fecha com a **revisão fria** (`/blind review`) zerada sobre o bundle atual — fix muda o bundle e a reabre; o TC de texto de IA do Step 9 fecha com o **juiz cego** (`/blind pair`). Regra Inviolável 11.
+
 ## Loop de Follow-ups (Gate de Convergência)
 
 O protocolo fecha **seco**: nada adiado. A **captura** é contínua (todos os steps alimentam o **Ledger de Follow-ups** — seção `## Follow-ups` do card `kanban/06-todo/<tópico>.md`); a **resolução** acontece num único ponto — a **entrada do Step 10**, antes de mover o card e antes do commit.
@@ -224,6 +230,9 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "o screenshot do happy path já prova" / "design é subjetivo, não dá pra cobrar em gateway"
 - "não tem tela, então não tem texto de IA a testar" / "é só troca de modelo / prompt / RAG, isso é infra"
 - "o texto apareceu, marco PASSED" / "boto mais uma linha no prompt e o TC passa"
+- "eu mesmo julgo, conheço os critérios" / "o cego não entendeu o contexto, desconsidero"
+- "rodei uma ordem só, deu A" / "deu EMPATE, passou" / "a revisão fria foi antes do fix, vale"
+- "resumo a spec pro juiz" / "colo só o RESULTADO"
 
 **Todas significam: PARE. Releia `references/rationalizations.md`. Execute do jeito certo.**
 
@@ -246,7 +255,7 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 
 **Arquivos do projeto que o protocolo lê por caminho** (sem depender de quem os cria — como já lê o `CLAUDE.md`):
 - `.claude/patterns.md` — padrões de código do projeto; lido no Step 4 e **feito crescer** por ele (dono: este protocolo). Caminhos antigos migram no Step 4.
-- `.claude/setup.md` § Commit — convenção de commit e posição da key do card; lido no Step 10, **se existir**. Dono: `/setup` (pacote `furi-ship`) — este protocolo aplica o que está escrito e **não cria** o arquivo; sem ele, Conventional Commits. O resto do setup (branch, PR, Jira) não é assunto daqui.
+- `.claude/ship-setup/setup.md` § Commit — convenção de commit e posição da key do card; lido no Step 10, **se existir**. Dono: `/setup` (pacote `furi-ship`) — este protocolo aplica o que está escrito e **não cria** o arquivo; sem ele, Conventional Commits. O resto do setup (branch, PR, Jira) não é assunto daqui.
 
 **Abra o reference relevante ao iniciar cada step. Não tente executar de memória.**
 

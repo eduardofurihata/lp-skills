@@ -1,7 +1,7 @@
 {
   "name": "eduzz-builder",
-  "version": "0.1.0+codex.6bde70a6b78f",
-  "description": "Skills de trabalho (Eduzz) — /jira, /proof. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
+  "version": "0.1.0+codex.f2e1da7a4962",
+  "description": "Skills de trabalho (Eduzz) — /repro. Puxa junto o furi-build (o /repro roda o /method e o /solve).",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata"
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Eduzz Builder",
     "shortDescription": "Fluxos de trabalho da Eduzz.",
-    "longDescription": "Trabalhe em cards e provas da Eduzz com os fluxos especializados do Furihata.",
+    "longDescription": "Trabalhe em cards da Eduzz com os fluxos especializados do Furihata.",
     "developerName": "Eduardo Furihata",
     "category": "Productivity",
     "capabilities": [

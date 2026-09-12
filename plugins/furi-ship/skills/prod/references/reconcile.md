@@ -38,7 +38,7 @@ Os alvos existentes:
 
 **`deploy-context.md`**, sempre, antes de tudo: topologia detectada (`git ls-remote`), doc do projeto lido (ou descoberto e escrito). O alvo declarado pela skill é **validado** contra a topologia real — alvo incompatível (ex.: `/homolog` em branch única) é recusado pela própria skill, antes de chegar aqui.
 
-Board do Jira: **`/jira-board`**, também no Passo 0 de quem chama. Convenções do time: **`/setup`**, idem — o `pr-cycle` lê daí `Abre PR`, `Aprovação` e `Merge`; onde vive cada segredo: `.claude/infra.md`, lido pelo `env-config` (que invoca o `/infra` se o arquivo faltar).
+Board do Jira: **`/jira-board`**, também no Passo 0 de quem chama. Convenções do time: **`/setup`**, idem — o `pr-cycle` lê daí `Abre PR`, `Aprovação` e `Merge`; onde vive cada segredo: `.claude/ship-setup/infra.md`, lido pelo `env-config` (que invoca o `/infra` se o arquivo faltar).
 
 ## Passo 1 — Diagnosticar (e PUBLICAR antes de agir)
 
@@ -81,7 +81,7 @@ origem → branch → sincronizado → configurado → verificado
 
 | Gap | Motor | Observação |
 |---|---|---|
-| Trabalho commitado em feature branch, sem PR | **`/pull-request`** (invocar via Skill tool) | nada chega ao ambiente sem passar por review |
+| Trabalho commitado em feature branch, sem PR | **`/pull-request`** (invocar via Skill tool) | nada chega ao ambiente sem passar por review. `.claude/ship-setup/setup.md` § PR `Abre PR: não` ⇒ **não é gap**: o `/pull-request` só pusha; o review roda no diff da integração (`pr-cycle.md` § 6) |
 | PR aberto (review, QA, aprovação, merge, rejeição) | **`pr-cycle.md`** | vários PRs → **um por um**, re-diagnosticando entre eles |
 | PR entrega além do card | **`scope-split.md`** | |
 | Achado fora do escopo | **`findings.md`** | |

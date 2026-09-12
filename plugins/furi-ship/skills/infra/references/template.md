@@ -1,4 +1,4 @@
-# Template — `.claude/infra.md`
+# Template — `.claude/ship-setup/infra.md`
 
 Escrito pelo `/infra` (passo 5 do fluxo) a partir do que foi inferido, confirmado e perguntado. **Nenhum valor de segredo, em nenhuma linha** — o gate anti-vazamento (passo 6) recusa o arquivo se um aparecer. Colunas vazias ficam `—`; o que não foi confirmado fica `não confirmado (motivo)`.
 
@@ -6,8 +6,8 @@ Escrito pelo `/infra` (passo 5 do fluxo) a partir do que foi inferido, confirmad
 # Infra — <projeto>
 
 > Mantido pelo `/infra`. **Inventário**: o que existe, onde, sob qual conta, e onde vive cada segredo — nunca o valor.
-> Processo de deploy (ambientes, como checar, como setar, rollback): `.claude/deploy.md`.
-> Convenções do time: `.claude/setup.md`.
+> Processo de deploy (ambientes, como checar, como setar, rollback): `.claude/ship-setup/deploy.md`.
+> Convenções do time: `.claude/ship-setup/setup.md`.
 <!-- Eduzz/Labzz: > Conta AWS inteira: `~/GitHub/eduzz-aws` (`docs/MAPA-AWS.md`, skill `aws-prod`). Este mapa é só o recorte deste projeto — stack `<qual>` do § 2 de lá. -->
 
 ## Provedores e contas

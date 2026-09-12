@@ -43,7 +43,7 @@ export const BUNDLES: Bundle[] = [
     name: CATEGORY_PACKAGE.eduzz,
     label: "Todas de trabalho (Eduzz)",
     category: "eduzz",
-    example: "/jira",
+    example: "/repro",
   },
 ];
 
@@ -72,7 +72,7 @@ const UPDATE_FOOTER = `Com o auto-update ligado, versão nova entra sozinha no p
 
 // Comandos `/plugin` para instalar um pacote inteiro. Instalar o pacote traz
 // TODAS as skills dentro dele; cada skill é chamada pelo nome curto (/method,
-// /jira). furi-ship e eduzz-builder puxam o furi-build junto (dependência
+// /repro). furi-ship e eduzz-builder puxam o furi-build junto (dependência
 // declarada).
 export function generateBundlePrompt(bundle: Bundle): string {
   return `${INTRO}

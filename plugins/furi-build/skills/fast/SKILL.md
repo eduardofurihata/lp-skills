@@ -2,7 +2,7 @@
 name: fast
 description: 'Use when developing features rapidly — /fast É o /method rodando do Step 1 ao Step 8 e PARANDO no Code Review. Mesmas regras, mesmos references, mesmos gateways do /method; a única diferença é ONDE para. Escreve os Test Cases (Step 5) mas NÃO os executa (Step 9 é do /todo). NÃO faz Step 10 (Done/commit). O card em kanban/06-todo/ + o relatório em kanban/08-code-review/ ficam como handoff para o /todo rodar a QA depois.'
 effort: max
-requires: [method, solve]
+requires: [method, solve, blind]
 handoff: todo
 argument-hint: "[feature-name]"
 ---
@@ -41,7 +41,7 @@ Siga a **Ordem de Operações do `/method`** (leia `method/SKILL.md` por arquivo
 | 6 — To Do (+ checklist `## Test Cases (QA)`) | `method/references/06-todo.md` | ✅ |
 | 7a — Plano | `method/references/07-implementation.md` | ✅ |
 | 7b — Codificar | `method/references/07-implementation.md` | ✅ |
-| 8 — Code Review (loop até limpo) | `method/references/08-code-review.md` | ✅ **← PARA AQUI** |
+| 8 — Code Review (loop até limpo + **revisão fria** `/blind review` zerada) | `method/references/08-code-review.md` | ✅ **← PARA AQUI** |
 | 9 — Run Test (via front) | — | ❌ é do /todo |
 | 10 — Done (card + commit) | — | ❌ não roda |
 

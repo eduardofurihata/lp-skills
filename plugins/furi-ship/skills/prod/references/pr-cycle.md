@@ -31,7 +31,7 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 
 ## 2 — Card(s) e gate de QA (SCOPED ao PR)
 
-1. **Identificar o(s) card(s):** `<KEY>-<N>` no corpo/título + nome da branch (`<key-minúscula>-<n>…`, key vinda do `/jira-board`). Um PR pode resolver **vários** — capture todos.
+1. **Identificar o(s) card(s):** as keys do título e do `## Cards` do PR + as dos commits da branch (`git log <integração>..<head> --no-merges --format='%s%n%(trailers:key=Jira,valueonly)'`, key do projeto vinda do `/jira-board`). O nome da branch traz só o 1º card de um lote — não pare nele. Um PR pode resolver **vários** — capture todos.
 2. **Mapear o feature** no kanban (nome do arquivo).
 3. **Gate de QA — só para ESTE feature:**
 
@@ -72,7 +72,7 @@ Com review limpo e resolução autenticada, **aprovar antes de mergear** — o r
 gh pr review <n> --approve --body "<o que foi verificado: review limpo + QA (confiada|re-rodada) + o que o card pedia acontece>"
 ```
 
-**Quem aprova é o § PR `Aprovação:` do `.claude/setup.md`** (lido pelo `/setup` no Step 0 de quem chamou):
+**Quem aprova é o § PR `Aprovação:` do `.claude/ship-setup/setup.md`** (lido pelo `/setup` no Step 0 de quem chamou):
 
 | `Aprovação:` | O que muda |
 |---|---|
@@ -138,7 +138,7 @@ Rejeitar é seguro: nada vai para a integração nem para o ar, branch e PR fica
 
 ## 6 — Sem PR aberto
 
-Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-ship:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (`.claude/setup.md` § PR `Abre PR: não`) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente. Nesse caso o review do diff (§ 3) roda sobre os commits ainda não verificados na integração — a convenção dispensa o PR, não o review.
+Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-ship:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (`.claude/ship-setup/setup.md` § PR `Abre PR: não`) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente. Nesse caso o review do diff (§ 3) roda sobre os commits ainda não verificados na integração — a convenção dispensa o PR, não o review.
 
 ## 7 — Cleanup de órfãos (confirm-first)
 
@@ -166,5 +166,5 @@ Listar os órfãos e **perguntar**: *"Esses cards em `06-todo/` não têm PR nem
 - "O `--delete-branch` já apagou a branch" → apagou **só a remota**. A local também sai, com `fetch --prune` depois.
 - "Não consegui aprovar o PR (é meu), então pulo o registro" → NÃO. Registra por comentário e segue: o rastro de que o gate passou fica no PR.
 - "Aprovo primeiro e reviso depois, o merge é o que importa" → NÃO. A aprovação **atesta** o review; aprovar antes é assinar em branco.
-- "Mergeei com a estratégia que eu prefiro" → NÃO. `Merge:` é o § PR do `.claude/setup.md`. Histórico do time não é gosto da skill.
+- "Mergeei com a estratégia que eu prefiro" → NÃO. `Merge:` é o § PR do `.claude/ship-setup/setup.md`. Histórico do time não é gosto da skill.
 - "O setup nomeia quem aprova, mas o review está limpo — mergeio" → NÃO. `Aprovação: <pessoa>` ⇒ espera o `APPROVED` dela. Gap aberto é reportado, não pulado.

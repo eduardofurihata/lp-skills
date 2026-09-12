@@ -55,7 +55,42 @@ REPETIR até 100% limpo:
      Na dúvida entre B e C → B. Ver `follow-ups.md`.
   7. PR existente → atualizar comentários/descrição
   8. Loop até ZERO issues de balde A — NÃO aceitar "bom o suficiente"
+  9. Revisão fria (`/blind review`) — só com 1-8 limpos, sobre a mudança INTEIRA como está agora:
+     - bundle montado por comando, nunca digitado (§ Revisão fria, abaixo); carimbo = sha256 do bundle
+     - saída colada INTEGRAL em 8b § Revisão Fria; cada achado do revisor → CLASSIFICAR (6)
+     - achado A → corrigir → volta ao 1 (a mudança mudou; a revisão fria roda de novo no fim)
+     - o loop só fecha com `RESULTADO: 0 A` de uma revisão fria cujo carimbo é o do bundle ATUAL
 ```
+
+### Revisão fria — a condição de saída do loop
+
+Quem escreveu o plano não enxerga o ponto cego do plano: os passos 1-8 são o autor relendo o próprio trabalho. A **revisão fria** é a mesma checklist lida por uma sessão que não participou de nada — sem esta conversa, sem memória, sem `CLAUDE.md` — e que só pode **ler** o repositório (`blind/SKILL.md`, modo `review`). Ela roda **depois** de o autor declarar o loop limpo, nunca no lugar dele.
+
+```bash
+BASE=main            # a branch de integração de onde este trabalho saiu (dev, quando existe)
+METHOD_REFS=<pasta references/ deste protocolo — de onde você abriu este arquivo>
+BLIND="$METHOD_REFS/../../blind"   # a skill /blind, no mesmo pacote
+T="$(mktemp -d)"
+{
+  echo "# Bundle — revisão fria de <tópico>"
+  echo; echo "## Diff (working tree vs $BASE — o commit é do Step 10)"
+  echo '```diff'; git diff "$BASE"; echo '```'
+  echo; echo "## Status — arquivos novos ainda não rastreados: leia-os pelo caminho"; git status --short
+  echo; echo "## Checklist (8a — item a item, por nome)"
+  sed -n '/^  5\. Revisar CADA arquivo/,/^  6\. Problema encontrado/p' "$METHOD_REFS/08-code-review.md"   # a lista do passo 5, a mesma do 7b
+  echo; echo "## Caminhos para ler antes de julgar"
+  printf -- '- %s\n' docs/01-problem/<tópico>.md docs/02-user-stories/<tópico>.md docs/03-use-cases/<tópico>.md \
+    docs/04-spec/<tópico>.md docs/05-test-cases/<tópico>.md kanban/07-implementation/<tópico>.md .claude/patterns.md CLAUDE.md
+} > "$T/bundle.md"
+sha256sum "$T/bundle.md"                                                          # carimbo — vai para o 8b
+bash "$BLIND/scripts/blind.sh" review --file "$T/bundle.md" --out "$T/review.md"  # Bash tool: timeout de 10 min
+```
+
+Nada do bundle é digitado: diff, status e checklist saem de comando; o resto são caminhos que o revisor abre sozinho. Resumir o diff "porque é grande" é a porta por onde o viés volta — diff grande é `run_in_background` + `--out`.
+
+**O que volta é fato do step.** `cat "$T/review.md"` vai **inteiro** para o 8b. Achado do revisor entra na triagem do passo 6 como qualquer outro; rebaixar um `A` dele para B/C exige a justificativa escrita na tabela do 8b — nunca em silêncio, nunca "ele não entendeu o contexto" (contexto que o revisor não viu é contexto que o usuário final também não vê). `RESULTADO: 0 A` com carimbo igual ao do bundle atual é o que fecha o loop; qualquer fix depois disso muda o bundle e reabre a revisão.
+
+Sem o binário `claude` (Codex, Cursor): a revisão roda inline, na sessão, e o 8b abre a seção com `independência: NÃO`.
 
 O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer aqui pode ficar só na cabeça ou só no relatório:** ou é corrigido agora (A), ou está `ABERTO` no ledger (B), ou está `DESCARTADO` com justificativa (C).
 
@@ -118,6 +153,17 @@ Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio nã
 
 Feature sem superfície visual: escreva `N/A — sem superfície visual (derivado do Step 4)` **uma vez**, no lugar da tabela.
 
+## Revisão Fria (`/blind review`)
+- Carimbo do bundle (sha256) | Rodadas de revisão fria nesta review | Independência: SIM (sessão cega) / NÃO (inline — sem binário `claude`)
+
+### Saída integral da última rodada
+> <`cat` do `review.md` — do primeiro ao último caractere, sem cortar, sem "[…]">
+
+### Triagem dos achados do revisor
+| # | Achado (do revisor) | Balde sugerido | Balde final | Justificativa (obrigatória quando rebaixa A → B/C) |
+
+Última rodada com `RESULTADO: 0 A` e carimbo igual ao do bundle atual? ✅ / ❌ (❌ = o loop não fechou)
+
 ## Follow-ups Emitidos
 | # | Achado | Balde (A/B/C) | Status | Destino |
 (A = corrigido nesta revisão · B = ABERTO no ledger, vira ciclo /method · C = DESCARTADO + justificativa)
@@ -137,6 +183,7 @@ Nenhum? → "nenhum follow-up emitido neste review".
 - Qualquer erro encontrado = corrigido imediatamente, não apenas documentado
 - **Achado fora do escopo ≠ achado ignorado.** Não cabe corrigir aqui (é escopo novo) → **ledger**, não "anoto no relatório e sigo". Relatório documenta; ledger obriga a resolver.
 - Relatório **brutalmente honesto**
+- **Revisão fria não é opcional nem substituível** pelo loop do autor: sem `RESULTADO: 0 A` no bundle final, o veredicto do 8b **não pode ser APROVADO** — e "ele não entendeu o contexto" não rebaixa achado: justificativa escrita na tabela, ou corrige
 - Veredicto ❌ → voltar ao 7b → rodar Step 8 inteiro novamente
 - Sem o .md criado = step NÃO completo
 
@@ -144,6 +191,7 @@ Nenhum? → "nenhum follow-up emitido neste review".
 
 - [ ] Veredicto **APROVADO** em 8b
 - [ ] Zero issues pendentes (balde A)
+- [ ] **Revisão fria** (`/blind review`) com `RESULTADO: 0 A` e carimbo igual ao do bundle atual — saída integral colada no 8b, achados do revisor triados (rebaixamento com justificativa)
 - [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível 10x) — nenhuma linha em branco
 - [ ] **`## Análise de Design` preenchida por princípio** (se tem UI) — nenhuma linha em branco
 - [ ] **Princípios declarados** na linha do Gateway Check

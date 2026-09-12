@@ -69,7 +69,7 @@ const PACKAGES = [
     name: "furi-build",
     category: "build",
     description:
-      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
     keywords: ["development", "planning", "quality", "workflow"],
     codex: {
       displayName: "Furi Build",
@@ -85,7 +85,7 @@ const PACKAGES = [
     name: "furi-ship",
     category: "ship",
     description:
-      "Skills de entrega do Furihata — /jira-board, /setup, /infra, /card, /work, /pull-request, /homolog, /prod: do card no Jira até produção, com as convenções do time e o mapa da infra versionados em .claude/. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
+      "Skills de entrega do Furihata — /card, /work, /pull-request, /homolog, /prod e /infra (por baixo, invocadas por elas e fora do menu: /jira-board e /setup): do card no Jira até produção, com as convenções do time e o mapa da infra versionados em .claude/. Puxa junto o furi-build (o /work roda o /method; /card e os motores usam /solve e /todo).",
     keywords: ["jira", "pull-request", "deployment", "delivery"],
     codex: {
       displayName: "Furi Ship",
@@ -101,13 +101,13 @@ const PACKAGES = [
     name: "furi-toolbox",
     category: "toolbox",
     description:
-      "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
-    keywords: ["utilities", "git", "productivity", "workflow"],
+      "Ferramentas avulsas do Furihata — /vac, /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+    keywords: ["utilities", "git", "productivity", "workflow", "code-review"],
     codex: {
       displayName: "Furi Toolbox",
       shortDescription: "Ferramentas avulsas para o fluxo de desenvolvimento.",
       longDescription:
-        "Use atalhos e utilitários independentes para conversar, salvar, sincronizar, preparar projetos e baixar gravações.",
+        "Use atalhos e utilitários independentes para conversar, salvar, sincronizar, preparar projetos, auditar a prova de uma mudança, vacinar a sessão contra alucinação e baixar gravações.",
       category: "Productivity",
       brandColor: "#F59E0B",
       defaultPrompt: "Use a ferramenta Furi mais adequada para esta tarefa.",
@@ -117,13 +117,13 @@ const PACKAGES = [
     name: "eduzz-builder",
     category: "eduzz",
     description:
-      "Skills de trabalho (Eduzz) — /jira, /proof. Puxa junto o furi-build (o /jira roda o /method e o /solve).",
+      "Skills de trabalho (Eduzz) — /repro. Puxa junto o furi-build (o /repro roda o /method e o /solve).",
     keywords: ["eduzz", "jira", "workflow", "development"],
     codex: {
       displayName: "Eduzz Builder",
       shortDescription: "Fluxos de trabalho da Eduzz.",
       longDescription:
-        "Trabalhe em cards e provas da Eduzz com os fluxos especializados do Furihata.",
+        "Trabalhe em cards da Eduzz com os fluxos especializados do Furihata.",
       category: "Productivity",
       brandColor: "#10B981",
       defaultPrompt: "Conduza este trabalho da Eduzz com o Eduzz Builder.",

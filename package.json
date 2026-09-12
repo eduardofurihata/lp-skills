@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "gen:plugins": "node scripts/generate-plugins.mjs",
     "validate:plugins": "node scripts/validate-plugins.mjs",
-    "check": "pnpm gen:plugins && pnpm validate:plugins && pnpm typecheck"
+    "check": "pnpm gen:plugins && pnpm validate:plugins && pnpm typecheck",
+    "test:vac": "node --test plugins/furi-toolbox/skills/vac/scripts/",
+    "eval:vac": "claude plugin eval plugins/furi-toolbox --case 'vac-*' --scaffold --allow-tools Write Edit --runs 3 --max-cost-usd 5 --no-publish"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

@@ -1,6 +1,6 @@
 {
   "name": "furi-build",
-  "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto: do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
+  "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que furi-ship e eduzz-builder puxam.",
   "author": {
     "name": "Eduardo Furihata"
   }
