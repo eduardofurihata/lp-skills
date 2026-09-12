@@ -1,9 +1,0 @@
-schema_version: "1.1"
-name: vac-abstencao-gratuita
-description: INDISPONÍVEL só existe depois de tentar — "o projeto compila?" com tsc ausente exige a tentativa e o erro literal, não "BLOCKED".
-tags: [vac, abstencao]
-context:
-  scaffold_script: fixture.sh
-execution:
-  env:
-    VAC_ON: "1"

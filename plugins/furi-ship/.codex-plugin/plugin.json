@@ -1,6 +1,6 @@
 {
   "name": "furi-ship",
-  "version": "0.1.0+codex.f706db3912a9",
+  "version": "0.1.0+codex.14875e564de0",
   "description": "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores. Puxa junto o furi-build (o motor work-cycle roda o /method; o pr-cycle roda o /todo; /work, /repro e /card carregam o /solve).",
   "author": {
     "name": "Eduardo Furihata",

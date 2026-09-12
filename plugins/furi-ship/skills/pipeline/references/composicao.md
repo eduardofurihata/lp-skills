@@ -12,7 +12,7 @@ MODIFICADORES = repro · card                                 (acrescentam um es
 VERBO         = token do $ARGUMENTS que casa ^/(work|pull-request|homolog|prod|repro|card)$
 ```
 
-O resto do `$ARGUMENTS` (a key, a descrição, `finish`) é o **objetivo**, e passa adiante intacto. Só esses seis tokens são composição; `/vac`, `/method` e qualquer outra barra não são verbos deste pipeline (o `/vac` compõe por fora, do jeito dele).
+O resto do `$ARGUMENTS` (a key, a descrição, `finish`) é o **objetivo**, e passa adiante intacto. Só esses seis tokens são composição; `/method` e qualquer outra barra não são verbos deste pipeline.
 
 ## A ordem de execução é FIXA: `repro` → `card` → alvo
 
@@ -63,7 +63,6 @@ A **parada 1** (vê o bug) não é hook: é o critério de fechamento do estági
 /repro /card /prod "x"     → reproduz · Skill(card, "/repro /prod x") → cria ALK-44 · Skill(prod, "/repro ALK-44") → /prod: reprodução já feita ⇒ funde a parada 2 e roda
 /prod /repro /card "x"     → /prod delega Skill(repro, "/card /prod x") → cai no de cima
 /work /prod ALK-42         → /work delega Skill(prod, "ALK-42") — o mais distante vence
-/vac /prod /repro ALK-42   → o /vac grava o regime e chama Skill(prod, "/repro ALK-42"); daí em diante é o de cima
 ```
 
 ## O que o alvo efetivo carrega para o loop
@@ -77,7 +76,7 @@ alvo = {
 }
 ```
 
-Publique o alvo efetivo **dentro** do bloco de diagnóstico do `reconcile` Passo 1 (a linha `Faixa: … · paradas: …`) — é o substituto da persistência que o `/vac` tem por hook e este pipeline não tem: fica no chat, auditável.
+Publique o alvo efetivo **dentro** do bloco de diagnóstico do `reconcile` Passo 1 (a linha `Faixa: … · paradas: …`) — este pipeline não tem persistência por hook: o chat é o registro, auditável.
 
 ## Regras
 
@@ -94,6 +93,6 @@ Publique o alvo efetivo **dentro** do bloco de diagnóstico do `reconcile` Passo
 - "`/prod /repro` é diferente de `/repro /prod`" → NÃO. Ordem de execução fixa: o `/prod` delega ao `/repro` e o resultado é o mesmo.
 - "Recebi `/repro`, a reprodução já foi confirmada nesta conversa, mas delego de novo" → NÃO. Reprodução feita = estágio fechado. Funde a parada 2 e roda. (Delegar de novo é o loop infinito.)
 - "Digitaram `/work /prod`, rodo o `/work` e aviso do `/prod`" → NÃO. Vence o mais distante.
-- "Vi um `/` no argumento, é composição" → só os seis verbos. `/vac`, um caminho de rota, um `/` na descrição do card não são verbos.
+- "Vi um `/` no argumento, é composição" → só os seis verbos. `/method`, um caminho de rota, um `/` na descrição do card não são verbos.
 - "Fundi o modificador mas esqueci de tirar o verbo do argumento" → NÃO. O objetivo que chega ao loop é limpo: `ALK-42`, não `/repro ALK-42`.
 - "O `/card` criou o card e eu, alvo, crio a branch com a key errada" → NÃO. A key chega no argumento da delegação; é ela que o `branch.md` usa.
