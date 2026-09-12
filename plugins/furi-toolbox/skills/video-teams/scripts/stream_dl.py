@@ -43,7 +43,7 @@ import xml.etree.ElementTree as ET
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36")
 NS = {'d': 'urn:mpeg:DASH:schema:MPD:2011', 'sea': 'urn:mpeg:dash:schema:sea:2012'}
-ORIGIN = "https://eduzz-my.sharepoint.com"  # overridden from manifest host at runtime
+ORIGIN = None  # derived at runtime: SPO site from the manifest docId, then the <BaseURL> host
 
 
 def log(*a): print("[stream-dl]", *a, flush=True)
@@ -98,7 +98,9 @@ def curl(url, out, *, cookies=None, spopac=None, compressed=False,
            "-o", out, "-w", "%{http_code}"]
     if fail: cmd.insert(1, "--fail")
     if compressed: cmd.append("--compressed")
-    cmd += ["-H", f"Origin: {ORIGIN}", "-H", f"Referer: {referer or ORIGIN + '/'}"]
+    if ORIGIN: cmd += ["-H", f"Origin: {ORIGIN}"]
+    ref = referer or (ORIGIN + "/" if ORIGIN else None)
+    if ref: cmd += ["-H", f"Referer: {ref}"]
     if spopac: cmd += ["-H", f"x-spopactoken: {spopac}"]
     if cookies: cmd += ["-b", cookies]
     cmd.append(url)
@@ -256,6 +258,7 @@ def main():
     ap.add_argument("--transcript-url"); ap.add_argument("--transcript-url-file")
     ap.add_argument("--out", required=True)
     ap.add_argument("--workdir")
+    ap.add_argument("--origin", help="force the Origin/Referer host (default: derived from the manifest)")
     ap.add_argument("--audio", choices=["enhanced", "original"], default="enhanced")
     ap.add_argument("--jobs", type=int, default=16)
     ap.add_argument("--keep", action="store_true", help="keep workdir")
@@ -289,14 +292,15 @@ def main():
     else:
         murl = read_arg(args.manifest_url, args.manifest_url_file)
         if not murl: die("need --manifest-url / --manifest-url-file / --manifest-file")
-        ORIGIN = spo_origin_from_manifest_url(murl) or ORIGIN  # SPO site, not svc.ms
+        # SPO site from the docId; if it does not parse, the manifest host itself — never a foreign tenant
+        ORIGIN = args.origin or spo_origin_from_manifest_url(murl) or origin_of(murl)
         rc, code, err = curl(murl, mpd, spopac=spopac, max_time=60)
         if code != "200": die(f"manifest fetch http={code} {err}")
     head = open(mpd, "rb").read(64)
     if b"<MPD" not in head and b"<mpd" not in head:
         die(f"manifest is not a DASH MPD (head={head[:40]!r}); check token/URL")
     base, video, audio = parse_mpd(mpd, args.audio)
-    ORIGIN = origin_of(base) or ORIGIN  # segments live on the SPO host
+    ORIGIN = args.origin or origin_of(base) or ORIGIN  # segments live on the SPO host
     if not video: die("no video AdaptationSet in manifest")
     log(f"video rep={video['repid']} segs={len(video['times'])} "
         f"audio={'%s/%d' % (audio['label'], len(audio['times'])) if audio else 'NONE'}")

@@ -25,8 +25,8 @@ O marketplace tem **4 pacotes** (plugins), um por categoria — você instala o 
 # 2) instale o pacote que quiser (um, alguns ou todos)
 /plugin install furi-build@lp-skills       # o método (/principles, /ui, /solve, /method, /fast, /todo, /proto)
 /plugin install furi-ship@lp-skills        # a entrega (/jira-board, /setup, /infra, /card, /work, /pull-request, /homolog, /prod) — puxa o furi-build
-/plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/ask, /chat, /save, /sync, /make-dev…)
-/plugin install eduzz-builder@lp-skills    # skills de trabalho (Eduzz): /jira, /proof, /video-teams
+/plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/ask, /chat, /save, /sync, /make-dev, /video-teams…)
+/plugin install eduzz-builder@lp-skills    # skills de trabalho (Eduzz): /jira, /proof
 ```
 
 **3) ligue o auto-update — ele nasce DESLIGADO.** Marketplace de terceiro não atualiza sozinho por default; só os oficiais. Ligue de um dos dois jeitos:
@@ -156,7 +156,7 @@ claude --plugin-dir ~/GitHub/lp-skills/plugins/furi-toolbox    # furi-toolbox
 claude --plugin-dir ~/GitHub/lp-skills/plugins/eduzz-builder   # eduzz-builder
 ```
 
-Skills de outros repos (ex.: `ui-ux-pro-max`, `video-teams`) permanecem instaladas por outros meios e não vivem aqui.
+Skills de outros repos (ex.: `ui-ux-pro-max`) permanecem instaladas por outros meios e não vivem aqui.
 
 ## Stack
 

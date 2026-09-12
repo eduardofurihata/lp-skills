@@ -39,18 +39,21 @@ browser_network_requests  filter="videomanifest"  static=false
 Note the request **number** of the `…/transform/videomanifest?…part=index…format=dash` entry.
 Save its URL to a file (it's printed in the list, or use the next step):
 ```
-browser_network_request  index=<n>  part=request-headers  filename=/home/furihata/.playwright-mcp/vt_hdr.txt
+browser_network_request  index=<n>  part=request-headers  filename=<OUT>/vt_hdr.txt
 ```
+> `<OUT>` = the Playwright MCP **output dir** — default `~/.playwright-mcp` (see `outputDir`
+> in the server config). Expand it yourself before calling (`echo "$HOME/.playwright-mcp"`):
+> these tools take a literal absolute path — no `~`, no `$HOME`.
 - `x-spopactoken`: grep it out of `vt_hdr.txt` → write the value to `vt_spopac.txt`.
   **This header — not a cookie — is what authenticates the manifest/key** (they're on `*.svc.ms`).
 - manifest URL: grab the full `videomanifest?…part=index…` URL → `vt_manifest.url`.
 
 ### 3. Capture cookies (authenticate the segments, which ARE on *.sharepoint.com)
 `browser_run_code_unsafe` — **its sandbox has no `require`/`import`**, so dump
-state via the Playwright API (writes to an allowed root: `/home/furihata` or `~/.playwright-mcp`):
+state via the Playwright API (writes to an allowed root: the project cwd or `<OUT>`):
 ```js
 async (page) => {
-  const s = await page.context().storageState({ path: '/home/furihata/.playwright-mcp/vt_state.json' });
+  const s = await page.context().storageState({ path: '<OUT>/vt_state.json' });
   return JSON.stringify({cookies: s.cookies.length});
 }
 ```
@@ -63,17 +66,20 @@ Save the full `…/cdnmedia/transcripts?…` URL → `vt_transcript.url`. (The t
 JSON is encrypted with the **same key+IV** as the video; the script handles it.)
 
 ### 5. Run the downloader
+`scripts/stream_dl.py` is **relative to THIS skill** — run it from the skill dir (or prefix
+the skill's own path). Any tenant, any user: nothing below is machine-specific.
 ```bash
-python3 ~/.claude/skills/video-teams/scripts/stream_dl.py \
+python3 scripts/stream_dl.py \
   --manifest-url-file   vt_manifest.url \
   --spopactoken-file    vt_spopac.txt \
-  --state               /home/furihata/.playwright-mcp/vt_state.json \
+  --state               "$HOME/.playwright-mcp/vt_state.json" \
   --transcript-url-file vt_transcript.url \
   --out "$HOME/Downloads/<clean name>.mp4"
 ```
 Output: `<name>.mp4` (H.264+AAC, faststart) plus `<name>.srt`/`.vtt` in `~/Downloads`.
 Verify the logged duration matches the meeting length. `--help` for all flags
-(`--audio original`, `--jobs N`, `--manifest-file` for a pre-saved MPD, `--keep`).
+(`--audio original`, `--jobs N`, `--manifest-file` for a pre-saved MPD, `--origin` to
+force the `Origin:` header, `--keep`).
 
 ## Gotchas (already handled in the script — don't relearn them)
 
@@ -87,7 +93,7 @@ Verify the logged duration matches the meeting length. `--help` for all flags
 | init segment isn't a valid `ftyp` box | The init segment is encrypted too — decrypt it like any other. |
 | works now, fails ~1h later | `x-spopactoken` is short‑lived. Re-capture (re-open/replay) and rerun promptly. |
 | `browser_run_code_unsafe` → `require is not defined` / dynamic import error | Sandbox blocks Node modules. Use `page.context().storageState({path})`. |
-| `browser_network_request filename` → "outside allowed roots" | Only `/home/furihata` or `~/.playwright-mcp` are writable by that tool. |
+| `browser_network_request filename` → "outside allowed roots" | Only the project cwd and the MCP **output dir** (`<OUT>`, default `~/.playwright-mcp`) are writable — and as a literal absolute path, `~`/`$HOME` are not expanded. |
 | network_requests output too large (token limit) | Always pass `filter=` to narrow, or it saves to a file you can grep. |
 
 ## How it works (for debugging)
