@@ -16,7 +16,7 @@ let data; // <data> do plugin
 
 function run(sub, input, extraArgs = []) {
   const r = spawnSync(process.execPath, [HOOK, sub, "--data", data, ...extraArgs], {
-    input: JSON.stringify({ cwd: root, ...input }),
+    input: JSON.stringify({ cwd: root, prompt_id: crypto.randomUUID(), ...input }), // cada chamada = um prompt novo (o contador de retries é por prompt)
     encoding: "utf8",
     env: { ...process.env, CLAUDE_PROJECT_DIR: root, VAC_STRICT: "1" },
   });
@@ -48,7 +48,7 @@ test("card: injeta o cartão como additionalContext do evento recebido", () => {
   assert.equal(json.hookSpecificOutput.hookEventName, "UserPromptSubmit");
   assert.match(json.hookSpecificOutput.additionalContext, /\[\/vac · regime ativo\]/);
   assert.ok(!json.hookSpecificOutput.additionalContext.includes("<!--"), "comentários HTML não vazam");
-  assert.ok(json.hookSpecificOutput.additionalContext.length < 1400, "cartão curto");
+  assert.ok(json.hookSpecificOutput.additionalContext.length <= 950, `cartão ≤ 950 caracteres (tem ${json.hookSpecificOutput.additionalContext.length})`);
 });
 
 test("card --subagent: acrescenta a instrução de não herdar", () => {
@@ -83,9 +83,29 @@ test("check-stop: arquivo inexistente → bloqueia", () => {
   assert.match(r.err, /lib\/graph\.ts:12 — arquivo não existe/);
 });
 
-test("check-stop: stop_hook_active → nunca re-bloqueia", () => {
-  const r = run("check-stop", { last_assistant_message: "lib/graph.ts:12", stop_hook_active: true });
-  assert.equal(r.code, 0);
+test("check-stop: 2 bloqueios por prompt, depois fallback (pendência + systemMessage) que o card reinjeta", () => {
+  const prompt_id = "p-fallback";
+  const session_id = "s-fallback";
+  const msg = { last_assistant_message: "Definido em lib/graph.ts:12", prompt_id, session_id };
+  const first = run("check-stop", msg);
+  assert.equal(first.code, 2);
+  assert.match(first.err, /tentativa 1 de 2/);
+  const second = run("check-stop", { ...msg, stop_hook_active: true });
+  assert.equal(second.code, 2, "segunda tentativa ainda bloqueia");
+  assert.match(second.err, /tentativa 2 de 2/);
+  const third = run("check-stop", { ...msg, stop_hook_active: true });
+  assert.equal(third.code, 0, "terceira: fallback, não bloqueia");
+  assert.match(JSON.parse(third.out).systemMessage, /pendência gravada/);
+  assert.ok(fs.existsSync(path.join(data, "vac", "pending", `${session_id}.json`)), "pendência persistida");
+  const log = fs.readFileSync(path.join(data, "vac", "log.jsonl"), "utf8");
+  assert.match(log, /"kind":"fallback"/);
+  const card = run("card", { hook_event_name: "UserPromptSubmit", session_id });
+  const ctx = JSON.parse(card.out).hookSpecificOutput.additionalContext;
+  assert.match(ctx, /Pendência do \/vac no turno anterior/);
+  assert.match(ctx, /lib\/graph\.ts:12/);
+  assert.ok(!fs.existsSync(path.join(data, "vac", "pending", `${session_id}.json`)), "card apaga a pendência");
+  const again = run("check-stop", { last_assistant_message: "Definido em lib/graph.ts:12", prompt_id: "p-next", session_id });
+  assert.equal(again.code, 2, "prompt novo: contador zerado, bloqueia de novo");
 });
 
 test("check-stop: VAC_STRICT=0 → silêncio", () => {

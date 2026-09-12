@@ -9,7 +9,8 @@
 | `/vac <arquivo.md>` | o arquivo |
 | `/vac diff` | `git status --short` + `git diff` do working tree (o que está para ser revisado, commitado ou não) |
 | `/vac última` | a última resposta do assistente, salva pelo chamador em um arquivo temporário |
-| Gate de outra skill (`Gateway Check — Step 8 → 9`, `9 → 10`, smoke de `/homolog`/`/prod`, "no ar") | o artefato daquele gate (`kanban/08-code-review/<t>.md`, `kanban/09-run-test/<t>.md`, o relatório de smoke) — o hook `Stop` bloqueia o gate LIBERADO sem carimbo válido |
+| Gate de outra skill com `stamp: verifier` (`Gateway Check — Step 8 → 9`, `9 → 10`, `Audit Pós … Phase 4` do `/todo`, `Code Review: APROVADO (…)` do `/fast`, `QA completo` — tabela em `references/gates.md`) | o artefato daquele gate: o path citado na seção, senão o gravado nesta janela, senão o mais recente da pasta (`kanban/08-code-review/`, `kanban/09-run-test/`) — o hook `Stop` bloqueia a liberação sem carimbo válido |
+| Gate com `stamp: session` (`## ✅ /homolog — homolog no ar…`, `## ✅ /prod — produção no ar…`) | o próprio bloco final: o chamador grava o bloco num arquivo, roda `/vac <arquivo>` e publica **o mesmo texto** — o hook compara o hash normalizado do bloco com os carimbos desta sessão (o smoke não escreve artefato; o bloco é o que existe) |
 
 Custo: um subagente por verificação. Só em gate ou a pedido — nunca por prompt.
 
@@ -46,7 +47,7 @@ Agent(
 VEREDITO: <n> suportadas / <m> não suportadas / <k> não verificáveis · alvo=<caminho> sha256=<hash do conteúdo do alvo | indisponível>
 ```
 
-A última linha é **contrato com o hook** `agent-done` (`PostToolUse` do `Agent`, quando `agentType` é o verificador — `SubagentStop` não dispara de hook de skill na 2.1.269): ele recalcula o sha256 do alvo, confere que bate com o que o verificador leu (quando o verificador conseguiu calcular; `indisponível` = confia no arquivo atual) e grava `~/.claude/vac-data/vac/stamps/<sha256>.ok` (ou `$CLAUDE_PLUGIN_DATA/vac/stamps/`, quando a variável existe no ambiente do hook). Alvo editado depois → hash novo → sem carimbo → o gate exige `/vac` de novo. Gate só libera com carimbo **e** `m = 0`.
+A última linha é **contrato com o hook** — `SubagentStop` do verificador (hooks do plugin) ou, para o síncrono, `agent-done` (`PostToolUse` do `Agent` com `agentType` do verificador): ele recalcula o sha256 do alvo, confere que bate com o que o verificador leu (quando o verificador conseguiu calcular; `indisponível` = confia no arquivo atual), grava `~/.claude/vac-data/vac/stamps/<sha256>.ok` e registra na sessão o hash normalizado do alvo e de cada seção dele (é assim que `/vac última` fecha um gate "no ar"). Alvo editado depois → hash novo → sem carimbo → o gate exige `/vac` de novo. Gate só libera com carimbo **e** `m = 0`. O relatório recebido e não publicado bloqueia a resposta seguinte.
 
 ## O que o chamador faz com o relatório
 

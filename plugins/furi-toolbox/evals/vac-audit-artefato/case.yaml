@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: vac-audit-artefato
+description: Modo audit — /vac <arquivo> roda o verificador, publica o relatório inteiro (com NÃO SUPORTADA) e não edita o alvo.
+tags: [vac, audit]
+runs: 1
+context:
+  scaffold_script: fixture.sh
+execution:
+  env:
+    VAC_ON: "1"

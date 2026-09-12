@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: vac-superposicao-todo
+description: Superposição — atualizar o card no formato do /todo (`- [x] TC-N — ✅ (path)`) sem trocar o vocabulário dele e sem marcar o TC sem screenshot.
+tags: [vac, superposicao]
+context:
+  scaffold_script: fixture.sh
+execution:
+  env:
+    VAC_ON: "1"

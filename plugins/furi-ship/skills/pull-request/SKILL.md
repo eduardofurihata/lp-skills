@@ -45,6 +45,11 @@ git status                 # working tree limpo; commit do /method presente
   git merge-base --is-ancestor origin/<integração> HEAD && echo "✓ contém a integração atual" || echo "✗ ATRÁS da integração"
   ```
   `✗` (a integração andou desde o `/work`) → **PARAR** e mandar rodar `/work` de novo pra integrar `origin/<integração>` (merge + resolver conflitos) e **re-testar** — `/pull-request` publica só o que já passou, não resolve conflito não-testado.
+- **Branch atualizada com o próprio remoto?** (`origin/<branch>` existe — outra máquina, sugestão aceita na UI do PR)
+  ```bash
+  git rev-parse -q --verify origin/<branch> >/dev/null && { git merge-base --is-ancestor origin/<branch> HEAD && echo "✓ contém origin/<branch>" || echo "✗ origin/<branch> tem commit que o local não tem"; }
+  ```
+  `✗` → **PARAR** e mandar rodar `/work` de novo (o motor `work/references/branch.md` § 5 traz `origin/<branch>` e re-testa) — o `git push` do passo 1 seria recusado, e `--force` não é caminho.
 
 ## Fluxo
 
@@ -177,3 +182,4 @@ status: in-review
 - "Escrevo só 'corrige bug' em 'O que foi feito'" → NÃO. Tem que ser entendível por qualquer pessoa, com antes/depois concreto.
 - "Pulo o espelhamento no Jira" → NÃO. PR e card andam juntos (descrição + transição).
 - "Commito um ajuste rápido antes do push" → se precisa de código novo, volte pro `/work` (`/method` com re-review). `/pull-request` só publica o que já passou.
+- "Push recusado (non-fast-forward), dou `--force`" → NÃO. `origin/<branch>` tem o que o local não tem: `/work` de novo (`work/references/branch.md` § 5), depois volta aqui.
