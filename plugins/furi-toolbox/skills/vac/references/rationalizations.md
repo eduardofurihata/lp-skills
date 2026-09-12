@@ -18,6 +18,8 @@
 | "Invoquei o `/solve`" (sem chamada) | Mencionar não é invocar — a chamada `Skill` visível é a evidência | Invoca. Agora. |
 | "Escrevo o carimbo do verificador eu mesmo" | O carimbo é o hook que grava, com o hash do arquivo — texto seu não vale | `/vac <artefato>` e espere o relatório |
 | "O `/vac` está deixando tudo lento / verboso" | O cartão custa ~250 tokens por prompt; o verificador roda só em gate. Verboso é escrever prosa no lugar do estado | Estado + evidência é **mais curto** que a prosa que ele substitui |
-| "Vou desligar o `/vac` só neste step" | Não há `/vac off` por desenho: regime é a sessão inteira | Se o hook errou (falso positivo), `VAC_STRICT=0` — e reporte a linha para afinar o marcador |
+| "Vou desligar o `/vac` só neste step" | `/vac off` existe, mas desliga para todas as sessões — e o step em que você quer desligar é exatamente o que precisa do regime | Se o hook errou (falso positivo), `VAC_STRICT=0` no comando — o bypass vai para o log e vira caso com `/vac caso` |
+| "O verificador aprovou, não preciso colar o relatório" | Resumo esconde as `NÃO SUPORTADA`; o hook bloqueia quando o `VEREDITO` chegou e não foi publicado | Publique o relatório inteiro |
+| "O mapa em `.claude/vac/` diz que é assim" | O scan prova que o trecho está no arquivo, não que a sua interpretação vale | Leia a linha citada antes de afirmar; ponteiro ausente = re-explorar só aquele item |
 
-**PARE se pensar:** "existe, eu lembro" · "é padrão, todo mundo sabe" · "li há pouco" · "passou, confia" · "o template já diz ✅" · "escrevo no fim que não rodei" · "o líder faz assim" · "o path é esse mesmo" · "já conheço, sigo sem invocar" · "carimbo eu boto" · "desligo só agora".
+**PARE se pensar:** "existe, eu lembro" · "é padrão, todo mundo sabe" · "li há pouco" · "passou, confia" · "o template já diz ✅" · "escrevo no fim que não rodei" · "o líder faz assim" · "o path é esse mesmo" · "já conheço, sigo sem invocar" · "carimbo eu boto" · "o verificador aprovou" · "o mapa diz" · "desligo só agora".

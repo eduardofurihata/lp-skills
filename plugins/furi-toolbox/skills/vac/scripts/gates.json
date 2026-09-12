@@ -1,0 +1,195 @@
+{
+  "$comment": "Mapa dos gates das outras skills que o /vac reconhece (superposição — nenhuma delas muda). Lido por vac-rules.mjs; leitura humana em ../references/gates.md — cada id daqui aparece lá entre crases (teste de consistência). where: heading = a regex casa o título da seção; line = casa qualquer linha da seção. release = palavra que fecha o gate (sem ela, nada a cobrar). stamp: verifier = exige carimbo do verificador no artefato (artifactDir / artifactFromText); session = exige verificação do próprio bloco nesta sessão (/vac última); null = só claims. ledger = regras do transcript (vac-ledger.mjs) que a seção liga.",
+  "version": 1,
+  "gates": [
+    {
+      "id": "method-step",
+      "skill": "/method",
+      "source": "plugins/furi-build/skills/method/references/gateways.md:22-33",
+      "where": "heading",
+      "match": "Gateway Check\\s*[—–:-]+\\s*Step\\s*[1-7][ab]?\\s*(?:→|->)\\s*(?:Step\\s*)?[2-8]\\b",
+      "release": "LIBERADO",
+      "stamp": null,
+      "label": "Gateway",
+      "ledger": ["coord-not-read", "skill-not-invoked"]
+    },
+    {
+      "id": "method-8-9",
+      "skill": "/method",
+      "source": "plugins/furi-build/skills/method/references/gateways.md:55",
+      "where": "heading",
+      "match": "Gateway Check\\s*[—–:-]+\\s*Step\\s*8\\s*(?:→|->)\\s*(?:Step\\s*)?9\\b",
+      "release": "LIBERADO",
+      "stamp": "verifier",
+      "artifactDir": "kanban/08-code-review",
+      "label": "8→9",
+      "ledger": ["skill-not-invoked"]
+    },
+    {
+      "id": "method-9-10",
+      "skill": "/method",
+      "source": "plugins/furi-build/skills/method/references/gateways.md:59-100",
+      "where": "heading",
+      "match": "Gateway Check\\s*[—–:-]+\\s*Step\\s*9\\s*(?:→|->)\\s*(?:Step\\s*)?10\\b",
+      "release": "LIBERADO",
+      "stamp": "verifier",
+      "artifactDir": "kanban/09-run-test",
+      "label": "9→10",
+      "ledger": ["audit-counts", "heading-not-published"]
+    },
+    {
+      "id": "method-8b-veredicto",
+      "skill": "/method",
+      "source": "plugins/furi-build/skills/method/references/08-code-review.md:172-175",
+      "where": "heading",
+      "match": "^Veredicto\\s+Final",
+      "release": "APROVADO",
+      "stamp": null,
+      "label": "8b"
+    },
+    {
+      "id": "method-audit-pre",
+      "skill": "/method · /todo",
+      "source": "plugins/furi-build/skills/method/references/09-testing.md:137-151",
+      "where": "heading",
+      "match": "Audit\\s+Pr[ée]-?\\s*Execu",
+      "release": "LIBERADO",
+      "stamp": null,
+      "label": "Audit Pré",
+      "ledger": ["audit-counts"]
+    },
+    {
+      "id": "method-audit-pos",
+      "skill": "/method · /todo",
+      "source": "plugins/furi-build/skills/method/references/09-testing.md:250-273",
+      "where": "heading",
+      "match": "Audit\\s+P[óo]s-?\\s*Execu",
+      "release": "LIBERADO",
+      "stamp": "verifier",
+      "stampWhen": "Phase\\s*4|Done\\b",
+      "artifactDir": "kanban/09-run-test",
+      "label": "Audit Pós",
+      "ledger": ["audit-completed"]
+    },
+    {
+      "id": "method-convergencia",
+      "skill": "/method · /todo",
+      "source": "plugins/furi-build/skills/method/references/10-done.md:48-59",
+      "where": "heading",
+      "match": "Gate\\s+de\\s+Converg",
+      "release": "CONVERGIU",
+      "stamp": null,
+      "label": "Convergência"
+    },
+    {
+      "id": "method-checklist-final",
+      "skill": "/method",
+      "source": "plugins/furi-build/skills/method/references/10-done.md:110-121",
+      "where": "heading",
+      "match": "Checklist\\s+Final",
+      "release": null,
+      "stamp": null,
+      "label": "Checklist Final",
+      "ledger": ["commit-claimed"]
+    },
+    {
+      "id": "fast-close",
+      "skill": "/fast",
+      "source": "plugins/furi-build/skills/fast/SKILL.md:76-85",
+      "where": "line",
+      "match": "^\\s*Code Review:\\s*APROVADO\\s*\\(",
+      "release": "APROVADO",
+      "stamp": "verifier",
+      "artifactFromText": "\\((kanban/08-code-review/[^)\\s]+\\.md)\\)",
+      "artifactDir": "kanban/08-code-review",
+      "label": "/fast",
+      "ledger": ["skill-not-invoked"]
+    },
+    {
+      "id": "todo-close",
+      "skill": "/todo",
+      "source": "plugins/furi-build/skills/todo/SKILL.md:503-508",
+      "where": "line",
+      "match": "QA completo",
+      "release": "PASSED",
+      "stamp": "verifier",
+      "artifactDir": "kanban/09-run-test",
+      "label": "/todo",
+      "ledger": ["audit-completed"]
+    },
+    {
+      "id": "homolog-close",
+      "skill": "/homolog",
+      "source": "plugins/furi-ship/skills/homolog/SKILL.md:77-91",
+      "where": "heading",
+      "match": "/homolog\\s*[—–:-]+\\s*homolog no ar",
+      "release": null,
+      "stamp": "session",
+      "label": "/homolog",
+      "ledger": ["smoke-no-nav", "run-not-watched", "pr-not-created", "skill-not-invoked"]
+    },
+    {
+      "id": "prod-close",
+      "skill": "/prod",
+      "source": "plugins/furi-ship/skills/prod/SKILL.md:118-129",
+      "where": "heading",
+      "match": "/prod\\s*[—–:-]+\\s*produ[çc][ãa]o no ar",
+      "release": null,
+      "stamp": "session",
+      "label": "/prod",
+      "ledger": ["smoke-no-nav", "run-not-watched"]
+    },
+    {
+      "id": "pull-request-close",
+      "skill": "/pull-request",
+      "source": "plugins/furi-ship/skills/pull-request/SKILL.md:158-164",
+      "where": "heading",
+      "match": "PR aberto|PR atualizado|Publicado sem PR",
+      "release": null,
+      "stamp": null,
+      "label": "/pull-request",
+      "ledger": ["pr-not-created"]
+    },
+    {
+      "id": "proof-report",
+      "skill": "/proof",
+      "source": "plugins/furi-toolbox/skills/proof/SKILL.md:287-330",
+      "where": "line",
+      "match": "Relat[óo]rio do /proof",
+      "release": null,
+      "stamp": null,
+      "label": "/proof"
+    },
+    {
+      "id": "blind-result",
+      "skill": "/blind",
+      "source": "plugins/furi-build/skills/blind/scripts/blind.sh:152-154",
+      "where": "line",
+      "match": "^\\s*-?\\s*RESULTADO:",
+      "release": null,
+      "stamp": null,
+      "label": "/blind",
+      "ledger": ["skill-not-invoked"]
+    },
+    {
+      "id": "verifier-report",
+      "skill": "/vac",
+      "source": "plugins/furi-toolbox/skills/vac/references/verificador.md:33-47",
+      "where": "heading",
+      "match": "^Verifica[çc][ãa]o\\s*[—–:-]",
+      "release": null,
+      "stamp": null,
+      "label": "verificador"
+    },
+    {
+      "id": "tc-heading",
+      "skill": "/method · /todo",
+      "source": "plugins/furi-build/skills/method/references/09-testing.md:299-341",
+      "where": "heading",
+      "match": "^TC-\\d+\\b.*\\b(?:PASSED|FAILED|NOT_RUN)\\b",
+      "release": null,
+      "stamp": null,
+      "label": "TC"
+    }
+  ]
+}

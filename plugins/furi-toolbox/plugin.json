@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-toolbox",
-  "version": "0.1.0+a88d6cb84fcb",
+  "version": "0.1.0+f29fdd4f8e11",
   "description": "Ferramentas avulsas do Furihata — /vac, /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
   "author": {
     "name": "Eduardo Furihata",
