@@ -12,9 +12,9 @@
 
 | Entrada | Saída |
 |---|---|
-| alvo + o `## DevOps` do(s) PR(s) da release + `deploy-context.md` (**como** se seta) + `.claude/infra.md` (**onde** vive cada segredo) | `aplicados[]` + `pendentes[]` (com o motivo de cada pendente) |
+| alvo + o `## DevOps` do(s) PR(s) da release + `deploy-context.md` (**como** se seta) + `.claude/ship-setup/infra.md` (**onde** vive cada segredo) | `aplicados[]` + `pendentes[]` (com o motivo de cada pendente) |
 
-**Dois arquivos, dois fatos.** `.claude/deploy.md` (`deploy-context.md`) diz o **comando** para setar em cada ambiente; `.claude/infra.md` (`/infra`) diz **onde** cada variável vive — localmente (`.secrets/…`), no ambiente (painel, `gh secret`, gerenciador) e como se obtém. `infra.md` não existe → **invoque o `/infra`** via Skill tool (`furi-ship:infra`; a forma curta `infra` também resolve) antes de aplicar qualquer coisa: ele mapeia o `.secrets/` e os provedores e escreve o arquivo. Mencionar não é invocar.
+**Dois arquivos, dois fatos.** `.claude/ship-setup/deploy.md` (`deploy-context.md`) diz o **comando** para setar em cada ambiente; `.claude/ship-setup/infra.md` (`/infra`) diz **onde** cada variável vive — localmente (`.secrets/…`), no ambiente (painel, `gh secret`, gerenciador) e como se obtém. `infra.md` não existe → **invoque o `/infra`** via Skill tool (`furi-ship:infra`; a forma curta `infra` também resolve) antes de aplicar qualquer coisa: ele mapeia o `.secrets/` e os provedores e escreve o arquivo. Mencionar não é invocar.
 
 ## 1 — De onde vem a lista
 
@@ -37,7 +37,7 @@ Reunir a lista de **todos** os PRs que entraram no ambiente desde o último depl
 | Tipo | Como se confere o que já existe | Como se aplica |
 |---|---|---|
 | **Env var** (não sensível) | listagem do ambiente conforme o `deploy.md` | seta pelo comando do `deploy.md`; valor derivável (URL, flag, nome) pode ser proposto — **confirmando** com o usuário |
-| **Secret** | listar **nomes**, nunca valores; onde cada um vive: `.claude/infra.md` § Onde vive cada segredo | **pergunta o valor** ao usuário e aplica. Zero exceção |
+| **Secret** | listar **nomes**, nunca valores; onde cada um vive: `.claude/ship-setup/infra.md` § Onde vive cada segredo | **pergunta o valor** ao usuário e aplica. Zero exceção |
 | **Migration** | estado de migration do ambiente (comando do `deploy.md`) | roda as pendentes; é **etapa do release**, depois do deploy do código |
 | **Feature flag** | onde o `deploy.md` registra | liga/desliga o que a mudança exige |
 | **Seed** | o que a feature precisa existir no banco para aparecer | roda o seed registrado |
@@ -46,7 +46,7 @@ Reunir a lista de **todos** os PRs que entraram no ambiente desde o último depl
 
 ## 3 — Secret: o único caminho
 
-1. Identificar **o nome** da variável e **onde** ela vive (`cat .claude/infra.md 2>/dev/null || cat .claude/infra.local.md 2>/dev/null` → § Onde vive cada segredo — sem nenhum dos dois, `/infra` primeiro). O `infra.md` diz também **como se obtém** (painel, comando) — é o que vai na pergunta do passo 3, para o usuário saber onde buscar.
+1. Identificar **o nome** da variável e **onde** ela vive (`cat .claude/ship-setup/infra.md 2>/dev/null || cat .claude/ship-setup/infra.local.md 2>/dev/null` → § Onde vive cada segredo — sem nenhum dos dois, `/infra` primeiro). O `infra.md` diz também **como se obtém** (painel, comando) — é o que vai na pergunta do passo 3, para o usuário saber onde buscar.
 2. Conferir se já existe no ambiente — **pelo nome**. Existe e a mudança não pede troca → nada a fazer.
 3. Falta → **perguntar**:
    > "O PR `<n>` exige `<NOME_DA_VAR>` em `<ambiente>` (vive em `<onde>`; obtém-se em `<como>`). Não tenho esse valor. Me passa o valor, ou você prefere setar direto lá?"

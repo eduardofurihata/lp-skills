@@ -1,6 +1,6 @@
 ---
 name: infra
-description: 'Use when someone needs to know what infrastructure THIS project uses and where each secret lives — the single owner of `.claude/infra.md`, the project infra map (versioned in the target repo, read on demand): providers, accounts and projects (identifiers only), regions, services, domains/DNS, and WHERE each secret lives (path in `.secrets/`, variable name, provider panel) — never a value. Reads `.secrets/` by file name and variable name only (never values, never key files), plus platform files (`.env.example`, `.mcp.json`, `.vercel/`, workflows, terraform, docker-compose) and read-only CLIs already authenticated (aws sts, vercel, gh, gcloud, railway, neonctl); confirms what it can, asks only what is not derivable, runs a leak gate before writing and reports the diff on every run. Invoked by the env-config engine (via /homolog and /prod) when `.claude/infra.md` is missing. Also usable directly — `/infra` refreshes and shows the diff, `/infra <provedor>` focuses one provider, `/infra audit` reports without writing. Triggers on "onde está a chave do X", "que contas esse projeto usa", "mapeia a infra", "o que tem no .secrets", "onde vive esse secret". Never applies configuration (that is env-config) and never writes a deploy process (that is deploy-context).'
+description: 'Use when someone needs to know what infrastructure THIS project uses and where each secret lives — the single owner of `.claude/ship-setup/infra.md`, the project infra map (versioned in the target repo, read on demand): providers, accounts and projects (identifiers only), regions, services, domains/DNS, and WHERE each secret lives (path in `.secrets/`, variable name, provider panel) — never a value. Reads `.secrets/` by file name and variable name only (never values, never key files), plus platform files (`.env.example`, `.mcp.json`, `.vercel/`, workflows, terraform, docker-compose) and read-only CLIs already authenticated (aws sts, vercel, gh, gcloud, railway, neonctl); confirms what it can, asks only what is not derivable, runs a leak gate before writing and reports the diff on every run. Invoked by the env-config engine (via /homolog and /prod) when `.claude/ship-setup/infra.md` is missing. Also usable directly — `/infra` refreshes and shows the diff, `/infra <provedor>` focuses one provider, `/infra audit` reports without writing. Triggers on "onde está a chave do X", "que contas esse projeto usa", "mapeia a infra", "o que tem no .secrets", "onde vive esse secret". Never applies configuration (that is env-config) and never writes a deploy process (that is deploy-context).'
 effort: max
 boundary: [prod, setup]
 argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
@@ -8,7 +8,7 @@ argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 
 # /infra — O mapa da infra deste projeto
 
-Dono **único** de `.claude/infra.md`. Responde *"o que este projeto usa de infra, onde, sob qual conta — e onde vive cada segredo"*. É o **inventário**; o **processo** (como sobe, como checa, como volta) é o `.claude/deploy.md`, do `prod/references/deploy-context.md`, e **aplicar** configuração é o `prod/references/env-config.md`. Aqui não se seta variável, não se faz deploy, não se cria conta.
+Dono **único** de `.claude/ship-setup/infra.md`. Responde *"o que este projeto usa de infra, onde, sob qual conta — e onde vive cada segredo"*. É o **inventário**; o **processo** (como sobe, como checa, como volta) é o `.claude/ship-setup/deploy.md`, do `prod/references/deploy-context.md`, e **aplicar** configuração é o `prod/references/env-config.md`. Aqui não se seta variável, não se faz deploy, não se cria conta.
 
 > **Escopo: inventário sem valor.** O arquivo é versionado. Identificador entra; credencial, nunca.
 
@@ -20,7 +20,7 @@ Dono **único** de `.claude/infra.md`. Responde *"o que este projeto usa de infr
 
 | Entrada | Saída |
 |---|---|
-| repositório do checkout (`.secrets/`, arquivos de plataforma, CLIs já autenticadas) | `.claude/infra.md` escrito/atualizado + **diff** contra a versão anterior + `{provedores[], segredos[], artefatos[], naoConfirmado[]}` para quem chamou |
+| repositório do checkout (`.secrets/`, arquivos de plataforma, CLIs já autenticadas) | `.claude/ship-setup/infra.md` escrito/atualizado + **diff** contra a versão anterior + `{provedores[], segredos[], artefatos[], naoConfirmado[]}` para quem chamou |
 
 - **Por projeto.** O mapa é o recorte **deste** repositório. Em projeto Eduzz/Labzz, a conta AWS inteira é do `~/GitHub/eduzz-aws` (`docs/MAPA-AWS.md`, skill `aws-prod`): o `infra.md` guarda o que **este** projeto usa e aponta pra lá — não copia.
 - **Descobrir de arquivo, confirmar por CLI, perguntar o resto.** Nada inventado: o que não foi derivado nem confirmado fica `não confirmado` no mapa, e quem consome sabe que falta.
@@ -29,15 +29,17 @@ Dono **único** de `.claude/infra.md`. Responde *"o que este projeto usa de infr
 
 ## Onde mora
 
-`.claude/infra.md`, ao lado de `.claude/setup.md` (convenções — `/setup`), `.claude/deploy.md` (processo) e `.claude/patterns.md` (padrões). O `/setup` § Infra aponta pra cá. `mkdir -p .claude` antes de gravar. Não é auto-carregado: só entra quando alguém o lê por caminho — e é isso que se quer.
+`.claude/ship-setup/infra.md`, na pasta do processo de entrega, ao lado de `.claude/ship-setup/setup.md` (convenções — `/setup`) e `.claude/ship-setup/deploy.md` (processo); o `.claude/patterns.md` (padrões, `/method`) fica na raiz de `.claude/`. O `/setup` § Infra aponta pra cá. `mkdir -p .claude/ship-setup` antes de gravar. Não é auto-carregado: só entra quando alguém o lê por caminho — e é isso que se quer.
 
 ## Fluxo
 
 ### 1. Ler o mapa atual (SEMPRE)
 
 ```bash
-cat .claude/infra.md 2>/dev/null || cat .claude/infra.local.md 2>/dev/null
+cat .claude/ship-setup/infra.md 2>/dev/null || cat .claude/ship-setup/infra.local.md 2>/dev/null
 ```
+
+**Caminho antigo** (`.claude/infra.md`, na raiz de `.claude/`, antes da pasta `ship-setup/`): existe e não existe `.claude/ship-setup/infra.md` → `mkdir -p .claude/ship-setup && git mv .claude/infra.md .claude/ship-setup/infra.md` antes de ler (modo **só meu**: `mv` do `.local.md`, sem git). Avise: é arquivo versionado, entra no commit de quem chamou. Uma vez por repositório.
 
 É o estado anterior — o passo 5 faz o diff contra ele. Não existe → o passo 5 reporta "criado agora".
 
@@ -103,7 +105,7 @@ Apresente separado: *"inferi isto (destas fontes); confirmei aquilo (por CLI); p
 
 ### 5. Escrever e reportar o diff
 
-Escreva a partir de **`references/template.md`** (`mkdir -p .claude`), no arquivo do **modo** (`infra.md` ou `infra.local.md` — passo 1). Depois, contra o que o passo 1 leu:
+Escreva a partir de **`references/template.md`** (`mkdir -p .claude/ship-setup`), no arquivo do **modo** (`infra.md` ou `infra.local.md` — passo 1). Depois, contra o que o passo 1 leu:
 
 ```
 🗺️ Infra: <N> provedores · <M> segredos mapeados · <K> artefatos   [criado agora | atualizado | sem mudança]
@@ -127,14 +129,14 @@ grep -nE -- '-----BEGIN|AKIA[0-9A-Z]{16}|sk_(live|test)_|ghp_[A-Za-z0-9]{20,}|xo
 
 Bateu → **não grava**. Mostre a linha com o trecho mascarado (`AKIA…`), corrija o rascunho (o que era pra ser *nome* virou *valor*?) e rode o gate de novo. Falso positivo (ex.: `- Token da API: alkaline-man-jornada (escopo Data.Export)` é **nome** de token, não valor) → reescreva a linha pra deixar óbvio que é nome (`nome do token:`), e rode de novo. **Nunca** "gravo assim mesmo".
 
-Depois de gravar, **no modo time**: `git check-ignore -v .claude/infra.md` → ignorado → avise e proponha a mesma correção do `/setup` passo 0 (`.claude/` → `.claude/*` + `!.claude/infra.md`), confirmando antes. O mapa do time é para ser versionado. **No modo só meu** (`infra.local.md`), estar fora do git é o esperado — nada a propor; o cuidado é o oposto: confira que ele **não** aparece em `git status`.
+Depois de gravar, **no modo time**: `git check-ignore -v .claude/ship-setup/infra.md` → ignorado → avise e proponha a mesma correção do `/setup` passo 0 (`.claude/` → `.claude/*` + `!.claude/ship-setup/`), confirmando antes. O mapa do time é para ser versionado. **No modo só meu** (`infra.local.md`), estar fora do git é o esperado — nada a propor; o cuidado é o oposto: confira que ele **não** aparece em `git status`.
 
 ## Como se relaciona com o resto
 
 | Arquivo | Dono | O que guarda | Onde este mapa entra |
 |---|---|---|---|
-| `.claude/setup.md` | `/setup` | convenções do time | § Infra aponta pra cá |
-| `.claude/deploy.md` | `deploy-context.md` | processo: ambientes, como checar, como setar, rollback | § Configuração diz o **comando** para setar; **onde vive** cada segredo é daqui |
+| `.claude/ship-setup/setup.md` | `/setup` | convenções do time | § Infra aponta pra cá |
+| `.claude/ship-setup/deploy.md` | `deploy-context.md` | processo: ambientes, como checar, como setar, rollback | § Configuração diz o **comando** para setar; **onde vive** cada segredo é daqui |
 | `env-config.md` (motor do `/homolog`/`/prod`) | `/prod` | aplica configuração no ambiente | lê § Onde vive cada segredo; sem `infra.md` → invoca `/infra` antes |
 | `.secrets/README.md` | o projeto | "por que `.secrets`" + o que mora ali | fonte de leitura; depois do mapa pode virar "por quê + ponteiro pro `infra.md`" (decisão do projeto, não desta skill) |
 | `~/GitHub/eduzz-aws` (`MAPA-AWS.md`, `aws-prod`) | Eduzz/Labzz | a conta inteira | o mapa aponta pra lá e guarda só o recorte deste projeto |

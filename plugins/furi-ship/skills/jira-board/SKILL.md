@@ -1,8 +1,9 @@
 ---
 name: jira-board
-description: 'Use when any Jira skill needs to know WHICH board this repository belongs to — the single owner of the project-scoped Jira memory. Reads `~/.claude/projects/<slug>/memory/jira-board.md` on EVERY invocation; if the board is not recorded yet, asks the user (offering the real boards from MCP, or a pasted board link), validates it against the site, writes it to memory and indexes it in MEMORY.md. Invoked at Step 0 by /card, /work, /pull-request, /homolog and /prod. Also usable directly — `/jira-board` shows the recorded board, `/jira-board <KEY|link>` switches it.'
+description: 'Use when any Jira skill needs to know WHICH board this repository belongs to — the single owner of the project-scoped Jira memory. Reads `~/.claude/projects/<slug>/memory/jira-board.md` on EVERY invocation; if the board is not recorded yet, asks the user (offering the real boards from MCP, or a pasted board link), validates it against the site, writes it to memory and indexes it in MEMORY.md. Invoked at Step 0 by /card, /work, /pull-request, /homolog and /prod. Internal — hidden from the `/` menu (`user-invocable: false`), invoked by those skills via the Skill tool; to see or switch the board, the user asks in plain words ("qual é o board daqui?", "troca o board pra ALK") and the model invokes it with the argument.'
 effort: max
 argument-hint: "(vazio = mostrar o board gravado) | <KEY> | <link do board>"
+user-invocable: false
 ---
 
 # /jira-board — O board do Jira deste repositório
@@ -18,7 +19,7 @@ Dono **único** da memória de projeto do Jira. Toda skill de Jira (`/card`, `/w
 ## Contrato
 
 - **Memória por projeto.** Cada repositório tem a sua — o board do `vibe-nivee` não vaza pro `vibe-alkaline-man`. Nada de board hardcoded em skill nenhuma.
-- **Memória da máquina ≠ convenção do time.** O board é coordenada de quem usa e mora aqui, em `~/.claude/projects/…`. Como o time trabalha (branch, commit, PR, idioma dos cards) é do time e mora **versionado** em `.claude/setup.md`, dono `/setup`. Um não guarda o do outro.
+- **Memória da máquina ≠ convenção do time.** O board é coordenada de quem usa e mora aqui, em `~/.claude/projects/…`. Como o time trabalha (branch, commit, PR, idioma dos cards) é do time e mora **versionado** em `.claude/ship-setup/setup.md`, dono `/setup`. Um não guarda o do outro.
 - **Default, não trava.** O que está na memória é o **padrão** do repo. Key explícita no argumento de quem chamou (`/card ALK bug X`) **vence** e **não** reescreve a memória.
 - **Um site por vez.** O MCP alcança só o site do `JIRA_URL` configurado. Key/link de outro site → **avise e não grave**; nunca aproxime pra key mais parecida.
 - **Só grava o que foi validado.** Key confirmada em `jira_get_all_projects`, board em `jira_get_agile_boards`. Sem validação, não grava.
@@ -156,7 +157,9 @@ Report de uma linha:
 📋 Board: <KEY> (<nome>) · board <ID> · <site>.atlassian.net   [memória do projeto | gravado agora]
 ```
 
-## Modo direto (usuário chamando `/jira-board`)
+## Modo direto (o usuário pede em prosa; o modelo invoca com o argumento)
+
+Esta skill é **interna** (`user-invocable: false`): não aparece no menu `/` e o usuário não a digita — quem a invoca são as skills de entrega no Step 0 e, quando o usuário pede em prosa, o modelo. "Qual é o board daqui?" ⇒ argumento vazio; "troca o board pra ALK" / "o board é <link>" ⇒ `<KEY>` ou `<link>`.
 
 | Arg | Ação |
 |---|---|

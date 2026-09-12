@@ -37,7 +37,7 @@ Não vale paráfrase, não vale "o UC-17 **implica** que", não vale "pelo espí
 
 **Fontes que autorizam um "deveria" — as ÚNICAS:**
 - `docs/01-problem/` · `docs/02-user-stories/` · `docs/03-use-cases/` (UC-NN) · `docs/04-spec/` (D-NN)
-- `.claude/deploy.md` · `.claude/infra.md` · `.claude/patterns.md` · `.claude/setup.md` (convenção **declarada** do time — ex.: PR mergeado sem a aprovação que o setup exige é furo)
+- `.claude/ship-setup/deploy.md` · `.claude/ship-setup/infra.md` · `.claude/patterns.md` · `.claude/ship-setup/setup.md` (convenção **declarada** do time — ex.: PR mergeado sem a aprovação que o setup exige é furo)
 - `docs/00-context/decisions/` · `docs/00-context/technical/` (decisões e docs técnicos do projeto, onde existirem)
 - `CLAUDE.md` / `AGENTS.md` — os blocos **OBRIGATÓRIO**
 - O `## Como testar` / critério de aceite do próprio card

@@ -30,6 +30,18 @@ export function SkillCard({ skill }: SkillCardProps) {
               effort: {skill.effort}
             </Badge>
           )}
+          {skill.internal && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="outline" className="font-mono">
+                  interna
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent>
+                Fora do menu /: invocada por outras skills, ou a pedido em prosa
+              </TooltipContent>
+            </Tooltip>
+          )}
           {skill.hasReferences && (
             <Tooltip>
               <TooltipTrigger asChild>

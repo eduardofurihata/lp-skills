@@ -170,6 +170,7 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota do motivo.
         → TC de **texto gerado por IA** (Step 5): a evidência é a saída REAL — **transcrição integral** colada
           em `kanban/09-run-test/<tópico>.md`, com o screenshot junto (§ Evidência de texto);
+          quem compara com a referência #1 é o **juiz cego** (`/blind pair`, 2 ordens — § Evidência de texto), nunca o autor:
           texto que lê **igual ou pior** que a referência #1 do spec = FAILED. "O código rodou e o texto apareceu" NÃO é PASSED.
      d. Bug → CLASSIFICAR (ver `follow-ups.md`):
         - dentro do escopo documentado → **balde A**: corrigir AGORA. ATENÇÃO: qualquer fix invalida
@@ -258,7 +259,9 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 - TCs de **texto gerado por IA** com **transcrição integral** colada em `kanban/09-run-test/<tópico>.md`: **T** — listar (TC-ID → bloco) · `N/A` sem essa superfície
 - Ratio C == N? ✅ / ❌ — tasks pendentes: [listar TaskIDs]
 - Ratio E == N? ✅ / ❌ — TCs sem screenshot: [listar TC-IDs]
+- TCs de texto de IA com **veredicto do juiz cego** (`/blind pair`, 2 ordens) colado integral: **J** — listar (TC-ID → RESULTADO) · `N/A` sem essa superfície
 - Ratio T == TCs de texto de IA? ✅ / ❌ / N/A — TCs só com screenshot: [listar TC-IDs]
+- Ratio J == T? ✅ / ❌ / N/A — TCs julgados pelo autor, em uma ordem só, ou sem a saída do juiz colada: [listar TC-IDs]
 - Status agregado: **N PASSED**, **0 FAILED**, **0 NOT_RUN**, **0 SKIPPED**, **0 BLOCKED** ✅ / ❌
 - Último ciclo sem mudanças de código? ✅ / ❌
 - Follow-ups detectados no Step 9: **F** — todos classificados no ledger (A/B/C)? ✅ / ❌
@@ -279,6 +282,9 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 | "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principles/SKILL.md`). BLOQUEADO. |
 | "O screenshot do chat já mostra a resposta" | NÃO. Screenshot recorta: truncamento, repetição e fecho ficam fora do quadro. Sem transcrição integral, o TC de texto é NOT_RUN. BLOQUEADO. |
 | "Colei o começo e pus '[…]' no resto" | NÃO. Cortar a evidência é escolher o que o auditor pode ver. Integral ou nada. BLOQUEADO. |
+| "Eu mesmo comparo com a referência, conheço os critérios" | NÃO. Quem escreveu o prompt não julga o próprio texto. O veredicto é do juiz cego, em duas ordens. BLOQUEADO. |
+| "Rodei o juiz numa ordem só e deu A" | NÃO. Uma ordem é efeito de posição. `pair` roda as duas; `DISCORDAM` não é vitória. BLOQUEADO. |
+| "A referência sintética é fraca, empate vale PASSED" | NÃO. Empatar com um Claude sem contexto nenhum não é "10x acima do #1". `EMPATE` = FAILED. BLOQUEADO. |
 
 ## Evidência visual — estado × breakpoint (feature com superfície visual)
 
@@ -300,12 +306,39 @@ Screenshot de chat prova que a resposta **apareceu**; não prova que ela **lê b
 **Saída:**
 > <a resposta COMPLETA, do primeiro ao último caractere — sem cortar, sem "[…]", sem parafrasear>
 **Screenshot:** <path>
-**Vs. referência #1 (<nome do spec>):** <como ela responderia isto, e onde a nossa perde ou ganha>
+**Referência #1 (<nome do spec>) — saída dela para a MESMA entrada:**
+> <transcrição integral> · origem: **real** (<como foi obtida: produto, data>) | **sintética** (`/blind` ask, prompt fixo abaixo)
+**Juiz cego (`/blind pair`, 2 ordens):**
+> <saída integral do script — as duas rodadas e a `## Consolidação`, sem cortar>
+**Resultado:** PASSED só com `RESULTADO: A` (a nossa vence nas DUAS ordens) · `B`, `EMPATE`, `DISCORDAM` ou `INDETERMINADO` = FAILED
 ```
 
-**Julgue contra o que o Step 4 escreveu** (`docs/04-spec/<tópico>.md` § Texto gerado por IA — tom e persona, concisão, formatação, idioma do usuário, sem truncamento, sem placeholder, sem alucinação, sem robótico), critério a critério. A lista que vale é a do spec: critério que ele acrescentou entra, critério que ele não pediu sai — **a fonte é uma só**, aqui não nasce segunda lista.
+**A régua é a do Step 4** (`docs/04-spec/<tópico>.md` § Texto gerado por IA — tom e persona, concisão, formatação, idioma do usuário, sem truncamento, sem placeholder, sem alucinação, sem robótico), critério a critério. A lista que vale é a do spec: critério que ele acrescentou entra, critério que ele não pediu sai — **a fonte é uma só**, aqui não nasce segunda lista.
 
-**Texto que lê igual ou pior que a referência #1 é FAILED**, nunca "PASSED com ressalva": o teste é falho mesmo com o código certo. Os demais defeitos entram na triagem A/B/C como qualquer achado.
+**Quem julga é o juiz cego, não o autor.** Quem escreveu o prompt sabe qual texto é o dele e quanto custou; a comparação "como a referência responderia" escrita por ele é a mesma mão dando nota à própria prova. O `/blind pair` recebe os critérios verbatim, a entrada e os dois textos **sem rótulo**, e julga nas duas ordens (`blind/SKILL.md`):
+
+```bash
+BLIND=<pasta da skill /blind — mesmo pacote deste protocolo: references/../../blind>
+T="$(mktemp -d)"
+sed -n '/^## Texto gerado por IA/,/^## /p' docs/04-spec/<tópico>.md > "$T/criterios.md"   # verbatim — nunca resumido
+printf '%s\n' "<a entrada, literal>" > "$T/entrada.md"
+cat > "$T/nossa.md" <<'EOF'
+<a nossa saída, transcrição integral — a mesma colada acima>
+EOF
+# Referência #1 — (a) REAL sempre que existir: a mesma entrada no produto de referência (Playwright, app), transcrita…
+cat > "$T/referencia.md" <<'EOF'
+<a saída da referência #1 para a MESMA entrada>
+EOF
+# …OU (b) sem acesso ao produto de referência: SINTÉTICA, gerada às cegas com este prompt fixo (só o nome e a entrada mudam)
+printf '%s\n\n%s\n' "Você é <referência #1 nomeada no spec>. Responda à entrada abaixo exatamente como o melhor produto do mercado responderia — completa, no idioma do usuário, no tom desse produto. Só a resposta, sem comentar." "$(cat "$T/entrada.md")" \
+  | bash "$BLIND/scripts/blind.sh" ask --out "$T/referencia.md"
+# O juiz — A é a nossa, B é a referência; duas ordens, consolidação em RESULTADO
+bash "$BLIND/scripts/blind.sh" pair --criteria "$T/criterios.md" --input "$T/entrada.md" --a "$T/nossa.md" --b "$T/referencia.md" --out "$T/juiz.md"
+```
+
+`cat "$T/juiz.md"` vai **inteiro** para o bloco do TC. **`RESULTADO: A` é PASSED; qualquer outro é FAILED** — nunca "PASSED com ressalva": o teste é falho mesmo com o código certo. Empatar com um Claude sem contexto nenhum (a referência sintética) não é "10x acima do #1". O autor que discorda do juiz escreve a discordância **ao lado** do veredicto, com justificativa — não o troca. Os demais defeitos que o juiz apontar entram na triagem A/B/C como qualquer achado.
+
+Sem o binário `claude` (Codex, Cursor): o julgamento roda inline, e o bloco do TC abre com `independência: NÃO`.
 
 **Fix de texto vai para onde o texto nasce.** Enfiar instrução no prompt até aquele caso passar é o **remendo de CSS da saída de IA**: o TC fica verde e a próxima pergunta volta a ler mal. O fix trata a causa — prompt de sistema, template, o dado que o RAG entregou, o modelo escolhido — e reabre o perímetro como qualquer outro fix.
 
@@ -314,4 +347,4 @@ Feature sem essa superfície: escreva `N/A — sem superfície de texto gerado p
 ## Gateway 9 → 10
 
 Ver `gateways.md` seção "Gateway 9 → 10" (detalhado).
-Inclui as linhas de **princípios**, **refatoração** e **design**, o critério de evidência por estado × breakpoint e o de **transcrição integral da saída de texto de IA**.
+Inclui as linhas de **princípios**, **refatoração** e **design**, o critério de evidência por estado × breakpoint e o de **transcrição integral da saída de texto de IA julgada pelo juiz cego** (`/blind pair`, 2 ordens).

@@ -4,7 +4,6 @@ description: Use when user invokes /save in a git repo to commit current work, w
 argument-hint: "[mensagem opcional]"
 context: fork
 background: false
-model: opus
 effort: low
 ---
 
@@ -16,12 +15,12 @@ Commit autônomo de tudo que está no repo. Lida com lixo (delete) e arquivos qu
 
 ## Onde roda
 
-`context: fork` — o `/save` roda num **subagente**, em `opus` com `effort: low`. Classificar arquivo e redigir um Conventional Commit é trabalho mecânico: não pede o effort da sessão, e o `git diff` que ele lê não tem por que entrar no contexto de quem pediu o commit. `background: false` mantém a sessão chamadora esperando — ela recebe o relatório final inline, não uma notificação.
+`context: fork` — o `/save` roda num **subagente**, com `effort: low` e **sem `model:` fixo** — ele usa o modelo padrão de subagente (`CLAUDE_CODE_SUBAGENT_MODEL`, se configurado; senão o da sessão), então acompanha a atualização de modelo em vez de ficar preso a um alias. Classificar arquivo e redigir um Conventional Commit é trabalho mecânico: não pede o effort da sessão, e o `git diff` que ele lê não tem por que entrar no contexto de quem pediu o commit. `background: false` mantém a sessão chamadora esperando — ela recebe o relatório final inline, não uma notificação.
 
 O que o fluxo abaixo já assume por causa disso:
 
 - **Sem canal com o usuário.** Um fork não pergunta no meio. Por isso o bucket **HOLD** — no ambíguo, não age — no lugar de parar e perguntar.
-- **Fora do Claude Code** (Codex, Cursor) as quatro chaves são ignoradas e o `/save` roda inline. Mesmo fluxo, mesmo HOLD: nada aqui depende de estar em fork.
+- **Fora do Claude Code** (Codex, Cursor) as três chaves são ignoradas e o `/save` roda inline. Mesmo fluxo, mesmo HOLD: nada aqui depende de estar em fork.
 - Dois `/save` ao mesmo tempo: o segundo não forka enquanto o primeiro estiver vivo.
 
 ## Fluxo

@@ -184,6 +184,23 @@
 | "Acrescento uma instrução no prompt e o TC passa" | Remendo de CSS da saída de IA: verde neste caso, quebrado no próximo. **FAILED disfarçado**. BLOQUEADO. |
 | "A qualidade do texto é subjetiva, não dá pra cobrar em gateway" | Truncamento, placeholder, idioma, alucinação e fecho são **verificáveis** na saída colada. É isso que se cobra. BLOQUEADO. |
 
+## Categoria 14 — Juiz cego (`/blind` — `08-code-review.md` § Revisão fria · `09-testing.md` § Evidência de texto)
+
+> Um agente só escreve o spec, o plano, o código, o review e a nota do próprio trabalho. Onde o veredicto é **julgamento** — o texto lê melhor que o #1? o diff segura? — quem escreveu não julga: a revisão fria fecha o Step 8 e o juiz pareado fecha o TC de texto de IA. O `/blind` tira o viés de **contexto**; a régua continua sendo a do spec.
+
+| Frase | Realidade |
+|-------|-----------|
+| "Eu mesmo julgo, já conheço os critérios" | Conhecer os critérios é o problema: você sabe qual texto é o seu e quanto custou. O veredicto é do juiz cego. BLOQUEADO. |
+| "O cego não entendeu o contexto, desconsidero o achado" | Contexto que o juiz não viu é contexto que o usuário final também não vê. Discordância vai **ao lado** do veredicto, com justificativa — não no lugar dele. BLOQUEADO. |
+| "Resumo a spec / o diff pro juiz, é longo demais" | Entrada é artefato verbatim (`cat`/`sed`). Resumo é a porta por onde o viés volta. Diff grande = `run_in_background`. BLOQUEADO. |
+| "Rodei uma ordem só e deu A" | Uma ordem é efeito de posição. `pair` roda as duas; `DISCORDAM` não é vitória. BLOQUEADO. |
+| "Deu EMPATE, conta como passou" / "a referência sintética é fraca" | Empatar com um Claude sem contexto nenhum não é "10x acima do #1". `EMPATE` = FAILED. BLOQUEADO. |
+| "Classifico os achados do revisor como C pra não voltar ao loop" | Rebaixar `A` exige justificativa escrita na tabela do 8b, achado a achado. Silêncio é bypass. BLOQUEADO. |
+| "A revisão fria rodou antes do último fix, vale" | Fix muda o bundle; carimbo diferente = revisão de outro código. Roda de novo. BLOQUEADO. |
+| "Colo só o `RESULTADO`, o resto é ruído" | "O cego aprovou" não é evidência; a saída dele é. Integral, sempre. BLOQUEADO. |
+| "Passo `--model opus` pra garantir" | O modelo grande é o default e muda de nome. `--model` só rebaixa (smoke). BLOQUEADO. |
+| "Não tenho o binário `claude`, então pulo o juiz" | Sem binário o julgamento roda inline **declarando `independência: NÃO`** — nunca em silêncio, nunca pulado. BLOQUEADO. |
+
 ## Red Flags — Frases-Gatilho que Obrigam STOP
 
 Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PARE e releia este arquivo**:
@@ -236,5 +253,8 @@ Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PA
 - "design é subjetivo, não dá pra cobrar em gateway"
 - "não tem tela, então não tem texto de IA" / "é troca de modelo, isso é infra"
 - "o texto apareceu, marco PASSED" / "boto mais uma linha no prompt e o TC passa"
+- "eu mesmo julgo, conheço os critérios" / "o cego não entendeu o contexto, desconsidero"
+- "rodei uma ordem só, deu A" / "deu EMPATE, passou" / "a revisão fria foi antes do fix, vale"
+- "resumo a spec pro juiz" / "colo só o RESULTADO"
 
 **Todas essas frases significam: PARE. Reative o protocolo. Execute do jeito certo.**

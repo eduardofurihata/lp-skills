@@ -24,7 +24,7 @@ Não é "dar push na `main`": é **atingir um estado** — produção **no ar, f
 - **`main` é produção.** `dev` é a branch de integração; **homolog** é o ambiente publicado a partir dela — nome de ambiente, nunca de branch.
 - **Duas topologias, um fluxo.** O que muda é o **alvo**; o loop, os motores e as regras são os mesmos.
 - Remote `origin`; o repositório vem do checkout (`gh repo view --json nameWithOwner -q .nameWithOwner`) — não hardcodar.
-- **Board:** o da memória do projeto, via **`/jira-board`**. **Convenções do time:** `.claude/setup.md`, via **`/setup`** — o `pr-cycle` lê daí `Abre PR`, `Aprovação` e `Merge`. **Contexto de deploy:** `.claude/deploy.md`, via `references/deploy-context.md`. **Onde vive cada segredo:** `.claude/infra.md` (`/infra`), lido pelo `env-config`.
+- **Board:** o da memória do projeto, via **`/jira-board`**. **Convenções do time:** `.claude/ship-setup/setup.md`, via **`/setup`** — o `pr-cycle` lê daí `Abre PR`, `Aprovação` e `Merge`. **Contexto de deploy:** `.claude/ship-setup/deploy.md`, via `references/deploy-context.md`. **Onde vive cada segredo:** `.claude/ship-setup/infra.md` (`/infra`), lido pelo `env-config`.
 - **Motores:** `references/` — `reconcile` · `pr-cycle` · `findings` · `scope-split` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync`. Esta skill é a **sede** deles; o `/homolog` consome os mesmos arquivos.
 
 <HARD-GATE>
@@ -44,8 +44,8 @@ Não é "dar push na `main`": é **atingir um estado** — produção **no ar, f
 ## Step 0 — Board, contexto e topologia
 
 1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. Nunca assuma nem pergunte o board aqui.
-2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Lê `.claude/setup.md` (e o cria, perguntando o mínimo, se não existir). Devolve `{branch, commit, pr, jira, infra, guidelines, origem}` — o `pr-cycle` usa `pr`. Invocação separada da anterior, com a sua própria pergunta isolada.
-3. **`references/deploy-context.md`** — topologia detectada por `git ls-remote --heads origin dev`, doc do projeto (`.claude/deploy.md`) lido — ou descoberto e escrito.
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Lê `.claude/ship-setup/setup.md` (e o cria, perguntando o mínimo, se não existir). Devolve `{branch, commit, pr, jira, infra, guidelines, origem}` — o `pr-cycle` usa `pr`. Invocação separada da anterior, com a sua própria pergunta isolada.
+3. **`references/deploy-context.md`** — topologia detectada por evidência (base dos PRs recentes → `dev` → default do GitHub; branch parada não conta), doc do projeto (`.claude/ship-setup/deploy.md`) lido — ou descoberto e escrito.
 
 ## Step 1 — Declarar o alvo
 
@@ -175,10 +175,10 @@ O push do passo 2 é só o **gatilho**: o `reconcile` segue para `deploy-run` (r
 - "Uso `/sync dev > main` que é mais direto" → é uma ferramenta de **branch**, sem deploy observado, sem configuração e sem smoke. Para **entregar** produção, o caminho é este.
 
 **Convenções do time**
-- "Mergeei com squash porque é mais limpo" → NÃO. A estratégia é o § PR `Merge:` do `.claude/setup.md`, via `/setup`.
+- "Mergeei com squash porque é mais limpo" → NÃO. A estratégia é o § PR `Merge:` do `.claude/ship-setup/setup.md`, via `/setup`.
 - "Aprovei eu mesmo, embora o setup nomeie quem aprova" → NÃO. `Aprovação: <pessoa/time>` ⇒ o merge **espera** o `APPROVED` dessa pessoa; o gap fica aberto e reportado.
 - "Pulei o `/setup` porque já sei as convenções desta sessão" → NÃO. Leitura é **toda** invocação, como o `/jira-board`.
-- "Anoto onde vive o secret no `deploy.md`, pra não abrir o `infra.md`" → NÃO. Onde vive é o `.claude/infra.md` (`/infra`); o `deploy.md` diz só o **comando** de setar. Dois donos pro mesmo fato é como se perde a verdade.
+- "Anoto onde vive o secret no `deploy.md`, pra não abrir o `infra.md`" → NÃO. Onde vive é o `.claude/ship-setup/infra.md` (`/infra`); o `deploy.md` diz só o **comando** de setar. Dois donos pro mesmo fato é como se perde a verdade.
 
 **Objetivo e motores**
 - "Promovi e o `/prod` acabou" → NÃO. Promoção é um gap; faltam deploy, configuração, verificação e o assert.

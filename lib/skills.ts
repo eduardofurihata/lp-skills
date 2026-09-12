@@ -13,6 +13,9 @@ export interface Skill {
   hasReferences: boolean;
   hasScripts: boolean;
   hasData: boolean;
+  // `user-invocable: false` no frontmatter: fora do menu `/` do Claude Code,
+  // invocada só por outras skills (Skill tool) ou pelo modelo a pedido em prosa.
+  internal: boolean;
   category: Category;
   // As três camadas de relação entre skills, todas no mesmo formato
   // string-ou-lista. Ver lib/skill-graph.ts para o que cada uma significa.
@@ -81,6 +84,7 @@ async function readSkill(
       hasReferences: hasDir("references"),
       hasScripts: hasDir("scripts"),
       hasData: hasDir("data"),
+      internal: data["user-invocable"] === false,
       category,
       requires: parseList(data.requires),
       handoff: parseList(data.handoff),

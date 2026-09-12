@@ -63,7 +63,7 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > **Feature com superfície de texto gerado por IA** (derivada no Step 4): ao menos um TC tem o `Resultado:` na **qualidade do texto lido** — lê **melhor que** a referência #1 do spec (completo, no tom da persona, no idioma do usuário, sem placeholder, sem robótico) — e não só "a resposta aparece". Conta como `Cobre` do detalhe "o que ler bem significa" do Step 4. Sem superfície de texto de IA, nada disso se aplica.
 >
-> Esse TC é **um dos N**, não um TC extra — a nota e o teto de 10 não mudam (é lente de cobertura, como Design). E a **prova** dele não é screenshot: é a **transcrição integral da saída** (`09-testing.md` § Evidência de texto).
+> Esse TC é **um dos N**, não um TC extra — a nota e o teto de 10 não mudam (é lente de cobertura, como Design). E a **prova** dele não é screenshot: é a **transcrição integral da saída** mais o **veredicto do juiz cego** — `/blind pair`, a nossa contra a referência #1, sem rótulo, em duas ordens (`09-testing.md` § Evidência de texto). Quem escreveu o prompt não dá a nota.
 
 ## Princípios neste step (`principles/SKILL.md`)
 

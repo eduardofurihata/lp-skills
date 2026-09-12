@@ -25,8 +25,8 @@ Não é "mergear PR": é **atingir um estado** — o que está pronto está **no
 - **`main` não é assunto desta skill.** Produção é o **`/prod`**, com autorização explícita a cada release.
 - Remote `origin`; o repositório vem do próprio checkout (`gh repo view --json nameWithOwner -q .nameWithOwner`) — não hardcodar.
 - **Board:** o da memória do projeto, via **`/jira-board`**, nunca hardcoded. Via `mcp__atlassian__*`.
-- **Convenções do time:** `.claude/setup.md`, via **`/setup`** — o `pr-cycle` lê daí `Abre PR`, `Aprovação` (quem precisa dar `APPROVED` antes do merge) e `Merge` (estratégia). Nunca hardcoded, nunca "o que eu prefiro".
-- **Contexto de deploy:** `.claude/deploy.md`, via **`prod/references/deploy-context.md`**. Topologia é detectada (`git ls-remote`), nunca assumida. Onde vive cada segredo: `.claude/infra.md` (`/infra`), lido pelo `env-config`.
+- **Convenções do time:** `.claude/ship-setup/setup.md`, via **`/setup`** — o `pr-cycle` lê daí `Abre PR`, `Aprovação` (quem precisa dar `APPROVED` antes do merge) e `Merge` (estratégia). Nunca hardcoded, nunca "o que eu prefiro".
+- **Contexto de deploy:** `.claude/ship-setup/deploy.md`, via **`prod/references/deploy-context.md`**. Topologia é detectada (`git ls-remote`), nunca assumida. Onde vive cada segredo: `.claude/ship-setup/infra.md` (`/infra`), lido pelo `env-config`.
 
 <HARD-GATE>
 1. **Objetivo é estado, não ação.** Sem smoke verde na URL de homolog, o `/homolog` **não** terminou — mesmo com tudo mergeado.
@@ -43,8 +43,8 @@ Não é "mergear PR": é **atingir um estado** — o que está pronto está **no
 ## Step 0 — Board, contexto e guard de topologia
 
 1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{site, key, boardId, boardName, url, origem}`. É de lá que sai a `<KEY>` dos cards, o prefixo da branch e os comentários/transições. Nunca assuma o board nem pergunte por ele aqui.
-2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Lê `.claude/setup.md` (e o cria, perguntando o mínimo, se não existir). Devolve `{branch, commit, pr, jira, infra, guidelines, origem}` — o `pr-cycle` usa `pr`. Invocação separada da anterior, com a sua própria pergunta isolada.
-3. **`prod/references/deploy-context.md`** — topologia + processo de deploy do projeto (`.claude/deploy.md`).
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Lê `.claude/ship-setup/setup.md` (e o cria, perguntando o mínimo, se não existir). Devolve `{branch, commit, pr, jira, infra, guidelines, origem}` — o `pr-cycle` usa `pr`. Invocação separada da anterior, com a sua própria pergunta isolada.
+3. **`prod/references/deploy-context.md`** — topologia + processo de deploy do projeto (`.claude/ship-setup/deploy.md`).
 4. **Guard de topologia — antes de qualquer outra coisa:**
 
 | Topologia | Ação |
@@ -123,7 +123,7 @@ Os motores que ele aciona vivem em `prod/references/`: `pr-cycle` · `findings` 
 - "Anoto o valor do secret no `deploy.md` (ou no `infra.md`) pra não perguntar de novo" → NÃO. Nunca. Vaza em commit e sobrevive a `git rm`.
 
 **Convenções do time**
-- "Mergeei com squash porque é mais limpo" → NÃO. A estratégia é o § PR `Merge:` do `.claude/setup.md`, via `/setup`. Preferência pessoal não é convenção.
+- "Mergeei com squash porque é mais limpo" → NÃO. A estratégia é o § PR `Merge:` do `.claude/ship-setup/setup.md`, via `/setup`. Preferência pessoal não é convenção.
 - "Aprovei eu mesmo, embora o setup nomeie quem aprova" → NÃO. `Aprovação: <pessoa/time>` ⇒ o merge **espera** o `APPROVED` dessa pessoa; o gap fica aberto e reportado — não é a skill que o fecha.
 - "Pulei o `/setup` porque já sei as convenções desta sessão" → NÃO. Leitura é **toda** invocação, como o `/jira-board`.
 

@@ -58,7 +58,7 @@ Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer com
 - **Tipo de issue:** o que o projeto **tem** — descoberto com `jira_get_project_issue_types`. Nunca chutar um nome ("Tarefa", "Task", "Bug") sem listar.
 - **Board:** vem do `/jira-board` (memória) — não descubra nem pergunte aqui. **Sprint:** sempre descoberto na hora com `jira_get_sprints_from_board` (`state: active`); sprint nunca é lido da memória.
 - **Seção obrigatória:** toda descrição termina com `## Como testar` (passos verificáveis, formato QA). A `DoD` do § Jira do `/setup` (passo 0) orienta o que esse bloco precisa cobrir.
-- **Idioma:** o `Idioma dos cards` do § Jira do `/setup` (passo 0, lido de `.claude/setup.md`); sem setup, **default português**.
+- **Idioma:** o `Idioma dos cards` do § Jira do `/setup` (passo 0, lido de `.claude/ship-setup/setup.md`); sem setup, **default português**.
 - Card novo entra **no sprint ativo** por padrão (passo 5), com o status default do board. Não mover status aqui.
 
 > **Um site por vez:** o MCP alcança só o site do `JIRA_URL` configurado. Key que não aparece em `jira_get_all_projects` **não existe neste site** — pode estar em outro (outro servidor MCP). Diga isso; **nunca** aproxime para a key mais parecida.
@@ -68,7 +68,7 @@ Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer com
 ### 0. Board do projeto e convenções do time (SEMPRE, antes de tocar no Jira)
 
 1. **Invoque o `/jira-board`** — via **Skill tool** (`furi-ship:jira-board`; a forma curta `jira-board` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
-2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: lê `.claude/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Daqui o `/card` usa só o **§ Jira** (`Idioma dos cards`, `DoD`).
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: lê `.claude/ship-setup/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Daqui o `/card` usa só o **§ Jira** (`Idioma dos cards`, `DoD`).
 
 Duas invocações separadas, cada uma com a sua pergunta isolada — uma vez na vida do repositório. Nunca assuma o board nem as convenções, nunca pergunte por eles aqui — quem faz isso é o `/jira-board` e o `/setup`, donos únicos de cada um.
 

@@ -86,12 +86,12 @@ Todo folder = só trabalho ativo. Feature done → o card sai de `06-todo` e pas
 Só agora, com **o card já movido e o done doc já escrito**, faça **um único commit** de tudo (código + artefatos) na **branch atual** (NUNCA crie branch — ver `SKILL.md`):
 
 ```bash
-cat .claude/setup.md 2>/dev/null || cat .claude/setup.local.md 2>/dev/null   # § Commit: convenção + onde a key entra (do time, ou só meu; lido por caminho)
+cat .claude/ship-setup/setup.md 2>/dev/null || cat .claude/ship-setup/setup.local.md 2>/dev/null   # § Commit: convenção + onde a key entra (do time, ou só meu; lido por caminho)
 git add -A
 git commit -m "feat(<escopo>): <descrição da feature>"
 ```
 
-- Mensagem na **convenção do § Commit do `.claude/setup.md`**, quando o arquivo existe. Sem ele, **Conventional Commits** (`feat` / `fix` / `refactor` / `docs` … `(<escopo>)` = área da feature) — o default de sempre. A **key do card** entra onde o § Commit disser (no escopo `feat(NIV-12): …`, no início `NIV-12 feat: …`, em trailer `Jira: NIV-12`, ou não entra) e **vem do nome da branch atual** (`niv-12-login` → `NIV-12`); branch sem key → commit sem key, dito no report. O `/method` **lê** o setup e **não o cria**: quem cria é o `/setup` (`furi-ship`) — ou o próprio time, à mão.
+- Mensagem na **convenção do § Commit do `.claude/ship-setup/setup.md`**, quando o arquivo existe. Sem ele, **Conventional Commits** (`feat` / `fix` / `refactor` / `docs` … `(<escopo>)` = área da feature) — o default de sempre. A **key do card** entra onde o § Commit disser (no escopo `feat(NIV-12): …`, no início `NIV-12 feat: …`, no fim `feat(login): … (NIV-12)`, em trailer `Jira: NIV-12`, ou não entra) e é a do **card ativo** — o argumento com que o `/method` foi invocado (`/work KEY-N` passa o dele); sem argumento com key, a do **nome da branch atual** (`niv-12-login` → `NIV-12`); nenhuma das duas → commit sem key, dito no report. Numa branch que acumula cards o nome é só o do 1º: o commit de cada card leva a **própria** key — é assim que o Jira mostra o commit no card certo e que o `/pull-request` descobre os cards da branch. O `/method` **lê** o setup e **não o cria**: quem cria é o `/setup` (`furi-ship`) — ou o próprio time, à mão.
 - **`git add -A` pega tudo de uma vez:** código, docs (01-09), card de done e a remoção (`rm`) do card de todo entram no MESMO commit.
 - **NUNCA commite antes de mover o card.** Commitar o código primeiro e só depois mover o card força um segundo commit — exatamente o erro que esta ordem evita.
 - **SHA é nota de bastidor:** o commit já É o registro (está no `git log`). Anotar o SHA no done doc é opcional e **não justifica um segundo commit** só para gravá-lo.
