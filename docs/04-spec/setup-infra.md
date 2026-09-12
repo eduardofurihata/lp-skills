@@ -105,3 +105,19 @@
 **Justificativa:** a única razão para o `/repro` ler por caminho era a regra de pacotes irmãos (check 7), que caiu com o pacote. Consumidor no mesmo pacote que o dono invoca o dono — é o contrato da D-03; ler por caminho fica só para o `/method` (§ Commit), que é de outro pacote.
 **Alternativas descartadas:** manter o `cat` "porque funciona" — não cria o arquivo nem pergunta o modo, e ignora o `.local.md` quando o `.md` não existe no caso "só meu" recém-decidido; `boundary: setup` em vez de `requires` — ele invoca, não só cita.
 **Corrige a D-16:** a última linha dela ("o `/repro` não declara `boundary: setup` — e não pode") descreve o estado anterior ao Round 7.
+
+## Round 7 — O setup declara o fluxo; `/jira-board` vira `/jira`; os dois voltam ao menu (2026-09-12)
+
+### D-19 — `/jira-board` → `/jira`, dono também da estrutura do Jira em `.claude/ship-setup/jira.md` (revisa D-11)
+**Decisão:** a skill passa a se chamar `/jira` e ganha um segundo arquivo: **`.claude/ship-setup/jira.md`**, versionado — colunas/status reais do board, tipos de issue (e qual é o de bug), o mapa **etapa do pipeline → status** com "comenta?", o formato do comentário e as **manhas do MCP** (ex.: o upload existe, via `jira_update_issue` + `attachments`, embora o servidor se descreva como incapaz). O board (site/key/boardId) **continua na memória da máquina** (D-11): coordenada de quem usa. `jira-sync.md` passa a transicionar pelo **nome** do status gravado (o id é descoberto na hora) e a comentar só nas etapas marcadas; `/card` tira o tipo de issue daqui. `/jira ler` reconfere contra o site e mostra o diff; `/jira mcp` registra uma manha. Migração lazy do arquivo de memória `jira-board.md` → `jira.md`.
+**Justificativa:** "esse nome é o ideal mesmo? por que não só `/jira`?" — e "a skill deve gravar como o Jira está configurado no projeto: colunas, se tem MCP, os detalhes de como usar". Estrutura é do projeto (igual para todo mundo que clona), não de quem usa — logo, versionada, e não na memória (D-02: um arquivo, um dono).
+**Alternativas descartadas:** tudo no `§ Jira` do `setup.md` — dois donos no mesmo arquivo; manter `/jira-board` — o nome dizia menos do que a skill passou a fazer.
+
+### D-20 — `/setup` e `/jira` voltam ao menu `/` (revisa D-16)
+**Decisão:** cai o `user-invocable: false` das duas. `/setup` num repositório sem arquivo roda a descoberta inteira e, ao gravar, **oferece** `/infra` e `/jira` como próximos passos de um projeto novo — sem invocá-los. A skill interna do pacote passa a ser a `pipeline` (D-28 do homolog-prod), que satisfaz o check do validador.
+**Justificativa:** "quero poder chamar a skill setup para configurar o processo quando começo um projeto". D-16 escondeu as duas porque "é coisa que eu não vou chamar explicitamente" — deixou de ser verdade.
+
+### D-21 — `Rastreamento` no § Jira: o único campo novo do `setup.md` (estende D-05)
+**Decisão:** `Rastreamento: Jira | kanban local | nenhum`. `≠ Jira` ⇒ o estágio `card` não existe, `/card` recusa com o motivo, nenhuma skill pergunta board, `jira-sync` é no-op declarado — **o pipeline roda inteiro sem card**. O § Jira ganha também `Estrutura:` (ponteiro para o `jira.md`). O `setup.md` **não** ganha `Integração:`/`Homolog:`: nome de branch e existência do ambiente já são detectados e gravados no `deploy.md § Ambientes` (D-05, D-07 do homolog-prod), e o template do setup passa a **dizer onde cada pergunta do fluxo é respondida** em vez de repeti-la.
+**Justificativa:** "nem tudo terá Jira" — o pipeline precisa saber isso de um lugar só. Já "tem PR?" era `Abre PR`, e "qual a branch?" era o `deploy.md`; duplicar no setup seria o segundo dono que a D-02 proíbe.
+**Alternativas descartadas:** `§ Fluxo` completo no `setup.md` (integração, produção, homolog, Jira) — três dos quatro campos já tinham casa.

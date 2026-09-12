@@ -1,6 +1,6 @@
 # Ciclo de PR — de aberto a mergeado-ou-rejeitado
 
-> **Fonte única do ciclo de PR.** `/homolog` e `/prod` não descrevem review, gate de QA nem merge — apontam para cá. Invocado pelo `reconcile.md` quando o gap é "PR aberto e não integrado".
+> **Fonte única do ciclo de PR.** `/homolog` e `/prod` não descrevem review, gate de QA nem merge — apontam para cá. **Motor de estágio:** invocado pelo `reconcile.md` quando o estágio `integrado` está aberto — PR aberto e não mergeado, ou (sem PR) commits na integração ainda não revisados.
 
 **Responsabilidade única:** levar **um** PR de aberto a **mergeado** ou **rejeitado**. Não deploya, não configura ambiente, não verifica no ar — isso é do `deploy-run.md`, `env-config.md` e `smoke.md`.
 
@@ -17,7 +17,7 @@
 4. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
 5. **Mergear NÃO é garantido — REJEITAR é saída válida** (§ 5).
 6. NUNCA mergeie branch atrás/conflitada com a integração sem atualizar, resolver e **re-autenticar**.
-7. Achado fora do escopo **não** vira card sem passar pelo `findings.md`.
+7. Achado fora do escopo vai para o `findings.md`, que o classifica e **registra com a prova** — o pipeline **nunca cria card sozinho**.
 </HARD-GATE>
 
 ## 1 — Selecionar o PR
@@ -31,7 +31,7 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 
 ## 2 — Card(s) e gate de QA (SCOPED ao PR)
 
-1. **Identificar o(s) card(s):** as keys do título e do `## Cards` do PR + as dos commits da branch (`git log <integração>..<head> --no-merges --format='%s%n%(trailers:key=Jira,valueonly)'`, key do projeto vinda do `/jira-board`). O nome da branch traz só o 1º card de um lote — não pare nele. Um PR pode resolver **vários** — capture todos.
+1. **Identificar o(s) card(s):** as keys do título e do `## Cards` do PR + as dos commits da branch (`git log <integração>..<head> --no-merges --format='%s%n%(trailers:key=Jira,valueonly)'`, key do projeto vinda do `/jira`). O nome da branch traz só o 1º card de um lote — não pare nele. Um PR pode resolver **vários** — capture todos.
 2. **Mapear o feature** no kanban (nome do arquivo).
 3. **Gate de QA — só para ESTE feature:**
 
@@ -108,7 +108,7 @@ git branch --list <branch>; git ls-remote --heads origin <branch>
 
 ### Depois do merge — card, kanban e o commit do que você editou
 
-1. **Card:** comentar + transicionar via **`jira-sync.md`** (fonte única).
+1. **Card:** `jira-sync.md` com a etapa **integrado** (fonte única — status e "comenta?" vêm do `jira.md`).
 2. **PR:** responder discussão aberta (`gh pr comment`).
 3. **Kanban:** `kanban/11-ship/<feature>.md` com `merged`, `merged_at`, `merge_commit`. Ledger **stale** (item `ABERTO`/`ADIADO` que outro ciclo deste mesmo PR resolveu) → corrija: card de ship que mente sobre convergência envenena o gate da próxima release.
 4. **Commitar e pushar o que você editou — OBRIGATÓRIO, não "depois".** O `gh pr merge` acontece no GitHub, então `origin/<integração>` já andou; o kanban é edição **local**. Sem este passo a árvore fica suja e os cards no `origin` ainda dizem `in-review` — e o `/prod` promoveria uma integração **sem** o que você escreveu.
@@ -131,14 +131,14 @@ Rejeitar é seguro: nada vai para a integração nem para o ar, branch e PR fica
 
 1. **Request-changes** com feedback concreto e acionável, por item, apontando arquivo/linha: `gh pr review <n> --request-changes --body "<o quê + por quê + o que precisa mudar>"`.
 2. **NÃO** mergeia, **NÃO** apaga a branch — o dev precisa dela.
-3. **Card → devolve pro dev:** transição para "Em andamento" (rework) + comentário com o que reprovou, via `jira-sync.md`.
+3. **Card → devolve pro dev:** `jira-sync.md` com a etapa **devolvido ao dev** — comentário com o que reprovou + link do review; o status é o que o `jira.md` mapeia para rework.
 4. **Kanban → rework:** mover o card para `kanban/07-implementation/<feature>.md` com `status: rework` + motivo. Não deixar em `10-done`/`11-ship` (mentiria "pronto"). *(Dev cru, sem card — pula.)*
 5. **Escopo lateral** que apareceu: ponta que o dev tinha superfície para ver **volta no request-changes**; ponta que só o review externo enxerga passa pelo `findings.md`. O **core volta pro dev**, não se enfia no PR rejeitado.
 6. **Reporta e encerra.** Sem merge, sem deploy.
 
 ## 6 — Sem PR aberto
 
-Trabalho commitado em feature branch e nenhum PR → o gap é "falta PR": **invocar o `/pull-request`** — via **Skill tool** (`furi-ship:pull-request`; a forma curta `pull-request` também resolve) — e voltar ao § 1. Chamada real, não "seguir de memória": abrir o PR "à mão" pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (`.claude/ship-setup/setup.md` § PR `Abre PR: não`) → não há PR a rodar; o `reconcile` segue para os gaps de ambiente. Nesse caso o review do diff (§ 3) roda sobre os commits ainda não verificados na integração — a convenção dispensa o PR, não o review.
+Trabalho commitado em feature branch e nenhum PR → **não é gap deste motor**: é o estágio `push`/`pr` aberto, e quem o fecha é o `pr-publish.md`, acionado pelo `reconcile` na ordem da escada — este motor só entra quando o PR existe. Não abra o PR "à mão" daqui: pula o corpo 3-em-1 e o espelho no Jira. Commit direto na branch de integração (`.claude/ship-setup/setup.md` § PR `Abre PR: não`) → não há PR a rodar; o estágio `integrado` é fechado por este motor **revisando o diff dos commits ainda não verificados na integração** (`git log <último SHA verificado>..origin/<integração>` — o último verificado é o do smoke mais recente registrado; sem registro, os commits desde o último run verde) — a convenção dispensa o PR, não o review.
 
 ## 7 — Cleanup de órfãos (confirm-first)
 

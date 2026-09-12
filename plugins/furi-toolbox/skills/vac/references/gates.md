@@ -22,9 +22,10 @@ Uma mensagem (ou artefato) é cortada em seções por heading (`#`) ou linha só
 | `method-checklist-final` | /method · `10-done.md:110-121` | heading `Checklist Final` | — | — | commit-claimed |
 | `fast-close` | /fast · `fast/SKILL.md:76-85` | line `Code Review: APROVADO (` | APROVADO | verifier → path citado entre parênteses | skill-not-invoked |
 | `todo-close` | /todo · `todo/SKILL.md:503-508` | line `QA completo` | PASSED | verifier → `kanban/09-run-test` | audit-completed |
-| `homolog-close` | /homolog · `homolog/SKILL.md:77-91` | heading `/homolog — homolog no ar` | — | session (`/vac última`) | smoke-no-nav, run-not-watched, pr-not-created, skill-not-invoked |
-| `prod-close` | /prod · `prod/SKILL.md:118-129` | heading `/prod — produção no ar` | — | session (`/vac última`) | smoke-no-nav, run-not-watched |
-| `pull-request-close` | /pull-request · `pull-request/SKILL.md:158-164` | heading `PR aberto` / `PR atualizado` / `Publicado sem PR` | — | — | pr-not-created |
+| `homolog-close` | /homolog · `homolog/SKILL.md:81-95` | heading `/homolog — homolog no ar` | — | session (`/vac última`) | smoke-no-nav, run-not-watched, pr-not-created, skill-not-invoked |
+| `prod-close` | /prod · `prod/SKILL.md:88-100` | heading `/prod — produção no ar` | — | session (`/vac última`) | smoke-no-nav, run-not-watched |
+| `work-close` | /work · `work/SKILL.md:83-93` | heading `/work <obj> — commitado localmente` | — | — | skill-not-invoked |
+| `pull-request-close` | /pull-request · `pull-request/SKILL.md:78-86` | heading `PR aberto` / `PR atualizado` / `Publicado sem PR` | — | — | pr-not-created |
 | `proof-report` | /proof · `proof/SKILL.md:287-330` | line `Relatório do /proof` | — | — | — |
 | `blind-result` | /blind · `blind.sh:152-154` | line `- RESULTADO:` | — | — | skill-not-invoked (`blind.sh`) |
 | `verifier-report` | /vac · `verificador.md:33-47` | heading `Verificação —` | — | — | — |

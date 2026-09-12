@@ -45,8 +45,8 @@ O que **não** conta: "verificado", "conferido", "funciona", "já validado antes
 |---|---|---|
 | `/proof` § Três estados | `valor` · `ausente-de-fato` · `indisponível-para-apurar` — "colapsar os dois últimos vira afirmação falsa" | `VERIFICADO` · `AUSENTE` · `INDISPONÍVEL` (a origem deste vocabulário) |
 | `/method` — `plugins/furi-build/skills/method/references/09-testing.md` § Status | `PASSED` · `FAILED` · `NOT_RUN` | `PASSED` = `VERIFICADO` com screenshot/dump; `NOT_RUN` = `INDISPONÍVEL` declarado (com o motivo) |
-| `/prod` — `plugins/furi-ship/skills/prod/references/findings.md` § Classes | A (reprodução observada) · B (citação verbatim + grep) · C (opinião) | A e B são **tipos de evidência** de `VERIFICADO`; C é `INFERIDO` |
+| `/prod` — `plugins/furi-ship/skills/pipeline/references/findings.md` § Classes | A (reprodução observada) · B (citação verbatim + grep) · C (opinião) | A e B são **tipos de evidência** de `VERIFICADO`; C é `INFERIDO` |
 | `/infra` | `Confirmado por` · `não confirmado (motivo)` | `VERIFICADO` (com a fonte) · `INDISPONÍVEL` |
-| `/setup`, `/jira-board` | `origem: arquivo \| perguntado \| memória \| criado agora` | proveniência = a evidência de `VERIFICADO` |
+| `/setup`, `/jira` | `origem: arquivo \| perguntado \| memória \| criado agora` | proveniência = a evidência de `VERIFICADO` |
 
 Quando uma dessas skills pede o vocabulário **dela**, use o dela — e acrescente o estado do `/vac` só onde ela não tem um (regra de superposição: nunca trocar o formato de outra skill).

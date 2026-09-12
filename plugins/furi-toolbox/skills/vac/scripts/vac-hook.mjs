@@ -16,7 +16,7 @@
 // Subcomandos de linha de comando (o modelo chama via Bash; o usuário também pode):
 //   on | off | status                    toggle do regime (<data>/vac/on)
 //   log [--tail N] [--kind k] [--session s] [--json]
-//   caso <id|last> [--slug s] [--expect block|pass] [--out DIR]   log → sample do golden set
+//   caso <id|last> [--slug s] [--kind block|note] [--expect block|pass] [--out DIR]  log → sample
 //   scan <paths…> [--json]               analyze em lote sobre .md (read-only)
 //   scan --map <arquivo…> [--fix] [--version x.y.z]                valida mapas .claude/vac/*.md
 //   probe                                grava o payload no log (VAC_DEBUG=1)
@@ -29,7 +29,8 @@
 //        VAC_DEBUG=1    liga o `probe`
 //
 // Módulos: vac-rules.mjs (regras, puras) · vac-store.mjs (persistência) · vac-map.mjs (mapas)
-//          vac-ledger.mjs (transcript). Precisão > recall em todos: o que passa com dúvida vira `note`.
+//          vac-ledger.mjs (transcript) · vac-pedido.mjs (entrada) · vac-cobertura.mjs (a entrega
+//          corresponde ao prometido). Precisão > recall em todos: o que passa com dúvida vira `note`.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -49,6 +50,8 @@ import {
   sha256File,
   stripMentions,
 } from "./vac-rules.mjs";
+import { cobertura } from "./vac-cobertura.mjs";
+import { MAX_RAW, skillsDoMapa, triagem } from "./vac-pedido.mjs";
 import * as store from "./vac-store.mjs";
 import { mapsSummary, scanMap, transcriptVersion } from "./vac-map.mjs";
 import { ledgerChecks, updateLedger } from "./vac-ledger.mjs";
@@ -128,7 +131,9 @@ const FOOTER =
 function emit(header, items, ctx, text) {
   const blocks = items.filter((i) => i.severity === "block");
   const notes = items.filter((i) => i.severity !== "block");
-  if (notes.length) store.logEvent("note", { ...ctx, items: notes });
+  // O corpo só vai para o log quando há regra em fase de instrumentação (o motor marca): é o que o
+  // `/vac caso --kind note` precisa para virar sample, e guardar o texto de TODA nota incharia o log.
+  if (notes.length) store.logEvent("note", { ...ctx, items: notes, ...(notes.some((n) => n.phase === "instrumentacao") ? { text } : {}) });
   if (!blocks.length) return false;
   const mode = ctx.mode || "stop";
   const lines = blocks.slice(0, MAX_ITEMS).map((i) => `- ${describe(i, mode)}`);
@@ -171,6 +176,58 @@ function touchedArtifacts(roots) {
   return "";
 }
 
+// ---------------------------------------------------------------------------
+// Pedido — instrumentação da entrada (não injeta, não bloqueia)
+// ---------------------------------------------------------------------------
+
+// O texto do prompt vem no payload do UserPromptSubmit. O campo real é `prompt` (verificado em
+// sessão com --plugin-dir; a doc do plugin-dev mostra `user_prompt`, que não é o que o binário
+// manda). Lemos os três conhecidos e, se nenhum vier, o log registra as CHAVES do payload:
+// autodescoberta na próxima versão, nunca nome lembrado.
+function promptText(input) {
+  for (const field of ["prompt", "user_prompt", "userPrompt"]) {
+    const v = input?.[field];
+    if (typeof v === "string" && v.trim()) return { text: v, field };
+  }
+  return { text: "", field: null, chaves: Object.keys(input || {}) };
+}
+
+function skillSlugs(roots) {
+  for (const r of roots) {
+    try {
+      return skillsDoMapa(fs.readFileSync(path.join(r, ".claude", "vac", "mapa-skills.md"), "utf8"));
+    } catch {
+      /* sem mapa neste root */
+    }
+  }
+  return [];
+}
+
+// Grava o pedido na sessão (o subagente e a compactação vão precisar dele) e loga os sinais.
+// Custo: string + regex; só toca o disco quando o prompt cita um arquivo que não existe direto.
+function registraPedido(input, roots) {
+  const { text, field, chaves } = promptText(input);
+  const idx = store.loadSession(input);
+  if (!text) {
+    if (!idx.pedidoCampo) {
+      idx.pedidoCampo = "ausente";
+      store.saveSession(input, idx);
+      store.logEvent("pedido", ctxOf(input, "card", { campo: null, chaves }));
+    }
+    return;
+  }
+  const { sinais } = triagem(text, { roots, anterior: idx.pedido?.raw, skills: skillSlugs(roots) });
+  idx.pedido = {
+    at: new Date().toISOString(),
+    prompt_id: input.prompt_id ?? null,
+    raw: text.slice(0, MAX_RAW),
+    sinais: sinais.map((s) => s.rule),
+  };
+  idx.pedidoCampo = field;
+  store.saveSession(input, idx);
+  if (sinais.length) store.logEvent("pedido", ctxOf(input, "card", { campo: field, items: sinais, text: text.slice(0, MAX_RAW) }));
+}
+
 function cmdCard(input) {
   const event = input.hook_event_name || "UserPromptSubmit";
   const roots = projectRoots(input);
@@ -204,6 +261,13 @@ function cmdCard(input) {
   if (pending && !subagent) {
     text += `\nPendência do /vac no turno anterior (${pending.items?.length ?? 0} afirmação(ões) ficaram sem lastro depois de ${VAC_RETRIES} tentativas) — resolva ou marque o estado real antes de afirmar qualquer outra coisa:\n${(pending.items || []).slice(0, MAX_ITEMS).map((i) => `- ${i}`).join("\n")}`;
     store.clearPending(input);
+  }
+  if (variant === "prompt") {
+    try {
+      registraPedido(input, roots);
+    } catch {
+      /* a entrada é instrumentação: nunca atrapalha o prompt */
+    }
   }
   if (!subagent) {
     const idx = store.loadSession(input);
@@ -350,7 +414,7 @@ function cmdCheckArtifact(input) {
   const r = resolveFile(file, roots);
   if (!r.abs) process.exit(0);
   const text = fs.readFileSync(r.abs, "utf8");
-  const items = analyze(text, { roots, mode: "artifact", artifactAbs: r.abs });
+  const items = [...analyze(text, { roots, mode: "artifact", artifactAbs: r.abs }), ...cobertura(text, { artifactAbs: r.abs })];
   const rel = path.relative(rootOf(r.abs, roots), r.abs);
   emit(`[/vac] ${rel} gravado com afirmações sem lastro — corrija o artefato:`, items, ctxOf(input, "check-artifact", { mode: "artifact", target: rel }), text);
   process.exit(0);
@@ -379,6 +443,7 @@ function cmdCheckStop(input) {
     ...analyze(text, { roots, gates, mode }),
     ...missingStamps(text, roots, gates, session),
     ...ledgerChecks(text, { roots, gates, ledger, input }),
+    ...cobertura(text),
   ];
   const ctx = ctxOf(input, sub ? "check-stop --subagent" : "check-stop", { mode, agent: sub ? { id: input.agent_id, type: input.agent_type } : undefined });
   const blocks = items.filter((i) => i.severity === "block");
@@ -485,17 +550,21 @@ function cmdLog() {
 
 function cmdCaso() {
   const id = positional()[0] || "last";
-  const entry = id === "last" ? store.readLog({ tail: 1, kind: "block" })[0] : store.findLog(id);
+  const kind = argValue("--kind") || "block"; // fase 1 nasce `note`: sem --kind, o sinal novo nunca vira sample
+  const entry = id === "last" ? store.readLog({ tail: 1, kind })[0] : store.findLog(id);
   if (!entry) {
-    process.stderr.write(`[/vac] entrada "${id}" não encontrada no log (${store.logFile()})\n`);
+    process.stderr.write(`[/vac] entrada "${id}" (kind=${kind}) não encontrada no log (${store.logFile()}) — regra em fase de instrumentação? tente --kind note\n`);
     return process.exit(1);
   }
   const slug = (argValue("--slug") || entry.items?.[0]?.rule || "caso").replace(/[^\w-]+/g, "-").toLowerCase();
-  const expect = argValue("--expect") || "block";
+  // Regra em instrumentação (`note`) ainda NÃO bloqueia: o sample tem de esperar `pass`, senão o
+  // golden set cobra do hook um comportamento que ninguém ligou — e o caso nasce quebrado.
+  const expect = argValue("--expect") || (entry.kind === "note" ? "pass" : "block");
   const cmd = entry.sub || "check-stop";
   const must = expect === "block" ? (entry.items || []).slice(0, 3).map((i) => i.text) : [];
   const front = {
     cmd,
+    ...(entry.target ? { artifact: entry.target } : {}),
     expect,
     must,
     class: "a-classificar",

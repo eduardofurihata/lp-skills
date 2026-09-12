@@ -37,7 +37,7 @@ Playwright MCP, apontando para a **URL do ambiente** (do `deploy-context.md`):
 
 | Resultado | Significado | Ação |
 |---|---|---|
-| Todos os cards passam | ambiente **verificado** | `jira-sync.md` para cada card ("Em homolog/produção: `<URL>`") e o objetivo fecha |
+| Todos os cards passam | ambiente **verificado** | `jira-sync.md` para cada card com a etapa **no ar em homolog** ou **no ar em produção** (rótulo `Em homolog/produção: <URL>`) e o objetivo fecha |
 | Algum card falha | objetivo **não** atingido | § 4 |
 | Feature não verificável (sem critério) | não conta como passou | reporta explicitamente; não inventa critério |
 

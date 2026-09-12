@@ -209,3 +209,43 @@
 **Motor que absorve duplicação existente:** `jira-sync` — hoje a mesma sequência (`get_transitions` → `transition_issue`, sem `comment` por ADF) está escrita em `merge:132-133`, `work:71` e `pull-request:103`.
 
 **Escopo de plataforma:** sem superfície mobile · **sem superfície visual** (derivado em D-19).
+
+## Round 4 — Um pipeline, quatro alvos, dois modificadores (2026-09-12)
+
+> **Pedido:** "`/prod` deve ver onde o pedido está e executar todo o processo do work até o prod; se está em homolog, só finaliza. O mesmo para `/homolog`, `/pull-request`, `/work`. `/repro` e `/card` são adicionais ao processo, não gatilhos. Nenhum do processo aciona `/card` sozinho. Nem tudo terá Jira." Referências de qualidade que seguem valendo: ArgoCD (estado desejado × atual), Terraform (`plan` antes de `apply`).
+
+### D-24 — Os quatro alvos são cortes numa escada única (estende D-05)
+**Decisão:** `/work`, `/pull-request`, `/homolog` e `/prod` declaram `{atéOEstágio, ambiente, branch, fonteDoDelta, gate, paradas[]}` e entregam ao mesmo `reconcile`, que passa a enxergar a escada inteira — `card? → branch → reprodução? → commit → push → pr? → integrado → [homolog] → «GATE» → promovido? → [prod]` — e para no estágio do alvo. As faixas são aninhadas (`prod ⊃ homolog ⊃ pull-request ⊃ work`). **Nenhum alvo PARA mandando o usuário rodar outra skill**: estágio aberto atrás é gap que o loop fecha com o motor dele. `/prod` com homolog verificado só promove — resultado do diagnóstico, não modo especial.
+**Justificativa:** D-05 já dizia que o alvo é dado; só faltava o dado "até onde". As três paradas do `/pull-request` ("rode o `/work` antes") eram o loop recusando trabalho que ele mesmo sabe fazer. Uma frase do usuário, um objetivo.
+**UC que exige:** UC-5, UC-23, UC-30 — e o pedido literal deste round.
+**Alternativas descartadas:** *(a)* cada skill invocar a anterior (`/prod` → `/homolog` → `/pull-request` → `/work`) — quatro loops aninhados, cada um re-diagnosticando, e a recursão da D-27; *(b)* uma skill só (`/ship <estágio>`) — o nome do destino carrega a consequência, e o usuário pediu quatro comandos.
+
+### D-25 — `pré-requisito` deixa de existir; o gate muda de âncora (revisa D-09)
+**Decisão:** com escada única, "homolog verificado" é o estágio `verificado@homolog`, **dentro** da faixa do `/prod` — o campo `pré-requisito` e a invocação `/prod` → `/homolog` somem, e com eles o ciclo `homolog ↔ prod` no `requires`. O gate de produção (D-09 inteira, no conteúdo) passa a ser `gate: {antesDe: promovido}` — a pergunta é feita **ao chegar** no estágio, não na entrada do loop.
+**Justificativa:** perguntado na entrada, `/prod` do zero pediria autorização antes de o card estar implementado — e "autoridade dita antes não conta" faria a resposta expirar antes de valer.
+**Alternativas descartadas:** manter `pré-requisito` e a invocação — mantém o ciclo e cria o segundo loop dentro do primeiro.
+
+### D-26 — `/repro` e `/card` são modificadores; ordem digitada livre, ordem de execução fixa
+**Decisão:** modificador não dispara o pipeline. Sozinho faz só a própria parte (`/repro` reproduz e para na parada 1 — sem `/method`, sem commit; `/card` cria o card e para). Composto, roda a própria parte e **delega** ao alvo via Skill tool com os verbos restantes. Ordem de execução fixa **`repro → card → alvo`** — a reprodução alimenta o card (`## Como testar` com os passos observados) e o `/method`; a key alimenta a branch. O alvo que recebe `/repro` com a reprodução já feita nesta conversa **funde a parada 2** (`repro/references/human-check.md`, depois de `commit`) e roda; sem reprodução feita, delega ao `/repro` primeiro. Tabela completa em `pipeline/references/composicao.md`.
+**Justificativa:** "às vezes tenho um bug e quero `/repro /card` para criar o card com os passos precisos; depois o dev escolhe `/repro /work` ou só `/work`". O precedente é o `/vac` (`Skill(skill, args)` + "superposição, nunca edição"); o que faltava era a regra de direção, porque aqui a ordem é livre.
+**Alternativas descartadas:** *(a)* união comutativa abstrata ("`⊕`") — correta no resultado, mas não dizia quem roda primeiro, e `/repro /card` exige que a reprodução venha antes; *(b)* modificador como hook dentro do loop — o loop passaria a conhecer modificadores, e o `/repro` sozinho precisaria de um alvo fictício.
+
+### D-27 — Estratificação: motor não invoca skill que declara alvo (refina D-16, D-23)
+**Decisão:** `skill → reconcile → motor → borda`, sem retorno; **nenhum motor invoca `/work`, `/pull-request`, `/homolog`, `/prod`, `/repro` ou `/card`**. Consequência executável: cada estágio precisa de motor próprio — nascem `work-cycle.md` (era o corpo do `/work`), `pr-publish.md` (era o corpo do `/pull-request`) e `promote.md` (era o Step 2 do `/prod`); `branch.md` sai de `work/references/`. As quatro skills-alvo viram **declaração pura** (frontmatter · Iron Law · HARD-GATE · Step 0 · alvo · saída · red flags), como `/homolog` e `/prod` já eram. Na borda só entram `/method`, `/todo` e `/infra`.
+**Justificativa:** se o loop do `/prod` invocasse o `/work` para fechar `commit`, o `/work` abriria o próprio loop dentro do primeiro — recursão sem regra que a impeça. D-23 já dizia "motor de gap não invoca motor de gap"; falta era dizer o mesmo de skill.
+**Alternativas descartadas:** o alvo invocar o alvo anterior "porque a faixa é prefixo" — funciona por acaso e quebra no primeiro modificador.
+
+### D-28 — Sede neutra: `furi-ship:pipeline` (revisa D-15)
+**Decisão:** os motores saem de `prod/references/` para `pipeline/references/`, numa skill interna que só os hospeda. Os quatro alvos declaram `requires: pipeline`.
+**Justificativa:** D-15 escolheu `/prod` por ser "a única presente nas duas topologias". Com quatro alvos, `/work` leria da pasta do `/prod` para fechar um commit local. A objeção "skill que ninguém invoca" caiu com o padrão de skill interna (`user-invocable: false` + `requires` obrigatório, check do validador).
+**Alternativas descartadas:** manter em `prod/references/` — zero movimentação, mas a hospedagem é o que produzia o ciclo `homolog ↔ prod`.
+
+### D-29 — O pipeline nunca cria card sozinho (revisa a tabela de destinos do `findings.md`)
+**Decisão:** `findings.md` (classes A e B) e `scope-split.md` deixam de invocar o `/card`. Achado e excedente vão para `kanban/08-code-review/<feature>.md § Achados do review` e para o relatório final — com a **prova** e a marca "candidato a card" — e o usuário abre, se quiser, com `/card`. As classes e as provas exigidas não mudam.
+**Justificativa:** "nenhum do processo work→prod deve acionar `/card` sozinho". A prova continua sendo a régua — é o que torna a linha do relatório um card de cinco segundos quando o usuário decidir.
+**Alternativas descartadas:** perguntar antes de cada card — o review pararia no meio pela atenção do usuário; manter só a classe A automática — exceção que reabre a porta.
+
+### D-30 — `dev`/`main` é padrão, não lei
+**Decisão:** nenhum motor nem skill escreve `dev`/`main` como nome de branch: `<integração>` e `<produção>` são detectados por `deploy-context.md` § 1 (evidência 0: o `deploy.md` já gravado; 2: `dev develop staging homolog homologacao`; produção: `main master production`) e gravados no `deploy.md § Ambientes` — é o "registrar no setup" do pedido, na pasta `ship-setup/`. `Abre PR: não` ⇒ o estágio `pr` não existe e o loop vai do `commit` ao push direto na integração e ao deploy.
+**Justificativa:** "o padrão do nosso sistema é `dev`, mas pode ter projetos com outros nomes". Já era detectado (D-07); faltava parar de escrever `dev` nos templates e nas tabelas de alvo, e ampliar a evidência 2.
+**Alternativas descartadas:** campo `Integração:` no `setup.md` — segundo dono para um fato que o `deploy.md` já grava (D-02 do setup-infra).

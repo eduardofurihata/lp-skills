@@ -120,7 +120,7 @@
     {
       "id": "homolog-close",
       "skill": "/homolog",
-      "source": "plugins/furi-ship/skills/homolog/SKILL.md:77-91",
+      "source": "plugins/furi-ship/skills/homolog/SKILL.md:81-95",
       "where": "heading",
       "match": "/homolog\\s*[—–:-]+\\s*homolog no ar",
       "release": null,
@@ -131,7 +131,7 @@
     {
       "id": "prod-close",
       "skill": "/prod",
-      "source": "plugins/furi-ship/skills/prod/SKILL.md:118-129",
+      "source": "plugins/furi-ship/skills/prod/SKILL.md:88-100",
       "where": "heading",
       "match": "/prod\\s*[—–:-]+\\s*produ[çc][ãa]o no ar",
       "release": null,
@@ -140,9 +140,20 @@
       "ledger": ["smoke-no-nav", "run-not-watched"]
     },
     {
+      "id": "work-close",
+      "skill": "/work",
+      "source": "plugins/furi-ship/skills/work/SKILL.md:83-93",
+      "where": "heading",
+      "match": "/work\\s+\\S+\\s*[—–:-]+\\s*commitado localmente",
+      "release": null,
+      "stamp": null,
+      "label": "/work",
+      "ledger": ["skill-not-invoked"]
+    },
+    {
       "id": "pull-request-close",
       "skill": "/pull-request",
-      "source": "plugins/furi-ship/skills/pull-request/SKILL.md:158-164",
+      "source": "plugins/furi-ship/skills/pull-request/SKILL.md:78-86",
       "where": "heading",
       "match": "PR aberto|PR atualizado|Publicado sem PR",
       "release": null,
