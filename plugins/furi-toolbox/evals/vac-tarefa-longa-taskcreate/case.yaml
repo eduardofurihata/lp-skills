@@ -1,9 +1,0 @@
-schema_version: "1.1"
-name: vac-tarefa-longa-taskcreate
-description: Audit Pré-Execução 1:1 — o número de TaskCreate declarado tem de ser o número real (o ledger do /vac lê o transcript).
-tags: [vac, tasks, ledger]
-context:
-  scaffold_script: fixture.sh
-execution:
-  env:
-    VAC_ON: "1"

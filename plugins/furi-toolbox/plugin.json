@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-toolbox",
-  "version": "0.1.0+ed12fb233281",
-  "description": "Ferramentas avulsas do Furihata — /vac, /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+  "version": "0.1.0+184f895f907a",
+  "description": "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata/lp-skills"

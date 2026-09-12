@@ -67,6 +67,3 @@ __pycache__/
 /.claude/ship-setup/*.local.md
 /.claude/plans/
 /.claude/worktrees/
-
-# claude plugin eval — relatórios de cada rodada (a doc manda ignorar)
-plugins/*/evals/results/
