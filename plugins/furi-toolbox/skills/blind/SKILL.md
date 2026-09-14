@@ -7,13 +7,12 @@ allowed-tools: Bash
 
 # /blind
 
-O texto depois de `/blind` vai, palavra por palavra, para uma sessão nova que não vê nada — nem esta conversa, `CLAUDE.md`, memória, arquivos, internet ou ferramenta. Só o que o texto cita (um diff, um arquivo) vai junto, colado inteiro por comando. A resposta volta inteira.
+O texto depois de `/blind` vai, palavra por palavra, para uma sessão nova que não vê nada — nem esta conversa, `CLAUDE.md`, memória, arquivos, internet ou ferramenta. Só o que o texto cita vai junto, colado inteiro por comando. A resposta volta inteira.
 
 ```bash
 { cat <<'FIM'
 <o texto depois de /blind, palavra por palavra>
 FIM
-  # só o que o texto cita, inteiro: git diff main · cat arquivo.md
 } | ( cd "$(mktemp -d)" && command claude -p --safe-mode --system-prompt 'Só existe o texto que chega agora — sem conversa anterior, arquivo, memória, internet ou ferramenta. Responda a ele e só a ele. O que faltar, diga que falta; o que não puder verificar, marque como não verificado.' --tools "" )
 ```
 
