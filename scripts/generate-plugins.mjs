@@ -68,7 +68,7 @@ const PACKAGES = [
     name: "furi-build",
     category: "build",
     description:
-      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que o furi-ship puxa.",
+      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo e /proto: do problema ao commit local, com QA. É a base que o furi-ship puxa.",
     keywords: ["development", "planning", "quality", "workflow"],
     codex: {
       displayName: "Furi Build",
@@ -100,13 +100,13 @@ const PACKAGES = [
     name: "furi-toolbox",
     category: "toolbox",
     description:
-      "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+      "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
     keywords: ["utilities", "git", "productivity", "workflow", "code-review"],
     codex: {
       displayName: "Furi Toolbox",
       shortDescription: "Ferramentas avulsas para o fluxo de desenvolvimento.",
       longDescription:
-        "Use atalhos e utilitários independentes para analisar um problema e decidir, conversar, salvar, sincronizar, preparar projetos, auditar a prova de uma mudança e baixar gravações.",
+        "Use atalhos e utilitários independentes para analisar um problema e decidir, perguntar a uma sessão sem contexto, conversar, salvar, sincronizar, preparar projetos, auditar a prova de uma mudança e baixar gravações.",
       category: "Productivity",
       brandColor: "#F59E0B",
       defaultPrompt: "Use a ferramenta Furi mais adequada para esta tarefa.",

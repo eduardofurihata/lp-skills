@@ -10,7 +10,7 @@
     {
       "name": "furi-build",
       "source": "./plugins/furi-build",
-      "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo, /proto e /blind (o juiz cego): do problema ao commit local, com QA. É a base que o furi-ship puxa.",
+      "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /fast, /todo e /proto: do problema ao commit local, com QA. É a base que o furi-ship puxa.",
       "category": "build"
     },
     {
@@ -22,7 +22,7 @@
     {
       "name": "furi-toolbox",
       "source": "./plugins/furi-toolbox",
-      "description": "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+      "description": "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
       "category": "toolbox"
     }
   ]

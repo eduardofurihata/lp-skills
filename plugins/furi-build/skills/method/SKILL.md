@@ -3,7 +3,7 @@ name: method
 description: Use when user invokes /method, when starting feature work, or before any code change and `docs/01-problem/` through `docs/04-spec/` lacks artifact for the feature. Triggers on phrases like "implementa X", "novo feature", "fix não trivial". Not for typos, config tweaks, or read-only questions.
 effort: max
 argument-hint: "[KEY-N] [feature-name]"
-requires: [solve, blind]
+requires: solve
 boundary: [homolog, prod, setup]
 ---
 
@@ -75,8 +75,6 @@ Auto-check em cada gateway: *"O líder do domínio trocaria o dele por isto — 
 9. **Refatoração é regime.** A cada passada, o código do **perímetro** sobe (regra do saldo). Linha própria em todo Gateway Check; sem ela, o gateway não foi publicado. "Só mexi numa linha", "abri só pra ler", "refatoro numa PR separada depois" = BLOQUEADO.
 
 10. **Design é regime, e o DS evolui com o produto.** Feature com superfície visual obedece a `ui/SKILL.md`, declara a linha de design em todo gateway e **promove ao DS** o que não couber em reúso ou composição. "Copio a tela existente por consistência" (estando ruim), "a11y/mobile/estado vazio depois", "hardcodei a cor, é só uma" = BLOQUEADO.
-
-11. **Quem escreve não dá a própria nota.** Onde o veredicto é julgamento, ele vem de uma sessão que não viu esta (`/blind`, mesmo pacote): o Step 8 só fecha com a **revisão fria** (`/blind review`, `RESULTADO: 0 A` no bundle atual — § Step 8 → Revisão fria) e o TC de texto gerado por IA só passa com o **juiz cego** (`/blind pair`, a nossa contra a referência #1 sem rótulo, duas ordens, `RESULTADO: A` — § Step 9 → Evidência de texto). Entrada verbatim, saída integral, veredicto vinculante — discordância vai ao lado, com justificativa. "Eu mesmo julgo, conheço os critérios", "o cego não entendeu o contexto", "rodei uma ordem só" = BLOQUEADO.
 
 Lista completa de racionalizações + contra-argumentos: ver § Rationalizations.
 
@@ -168,8 +166,6 @@ Implementar (7) → Code Review (8) → Testing (9)
 
 QUALQUER mudança de código (fix de bug, correção de review) invalida a validação anterior. O ciclo SÓ encerra com testing 100% PASSED e ZERO mudanças no último passe.
 
-O Step 8 fecha com a **revisão fria** (`/blind review`) zerada sobre o bundle atual — fix muda o bundle e a reabre; o TC de texto de IA do Step 9 fecha com o **juiz cego** (`/blind pair`). Regra Inviolável 11.
-
 ## Loop de Follow-ups (Gate de Convergência)
 
 O protocolo fecha **seco**: nada adiado. A **captura** é contínua (todos os steps alimentam o **Ledger de Follow-ups** — seção `## Follow-ups` do card `kanban/06-todo/<tópico>.md`); a **resolução** acontece num único ponto — a **entrada do Step 10**, antes de mover o card e antes do commit.
@@ -230,9 +226,6 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "o screenshot do happy path já prova" / "design é subjetivo, não dá pra cobrar em gateway"
 - "não tem tela, então não tem texto de IA a testar" / "é só troca de modelo / prompt / RAG, isso é infra"
 - "o texto apareceu, marco PASSED" / "boto mais uma linha no prompt e o TC passa"
-- "eu mesmo julgo, conheço os critérios" / "o cego não entendeu o contexto, desconsidero"
-- "rodei uma ordem só, deu A" / "deu EMPATE, passou" / "a revisão fria foi antes do fix, vale"
-- "resumo a spec pro juiz" / "colo só o RESULTADO"
 
 **Todas significam: PARE. Releia § Rationalizations. Execute do jeito certo.**
 
@@ -481,8 +474,6 @@ Duas decisões entram no loop como gap, e são escritas no spec:
 - **A referência #1** — qual produto lê melhor neste tipo de saída (ChatGPT, Claude, o líder do domínio). Ela é o **piso**: "funcionar" não é a barra, e **empatar também não** — a barra é ler melhor que o melhor.
 - **O que "ler bem" significa aqui** — tom e persona, concisão, formatação, idioma do usuário, **sem truncamento, sem placeholder, sem alucinação, sem robótico**. Isso vira o `Resultado:` de pelo menos um TC no Step 5 e o critério de FAILED no Step 9: texto que lê **igual ou pior** que a referência é teste falho, mesmo com o código certo.
 
-No `docs/04-spec/<tópico>.md`, essas duas decisões moram sob o heading **exato** `## Texto gerado por IA`, como `**Referência #1:**` e `**Ler bem significa:**` (um critério por linha). O heading é contrato: o Step 9 extrai a seção **verbatim** (`sed`) e a entrega ao **juiz cego** (`/blind pair`) como a única régua — seção que não existe com esse nome é régua que o juiz não recebe.
-
 Isso é da **saída lida**, não do modelo nem da infra: prompt, RAG e troca de modelo entram porque mudam o que o usuário lê.
 
 #### Se `não`: a justificativa é nomeada
@@ -718,7 +709,7 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > **Feature com superfície de texto gerado por IA** (derivada no Step 4): ao menos um TC tem o `Resultado:` na **qualidade do texto lido** — lê **melhor que** a referência #1 do spec (completo, no tom da persona, no idioma do usuário, sem placeholder, sem robótico) — e não só "a resposta aparece". Conta como `Cobre` do detalhe "o que ler bem significa" do Step 4. Sem superfície de texto de IA, nada disso se aplica.
 >
-> Esse TC é **um dos N**, não um TC extra — a nota e o teto de 10 não mudam (é lente de cobertura, como Design). E a **prova** dele não é screenshot: é a **transcrição integral da saída** mais o **veredicto do juiz cego** — `/blind pair`, a nossa contra a referência #1, sem rótulo, em duas ordens (§ Step 9 → Evidência de texto). Quem escreveu o prompt não dá a nota.
+> Esse TC é **um dos N**, não um TC extra — a nota e o teto de 10 não mudam (é lente de cobertura, como Design). E a **prova** dele não é screenshot: é a **transcrição integral da saída** (§ Step 9 → Evidência de texto).
 
 ### Princípios neste step (`principles/SKILL.md`)
 
@@ -1135,51 +1126,7 @@ REPETIR até 100% limpo:
      Na dúvida entre B e C → B. Ver § Follow-ups.
   7. PR existente → atualizar comentários/descrição
   8. Loop até ZERO issues de balde A — NÃO aceitar "bom o suficiente"
-  9. Revisão fria (`/blind review`) — só com 1-8 limpos, sobre a mudança INTEIRA como está agora:
-     - bundle montado por comando, nunca digitado (§ Revisão fria, abaixo); carimbo = sha256 do bundle
-     - saída colada INTEGRAL em 8b § Revisão Fria; cada achado do revisor → CLASSIFICAR (6)
-     - achado A → corrigir → volta ao 1 (a mudança mudou; a revisão fria roda de novo no fim)
-     - o loop só fecha com `RESULTADO: 0 A` de uma revisão fria cujo carimbo é o do bundle ATUAL
 ```
-
-#### Revisão fria — a condição de saída do loop
-
-Quem escreveu o plano não enxerga o ponto cego do plano: os passos 1-8 são o autor relendo o próprio trabalho. A **revisão fria** é a mesma checklist lida por uma sessão que não participou de nada — sem esta conversa, sem memória, sem `CLAUDE.md` — e que só pode **ler** o repositório (`blind/SKILL.md`, modo `review`). Ela roda **depois** de o autor declarar o loop limpo, nunca no lugar dele.
-
-```bash
-BASE=main            # a branch de integração de onde este trabalho saiu (dev, quando existe)
-METHOD_DIR=<pasta da skill /method — de onde você abriu este arquivo>
-BLIND="$METHOD_DIR/../blind/SKILL.md"   # a skill /blind, no mesmo pacote (§ Prompt do sistema — review)
-T="$(mktemp -d)"
-{
-  echo "# Bundle — revisão fria de <tópico>"
-  echo; echo "## Diff (working tree vs $BASE — o commit é do Step 10)"
-  echo '```diff'; git diff "$BASE"; echo '```'
-  echo; echo "## Status — arquivos novos ainda não rastreados: leia-os pelo caminho"; git status --short
-  echo; echo "## Checklist (8a — item a item, por nome)"
-  sed -n '/^  5\. Revisar CADA arquivo/,/^  6\. Problema encontrado/p' "$METHOD_DIR/SKILL.md"   # a lista do passo 5 (§ Step 8), a mesma do 7b
-  echo; echo "## Caminhos para ler antes de julgar"
-  printf -- '- %s\n' docs/01-problem/<tópico>.md docs/02-user-stories/<tópico>.md docs/03-use-cases/<tópico>.md \
-    docs/04-spec/<tópico>.md docs/05-test-cases/<tópico>.md kanban/07-implementation/<tópico>.md .claude/patterns.md CLAUDE.md
-} > "$T/bundle.md"
-sha256sum "$T/bundle.md"                                                          # carimbo — vai para o 8b
-# Bloco canônico de `blind/SKILL.md` § Como rodar (review) — copiado, não digitado.
-# Nada aqui é opcional: sem `--safe-mode`, `env -u CLAUDECODE`, o `--system-prompt` extraído
-# e `--tools "Read,Grep,Glob"` a saída volta igualzinha, só que não é mais fria — e a falta não aparece nela.
-SYS="$(awk '/^## Prompt do sistema — review$/{s=1;next} s&&/^```/{if(f)exit;f=1;next} f' "$BLIND")"
-[ -n "$SYS" ] || { echo "blind: § Prompt do sistema — review não encontrado em $BLIND" >&2; exit 1; }
-command -v claude >/dev/null 2>&1 || { echo "blind: binário 'claude' não encontrado — a revisão roda inline, na sessão, e o 8b abre com 'independência: NÃO'." >&2; exit 2; }
-# Bash tool: timeout de 10 min
-env -u CLAUDECODE claude -p --safe-mode --effort max --system-prompt "$SYS" --tools "Read,Grep,Glob" < "$T/bundle.md" > "$T/review.md" \
-  || { echo "blind: a sessão cega falhou" >&2; exit 3; }
-cat "$T/review.md"
-```
-
-Nada do bundle é digitado: diff, status e checklist saem de comando; o resto são caminhos que o revisor abre sozinho. Resumir o diff "porque é grande" é a porta por onde o viés volta — diff grande é `run_in_background`, e o `$T/review.md` é lido quando a rodada termina.
-
-**O que volta é fato do step.** `cat "$T/review.md"` vai **inteiro** para o 8b. Achado do revisor entra na triagem do passo 6 como qualquer outro; rebaixar um `A` dele para B/C exige a justificativa escrita na tabela do 8b — nunca em silêncio, nunca "ele não entendeu o contexto" (contexto que o revisor não viu é contexto que o usuário final também não vê). `RESULTADO: 0 A` com carimbo igual ao do bundle atual é o que fecha o loop; qualquer fix depois disso muda o bundle e reabre a revisão.
-
-Sem o binário `claude` (Codex, Cursor): a revisão roda inline, na sessão, e o 8b abre a seção com `independência: NÃO`.
 
 O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer aqui pode ficar só na cabeça ou só no relatório:** ou é corrigido agora (A), ou está `ABERTO` no ledger (B), ou está `DESCARTADO` com justificativa (C).
 
@@ -1242,17 +1189,6 @@ Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio nã
 
 Feature sem superfície visual: escreva `N/A — sem superfície visual (derivado do Step 4)` **uma vez**, no lugar da tabela.
 
-## Revisão Fria (`/blind review`)
-- Carimbo do bundle (sha256) | Rodadas de revisão fria nesta review | Independência: SIM (sessão cega) / NÃO (inline — sem binário `claude`)
-
-### Saída integral da última rodada
-> <`cat` do `review.md` — do primeiro ao último caractere, sem cortar, sem "[…]">
-
-### Triagem dos achados do revisor
-| # | Achado (do revisor) | Balde sugerido | Balde final | Justificativa (obrigatória quando rebaixa A → B/C) |
-
-Última rodada com `RESULTADO: 0 A` e carimbo igual ao do bundle atual? ✅ / ❌ (❌ = o loop não fechou)
-
 ## Follow-ups Emitidos
 | # | Achado | Balde (A/B/C) | Status | Destino |
 (A = corrigido nesta revisão · B = ABERTO no ledger, vira ciclo /method · C = DESCARTADO + justificativa)
@@ -1272,7 +1208,6 @@ Nenhum? → "nenhum follow-up emitido neste review".
 - Qualquer erro encontrado = corrigido imediatamente, não apenas documentado
 - **Achado fora do escopo ≠ achado ignorado.** Não cabe corrigir aqui (é escopo novo) → **ledger**, não "anoto no relatório e sigo". Relatório documenta; ledger obriga a resolver.
 - Relatório **brutalmente honesto**
-- **Revisão fria não é opcional nem substituível** pelo loop do autor: sem `RESULTADO: 0 A` no bundle final, o veredicto do 8b **não pode ser APROVADO** — e "ele não entendeu o contexto" não rebaixa achado: justificativa escrita na tabela, ou corrige
 - Veredicto ❌ → voltar ao 7b → rodar Step 8 inteiro novamente
 - Sem o .md criado = step NÃO completo
 
@@ -1280,7 +1215,6 @@ Nenhum? → "nenhum follow-up emitido neste review".
 
 - [ ] Veredicto **APROVADO** em 8b
 - [ ] Zero issues pendentes (balde A)
-- [ ] **Revisão fria** (`/blind review`) com `RESULTADO: 0 A` e carimbo igual ao do bundle atual — saída integral colada no 8b, achados do revisor triados (rebaixamento com justificativa)
 - [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível 10x) — nenhuma linha em branco
 - [ ] **`## Análise de Design` preenchida por princípio** (se tem UI) — nenhuma linha em branco
 - [ ] **Princípios declarados** na linha do Gateway Check
@@ -1463,7 +1397,6 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota do motivo.
         → TC de **texto gerado por IA** (Step 5): a evidência é a saída REAL — **transcrição integral** colada
           em `kanban/09-run-test/<tópico>.md`, com o screenshot junto (§ Evidência de texto);
-          quem compara com a referência #1 é o **juiz cego** (`/blind pair`, 2 ordens — § Evidência de texto), nunca o autor:
           texto que lê **igual ou pior** que a referência #1 do spec = FAILED. "O código rodou e o texto apareceu" NÃO é PASSED.
      d. Bug → CLASSIFICAR (ver § Follow-ups):
         - dentro do escopo documentado → **balde A**: corrigir AGORA. ATENÇÃO: qualquer fix invalida
@@ -1552,9 +1485,7 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 - TCs de **texto gerado por IA** com **transcrição integral** colada em `kanban/09-run-test/<tópico>.md`: **T** — listar (TC-ID → bloco) · `N/A` sem essa superfície
 - Ratio C == N? ✅ / ❌ — tasks pendentes: [listar TaskIDs]
 - Ratio E == N? ✅ / ❌ — TCs sem screenshot: [listar TC-IDs]
-- TCs de texto de IA com **veredicto do juiz cego** (`/blind pair`, 2 ordens) colado integral: **J** — listar (TC-ID → RESULTADO) · `N/A` sem essa superfície
 - Ratio T == TCs de texto de IA? ✅ / ❌ / N/A — TCs só com screenshot: [listar TC-IDs]
-- Ratio J == T? ✅ / ❌ / N/A — TCs julgados pelo autor, em uma ordem só, ou sem a saída do juiz colada: [listar TC-IDs]
 - Status agregado: **N PASSED**, **0 FAILED**, **0 NOT_RUN**, **0 SKIPPED**, **0 BLOCKED** ✅ / ❌
 - Último ciclo sem mudanças de código? ✅ / ❌
 - Follow-ups detectados no Step 9: **F** — todos classificados no ledger (A/B/C)? ✅ / ❌
@@ -1575,9 +1506,6 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 | "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principles/SKILL.md`). BLOQUEADO. |
 | "O screenshot do chat já mostra a resposta" | NÃO. Screenshot recorta: truncamento, repetição e fecho ficam fora do quadro. Sem transcrição integral, o TC de texto é NOT_RUN. BLOQUEADO. |
 | "Colei o começo e pus '[…]' no resto" | NÃO. Cortar a evidência é escolher o que o auditor pode ver. Integral ou nada. BLOQUEADO. |
-| "Eu mesmo comparo com a referência, conheço os critérios" | NÃO. Quem escreveu o prompt não julga o próprio texto. O veredicto é do juiz cego, em duas ordens. BLOQUEADO. |
-| "Rodei o juiz numa ordem só e deu A" | NÃO. Uma ordem é efeito de posição. `pair` roda as duas; `DISCORDAM` não é vitória. BLOQUEADO. |
-| "A referência sintética é fraca, empate vale PASSED" | NÃO. Empatar com um Claude sem contexto nenhum não é "10x acima do #1". `EMPATE` = FAILED. BLOQUEADO. |
 
 ### Evidência visual — estado × breakpoint (feature com superfície visual)
 
@@ -1599,90 +1527,12 @@ Screenshot de chat prova que a resposta **apareceu**; não prova que ela **lê b
 **Saída:**
 > <a resposta COMPLETA, do primeiro ao último caractere — sem cortar, sem "[…]", sem parafrasear>
 **Screenshot:** <path>
-**Referência #1 (<nome do spec>) — saída dela para a MESMA entrada:**
-> <transcrição integral> · origem: **real** (<como foi obtida: produto, data>) | **sintética** (`/blind` ask, prompt fixo abaixo)
-**Juiz cego (`/blind pair`, 2 ordens):**
-> <saída integral do bloco — as duas rodadas e a `## Consolidação`, sem cortar>
-**Resultado:** PASSED só com `RESULTADO: A` (a nossa vence nas DUAS ordens) · `B`, `EMPATE`, `DISCORDAM` ou `INDETERMINADO` = FAILED
+**Vs. referência #1 (<nome do spec>):** <como ela responderia isto, e onde a nossa perde ou ganha>
 ```
 
-**A régua é a do Step 4** (`docs/04-spec/<tópico>.md` § Texto gerado por IA — tom e persona, concisão, formatação, idioma do usuário, sem truncamento, sem placeholder, sem alucinação, sem robótico), critério a critério. A lista que vale é a do spec: critério que ele acrescentou entra, critério que ele não pediu sai — **a fonte é uma só**, aqui não nasce segunda lista.
+**Julgue contra o que o Step 4 escreveu** (`docs/04-spec/<tópico>.md` § Texto gerado por IA — tom e persona, concisão, formatação, idioma do usuário, sem truncamento, sem placeholder, sem alucinação, sem robótico), critério a critério. A lista que vale é a do spec: critério que ele acrescentou entra, critério que ele não pediu sai — **a fonte é uma só**, aqui não nasce segunda lista.
 
-**Quem julga é o juiz cego, não o autor.** Quem escreveu o prompt sabe qual texto é o dele e quanto custou; a comparação "como a referência responderia" escrita por ele é a mesma mão dando nota à própria prova. O `/blind pair` recebe os critérios verbatim, a entrada e os dois textos **sem rótulo**, e julga nas duas ordens (`blind/SKILL.md`):
-
-```bash
-METHOD_DIR=<pasta da skill /method — de onde você abriu este arquivo>
-BLIND="$METHOD_DIR/../blind/SKILL.md"   # a skill /blind, no mesmo pacote (§ Prompt do sistema — ask e pair)
-command -v claude >/dev/null 2>&1 || { echo "blind: binário 'claude' não encontrado — o julgamento roda inline, na sessão, e o bloco do TC abre com 'independência: NÃO'." >&2; exit 2; }
-T="$(mktemp -d)"
-sed -n '/^## Texto gerado por IA/,/^## /p' docs/04-spec/<tópico>.md > "$T/criterios.md"   # verbatim — nunca resumido
-printf '%s\n' "<a entrada, literal>" > "$T/entrada.md"
-cat > "$T/nossa.md" <<'EOF'
-<a nossa saída, transcrição integral — a mesma colada acima>
-EOF
-# Referência #1 — (a) REAL sempre que existir: a mesma entrada no produto de referência (Playwright, app), transcrita…
-cat > "$T/referencia.md" <<'EOF'
-<a saída da referência #1 para a MESMA entrada>
-EOF
-# …OU (b) sem acesso ao produto de referência: SINTÉTICA, gerada às cegas com este prompt fixo (só o nome e a entrada mudam)
-# Bloco canônico de `blind/SKILL.md` § Como rodar (ask) — copiado, não digitado; nada aqui é opcional
-SYS="$(awk '/^## Prompt do sistema — ask$/{s=1;next} s&&/^```/{if(f)exit;f=1;next} f' "$BLIND")"
-[ -n "$SYS" ] || { echo "blind: § Prompt do sistema — ask não encontrado em $BLIND" >&2; exit 1; }
-printf '%s\n\n%s\n' "Você é <referência #1 nomeada no spec>. Responda à entrada abaixo exatamente como o melhor produto do mercado responderia — completa, no idioma do usuário, no tom desse produto. Só a resposta, sem comentar." "$(cat "$T/entrada.md")" \
-  | ( cd "$(mktemp -d)" && env -u CLAUDECODE claude -p --safe-mode --effort max --system-prompt "$SYS" --tools "" ) > "$T/referencia.md" \
-  || { echo "blind: a sessão cega falhou" >&2; exit 3; }
-
-# O juiz — A é a nossa, B é a referência; duas ordens, consolidação em RESULTADO.
-# Bloco canônico de `blind/SKILL.md` § Como rodar (pair) — copiado, não digitado; as DUAS ordens são o mecanismo
-SYS="$(awk '/^## Prompt do sistema — pair$/{s=1;next} s&&/^```/{if(f)exit;f=1;next} f' "$BLIND")"
-[ -n "$SYS" ] || { echo "blind: § Prompt do sistema — pair não encontrado em $BLIND" >&2; exit 1; }
-CRIT="$T/criterios.md"; IN="$T/entrada.md"; A="$T/nossa.md"; B="$T/referencia.md"
-for f in "$CRIT" "$IN" "$A" "$B"; do [ -s "$f" ] || { echo "blind: entrada ausente ou vazia: $f" >&2; exit 1; }; done
-# uma rodada: $1 = Texto 1, $2 = Texto 2 — o prompt sai por `cat`, nunca digitado
-round() {
-  { echo "# Critérios (a única régua — verbatim)"; cat "$CRIT"; echo
-    echo "# Entrada (o que disparou os dois textos)"; cat "$IN"; echo
-    echo "# Texto 1"; cat "$1"; echo
-    echo "# Texto 2"; cat "$2"; echo
-  } | ( cd "$(mktemp -d)" && env -u CLAUDECODE claude -p --safe-mode --effort max --system-prompt "$SYS" --tools "" )
-}
-# última linha `VENCEDOR:` da saída → 1 | 2 | EMPATE | INDETERMINADO
-winner() {
-  local w
-  w="$(grep -E '^[[:space:]]*\**VENCEDOR\**:' "$1" | tail -1 \
-      | sed -E 's/^[[:space:]]*\**VENCEDOR\**:[[:space:]]*//; s/[[:space:]*`.]+$//' \
-      | tr '[:lower:]' '[:upper:]')"
-  case "$w" in 1|2|EMPATE) echo "$w" ;; *) echo "INDETERMINADO" ;; esac
-}
-round "$A" "$B" > "$T/out1.md" || { echo "blind: a sessão cega falhou (rodada 1)" >&2; exit 3; }
-round "$B" "$A" > "$T/out2.md" || { echo "blind: a sessão cega falhou (rodada 2)" >&2; exit 3; }
-w1="$(winner "$T/out1.md")"; w2="$(winner "$T/out2.md")"
-# mapeamento CRUZADO — a rodada 2 rodou INVERTIDA: lá o Texto 1 é o B e o Texto 2 é o A
-case "$w1" in 1) r1=A ;; 2) r1=B ;; *) r1="$w1" ;; esac
-case "$w2" in 1) r2=B ;; 2) r2=A ;; *) r2="$w2" ;; esac
-if [ "$r1" = INDETERMINADO ] || [ "$r2" = INDETERMINADO ]; then res="INDETERMINADO — alguma rodada não terminou com a linha VENCEDOR"
-elif [ "$r1" = "$r2" ]; then res="$r1"
-else res="DISCORDAM — efeito de posição; não é vitória de ninguém"
-fi
-{
-  echo "# /blind pair — juiz cego, 2 ordens"
-  echo "- critérios: \`$CRIT\` · entrada: \`$IN\` · A: \`$A\` · B: \`$B\`"
-  echo "- effort: max · model: o da sessão"
-  echo
-  echo "## Rodada 1 — Texto 1 = A · Texto 2 = B"
-  cat "$T/out1.md"; echo
-  echo "## Rodada 2 — Texto 1 = B · Texto 2 = A"
-  cat "$T/out2.md"; echo
-  echo "## Consolidação"
-  echo "- Rodada 1: $r1 · Rodada 2: $r2"
-  echo "- RESULTADO: $res"
-} > "$T/juiz.md"
-cat "$T/juiz.md"
-```
-
-`cat "$T/juiz.md"` vai **inteiro** para o bloco do TC. **`RESULTADO: A` é PASSED; qualquer outro é FAILED** — nunca "PASSED com ressalva": o teste é falho mesmo com o código certo. Empatar com um Claude sem contexto nenhum (a referência sintética) não é "10x acima do #1". O autor que discorda do juiz escreve a discordância **ao lado** do veredicto, com justificativa — não o troca. Os demais defeitos que o juiz apontar entram na triagem A/B/C como qualquer achado.
-
-Sem o binário `claude` (Codex, Cursor): o julgamento roda inline, e o bloco do TC abre com `independência: NÃO`.
+**Texto que lê igual ou pior que a referência #1 é FAILED**, nunca "PASSED com ressalva": o teste é falho mesmo com o código certo. Os demais defeitos entram na triagem A/B/C como qualquer achado.
 
 **Fix de texto vai para onde o texto nasce.** Enfiar instrução no prompt até aquele caso passar é o **remendo de CSS da saída de IA**: o TC fica verde e a próxima pergunta volta a ler mal. O fix trata a causa — prompt de sistema, template, o dado que o RAG entregou, o modelo escolhido — e reabre o perímetro como qualquer outro fix.
 
@@ -1691,7 +1541,7 @@ Feature sem essa superfície: escreva `N/A — sem superfície de texto gerado p
 ### Gateway 9 → 10
 
 Ver § Gateways seção "Gateway 9 → 10" (detalhado).
-Inclui as linhas de **princípios**, **refatoração** e **design**, o critério de evidência por estado × breakpoint e o de **transcrição integral da saída de texto de IA julgada pelo juiz cego** (`/blind pair`, 2 ordens).
+Inclui as linhas de **princípios**, **refatoração** e **design**, o critério de evidência por estado × breakpoint e o de **transcrição integral da saída de texto de IA**.
 
 ## Step 10 — Done
 
@@ -1830,7 +1680,7 @@ Tudo ✅ → feature encerrada. **Fim do protocolo.**
 7. **Princípios em todo gateway.** Todo Gateway Check declara como **SOLID · DRY · KISS · YAGNI · LoD · Motores** foram aplicados no step, pela lente daquele step (`principles/SKILL.md`). Princípio não declarado = princípio não aplicado. **SOLID são cinco** (SRP, OCP, LSP, ISP, DIP) — declarar só o SRP não cumpre.
 8. **Refatoração em todo gateway.** Todo Gateway Check declara o que a passada **elevou** no perímetro (`principles/SKILL.md` § Refatoração contínua). Linha ausente = gateway não publicado; "nada a elevar" exige dizer o que foi verificado.
 9. **Design em todo gateway de feature com UI.** Feature com superfície visual declara a linha de design (`ui/SKILL.md`). Superfície visual é **derivada no Step 4**, nunca declarada pelo usuário — e a ausência dela se declara **uma vez**, no Gateway 4→5.
-10. **Texto de IA nos três gateways em que existe o que julgar.** Superfície de texto gerado por IA é **derivada no Step 4** (a partir do produto: core de IA ⇒ nasce `sim`), como a visual, e a ausência dela também se declara **uma vez**, no Gateway 4→5. É cobrada onde há matéria: **4 → 5** (a derivação — e, se `não`, a saída nomeada), **5 → 6** (o TC com resultado na qualidade do texto lido) e **9 → 10** (a saída REAL, lida — e lida pelo **juiz cego**, `/blind pair` em duas ordens, não pelo autor). Entre 6 e 8 não existe saída para ler: "o prompt está no arquivo" não é verificável como "lê bem", e critério que não pode ser reprovado ensina a assinar sem olhar.
+10. **Texto de IA nos três gateways em que existe o que julgar.** Superfície de texto gerado por IA é **derivada no Step 4** (a partir do produto: core de IA ⇒ nasce `sim`), como a visual, e a ausência dela também se declara **uma vez**, no Gateway 4→5. É cobrada onde há matéria: **4 → 5** (a derivação — e, se `não`, a saída nomeada), **5 → 6** (o TC com resultado na qualidade do texto lido) e **9 → 10** (a saída REAL, lida). Entre 6 e 8 não existe saída para ler: "o prompt está no arquivo" não é verificável como "lê bem", e critério que não pode ser reprovado ensina a assinar sem olhar.
 
 > Racionalizações para pular Gateway → ver § Rationalizations categoria 1, 3, 10 e 11.
 
@@ -1869,8 +1719,8 @@ Tudo ✅ → feature encerrada. **Fim do protocolo.**
 | **6 → 7a** | Tasks atômicas (1 prompt cada); cada task rastreável; dependências mapeadas; seção `## Follow-ups` semeada no card (com o que apareceu nos Steps 1-5, ou vazia); **princípios:** SRP (1 task = 1 responsabilidade) · DRY (task que recria o existente virou task de **reúso**) · YAGNI (toda task rastreia a UC/TC) · Motor (cada task declara **qual motor** constrói/estende/absorve); **design** (se tem UI): task de UI declara o **nível atômico** e o componente do DS que constrói, estende ou promove |
 | **7a → 7b** | Plano autocontido (contexto + estratégia + mapa TC→código + checklist); i18n planejado se projeto tem i18n; referência de big apps citada para decisões UI/UX; **seção `Reúso antes de criar` preenchida** (DRY — grep feito, arquivo novo só com justificativa); **seção `O que NÃO vamos construir` preenchida** (YAGNI — abstrações consideradas e descartadas); **§ 3.3 Motores preenchida** (qual nasce, qual é estendido, qual lógica dispersa será absorvida); responsabilidade única declarada por arquivo do plano (SRP); pontos de extensão e direção de dependência declarados (OCP/DIP); **perímetro listado** com o que será elevado em cada arquivo; **§ 3.4 Design System preenchida** se tem UI (inventário, reúso/composição/promoção, tokens — zero literal planejado) |
 | **7b → 8** | Todas tasks do checklist marcadas; tsc/lint passam; **checklist de princípios do 7b percorrido por arquivo aberto** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · camadas · direção de dependências); **refatoração do perímetro executada** (regra do saldo: cada arquivo subiu ou já estava no nível 10x, declarado); **design** (se tem UI): zero valor literal, composição > configuração, headless, todos os estados, a11y AA, breakpoints do projeto; TCs de regressão criados para features dependentes impactadas |
-| **8 → 9** | Veredicto **APROVADO** em 8b; zero issues pendentes; **review percorreu os princípios um a um, por nome** (seção `## Análise de Qualidade` preenchida por princípio, **os cinco do SOLID inclusive**); **saldo do perímetro conferido**; **design revisado por princípio e por nome** (se tem UI); **revisão fria** (`/blind review`) com `RESULTADO: 0 A` no bundle atual, saída integral no 8b; achados fora de escopo do review classificados no ledger (A/B/C); PR existente atualizado (se houver) |
-| **9 → 10** | Ver detalhado abaixo — TODOS TCs PASSED via front, evidência 1:1, último ciclo SEM mudanças de código; **texto de IA** (se tem): o TC de qualidade do texto passou com a saída real lida pelo **juiz cego** (`/blind pair`, `RESULTADO: A`) — texto que lê igual ou pior que a referência #1 é FAILED, não PASSED "porque funcionou" |
+| **8 → 9** | Veredicto **APROVADO** em 8b; zero issues pendentes; **review percorreu os princípios um a um, por nome** (seção `## Análise de Qualidade` preenchida por princípio, **os cinco do SOLID inclusive**); **saldo do perímetro conferido**; **design revisado por princípio e por nome** (se tem UI); achados fora de escopo do review classificados no ledger (A/B/C); PR existente atualizado (se houver) |
+| **9 → 10** | Ver detalhado abaixo — TODOS TCs PASSED via front, evidência 1:1, último ciclo SEM mudanças de código; **texto de IA** (se tem): o TC de qualidade do texto passou com a saída real lida — texto que lê igual ou pior que a referência #1 é FAILED, não PASSED "porque funcionou" |
 | **Gate de Convergência** | Entrada do Step 10, ANTES de mover o card e do commit — ledger sem item `ABERTO` e zero itens novos no último passe (**passe seco**). Ver § Follow-ups. |
 
 ### Gateway 9 → 10 (Detalhado — o mais crítico)
@@ -1895,7 +1745,7 @@ Tudo ✅ → feature encerrada. **Fim do protocolo.**
 | Mobile: iOS + Android cobertos? | Toda feature mobile com evidência nas DUAS plataformas |
 | Nenhum TC passou por workaround? | Todo fix aplicado no ciclo respeita os princípios (`principles/SKILL.md`). TC que só passa violando SRP/DRY = **FAILED disfarçado**, não PASSED. Fix vai **para o motor**, nunca de remendo no chamador |
 | UI: evidência por estado × breakpoint? | Feature com superfície visual: cada TC de UI tem evidência nos **estados** (vazio, carregando, erro, sucesso, limite) e nos **breakpoints do projeto**, não só o happy path em desktop (`ui/SKILL.md`) |
-| Texto de IA: a saída real foi lida? | Feature com superfície de texto gerado por IA: o TC de qualidade tem a **transcrição integral da saída** em `kanban/09-run-test/` (screenshot recorta — não basta), a saída da referência #1 para a MESMA entrada (real ou sintética, origem declarada) e o **veredicto do juiz cego** colado integral (`/blind pair`, duas ordens). Só `RESULTADO: A` é PASSED; igual ou pior que a referência = **FAILED**, mesmo com o código certo (§ Step 9 → Evidência de texto) |
+| Texto de IA: a saída real foi lida? | Feature com superfície de texto gerado por IA: o TC de qualidade tem a **transcrição integral da saída** em `kanban/09-run-test/` (screenshot recorta — não basta) e a comparação **nomeada** com a referência #1 do spec está escrita. Lê igual ou pior que a referência = **FAILED**, mesmo com o código certo (§ Step 9 → Evidência de texto) |
 
 ```markdown
 ## Gateway Check — Step 9 → Step 10
@@ -1909,7 +1759,7 @@ Tudo ✅ → feature encerrada. **Fim do protocolo.**
 - Último ciclo sem mudanças de código? ✅ SIM
 - Mobile iOS + Android? ✅ SIM / N/A (escopo derivado do Step 4 confirma feature sem superfície mobile)
 - UI: evidência por estado × breakpoint? ✅ SIM / N/A (sem superfície visual)
-- Texto de IA: saída transcrita na íntegra e julgada pelo juiz cego contra a referência #1 (`/blind pair`, 2 ordens, `RESULTADO: A`)? ✅ SIM / N/A (sem superfície de texto gerado por IA)
+- Texto de IA: saída transcrita na íntegra e comparada com a referência #1? ✅ SIM / N/A (sem superfície de texto gerado por IA)
 - **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ nenhum fix do ciclo passou por workaround — os fixes voltaram ao Step 8 e foram para o motor, não para o chamador
 - **Refatoração (tudo por onde passou):** ✅ o perímetro dos fixes deste ciclo foi reaberto e elevado
 - **Design (tokens · atomicidade · composição · estados · a11y):** ✅ nenhum fix visual foi remendo de CSS   ← só com superfície visual
@@ -2339,23 +2189,6 @@ O mapa do inventário informa a ação em TODOS os steps:
 | "Acrescento uma instrução no prompt e o TC passa" | Remendo de CSS da saída de IA: verde neste caso, quebrado no próximo. **FAILED disfarçado**. BLOQUEADO. |
 | "A qualidade do texto é subjetiva, não dá pra cobrar em gateway" | Truncamento, placeholder, idioma, alucinação e fecho são **verificáveis** na saída colada. É isso que se cobra. BLOQUEADO. |
 
-### Categoria 14 — Juiz cego (`/blind` — § Step 8 → Revisão fria · § Step 9 → Evidência de texto)
-
-> Um agente só escreve o spec, o plano, o código, o review e a nota do próprio trabalho. Onde o veredicto é **julgamento** — o texto lê melhor que o #1? o diff segura? — quem escreveu não julga: a revisão fria fecha o Step 8 e o juiz pareado fecha o TC de texto de IA. O `/blind` tira o viés de **contexto**; a régua continua sendo a do spec.
-
-| Frase | Realidade |
-|-------|-----------|
-| "Eu mesmo julgo, já conheço os critérios" | Conhecer os critérios é o problema: você sabe qual texto é o seu e quanto custou. O veredicto é do juiz cego. BLOQUEADO. |
-| "O cego não entendeu o contexto, desconsidero o achado" | Contexto que o juiz não viu é contexto que o usuário final também não vê. Discordância vai **ao lado** do veredicto, com justificativa — não no lugar dele. BLOQUEADO. |
-| "Resumo a spec / o diff pro juiz, é longo demais" | Entrada é artefato verbatim (`cat`/`sed`). Resumo é a porta por onde o viés volta. Diff grande = `run_in_background`. BLOQUEADO. |
-| "Rodei uma ordem só e deu A" | Uma ordem é efeito de posição. `pair` roda as duas; `DISCORDAM` não é vitória. BLOQUEADO. |
-| "Deu EMPATE, conta como passou" / "a referência sintética é fraca" | Empatar com um Claude sem contexto nenhum não é "10x acima do #1". `EMPATE` = FAILED. BLOQUEADO. |
-| "Classifico os achados do revisor como C pra não voltar ao loop" | Rebaixar `A` exige justificativa escrita na tabela do 8b, achado a achado. Silêncio é bypass. BLOQUEADO. |
-| "A revisão fria rodou antes do último fix, vale" | Fix muda o bundle; carimbo diferente = revisão de outro código. Roda de novo. BLOQUEADO. |
-| "Colo só o `RESULTADO`, o resto é ruído" | "O cego aprovou" não é evidência; a saída dele é. Integral, sempre. BLOQUEADO. |
-| "Passo `--model opus` pra garantir" | O modelo grande é o default e muda de nome. `--model` só rebaixa (smoke). BLOQUEADO. |
-| "Não tenho o binário `claude`, então pulo o juiz" | Sem binário o julgamento roda inline **declarando `independência: NÃO`** — nunca em silêncio, nunca pulado. BLOQUEADO. |
-
 ### Red Flags — Frases-Gatilho que Obrigam STOP
 
 Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PARE e releia esta seção**:
@@ -2408,8 +2241,5 @@ Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PA
 - "design é subjetivo, não dá pra cobrar em gateway"
 - "não tem tela, então não tem texto de IA" / "é troca de modelo, isso é infra"
 - "o texto apareceu, marco PASSED" / "boto mais uma linha no prompt e o TC passa"
-- "eu mesmo julgo, conheço os critérios" / "o cego não entendeu o contexto, desconsidero"
-- "rodei uma ordem só, deu A" / "deu EMPATE, passou" / "a revisão fria foi antes do fix, vale"
-- "resumo a spec pro juiz" / "colo só o RESULTADO"
 
 **Todas essas frases significam: PARE. Reative o protocolo. Execute do jeito certo.**
