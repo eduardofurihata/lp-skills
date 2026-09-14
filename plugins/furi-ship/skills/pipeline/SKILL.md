@@ -567,7 +567,7 @@ ls kanban/10-done/<feature>.md                           # existe, com `tests: p
 | Sinal | O que fazer |
 |---|---|
 | árvore suja com código, sem commit | **não** commita avulso: é trabalho que não passou pelo `/method` — volta ao § 4 e o `/method` absorve a árvore como ponto de partida (ele lê o que existe) |
-| card em `kanban/06-todo/` (o `/fast` parou no review) | QA não rodou: **invoque o `/todo`** (`furi-build:todo`) para aquele feature até 100% PASSED — é ele que promove a `10-done`; depois o `/method` fecha o Step 10 |
+| card em `kanban/06-todo/` (o `/method` parou antes do Step 9) | QA não rodou: **invoque o `/todo`** (`furi-build:todo`) para aquele feature até 100% PASSED — é ele que promove a `10-done`; depois o `/method` fecha o Step 10 |
 | `10-done` existe mas `tests:` não é `passed` | "done sem prova" = não testado. `/todo` de novo |
 | commits na branch **sem key nenhuma** e há card | o commit anterior não seguiu o § Commit — não reescreva histórico; o commit deste ciclo leva a key, e o `pr-publish` deriva os cards dos commits que a têm |
 | sem card e a árvore está limpa | não há objetivo: o estágio está **fechado por vazio** — o loop reporta gap zero |
@@ -819,7 +819,7 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 |---|---|
 | Em `10-done`/`11-ship` **com `09-run-test` 100% PASSED** | QA já foi feita via front no Step 9 → **confia**. Só code review; **pula o front-test** |
 | Em `10-done`/`11-ship` mas QA **ausente / ambígua / falhada** | "Done" sem prova = não-testado → review **com** front-test |
-| Em `kanban/06-todo/` (QA pendente) | **Invocar o `/todo`** (Skill tool) até **100% PASSED**. Só então o review — *rede de segurança: o dev parou no `/fast` e esqueceu o teste* |
+| Em `kanban/06-todo/` (QA pendente) | **Invocar o `/todo`** (Skill tool) até **100% PASSED**. Só então o review — *rede de segurança: o dev parou o `/method` antes do teste* |
 | Sem card no kanban (dev trabalhou cru) | **PARAR e avisar:** sem test cases não dá para autenticar QA. Perguntar como proceder |
 
 4. **Gate de convergência do dev — ledger de follow-ups.** Abrir `kanban/10-done/<feature>.md`, seção `## Follow-ups`:

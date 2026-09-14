@@ -96,7 +96,7 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - **NUNCA commite antes de mover o card.** Commitar o código primeiro e só depois mover o card força um segundo commit — exatamente o erro que esta ordem evita.
 - **SHA é nota de bastidor:** o commit já É o registro (está no `git log`). Anotar o SHA no done doc é opcional e **não justifica um segundo commit** só para gravá-lo.
 
-> **Escopo do commit:** só o `/method` completo — e, dentro dele, **só o ciclo RAIZ** — commita. **`/fast` para no Step 8 (Code Review) — nem chega aqui.** O **`/todo`** faz a promoção do card (`06`→`10`) e grava `tests: passed`, mas **NÃO commita**. **Ciclo de follow-up aninhado** roda este Step 10 inteiro (done doc + `rm` do card) **menos o commit** — se ele commitasse, o `git add -A` varreria o código não-commitado da feature-pai para dentro do commit errado. O commit único do ciclo raiz cobre tudo: a feature + todos os ciclos de follow-up (código, docs de todos os tópicos, todos os cards de done, todas as remoções de to-do).
+> **Escopo do commit:** só o `/method` completo — e, dentro dele, **só o ciclo RAIZ** — commita. O **`/todo`** faz a promoção do card (`06`→`10`) e grava `tests: passed`, mas **NÃO commita**. **Ciclo de follow-up aninhado** roda este Step 10 inteiro (done doc + `rm` do card) **menos o commit** — se ele commitasse, o `git add -A` varreria o código não-commitado da feature-pai para dentro do commit errado. O commit único do ciclo raiz cobre tudo: a feature + todos os ciclos de follow-up (código, docs de todos os tópicos, todos os cards de done, todas as remoções de to-do).
 
 ### Red Flags — PARE (cada uma gera o segundo commit que queremos evitar)
 

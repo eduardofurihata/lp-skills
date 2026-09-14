@@ -100,7 +100,7 @@
 
 ### UC-16 — Mover skills atuais para `personal`
 - **Ator**: Autor
-- **Precondição**: 9 skills hoje em `skills/*` (ask, chat, chat-out, claude-modes, commit, fast, method, solve, todo)
+- **Precondição**: 8 skills hoje em `skills/*` (ask, chat, chat-out, claude-modes, commit, method, solve, todo)
 - **Fluxo**: `git mv skills/<slug> skills/personal/<slug>`
 - **Resultado**: histórico preservado; todas em `personal`
 
