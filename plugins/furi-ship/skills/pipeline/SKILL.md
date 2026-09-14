@@ -43,7 +43,7 @@ Cada **modificador** roda a própria parte antes e delega ao alvo com os verbos 
 | § branch | estágio | `branch` | reconcile · `/repro` sozinho |
 | § work-cycle | estágio | `commit` → `/method` na borda | reconcile |
 | § pr-publish | estágio | `push`, `pr` | reconcile |
-| § pr-cycle | estágio | `integrado` (review · QA via `/todo` · aprovação · merge — ou rejeição) | reconcile |
+| § pr-cycle | estágio | `integrado` (review · QA pendente via `/method` · aprovação · merge — ou rejeição) | reconcile |
 | § deploy-run | estágio | `publicado@<amb>` | reconcile |
 | § env-config | estágio | `configurado@<amb>` → `/infra` na borda, se falta o `infra.md` | reconcile |
 | § smoke | estágio | `verificado@<amb>` | reconcile |
@@ -53,7 +53,7 @@ Cada **modificador** roda a própria parte antes e delega ao alvo com os verbos 
 
 Cada motor é uma seção `##` deste arquivo — `grep -n '^## ' pipeline/SKILL.md` lista todas.
 
-**Regra de estratificação:** `skill → reconcile → motor → borda`, sem retorno. Motor de estágio é invocado só pelo loop e não invoca outro motor de estágio. **Nenhum motor invoca uma skill que declara alvo nem um modificador** — na borda só entram `/method`, `/todo` (furi-build) e `/infra`. É o que impede a escada de reabrir do começo dentro dela mesma.
+**Regra de estratificação:** `skill → reconcile → motor → borda`, sem retorno. Motor de estágio é invocado só pelo loop e não invoca outro motor de estágio. **Nenhum motor invoca uma skill que declara alvo nem um modificador** — na borda só entram `/method` (furi-build) e `/infra`. É o que impede a escada de reabrir do começo dentro dela mesma.
 
 ## O que muda quando o projeto muda
 
@@ -67,7 +67,7 @@ Cada motor é uma seção `##` deste arquivo — `grep -n '^## ' pipeline/SKILL.
 
 ## reconcile
 
-> **A porta única.** Os quatro alvos — `/work`, `/pull-request`, `/homolog`, `/prod` — declaram **até que estágio** vão e entregam a este loop. Nenhum deles invoca motor direto, e nenhum motor invoca outro motor de gap — a direção é `skill → reconcile → motor → borda`, sem retorno. Na borda, skill externa é **invocada via Skill tool** — `furi-build:method`, `furi-build:todo` (do `furi-build`, dependência declarada do `furi-ship`) e `furi-ship:infra` (mesmo pacote) — chamada real, nunca reproduzida de memória. **Nenhum motor invoca uma skill que declara alvo** (`/work`, `/pull-request`, `/homolog`, `/prod`) nem um modificador (`/repro`, `/card`): é o que impede a escada de reabrir do começo dentro dela mesma.
+> **A porta única.** Os quatro alvos — `/work`, `/pull-request`, `/homolog`, `/prod` — declaram **até que estágio** vão e entregam a este loop. Nenhum deles invoca motor direto, e nenhum motor invoca outro motor de gap — a direção é `skill → reconcile → motor → borda`, sem retorno. Na borda, skill externa é **invocada via Skill tool** — `furi-build:method` (do `furi-build`, dependência declarada do `furi-ship`) e `furi-ship:infra` (mesmo pacote) — chamada real, nunca reproduzida de memória. **Nenhum motor invoca uma skill que declara alvo** (`/work`, `/pull-request`, `/homolog`, `/prod`) nem um modificador (`/repro`, `/card`): é o que impede a escada de reabrir do começo dentro dela mesma.
 
 **Responsabilidade única:** rodar `diagnosticar → aplicar o motor do estágio aberto → re-diagnosticar` até que todo estágio **até o alvo** esteja fechado.
 
@@ -216,7 +216,7 @@ Para o primeiro estágio aberto:
 - "Um estágio não fechou, mas os outros sim — reporto sucesso" → NÃO. O alvo é a faixa inteira. Diz o que ficou e o que destrava.
 - "Tento de novo até passar" → NÃO. Teto de ~3 passes por estágio. Depois disso, a causa não é transitória.
 - "Escrevo `dev` e `main` na tabela, todo projeto meu é assim" → NÃO. `<integração>` e `<produção>` vêm do § deploy-context, passo 1 — o projeto pode chamar de `develop`, `staging`, `homologacao`.
-- "Sei o que o `/method` (ou o `/todo`, o `/infra`) faz, rodo de cabeça" → NÃO. Mencionar não é invocar: skill de borda entra pelo Skill tool, **toda** vez.
+- "Sei o que o `/method` (ou o `/infra`) faz, rodo de cabeça" → NÃO. Mencionar não é invocar: skill de borda entra pelo Skill tool, **toda** vez.
 
 ## composicao
 
@@ -567,8 +567,8 @@ ls kanban/10-done/<feature>.md                           # existe, com `tests: p
 | Sinal | O que fazer |
 |---|---|
 | árvore suja com código, sem commit | **não** commita avulso: é trabalho que não passou pelo `/method` — volta ao § 4 e o `/method` absorve a árvore como ponto de partida (ele lê o que existe) |
-| card em `kanban/06-todo/` (o `/method` parou antes do Step 9) | QA não rodou: **invoque o `/todo`** (`furi-build:todo`) para aquele feature até 100% PASSED — é ele que promove a `10-done`; depois o `/method` fecha o Step 10 |
-| `10-done` existe mas `tests:` não é `passed` | "done sem prova" = não testado. `/todo` de novo |
+| card em `kanban/06-todo/` (o `/method` parou antes do Step 9) | QA não rodou: volta ao § 4 e o `/method` **retoma do que existe** (Inventário de Docs lê docs, card, plano e review) — fecha o Step 9 (front, 100% PASSED) e o Step 10 (card em `10-done/` + commit) |
+| `10-done` existe mas `tests:` não é `passed` | "done sem prova" = não testado. Mesma coisa: o `/method` retoma e refaz o Step 9 |
 | commits na branch **sem key nenhuma** e há card | o commit anterior não seguiu o § Commit — não reescreva histórico; o commit deste ciclo leva a key, e o `pr-publish` deriva os cards dos commits que a têm |
 | sem card e a árvore está limpa | não há objetivo: o estágio está **fechado por vazio** — o loop reporta gap zero |
 
@@ -792,8 +792,8 @@ O loop re-diagnostica: `pr` (ou `push`) fechado abre `integrado`. Se o alvo era 
 
 <HARD-GATE>
 1. NÃO mergeie sem **code review limpo** (sempre teu). Autenticação via front é exigida só quando a QA do dev falhou / não está explícito que passou / tem TODO pendente.
-2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → **invoque o `/todo`** (Skill tool — `furi-build:todo`) e leve-o até 100% PASSED ANTES de mergear.
-3. NÃO rode `/todo` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (§ 7).
+2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → **invoque o `/method`** (Skill tool — `furi-build:method`): ele retoma do que existe e fecha o Step 9 (100% PASSED) e o Step 10 (card em `10-done/` + commit na branch do PR — pushe) ANTES de mergear.
+3. NÃO rode o `/method` em card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (§ 7).
 4. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
 5. **Mergear NÃO é garantido — REJEITAR é saída válida** (§ 5).
 6. NUNCA mergeie branch atrás/conflitada com a integração sem atualizar, resolver e **re-autenticar**.
@@ -819,7 +819,7 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 |---|---|
 | Em `10-done`/`11-ship` **com `09-run-test` 100% PASSED** | QA já foi feita via front no Step 9 → **confia**. Só code review; **pula o front-test** |
 | Em `10-done`/`11-ship` mas QA **ausente / ambígua / falhada** | "Done" sem prova = não-testado → review **com** front-test |
-| Em `kanban/06-todo/` (QA pendente) | **Invocar o `/todo`** (Skill tool) até **100% PASSED**. Só então o review — *rede de segurança: o dev parou o `/method` antes do teste* |
+| Em `kanban/06-todo/` (QA pendente) | **Invocar o `/method`** (Skill tool) — retoma do que existe, fecha o Step 9 até **100% PASSED** e o Step 10 (card em `10-done/` + commit na branch do PR; `git push origin <branch>` para o PR carregar o commit). Só então o review — *rede de segurança: o dev parou o `/method` antes do teste*. Não passa → rejeita (§ 5) |
 | Sem card no kanban (dev trabalhou cru) | **PARAR e avisar:** sem test cases não dá para autenticar QA. Perguntar como proceder |
 
 4. **Gate de convergência do dev — ledger de follow-ups.** Abrir `kanban/10-done/<feature>.md`, seção `## Follow-ups`:
@@ -926,14 +926,14 @@ Varrer `kanban/06-todo/` e classificar cada card que **não é** o do PR:
 - Tem **PR aberto** ou **branch viva** → QA pendente real. **Deixar quieto.**
 - **Órfão** (sem PR, sem branch) → provável lixo de rota abandonada.
 
-Listar os órfãos e **perguntar**: *"Esses cards em `06-todo/` não têm PR nem branch — rota mudou e podem ser removidos, ou é QA pendente de verdade?"* Confirmado → `rm`. **Nunca** auto-deletar. **Nunca** rodar `/todo` em órfão.
+Listar os órfãos e **perguntar**: *"Esses cards em `06-todo/` não têm PR nem branch — rota mudou e podem ser removidos, ou é QA pendente de verdade?"* Confirmado → `rm`. **Nunca** auto-deletar. **Nunca** rodar o `/method` em órfão.
 
 ### Red Flags — STOP
 
 - "O dev marcou done **sem prova** (`09-run-test` ausente/ambíguo/falhado), mergeio assim mesmo" → NÃO. "Done" sem QA documentada = não-testado → front-test.
 - "A QA `/method` passou 100% e está documentada, mas re-testo tudo no front por via das dúvidas" → NÃO (o oposto). Isso é **duplicar QA já feita direito**. O code review é teu; no front é **só seguir em frente**.
-- "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: invoca o `/todo` (Skill tool) ANTES.
-- "Rodo `/todo` em todos os pendentes de `06-todo`" → NÃO. Só o card do PR. Órfão é cleanup (§ 7).
+- "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: invoca o `/method` (Skill tool) ANTES.
+- "Rodo o `/method` em todos os pendentes de `06-todo`" → NÃO. Só o card do PR. Órfão é cleanup (§ 7).
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre.
 - "Fix pequeno no review, não re-testo" → NÃO. Qualquer fix → re-review + re-autentica.
 - "O loop de conserto não fecha, sigo reescrevendo no review" → NÃO. ~2–3 rodadas sem convergir = PR cru → REJEITA.

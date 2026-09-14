@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-build",
-  "version": "0.1.0+b004b9b92b91",
-  "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method, /todo e /proto: do problema ao commit local, com QA. É a base que o furi-ship puxa.",
+  "version": "0.1.0+e8d455414e76",
+  "description": "Skills de construção do Furihata — /principles, /ui, /solve, /method e /proto: do problema ao commit local, com QA. É a base que o furi-ship puxa.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata/lp-skills"

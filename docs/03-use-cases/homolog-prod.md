@@ -73,7 +73,7 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 
 ### UC-7 — PR com QA pendente (card em `kanban/06-todo/`)
 - **Ator**: dev · **Precondição**: card do PR em `06-todo`
-- **Fluxo**: 1) gate de QA detecta; 2) skill roda `/todo` para **esse** feature até 100% PASSED; 3) segue para o review
+- **Fluxo**: 1) gate de QA detecta; 2) skill roda o `/method` para **esse** feature até 100% PASSED; 3) segue para o review
 - **Resultado**: QA verde antes de a mudança entrar. Ambiente não recebe o que ninguém testou
 
 ### UC-8 — PR sem card no kanban (dev trabalhou cru)
@@ -225,7 +225,7 @@ Happy path de `/homolog` (UC-5 → UC-9 → UC-16 → UC-19 → UC-21), passo a 
 | Diagnosticar o gap origem↔ambiente | — | 🔨 **gap** — não existe; `merge:47` começa por `gh pr list`, cego para "na branch e não no ar" |
 | Selecionar PR(s) | `merge/SKILL.md:45-49` | ✅ existe (um por vez, `all` = sequencial) |
 | Gate de QA do card | `merge/SKILL.md:60-67` | ✅ existe (tabela de 4 estados) |
-| Rodar `/todo` se QA pendente | `merge/SKILL.md:66` + `todo/SKILL.md` | ✅ existe |
+| Rodar o `/method` se QA pendente | `pipeline/SKILL.md` § pr-cycle | ✅ existe |
 | Abrir PR se falta | `pull-request/SKILL.md` | ⚠️ existe como skill, **não** é invocada pelo `/merge` |
 | Code review do diff | `merge/SKILL.md:80-83` | ✅ existe (princípios por nome, os cinco do SOLID) |
 | Autenticar resolução via front | `merge/SKILL.md:84-86` | ✅ existe (condicional, rede de segurança) |

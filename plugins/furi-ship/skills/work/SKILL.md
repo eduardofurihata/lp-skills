@@ -76,7 +76,7 @@ alvo = {
 
 Entregue ao **`pipeline/SKILL.md` § reconcile**, que faz o resto: publica o diagnóstico da faixa **antes** de agir, fecha os estágios abertos na ordem — `card` (`/card`, só se composto) → `branch` (`pipeline/SKILL.md` § branch) → `reprodução` (`/repro`, só se composto) → `commit` (`pipeline/SKILL.md` § work-cycle → `/method`) — re-diagnostica a cada um, e para no `commit`.
 
-Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de trabalho precisar mudar, ela muda no motor, para os quatro alvos de uma vez. Na borda, o `work-cycle` invoca o **`/method`** (`furi-build:method`) e, quando a QA está pendente, o **`/todo`** (`furi-build:todo`) — via Skill tool, nunca reproduzidos de memória.
+Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de trabalho precisar mudar, ela muda no motor, para os quatro alvos de uma vez. Na borda, o `work-cycle` invoca o **`/method`** (`furi-build:method`) — via Skill tool, nunca reproduzido de memória; com QA pendente, é ele mesmo que retoma do que existe.
 
 ## Saída
 

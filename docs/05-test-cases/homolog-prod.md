@@ -71,7 +71,7 @@ O produto entregue é **skill executável pelo Claude Code**. O "front" tem trê
 - **Bug único:** ao extrair o ciclo de PR para `pr-cycle.md`, um gate se perde — a skill passa a mergear com QA pendente, com ledger `ABERTO`, com branch atrás da integração, ou deixa de saber rejeitar.
 - **Pré-condição:** plugin carregado.
 - **Passos:** 1) pedir à skill que declare seu ciclo de PR completo — o que faz com QA pendente, sem card, com ledger aberto, com branch atrás, com escopo grande demais, e quando rejeita; 2) conferir cada item.
-- **Resultado:** os 9 comportamentos aparecem: abre PR se falta · roda `/todo` se QA pendente · **para** se não há card · conserta pontual in-place com re-review · **rejeita** e devolve se cru · quebra escopo excedente em cards · rejeita se ledger `ABERTO` · atualiza e re-autentica branch atrás/conflitada · cleanup de órfãos confirm-first.
+- **Resultado:** os 9 comportamentos aparecem: abre PR se falta · roda o `/method` se QA pendente · **para** se não há card · conserta pontual in-place com re-review · **rejeita** e devolve se cru · quebra escopo excedente em cards · rejeita se ledger `ABERTO` · atualiza e re-autentica branch atrás/conflitada · cleanup de órfãos confirm-first.
 - **Prova:** saída do harness com os 9 itens marcados.
 
 ### TC-8: os três estados do run são distintos, e fila não é sucesso

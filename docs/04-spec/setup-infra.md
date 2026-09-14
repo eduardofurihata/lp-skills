@@ -21,7 +21,7 @@
 **Justificativa:** dois donos para o mesmo fato é como se perde a verdade — foi assim que o `patterns.md` ganhou dois caminhos e nenhum escritor. **Já existe?** O modelo é o do `/jira-board` (dono único, lê toda invocação, pergunta uma vez) e do `deploy-context.md` (inferir → perguntar o mínimo → escrever → reconferir).
 
 ### D-03 — Só lê quem usa algo do arquivo (critério do usuário)
-**Decisão:** `/work` (§ Branch, § PR), `/card` (§ Jira), `/pull-request` (§ PR, § Commit), `/homolog` e `/prod` (§ PR + `deploy.md` + `infra.md`) invocam o `/setup` no Step 0. `/method` lê **só** o § Commit no Step 10 e o `patterns.md` no Step 4; `/jira` (Eduzz) lê § Branch e § PR no 0.1. `/todo`, `/solve`, `/ui`, `/proto`, `/principles`, `/jira-board`, todo o `furi-toolbox` (`/proof` e `/video-teams` inclusive) e `/afl` **não leem nada** — não commitam, não branchificam, não entregam.
+**Decisão:** `/work` (§ Branch, § PR), `/card` (§ Jira), `/pull-request` (§ PR, § Commit), `/homolog` e `/prod` (§ PR + `deploy.md` + `infra.md`) invocam o `/setup` no Step 0. `/method` lê **só** o § Commit no Step 10 e o `patterns.md` no Step 4; `/jira` (Eduzz) lê § Branch e § PR no 0.1. `/solve`, `/ui`, `/proto`, `/principles`, `/jira-board`, todo o `furi-toolbox` (`/proof` e `/video-teams` inclusive) e `/afl` **não leem nada** — não commitam, não branchificam, não entregam.
 **Justificativa:** é a regra de "zero magia" do `/principles`: nada acontece fora do que está escrito no alvo ou apontado por caminho. Carregar por `CLAUDE.md` seria pagar contexto em toda sessão pelo que só cinco skills usam.
 
 ### D-04 — Quem está em outro pacote lê por caminho e não cria

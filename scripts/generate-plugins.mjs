@@ -68,7 +68,7 @@ const PACKAGES = [
     name: "furi-build",
     category: "build",
     description:
-      "Skills de construção do Furihata — /principles, /ui, /solve, /method, /todo e /proto: do problema ao commit local, com QA. É a base que o furi-ship puxa.",
+      "Skills de construção do Furihata — /principles, /ui, /solve, /method e /proto: do problema ao commit local, com QA. É a base que o furi-ship puxa.",
     keywords: ["development", "planning", "quality", "workflow"],
     codex: {
       displayName: "Furi Build",
@@ -84,7 +84,7 @@ const PACKAGES = [
     name: "furi-ship",
     category: "ship",
     description:
-      "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores. Puxa junto o furi-build (o motor work-cycle roda o /method; o pr-cycle roda o /todo; /work, /repro e /card carregam o /solve).",
+      "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores. Puxa junto o furi-build (os motores work-cycle e pr-cycle rodam o /method; /work, /repro e /card carregam o /solve).",
     keywords: ["jira", "pull-request", "deployment", "delivery"],
     codex: {
       displayName: "Furi Ship",

@@ -1,8 +1,8 @@
 ---
 name: homolog
-description: 'Use when user invokes /homolog to get the work live on the homolog environment — working and configured, verified on the homolog URL — whatever stage it is at now. The third target of the ship pipeline: declares "up to `verificado@homolog`" and hands it to the reconcile engine, which diagnoses where the work is and closes what is open in order: a missing branch, commit, push or PR is closed by the branch, work-cycle (/method) and pr-publish engines — never by telling the user to run /work or /pull-request first; then pr-cycle reviews the diff, runs /todo when QA is pending, APPROVES and merges into the integration branch (or REJECTS a raw PR back to the dev) and deletes the branch (remote AND local); deploy-run watches the run to a named outcome (green/red/queued — a self-hosted runner offline is a QUEUE, never a success); env-config applies what the change needs (env vars, secrets, migrations, flags, seeds — a secret value is always asked; /infra maps where each lives); smoke verifies on the homolog URL that EVERY card that should be live is live. The integration branch and the homolog environment are DETECTED and recorded in `.claude/ship-setup/deploy.md` (`dev` is only our default — `develop`, `staging` work the same); a repo with `Abre PR: não` goes from commit to push straight into the integration branch and then to deploy. Works without Jira. Composes with /repro and /card in any order. Never touches production: /prod is the farther target. On a single-branch repository there is no homolog environment: it says so and suggests /prod.'
+description: 'Use when user invokes /homolog to get the work live on the homolog environment — working and configured, verified on the homolog URL — whatever stage it is at now. The third target of the ship pipeline: declares "up to `verificado@homolog`" and hands it to the reconcile engine, which diagnoses where the work is and closes what is open in order: a missing branch, commit, push or PR is closed by the branch, work-cycle (/method) and pr-publish engines — never by telling the user to run /work or /pull-request first; then pr-cycle reviews the diff, runs /method when QA is pending, APPROVES and merges into the integration branch (or REJECTS a raw PR back to the dev) and deletes the branch (remote AND local); deploy-run watches the run to a named outcome (green/red/queued — a self-hosted runner offline is a QUEUE, never a success); env-config applies what the change needs (env vars, secrets, migrations, flags, seeds — a secret value is always asked; /infra maps where each lives); smoke verifies on the homolog URL that EVERY card that should be live is live. The integration branch and the homolog environment are DETECTED and recorded in `.claude/ship-setup/deploy.md` (`dev` is only our default — `develop`, `staging` work the same); a repo with `Abre PR: não` goes from commit to push straight into the integration branch and then to deploy. Works without Jira. Composes with /repro and /card in any order. Never touches production: /prod is the farther target. On a single-branch repository there is no homolog environment: it says so and suggests /prod.'
 effort: max
-requires: [jira, setup, pipeline, todo, infra]
+requires: [jira, setup, pipeline, infra]
 handoff: prod
 argument-hint: "[PR number | KEY-N | descrição] [/repro] [/card] | (vazio = diagnosticar e fechar até homolog)"
 ---
@@ -74,7 +74,7 @@ alvo = {
 
 Entregue ao **`pipeline/SKILL.md` § reconcile**: diagnóstico publicado, estágios fechados na ordem — `branch` · `commit` (`work-cycle` → `/method`) · `push`/`pr` (`pr-publish`) se estiverem abertos; depois `integrado` (`pr-cycle`) → `publicado@homolog` (`deploy-run`) → `configurado@homolog` (`env-config`) → `verificado@homolog` (`smoke`) — re-diagnóstico a cada um, e para no `verificado@homolog`.
 
-Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de PR ou do deploy precisar mudar, ela muda no motor, para os quatro alvos. Na borda, os motores invocam via Skill tool: **`/method`** (`work-cycle`), **`/todo`** (`pr-cycle`, QA pendente), **`/infra`** (`env-config`, quando falta o `infra.md`) — nunca reproduzidos de memória.
+Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de PR ou do deploy precisar mudar, ela muda no motor, para os quatro alvos. Na borda, os motores invocam via Skill tool: **`/method`** (`work-cycle`; `pr-cycle`, QA pendente), **`/infra`** (`env-config`, quando falta o `infra.md`) — nunca reproduzidos de memória.
 
 ## Saída
 
@@ -83,7 +83,7 @@ Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplem
 - Diagnóstico: <N> estágios · <n> já fechados · <m> fechados agora
 - PRs:      #<n> aprovado + mergeado em `<integração>`  ·  branch deletada: remota ✓ + local ✓
             [#<m> REJEITADO — <motivo>]   |   sem PR: <k> commits revisados na <integração>
-- QA:       <já estava verde | rodei /todo: X/X PASSED>
+- QA:       <já estava verde | rodei o /method (Step 9): X/X PASSED>
 - Review:   limpo (kanban/08-code-review/<feature>.md)
 - Deploy:   run <id> ✓ verde
 - Config:   <N aplicadas: VAR_X, migration Y | nada a aplicar>
@@ -140,4 +140,4 @@ Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplem
 - "Achei um bug no review, abro um card" → NÃO. O pipeline **nunca cria card sozinho**: achado classificado (`pipeline/SKILL.md` § findings) vai para o relatório, com a prova; o card é decisão sua, depois.
 - "Copio as regras do ciclo de PR pra dentro daqui" → NÃO. Vivem no motor, para os quatro alvos.
 - "Chamo o `deploy-run` direto, sem passar pelo `reconcile`" → NÃO. A porta é única.
-- "Sei o que o `/todo` (ou o `/method`, o `/infra`) faz, rodo de cabeça" → NÃO. Mencionar não é invocar.
+- "Sei o que o `/method` (ou o `/infra`) faz, rodo de cabeça" → NÃO. Mencionar não é invocar.
