@@ -28,7 +28,7 @@
 | D7 | Estado do filtro | `useState` liftado em SkillsClient junto de `selected`+`scope`; filtro afeta só visibilidade | Padrão de estado liftado existente; UC-12 (seleção preservada) | SkillsClient atual | Query param na URL — YAGNI no MVP (projeto não usa router-state) |
 | D8 | `install-prompt.ts` | `generatePrompt` recebe skills como `{slug, category}`; source-path `${SOURCE_DIR}/skills/${category}/${slug}`; destino symlink **continua** `~/.claude/skills/${slug}` (plano) | Claude Code carrega skill de `~/.claude/skills/<slug>` (plano); só o source precisa do bucket | install-prompt.ts `symlinkBlockFor`; UC-13 | Slug-only com instalação adivinhando categoria — rejeitado (instalação não sabe a categoria) |
 | D9 | Unicidade de slug | Slug **único global** (entre buckets); hoje conjuntos disjuntos | Symlink destino é plano → colisão sobrescreveria | Carregamento de skills do Claude Code; UC-6 | Install namespeado `<cat>-<slug>` — rejeitado (mudaria o nome de invocação `/jira`) |
-| D10 | Migração das skills próprias | `git mv skills/<slug> skills/personal/<slug>` (10 skills) | Preserva histórico | Boa prática git; UC-16 | Recriar do zero (perde histórico) |
+| D10 | Migração das skills próprias | `git mv skills/<slug> skills/personal/<slug>` (9 skills) | Preserva histórico | Boa prática git; UC-16 | Recriar do zero (perde histórico) |
 | D11 | Importação das skills do labzz | `cp -r` dos 5 diretórios (sem histórico do labzz), **sanitizar ANTES do git add** | Importação limpa; **a credencial nunca entra no histórico do lp-skills** | UC-17/18; segurança | `git subtree` — rejeitado: traria o commit da credencial pro histórico público |
 | D12 | Distribuição por bucket | `make-dev`→`personal`; `afl`,`jira`,`notion-pull`,`notion-push`→`eduzz` | make-dev é genérica (sem IP/dependência interna); demais são contexto de trabalho | Classificação validada com usuário | Tudo em eduzz (rejeitado — make-dev é genérica) |
 
@@ -69,7 +69,7 @@ export interface Skill {
 ```
 skills/
 ├── personal/
-│   ├── apf/ ask/ chat/ chat-out/ claude-modes/ commit/ fast/ method/ solve/ todo/   (git mv)
+│   ├── ask/ chat/ chat-out/ claude-modes/ commit/ fast/ method/ solve/ todo/   (git mv)
 │   └── make-dev/                                                                     (do labzz)
 └── eduzz/
     ├── jira/        (sanitizado: credencial removida, AV-→PROJ-123)

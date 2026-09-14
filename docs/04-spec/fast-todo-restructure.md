@@ -85,14 +85,14 @@
   - Confiar no Vercel build: feedback loop lento (3-5 min vs 30 seg local).
 
 #### D-09 — Verificação pós-deploy
-- **Decisão**: após Vercel build Ready, visitar https://lp-skills.vercel.app via browser e confirmar 8 cards visíveis (apf, ask, chat, chat-out, commit, fast, method, todo).
+- **Decisão**: após Vercel build Ready, visitar https://lp-skills.vercel.app via browser e confirmar 7 cards visíveis (ask, chat, chat-out, commit, fast, method, todo).
 - **Justificativa**: UC-18 + US-06 + US-07.
 - **Referência**: padrão de smoke test pós-deploy.
 - **Alternativas descartadas**:
   - Confiar no build log: build pode passar mas ISR cache servir HTML stale (UC-14).
 
 #### D-10 — Cache invalidação se UC-18 falhar
-- **Decisão**: se LP não mostrar todas as 8 skills após o deploy automático, force redeploy SEM cache via Vercel UI ("Redeploy" desmarcando "Use existing Build Cache") ou `vercel redeploy <url> --force` via CLI.
+- **Decisão**: se LP não mostrar todas as 7 skills após o deploy automático, force redeploy SEM cache via Vercel UI ("Redeploy" desmarcando "Use existing Build Cache") ou `vercel redeploy <url> --force` via CLI.
 - **Justificativa**: UC-19; build cache do Turbopack pode reter HTML stale para pages estáticas quando `skills/` (fora de `app/`) muda.
 - **Referência**: Next.js 16 docs sobre ISR; Vercel KB sobre build cache.
 - **Alternativas descartadas**:
@@ -136,7 +136,7 @@
 | Symlink update | `rm ~/.claude/skills/test && ln -s …/skills/todo ~/.claude/skills/todo` | ✅ feito |
 | Pre-push build | `pnpm build` | pendente |
 | Push | `git push origin main` | pendente |
-| Pós-deploy smoke | Browser visit `https://lp-skills.vercel.app` + count 8 cards | pendente |
+| Pós-deploy smoke | Browser visit `https://lp-skills.vercel.app` + count 7 cards | pendente |
 | Cache invalidação (se necessário) | Vercel UI redeploy sem cache | contingência |
 
 ## Saída do Loop
