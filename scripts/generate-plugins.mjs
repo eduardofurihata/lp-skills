@@ -100,13 +100,13 @@ const PACKAGES = [
     name: "furi-toolbox",
     category: "toolbox",
     description:
-      "Ferramentas avulsas do Furihata — /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+      "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
     keywords: ["utilities", "git", "productivity", "workflow", "code-review"],
     codex: {
       displayName: "Furi Toolbox",
       shortDescription: "Ferramentas avulsas para o fluxo de desenvolvimento.",
       longDescription:
-        "Use atalhos e utilitários independentes para conversar, salvar, sincronizar, preparar projetos, auditar a prova de uma mudança e baixar gravações.",
+        "Use atalhos e utilitários independentes para analisar um problema e decidir, conversar, salvar, sincronizar, preparar projetos, auditar a prova de uma mudança e baixar gravações.",
       category: "Productivity",
       brandColor: "#F59E0B",
       defaultPrompt: "Use a ferramenta Furi mais adequada para esta tarefa.",

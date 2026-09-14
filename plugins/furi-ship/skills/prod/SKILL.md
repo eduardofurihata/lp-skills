@@ -21,22 +21,22 @@ O último **alvo** do pipeline e o dono único de produção: o estado pedido é
 
 ## Argument parsing
 
-`composicao.md` primeiro. `PR number` ou `KEY-N` → **preferência de ordem**, não restrição do objetivo. `/repro` · `/card` → funde. `/work` · `/pull-request` · `/homolog` no argumento → perdem para este: `/prod` é o mais distante.
+`pipeline/SKILL.md` § composicao primeiro. `PR number` ou `KEY-N` → **preferência de ordem**, não restrição do objetivo. `/repro` · `/card` → funde. `/work` · `/pull-request` · `/homolog` no argumento → perdem para este: `/prod` é o mais distante.
 
 ## Convenções (CONTRATO)
 
-- **`<produção>` é produção; `<integração>` é a branch de integração; homolog é o ambiente publicado a partir dela** — todos **detectados** (`pipeline/references/deploy-context.md` § 1) e gravados no `deploy.md § Ambientes`. `dev`/`main` é só o nosso padrão.
+- **`<produção>` é produção; `<integração>` é a branch de integração; homolog é o ambiente publicado a partir dela** — todos **detectados** (`pipeline/SKILL.md` § deploy-context, passo 1) e gravados no `deploy.md § Ambientes`. `dev`/`main` é só o nosso padrão.
 - **Duas topologias, um fluxo.** O que muda é a **faixa** (branch única não tem os estágios de homolog nem `promovido`); o loop, os motores e as regras são os mesmos.
 - Remote `origin`; o repositório vem do checkout (`gh repo view --json nameWithOwner -q .nameWithOwner`) — não hardcodar.
-- **Board e estrutura do Jira:** `/jira`. **Convenções do time:** `/setup` — `pr-publish` lê `Abre PR`; `pr-cycle` lê `Aprovação` e `Merge`. **Contexto de deploy:** `deploy.md`, via `deploy-context.md`. **Onde vive cada segredo:** `infra.md` (`/infra`), lido pelo `env-config`.
-- **Motores:** `pipeline/references/` — `reconcile` · `branch` · `work-cycle` · `pr-publish` · `pr-cycle` · `promote` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync` · `findings` · `scope-split` · `composicao`. Os quatro alvos leem os mesmos arquivos.
+- **Board e estrutura do Jira:** `/jira`. **Convenções do time:** `/setup` — `pr-publish` lê `Abre PR`; `pr-cycle` lê `Aprovação` e `Merge`. **Contexto de deploy:** `deploy.md`, via `pipeline/SKILL.md` § deploy-context. **Onde vive cada segredo:** `infra.md` (`/infra`), lido pelo `env-config`.
+- **Motores:** as seções `§` do `pipeline/SKILL.md` — `reconcile` · `branch` · `work-cycle` · `pr-publish` · `pr-cycle` · `promote` · `deploy-context` · `deploy-run` · `env-config` · `smoke` · `jira-sync` · `findings` · `scope-split` · `composicao`. Os quatro alvos leem as mesmas seções.
 
 <HARD-GATE>
 1. **NÃO promova `<integração>`→`<produção>` sem o usuário autorizar ESTE push, agora, ao chegar em `promovido`.** Silêncio, evasiva ou autoridade prévia = **não**.
 2. **NÃO promova o que não foi verificado em homolog** (duas branches). `verificado@homolog` é um estágio da faixa — o loop o fecha antes, com os motores; não se pula.
 3. **Diagnóstico da faixa inteira publicado antes de agir** — do `card?` ao `verificado@prod`. Faixa longa é o pedido, não erro: diga o tamanho.
 4. NÃO diga "está em produção" sem run **verde** E smoke **passado** na URL de produção. Fila = **fila**.
-5. NUNCA promova `<integração>` stale ou com divergência aberta: `promote.md` sincroniza e resolve antes. Resolver conflito = código novo = **re-review + re-verificação ANTES do push em `<produção>`**.
+5. NUNCA promova `<integração>` stale ou com divergência aberta: `pipeline/SKILL.md` § promote sincroniza e resolve antes. Resolver conflito = código novo = **re-review + re-verificação ANTES do push em `<produção>`**.
 6. **NUNCA `git add -A`.** Paths explícitos, sempre: a árvore é compartilhada com sessões paralelas.
 7. NÃO invente valor de secret, URL ou comando de deploy. **Rollback é oferecido, nunca automático.**
 8. Em **branch única** cai a **pergunta** de autorização — e **nada mais**: review, QA, aprovação, configuração e smoke continuam integrais.
@@ -50,8 +50,8 @@ O último **alvo** do pipeline e o dono único de produção: o estado pedido é
 
 1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `jira` também resolve). Chamada real: sem a invocação, o passo não aconteceu. Devolve `{rastreamento, site, key, …, estrutura}`.
 2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Devolve `{branch, commit, pr, jira, infra, guidelines, origem, arquivo}`. Invocação separada da anterior, com a sua própria pergunta isolada.
-3. **`pipeline/references/deploy-context.md`** — topologia detectada por evidência, `<integração>` e `<produção>`, ambientes e URLs (`deploy.md` lido — ou descoberto e escrito).
-4. **`pipeline/references/composicao.md`** — o alvo efetivo.
+3. **`pipeline/SKILL.md` § deploy-context** — topologia detectada por evidência, `<integração>` e `<produção>`, ambientes e URLs (`deploy.md` lido — ou descoberto e escrito).
+4. **`pipeline/SKILL.md` § composicao** — o alvo efetivo.
 
 ## Step 1 — Declarar o alvo e entregar ao `reconcile`
 
@@ -79,7 +79,7 @@ alvo = {
 }
 ```
 
-Entregue ao **`pipeline/references/reconcile.md`**: diagnóstico da faixa publicado, estágios fechados na ordem — `branch` · `commit` (`work-cycle` → `/method`) · `push`/`pr` (`pr-publish`) · `integrado` (`pr-cycle`) · `publicado@homolog` → `configurado@homolog` → `verificado@homolog` (`deploy-run` → `env-config` → `smoke`) · **«GATE»** · `promovido` (`promote`) · `publicado@prod` → `configurado@prod` (**prod e homolog** — o resync igualou as branches) → `verificado@prod` — re-diagnóstico a cada um. **Não reimplemente motor aqui.**
+Entregue ao **`pipeline/SKILL.md` § reconcile**: diagnóstico da faixa publicado, estágios fechados na ordem — `branch` · `commit` (`work-cycle` → `/method`) · `push`/`pr` (`pr-publish`) · `integrado` (`pr-cycle`) · `publicado@homolog` → `configurado@homolog` → `verificado@homolog` (`deploy-run` → `env-config` → `smoke`) · **«GATE»** · `promovido` (`promote`) · `publicado@prod` → `configurado@prod` (**prod e homolog** — o resync igualou as branches) → `verificado@prod` — re-diagnóstico a cada um. **Não reimplemente motor aqui.**
 
 `/prod` com homolog já verificado: o diagnóstico mostra tudo fechado até `verificado@homolog`, e a faixa efetiva começa no gate. É o caso comum — e é resultado do diagnóstico, não um modo.
 
@@ -140,7 +140,7 @@ Entregue ao **`pipeline/references/reconcile.md`**: diagnóstico da faixa public
 - "Criei um pedido de verdade em prod pra testar" → NÃO. Usuário real, cobrança real. Caminho feliz de leitura, dado de teste, ou declara não-verificável.
 
 **Promoção**
-- "A `<integração>` local está atrás, mas o que importa é o que eu tenho" → NÃO. `promote.md` sincroniza e resolve **antes**.
+- "A `<integração>` local está atrás, mas o que importa é o que eu tenho" → NÃO. `pipeline/SKILL.md` § promote sincroniza e resolve **antes**.
 - "Resolvi o conflito e pushei pra `<produção>`" → NÃO. Conflito resolvido = código novo → re-review + re-verificação **antes** do push.
 - "Uso `ours`/`theirs` pra destravar o merge" → NÃO. Entende os dois lados; ambíguo → pergunta.
 - "Commito com `git add -A`" → NÃO. Paths explícitos.
