@@ -1,10 +1,9 @@
 ---
 name: brain
-description: 'Use when user invokes /brain to understand a problem, analyse a situation or decide between paths — the protocol for thinking, not for building. Starts from the premise that the request is WRONG and the person does not yet know what they want: what was typed is the first solution that occurred to someone in pain, so it is restated, played back, and enters the option matrix as a candidate — never as the brief. Seven phases: Recorte (what was typed vs. the real problem, the XY behind it), Evidência (go and see: literal quote + coordinate, three states — verified / absent-in-fact / not-investigated), Diagnóstico (≥3 competing hypotheses eliminated by inconsistency, ACH), Opções (≥3 genuinely different + the zero option), Julgamento (musts/wants declared before scoring, Kepner-Tregoe), Refutação (pre-mortem, devil''s advocate, falsifier, reversal test — and the blind judge when the door is one-way), Parecer (answer first, Minto; ADR + A3 in docs/decisions/). Ends in ONE recommendation with what would knock it down, calibrated confidence and what was NOT covered — never in "it depends" without the question that unlocks it. Triggers on "me ajuda a entender", "qual o melhor caminho", "vale a pena X ou Y", "analisa isso", "brainstorm", "tô em dúvida entre". Not for writing code (that is /method, /fast) nor for a read-only walkthrough of the repo (/chat).'
+description: 'Use when user invokes /brain to understand a problem, analyse a situation or decide between paths — the protocol for thinking, not for building. Starts from the premise that the request is WRONG and the person does not yet know what they want: what was typed is the first solution that occurred to someone in pain, so it is restated, played back, and enters the option matrix as a candidate — never as the brief. Seven phases: Recorte (what was typed vs. the real problem, the XY behind it), Evidência (go and see: literal quote + coordinate, three states — verified / absent-in-fact / not-investigated), Diagnóstico (≥3 competing hypotheses eliminated by inconsistency, ACH), Opções (≥3 genuinely different + the zero option), Julgamento (musts/wants declared before scoring, Kepner-Tregoe), Refutação (pre-mortem, devil''s advocate, falsifier, reversal test — plus a blind paired judge, spawned as a context-free session, when the door is one-way), Parecer (answer first, Minto; ADR + A3 in docs/decisions/). Ends in ONE recommendation with what would knock it down, calibrated confidence and what was NOT covered — never in "it depends" without the question that unlocks it. Triggers on "me ajuda a entender", "qual o melhor caminho", "vale a pena X ou Y", "analisa isso", "brainstorm", "tô em dúvida entre". Self-contained: depends on no other skill and works in any git repository, any language. Not for writing the code of the decision, nor for a read-only walkthrough of a repository — this protocol ends in a verdict.'
 effort: max
 argument-hint: "[o problema, a dúvida ou a decisão — escreva torto mesmo]"
-handoff: [method, fast, ctt]
-boundary: [chat]
+allowed-tools: Bash, Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Agent, AskUserQuestion, TaskCreate, TaskUpdate
 ---
 
 # /brain — o protocolo de pensar
@@ -13,7 +12,7 @@ Entra um pedido mal escrito sobre um problema mal formulado. Sai **um parecer**:
 
 > **Isto não é chuva de ideias.** Ideação é **uma** das sete fases. O entregável não é uma lista de possibilidades — é **uma decisão defensável**, com a prova do lado.
 
-🚫 **NÃO escreve código, NÃO altera o produto, NÃO commita, NÃO cria branch.** O único arquivo que esta skill escreve é o parecer em `docs/decisions/`. Implementar é do `/method` ou do `/fast`, depois — e só se você mandar.
+🚫 **NÃO escreve código, NÃO altera o produto, NÃO commita, NÃO cria branch.** O único arquivo que esta skill escreve é o parecer em `docs/decisions/`. Implementar é outra passada, depois — e só se você mandar.
 
 ## Premissa de Partida
 
@@ -33,7 +32,7 @@ Daí as duas consequências estruturais desta skill: a Fase 1 **devolve** a refo
 > Frase bem escrita sobre coisa não verificada é o pior resultado possível: tem forma de resposta.
 > Toda afirmação do parecer aponta para uma **evidência** (`E-n`) ou está marcada como **suposição** (`S-n`). Não existe terceiro jeito de afirmar.
 
-**Três estados, nunca dois** (a mesma régua do `/proof`): `verificado` · `ausente-de-fato` (procurei, não existe — isso é evidência) · `não-apurado` (não fui ver — isso é lacuna). Colapsar os dois últimos transforma ignorância em afirmação.
+**Três estados, nunca dois:** `verificado` · `ausente-de-fato` (procurei, não existe — isso é evidência) · `não-apurado` (não fui ver — isso é lacuna). Colapsar os dois últimos transforma ignorância em afirmação.
 
 **O padrão do parecer é o nível 10x** — o analista #1 do domínio não assinaria "depende". E o parecer é **texto**: o que define a qualidade dele é **clareza**, não tamanho. Texto que exige releitura já falhou, por mais correta que esteja a análise por baixo.
 
@@ -47,7 +46,7 @@ Daí as duas consequências estruturais desta skill: a Fase 1 **devolve** a refo
 6. **A opção zero sempre compete.** Não fazer nada é uma opção real e entra na matriz. Recomendação que nunca foi comparada com o status quo não foi comparada com nada.
 7. **Nenhum número sem fonte.** "Melhora 40%", "é 3x mais rápido", "a maioria dos times" — ou tem `E-n` com coordenada, ou não entra. Ordem de grandeza estimada se declara como estimativa, com a conta à vista.
 8. **Refutar não é opcional, e não é mímica.** As quatro passadas da Fase 6 rodam contra a **sua própria** recomendação. Advogado do diabo escrito para perder é teatro — e teatro é pior que ausência, porque parece rigor.
-9. **Quem escreve não dá a própria nota.** Decisão de **porta de mão única** fecha com o juiz cego (`/blind pair`, duas ordens): `EMPATE` ou `DISCORDAM` não é vitória — volta à Fase 5.
+9. **Quem escreve não dá a própria nota.** Decisão de **porta de mão única** fecha com o **juiz cego** (§ A sessão cega, modo `pair`, duas ordens): `EMPATE` ou `DISCORDAM` não é vitória — volta à Fase 5.
 10. **"Depende" só existe com a pergunta que destrava anexada** e o veredicto de cada ramo. Sem isso, é a decisão devolvida com aparência de análise.
 11. **Lacuna decisiva não fecha o protocolo.** Ou apura, ou o parecer sai declaradamente **condicional** — dizendo de quê depende.
 12. **Sem o arquivo em `docs/decisions/`, a fase não aconteceu.** Análise que mora só no chat morre no scroll.
@@ -77,12 +76,7 @@ Daí as duas consequências estruturais desta skill: a Fase 1 **devolve** a refo
 
 ## Ordem de Operações ao Ativar
 
-**O `/brain` roda sozinho**, em qualquer repositório, sem depender de outra skill — por isso mora no `furi-toolbox`. Duas skills o **reforçam** quando estão instaladas, e cada uma tem o seu fallback declarado (§ Sem o furi-build):
-
-| reforço | o que acrescenta | sem ele |
-|---|---|---|
-| `/principles` | a régua de clareza em doutrina — invoque-a via Skill tool antes de começar | vale a régua da Iron Law: simples, eficiente, premium, entendível por qualquer pessoa |
-| `/blind` | o juiz que não viu esta sessão (Fase 3 e Fase 6) | o julgamento roda inline e o gate declara `independência: NÃO` |
+**Esta skill não depende de nenhuma outra e não invoca nenhuma outra.** Roda em qualquer repositório, em qualquer linguagem, com o que já está nesta sessão — inclusive o juiz cego da Fase 6, que é um comando, não uma dependência.
 
 Então:
 
@@ -189,7 +183,7 @@ Soma → **peso 1-10**. Ele calibra **quantidade**, nunca a **existência** das 
 |---|---|---|---|
 | 1-3 | 3 | 3 + zero | as 4 passadas internas |
 | 4-7 | 4 | 3 + zero | as 4 + falsificador **procurado de fato** |
-| 8-10 | 5+ | 4 + zero | as 4 + **`/blind pair` obrigatório** |
+| 8-10 | 5+ | 4 + zero | as 4 + **juiz cego obrigatório** (§ A sessão cega) |
 
 **Gate 1** — acrescente: `- **Escada:** pedido `<…>` → dor `<…>` → estado final `<…>`` · `- **Distância pedido↔problema:** <zero | o pedido é sobre X, o problema é Y>` · `- **Peso:** N/10 — <reversibilidade, alcance, custo, velocidade>` · `- **Perguntas:** <n> feitas — <por que só você podia responder> | nenhuma necessária`.
 
@@ -231,7 +225,7 @@ Soma → **peso 1-10**. Ele calibra **quantidade**, nunca a **existência** das 
 **ACH — Analysis of Competing Hypotheses.** A hipótese não se escolhe por evidência a favor (todas têm); se elimina por **evidência contra**.
 
 1. **Liste as hipóteses** sobre a natureza ou a causa do problema — o mínimo vem do peso (§ Fase 1). Inclua sempre a incômoda: *"o problema não é técnico"*, *"o problema é que ninguém precisa disso"*, *"o problema é a expectativa, não o sistema"*.
-   - Peso ≥ 8, com o `/blind` à mão: rode o modo **`ask`** (invoque `furi-build:blind` e copie o bloco de lá) com o problema reformulado e **sem** as suas hipóteses. O cego não foi ancorado pelo seu enquadramento — hipótese que só ele levanta é exatamente a que esta sessão não conseguiria ter.
+   - Peso ≥ 8: abra uma **sessão cega** (§ A sessão cega, modo `ask`) com o problema reformulado e **sem** as suas hipóteses. Ela não foi ancorada pelo seu enquadramento — hipótese que só ela levanta é exatamente a que esta sessão, já contaminada pelo pedido, não conseguiria ter.
 2. **A matriz.** Linhas = evidências (`E-n`); colunas = hipóteses. Cada célula: `+` consistente · `−` **inconsistente** · `·` neutra. Evidência que é consistente com *todas* tem **valor zero de diagnóstico** — marque e ignore; é ela que faz sentir convicção sem ter informação.
 3. **Elimine pelo `−`.** Sobrevive quem tem menos inconsistência. Empate real entre duas hipóteses é resultado legítimo: as duas seguem vivas para a Fase 4, e a recomendação vai ter que funcionar nas duas (ou o teste que as separa vira o primeiro passo).
 4. **Por que ainda não foi resolvido** — se o problema é óbvio e persiste, existe uma razão: restrição, custo, incentivo, ignorância ou tentativa fracassada. Nomeie. Recomendação que ignora isso já foi tentada.
@@ -288,7 +282,7 @@ Kepner-Tregoe. **Os critérios saem antes das notas** — essa ordem é o métod
 3. **Falsificador** — *que evidência derrubaria isto?* Nomeie-a. Depois: **ela foi procurada?** Peso ≥ 4 → vá procurar agora. Não achou → `ausente-de-fato` (reforça). Não deu para procurar → `L-n` **decisiva**, e o parecer sai condicional.
 4. **Teste de reversão** (Heuer) — *se eu tivesse começado pela hipótese B da Fase 3, chegaria aqui?* Se a resposta depende de por onde comecei, a conclusão é do caminho, não da evidência.
 
-**Juiz cego — peso ≥ 8, obrigatório** (Regra Inviolável 9). Com o `/blind` instalado: invoque `furi-build:blind`, copie de lá o bloco do modo `pair` e rode com quatro arquivos escritos de verdade, nunca digitados na hora:
+**Juiz cego — peso ≥ 8, obrigatório** (Regra Inviolável 9). Rode o **modo `pair`** de § A sessão cega, com quatro arquivos escritos de verdade, nunca texto digitado na hora:
 
 | arquivo | conteúdo |
 |---|---|
@@ -299,7 +293,7 @@ Kepner-Tregoe. **Os critérios saem antes das notas** — essa ordem é o métod
 
 Duas ordens, resultado vinculante: `B` → a recomendação **cai**; `EMPATE`/`DISCORDAM` → não é vitória, **volta à Fase 5**; `A` → passou, e a saída integral do cego vai para o artefato (`cat`, não paráfrase).
 
-**Sem o `/blind`** (§ Sem o furi-build): o pareamento roda **inline**, nesta sessão, com os mesmos quatro insumos e as duas ordens — e o Gate 6 declara **`independência: NÃO`**. É o mesmo fallback que o próprio `/blind` usa fora do Claude Code: quem lê precisa saber que quem julgou foi quem escreveu. O que não vale é omitir a linha.
+**Sem o binário `claude` no PATH** (outro agente, CI): o pareamento roda **inline**, nesta sessão, com os mesmos quatro insumos e as duas ordens — e o Gate 6 declara **`independência: NÃO`**. Quem lê precisa saber que quem julgou foi quem escreveu. O que não vale é omitir a linha.
 
 **Loop:** a recomendação mudou? → revalida a Fase 5 com os critérios (sem reescrevê-los para caber) → refuta de novo. **Fecha só com o passe seco:** um ciclo inteiro de refutação sem mudança.
 
@@ -328,7 +322,7 @@ O problema é: <o real — ou "é isso mesmo", se a distância for zero>
 
 **Lacunas:** <L-n decisivas — e o que mudaria se fossem apuradas> | nenhuma
 **Não cobri:** <o que ficou fora e por quê> | nada relevante
-**Próximo:** /method (virar feature) · /fast (até o code review) · /ctt (parquear) · nada
+**Próximo:** <implementar · prototipar · medir a lacuna · parquear · nada> — <o quê, exatamente>
 ```
 
 **Calibração da confiança** — não é sentimento: **alta** = evidência verificada cobre os pontos decisivos e o falsificador foi procurado · **média** = a lógica se sustenta, mas uma suposição relevante está de pé · **baixa** = lacuna decisiva aberta, ou o problema é **complexo** (§ Fase 1) e só agindo se descobre. Confiança baixa é resultado honesto; confiança alta em problema complexo é a alucinação estrutural.
@@ -364,32 +358,144 @@ Toda `L-n` que nasce em qualquer fase vive numa seção `## Lacunas` do artefato
 - **Relevante** — muda a confiança, não a direção. Entra no parecer, na linha de confiança.
 - **Descartada** — não toca nesta decisão. Fica registrada com a justificativa de uma linha (é o que impede "descartei porque dava trabalho").
 
-Lacuna decisiva aberta **não fecha a Fase 7** como incondicional. É a contrapartida do Gate de Convergência do `/method`: lá o protocolo fecha seco; aqui ele fecha **honesto**.
-
-## Sem o `furi-build` — o que muda
-
-O protocolo é o mesmo; o que cai é a **independência do julgamento**, e isso se declara em vez de se esconder.
-
-| onde | com o `/blind` | sem ele |
-|---|---|---|
-| Fase 3, peso ≥ 8 | hipótese levantada por quem não viu seu enquadramento | você lista as hipóteses sozinho — e a incômoda entra na marra |
-| Fase 6, peso ≥ 8 | `pair` em duas ordens, veredicto vinculante | pareamento inline, duas ordens, **`independência: NÃO`** no Gate 6 e no parecer |
-| Régua de clareza | `/principles` em modo doutrina | a Iron Law desta skill |
-
-🚫 **O que não vale:** rodar sem o cego e **omitir** a linha de independência. Julgamento sem independência ainda vale alguma coisa; julgamento sem independência **disfarçado de independente** não vale nada.
+Lacuna decisiva aberta **não fecha a Fase 7** como incondicional. Um protocolo de construção fecha **seco** — nada pendente; um protocolo de decisão fecha **honesto** — o que ficou pendente está escrito, com o tamanho que tem.
 
 ## Fronteiras
 
 | Isto | É desta skill? |
 |---|---|
 | entender um problema, escolher um caminho, avaliar uma ideia | ✅ |
-| escrever o código da decisão | ❌ `/method` (completo) ou `/fast` (até o code review) |
-| passear pelo repo respondendo perguntas, sem veredicto | ❌ `/chat` — modo read-only, não protocolo |
-| parquear a ideia sem analisar agora | ❌ `/ctt` |
-| auditar um diff que já existe | ❌ `/proof` |
+| escrever o código da decisão | ❌ o parecer termina no *primeiro passo*; implementar é outra passada |
+| passear pelo repositório respondendo perguntas, sem veredicto | ❌ isto é modo de leitura; aqui o protocolo **fecha em veredicto** |
+| parquear uma ideia sem analisar agora | ❌ captura é captura; isto custa sete fases |
+| auditar um diff que já existe | ❌ aqui se decide **antes**, quando a decisão ainda muda o código |
 
 ## PARE se pensar
 
 "já sei a resposta, o processo é formalidade" · "ele quis dizer isso, óbvio" · "o pedido está claro, esse aí sabe o que quer" · "ele corrigiu no meio, mas meu recorte ainda serve" · "re-recortar agora joga fora o que eu já fiz" · "respondo o que foi perguntado, o resto é palpite" · "listo as opções e ele escolhe" (isso é a decisão devolvida, não análise) · "depende do contexto" (de **qual**? escreva) · "por segurança, recomendo a mais conservadora" · "não achei evidência, mas faz sentido" · "o código deve fazer X" · "a lib provavelmente já resolve isso" · "3 hipóteses é burocracia, a causa é clara" · "a opção zero é obviamente ruim" · "dou a nota e ajusto o critério depois" · "refutar minha própria recomendação vai enfraquecer o parecer" · "peço para o usuário confirmar cada passo" · "pergunto antes de ir ver no arquivo" · "escrevo o parecer só no chat, é mais rápido".
 
 Cada uma é a porta por onde a análise vira opinião bem escrita.
+
+---
+
+## A sessão cega
+
+O juiz da Fase 6 não pode ser quem escreveu o parecer — e um subagente **não** serve: ele herda esta conversa, o `CLAUDE.md`, o diretório e o enquadramento de quem o chamou. Tira o custo de contexto, não o viés.
+
+O que serve é uma sessão que não viu **nada** disto: `claude -p --safe-mode --tools ""` — sem a conversa, sem `CLAUDE.md`/`AGENTS.md`, sem memória, sem MCP, sem plugin, sem ferramenta. Entra o texto que você manda; sai um veredicto que não sabe o que esta sessão quer que seja verdade. Usa o login da sessão: não precisa de chave de API.
+
+> **Tira o viés de contexto, não o de modelo.** É a mesma família de modelo, com os mesmos pontos cegos de treino. O que muda é que ela não sabe o que você já decidiu.
+
+**Copie o bloco inteiro** e troque só os caminhos: cada um extrai por `awk` o seu prompt de sistema **deste arquivo** — nunca redigido na hora — e nada dentro deles é enfeite.
+
+```bash
+# ask — a pergunta LITERAL, numa sessão sem ferramenta nenhuma (Fase 3, peso ≥ 8)
+BRAIN=<caminho absoluto deste SKILL.md — de onde você abriu esta skill>
+EFFORT=max
+IN=/tmp/brain-pergunta.md          # o texto, verbatim — nunca reescrito
+OUT=/tmp/brain-ask.md
+
+SYS="$(awk '/^## Prompt do juiz — ask$/{s=1;next} s&&/^```/{if(f)exit;f=1;next} f' "$BRAIN")"
+[ -n "$SYS" ] || { echo "brain: § Prompt do juiz — ask não encontrado em $BRAIN" >&2; exit 1; }
+command -v claude >/dev/null 2>&1 || { echo "brain: binário 'claude' ausente — rode inline e declare 'independência: NÃO' no gate." >&2; exit 2; }
+( cd "$(mktemp -d)" && env -u CLAUDECODE claude -p --safe-mode --effort "$EFFORT" --system-prompt "$SYS" --tools "" ) < "$IN" > "$OUT" \
+  || { echo "brain: a sessão cega falhou" >&2; exit 3; }
+cat "$OUT"
+```
+
+```bash
+# pair — juiz cego em DUAS ordens; A é sempre a NOSSA recomendação (Fase 6, peso ≥ 8)
+BRAIN=<caminho absoluto deste SKILL.md — de onde você abriu esta skill>
+EFFORT=max
+CRIT=criterios.md; IN=problema.md; A=recomendacao.md; B=alternativa.md   # quatro arquivos, nunca texto digitado
+OUT=/tmp/brain-pair.md
+
+SYS="$(awk '/^## Prompt do juiz — pair$/{s=1;next} s&&/^```/{if(f)exit;f=1;next} f' "$BRAIN")"
+[ -n "$SYS" ] || { echo "brain: § Prompt do juiz — pair não encontrado em $BRAIN" >&2; exit 1; }
+command -v claude >/dev/null 2>&1 || { echo "brain: binário 'claude' ausente — rode inline e declare 'independência: NÃO' no gate." >&2; exit 2; }
+for f in "$CRIT" "$IN" "$A" "$B"; do [ -s "$f" ] || { echo "brain: entrada ausente ou vazia: $f" >&2; exit 1; }; done
+
+# uma rodada: $1 = Texto 1, $2 = Texto 2 — o prompt sai por `cat`, nunca digitado
+round() {
+  { echo "# Critérios (a única régua — verbatim)"; cat "$CRIT"; echo
+    echo "# O problema (o que os dois textos respondem)"; cat "$IN"; echo
+    echo "# Texto 1"; cat "$1"; echo
+    echo "# Texto 2"; cat "$2"; echo
+  } | ( cd "$(mktemp -d)" && env -u CLAUDECODE claude -p --safe-mode --effort "$EFFORT" --system-prompt "$SYS" --tools "" )
+}
+# última linha `VENCEDOR:` da saída → 1 | 2 | EMPATE | INDETERMINADO
+winner() {
+  local w
+  w="$(grep -E '^[[:space:]]*\**VENCEDOR\**:' "$1" | tail -1 \
+      | sed -E 's/^[[:space:]]*\**VENCEDOR\**:[[:space:]]*//; s/[[:space:]*`.]+$//' \
+      | tr '[:lower:]' '[:upper:]')"
+  case "$w" in 1|2|EMPATE) echo "$w" ;; *) echo "INDETERMINADO" ;; esac
+}
+
+T="$(mktemp -d)"
+round "$A" "$B" > "$T/out1.md" || { echo "brain: a sessão cega falhou (rodada 1)" >&2; exit 3; }
+round "$B" "$A" > "$T/out2.md" || { echo "brain: a sessão cega falhou (rodada 2)" >&2; exit 3; }
+w1="$(winner "$T/out1.md")"; w2="$(winner "$T/out2.md")"
+# mapeamento CRUZADO — a rodada 2 rodou INVERTIDA: lá o Texto 1 é o B e o Texto 2 é o A
+case "$w1" in 1) r1=A ;; 2) r1=B ;; *) r1="$w1" ;; esac
+case "$w2" in 1) r2=B ;; 2) r2=A ;; *) r2="$w2" ;; esac
+if [ "$r1" = INDETERMINADO ] || [ "$r2" = INDETERMINADO ]; then res="INDETERMINADO — alguma rodada não terminou com a linha VENCEDOR"
+elif [ "$r1" = "$r2" ]; then res="$r1"
+else res="DISCORDAM — efeito de posição; não é vitória de ninguém"
+fi
+{ echo "# Juiz cego — 2 ordens"
+  echo "- critérios: \`$CRIT\` · problema: \`$IN\` · A (nossa): \`$A\` · B: \`$B\`"; echo
+  echo "## Rodada 1 — Texto 1 = A · Texto 2 = B"; cat "$T/out1.md"; echo
+  echo "## Rodada 2 — Texto 1 = B · Texto 2 = A"; cat "$T/out2.md"; echo
+  echo "## Consolidação"
+  echo "- Rodada 1: $r1 · Rodada 2: $r2"
+  echo "- RESULTADO: $res"
+} > "$OUT"
+cat "$OUT"
+```
+
+- `env -u CLAUDECODE` não é higiene de variável: faz o `env` resolver `claude` no PATH em vez de uma função de shell que injete flags.
+- O `cd "$(mktemp -d)"` é isolamento — o diretório de trabalho entra no contexto da sessão cega.
+- `--tools` é variádica: vem sempre **por último**, e o prompt entra por stdin, nunca como argumento.
+- No Bash tool, use `timeout` de 10 min; rodada longa → `run_in_background`, e leia o `OUT` quando terminar.
+- A saída vai **integral** para o artefato (`cat`), nunca parafraseada: "o cego aprovou" não é evidência; a saída dele é.
+- Códigos: `0` ok · `1` entrada/prompt ausente · `2` binário `claude` ausente · `3` a sessão cega falhou.
+
+## Prompt do juiz — ask
+
+```
+Você é uma sessão cega: não existe conversa anterior, arquivo, projeto, memória nem ferramenta — só o texto que chega agora. Responda a ele, e só a ele.
+
+- Não presuma contexto que não está no texto. Se faltar algo decisivo, diga o que falta em vez de inventar.
+- Literal e direto: sem preâmbulo, sem elogio, sem resumo do que foi perguntado.
+- O que você não pode verificar vem marcado como não verificado — nunca afirmado.
+- Pedido de hipóteses: liste as que o texto sustenta, inclusive as incômodas, sem ordenar por preferência e sem escolher uma.
+- Responda no idioma do texto recebido, com ortografia completa (acentos inclusive).
+```
+
+## Prompt do juiz — pair
+
+```
+Você é um juiz cego. Vai receber: os **critérios** (a única régua), o **problema** que os dois textos respondem, e dois textos — **Texto 1** e **Texto 2**. Você não sabe quem escreveu cada um e não deve tentar adivinhar: julgue o que está na página.
+
+Regras:
+1. A régua é só a dos critérios recebidos: critério que está lá conta; o que não está, não conta. Não invente critério novo ("mais completo", "parece mais profissional"). **Comprimento não é qualidade.**
+2. Julgue **critério a critério**, citando trechos literais dos dois textos como evidência. Para cada um: qual texto atende melhor (1, 2 ou empate) e por quê, em uma ou duas linhas.
+3. Recomendação sem o que a derrubaria, sem o que ela sacrifica ou sem confiança declarada é pior que uma mais modesta que tenha as três — a menos que os critérios digam o contrário.
+4. Depois, o veredicto geral: qual texto a pessoa que tem esse problema preferiria receber — pelos critérios decisivos, não pela soma mecânica.
+5. Sem elogio, sem preâmbulo. Não reescreva os textos; não sugira melhorias.
+6. `EMPATE` só quando os dois atendem igualmente aos critérios decisivos — nunca como saída diplomática.
+7. Responda no idioma dos critérios, com ortografia completa.
+
+Formato de saída (exato):
+
+## Por critério
+- <critério>: Texto <1 | 2 | empate> — <evidência literal dos dois lados>
+
+## Veredicto
+<2 a 4 linhas>
+
+VENCEDOR: <1 | 2 | EMPATE>
+
+A última linha da resposta é obrigatoriamente `VENCEDOR: 1`, `VENCEDOR: 2` ou `VENCEDOR: EMPATE` — e nada depois dela.
+```
