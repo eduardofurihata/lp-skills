@@ -114,7 +114,6 @@ Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por 
 
 > **Só o ciclo RAIZ commita.** Um único commit, no fim, cobrindo a feature + todos os ciclos de follow-up (código + docs de todos os tópicos + todos os cards de done + todas as remoções de to-do).
 
-Mesmo precedente do `/todo`, que promove o card mas não commita (§ Step 10, "Escopo do commit").
 
 **Corrigir um item de balde B "direto no código", sem rodar o `/method` para ele, é PROIBIDO** — é escopo novo sem Gate Check, ou seja retrofit (Regra Inviolável 2).
 

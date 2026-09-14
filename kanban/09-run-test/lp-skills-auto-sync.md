@@ -22,7 +22,7 @@
 | TC-2 ScopeSelector 3 escopos | ✅ PASSED | `tc02-1-scope-global.png` (sem .gitignore), `tc02-2-scope-projeto-shared.png` (com mkdir, sem .gitignore), `tc02-3-scope-projeto-local.png` (com mkdir + step .gitignore) |
 | TC-3 Copy + toast | ✅ PASSED | Clipboard captura via patch: Global 1652 chars com "Escopo: Global"; Projeto local 2072 chars com "Escopo: Projeto (local — só pra mim)", gitignore e mkdir presentes |
 | TC-4 Empty state | ✅ PASSED | `tc04-empty-state.png` + evaluate confirmou `button.disabled == true` e texto "Selecione skills para gerar o prompt" visível |
-| TC-5 Grid renderiza todas | ✅ PASSED | FS = 13 skills, DOM = 13 cards, ordem alfabética via evaluate. Lista nominal: afl, ask, chat, chat-out, commit, follow, jira, make-dev, method, notion-pull, notion-push, test, ui-ux-pro-max |
+| TC-5 Grid renderiza todas | ✅ PASSED | FS = 12 skills, DOM = 12 cards, ordem alfabética via evaluate. Lista nominal: afl, ask, chat, chat-out, commit, follow, jira, make-dev, method, notion-pull, notion-push, ui-ux-pro-max |
 | TC-6 Responsive | ✅ PASSED | `tc06-mobile-390.png` (1col 327px), `tc06-tablet-768.png` (2col 344.5px), `tc06-desktop-1280.png` (3col 395px) — scrollWidth == clientWidth em todos, sem overflow |
 
 ### Grupo 02 — Sync script (Bash)

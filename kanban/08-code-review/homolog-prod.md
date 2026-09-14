@@ -31,7 +31,7 @@ Escopo: os 11 arquivos do perímetro declarado + os 8 descobertos no 7b. Revisad
 
 **Motores** ✅ — 9 donos; 3 por extração, 2 absorvendo lógica dispersa, 1 (`env-config`) passando a ser o consumidor de um contrato que existia sem ninguém que o cumprisse.
 
-**Refatoração — saldo do perímetro** ✅ — 11 arquivos elevados; 4 declarados **já no nível #1** (`todo`, `card`, `jira-board`, `lib/skills.ts`), verificados e não alterados.
+**Refatoração — saldo do perímetro** ✅ — 11 arquivos elevados; 3 declarados **já no nível #1** (`card`, `jira-board`, `lib/skills.ts`), verificados e não alterados.
 
 **Design** ❌ N/A — sem superfície visual (D-19).
 

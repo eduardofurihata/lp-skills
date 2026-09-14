@@ -8,7 +8,7 @@ O produto não sabe **reconciliar o que está pronto com o que está no ar**: as
 
 O `/merge` mergeia o PR na `dev`, atualiza o Jira e oferece `dev`→`main` como apêndice (Phase 6, ~30 linhas). O deploy é **declarado**, nunca observado: o único vestígio é um comentário no bash (`# 2) main → GitHub ← DEPLOYA PROD (GH Actions)`). Não há check de run, configuração de ambiente nem smoke no ar.
 
-O gap já estava registrado e sem dono — `docs/04-spec/fast-todo-restructure.md:76`: *"/todo termina em Step 11: smoke em prod exige cerimônia que /todo não tem (não tem acesso à infra de deploy)"*. O `/merge` não assumiu essa cerimônia, e nenhuma outra skill assumiu.
+O gap já estava registrado e sem dono: smoke em prod exige uma cerimônia que nenhuma skill de build tem (não têm acesso à infra de deploy), e nenhuma outra skill assumiu.
 
 Consequência direta: **uma task pode estar na branch — mergeada, commitada, tudo certo no git — e não estar no ar.** O run falhou, o runner self-hosted estava offline, faltou uma env var, a migration não rodou. Nada disso aparece no git, e o `/merge` declara sucesso.
 

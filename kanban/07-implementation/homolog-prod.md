@@ -26,7 +26,6 @@ created: 2026-09-02
 | `skills/personal/pull-request/SKILL.md` (136 l.) | PR com corpo em 3 camadas; produz o `## DevOps` (`:79-83`) | Base pela topologia (T-12); é o produtor do checklist que `env-config` consome |
 | `skills/personal/work/SKILL.md` (118 l.) | `gh → dev → branch` (`:56-64`) | Branca de `main` sem `dev` (T-13) |
 | `skills/personal/sync/SKILL.md` (158 l.) | Notação `=` / `>` / `gh = local`; `:144` declara ausência de gate por design | +1 linha de sinalização (T-14). **Não** reescrever |
-| `skills/personal/todo/SKILL.md` (518 l.) | QA via front (Step 9) | Invocado por `pr-cycle` no gate de QA. Não alterado |
 | `skills/personal/jira-board/SKILL.md` (165 l.) | Dono único da memória de board | **Modelo** do `deploy-context`, e o contraste que justifica D-06 |
 | `skills/personal/make-dev/SKILL.md` (`:69`) | *"Machine off = job queued, not failed"* | Conhecimento a ser **absorvido** por `deploy-run` |
 | `scripts/generate-plugins.mjs` (183 l.) | Gera os manifestos do frontmatter; `parseRequires` aceita string **ou lista** (`:53`) | Const `BUILDERS` (`:30-40`) defasada → T-15 |
@@ -70,7 +69,7 @@ Ordem = a numeração de `kanban/06-todo/homolog-prod.md` (T-01…T-15): estrutu
 | "Zero secrets no código" | `method/references/07-implementation.md:164` | **estender** a "valor de secret nunca inferido nem versionado" |
 | Memória/contexto por projeto, com dono único | `jira-board/SKILL.md` | **modelo a seguir** (não reusar o arquivo: aquele é memória de máquina, este é doc versionado — D-06) |
 | Triagem A/B/C do dev | `method/references/follow-ups.md` | **não reusar** — é a triagem do **dev** (destino: ciclo `/method`); a do reviewer tem destino card e provas próprias. Referenciar a diferença, não fundir |
-| Rodar QA via front | `todo/SKILL.md` | **reusar** — invocado por `pr-cycle` |
+| Rodar QA via front | `method/SKILL.md` (Step 9) | **reusar** — invocado por `pr-cycle` |
 | Abrir PR | `pull-request/SKILL.md` | **reusar** — invocado por `reconcile` no gap "commitado sem PR" |
 | Criar card | `card/SKILL.md` | **reusar** — invocado por `scope-split` e `findings` |
 | Descobrir board | `jira-board/SKILL.md` | **reusar** — Step 0 das duas skills |
@@ -127,10 +126,10 @@ Ordem = a numeração de `kanban/06-todo/homolog-prod.md` (T-01…T-15): estrutu
 | `scripts/generate-plugins.mjs` | editado | const `BUILDERS` defasada → sincronizada com a realidade (senão publicar regride o catálogo) |
 | `README.md` | editado | exemplo `:53` usando um comando que deixou de existir |
 | `make-dev/SKILL.md` | lido para entender; dependente do grep | ganha ponteiro para o dono da regra na entrega — **sem** segunda definição |
-| `todo/SKILL.md`, `card/SKILL.md`, `jira-board/SKILL.md` | lidos para entender o contrato de invocação | **declarados já no nível #1** — nada a elevar: contratos claros, dono único, sem duplicação com este trabalho |
+| `card/SKILL.md`, `jira-board/SKILL.md` | lidos para entender o contrato de invocação | **declarados já no nível #1** — nada a elevar: contratos claros, dono único, sem duplicação com este trabalho |
 | `lib/skills.ts`, `.claude-plugin/marketplace.json` | no caminho do fluxo (consumidores) | `lib/skills.ts` **já no nível #1** (descoberta por convenção, sem lista manual); os JSONs são **gerados**, não editados |
 
-**Desvio registrado no 7b — o perímetro era maior que o previsto.** O grep por `/merge` durante a implementação revelou **8 arquivos além** dos planejados carregando o nome antigo: `method/SKILL.md:69`, `method/references/rationalizations.md:112`, `method/references/follow-ups.md:135`, `method/references/10-done.md:41`, `todo/SKILL.md:443` e `jira-board/SKILL.md:3,10,116`. São referências que o rename deixaria **quebradas** — apontando para uma skill que não existe mais. Classificação: **balde A** (defeito dentro do escopo documentado: o rename é deste trabalho), portanto **corrigido agora**, não adiado. O conteúdo mudou junto com o nome onde fazia sentido: "card de follow-up é privilégio do `/merge`" passou a ser "privilégio do **reviewer** (`/homolog` e `/prod`, via `prod/references/findings.md`)", que é onde a capacidade passou a morar.
+**Desvio registrado no 7b — o perímetro era maior que o previsto.** O grep por `/merge` durante a implementação revelou **8 arquivos além** dos planejados carregando o nome antigo: `method/SKILL.md:69`, `method/references/rationalizations.md:112`, `method/references/follow-ups.md:135`, `method/references/10-done.md:41` e `jira-board/SKILL.md:3,10,116`. São referências que o rename deixaria **quebradas** — apontando para uma skill que não existe mais. Classificação: **balde A** (defeito dentro do escopo documentado: o rename é deste trabalho), portanto **corrigido agora**, não adiado. O conteúdo mudou junto com o nome onde fazia sentido: "card de follow-up é privilégio do `/merge`" passou a ser "privilégio do **reviewer** (`/homolog` e `/prod`, via `prod/references/findings.md`)", que é onde a capacidade passou a morar.
 
 **Inventário de preservação — as 28 Red Flags do `merge:294-321` têm destino declarado** (é o que TC-7 audita):
 

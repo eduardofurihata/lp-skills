@@ -20,8 +20,8 @@ Derivada dos Steps 3-4 (+ Round 3): 14 UCs; mecanismo cross-OS (o núcleo do pro
 - **Cobre**: UC-3; spec #7; grafo de deps
 - **Bug único**: dep faltando ou errada (ex.: `afl` sem `jira`, `method` sem `solve`, ou dep inventada num plugin sem `requires`)
 - **Pré-condição**: TC-1 rodou
-- **Passos**: 1) ler `dependencies` de afl, merge, jira, work, todo, method; 2) confrontar com frontmatter `requires`; 3) confirmar que os 11 sem `requires` não têm `dependencies`
-- **Resultado**: afl→[jira], merge→[todo], jira/work/todo→[method], method→[solve]; os 11 restantes sem `dependencies`
+- **Passos**: 1) ler `dependencies` de afl, merge, jira, work, method; 2) confrontar com frontmatter `requires`; 3) confirmar que os 11 sem `requires` não têm `dependencies`
+- **Resultado**: afl→[jira], jira/work→[method], method→[solve]; os 11 restantes sem `dependencies`
 - **Prova**: output do terminal
 
 ### TC-3: marketplace add (local) + install sem dep → invocação BARE

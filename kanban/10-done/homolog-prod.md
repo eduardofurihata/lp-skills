@@ -35,7 +35,7 @@ branch: main
 - **Régua "loop não converge em ~2-3 rodadas"** — `merge:89` **estendida** ao ciclo de ambiente.
 - **"Runner offline = fila, não falha"** — `make-dev:69` **absorvido** por `deploy-run.md`.
 - **"Zero secrets no código"** — `07-implementation.md:164` **estendido** a "valor nunca inferido nem versionado".
-- **`/todo`, `/pull-request`, `/card`, `/jira-board`** — invocados, não reimplementados.
+- **`/pull-request`, `/card`, `/jira-board`** — invocados, não reimplementados.
 
 ## O que foi DESCARTADO (YAGNI)
 
@@ -52,7 +52,7 @@ Endpoint `/version` obrigatório (imporia mudança a todo projeto-alvo) · rollb
 
 11 arquivos, regra do saldo: 321 l. monolíticas → 9 motores + 2 orquestradores finos · caminhos quebrados `skills/method/references/…` → `skills/personal/…` · `requires` virou lista, alinhando com o que o corpo já declarava obrigatório · `pull-request` e `work` deixaram de assumir `dev` e passaram a resolver a **topologia** · `sync` ganhou a placa sem perder capacidade · gerador sincronizado (sem isso, publicar causaria regressão no catálogo) · README com exemplo válido · **8 arquivos com referência morta ao `/merge`** consertados.
 
-**Declarados já no nível #1**, verificados e não alterados: `todo`, `card`, `jira-board`, `lib/skills.ts`.
+**Declarados já no nível #1**, verificados e não alterados: `card`, `jira-board`, `lib/skills.ts`.
 
 ## Novidades de comportamento
 

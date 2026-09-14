@@ -25,7 +25,7 @@
 ## Problemas Encontrados e Corrigidos
 
 ### Issue #1 — Migração quebrou os symlinks locais do autor
-- **Onde:** `~/.claude/skills/{method,chat,commit,todo,solve,ask,chat-out,claude-modes}` apontavam para `skills/<slug>` (flat); `make-dev` apontava para o repo `labzz-skillzz`.
+- **Onde:** `~/.claude/skills/{method,chat,commit,solve,ask,chat-out,claude-modes}` apontavam para `skills/<slug>` (flat); `make-dev` apontava para o repo `labzz-skillzz`.
 - **Severidade:** 🟡 (ambiente local do autor; o `/method` em execução viria quebrado na próxima sessão; `make-dev` quebraria ao descontinuar o labzz).
 - **Categoria:** Efeito colateral de migração / reconciliação de ambiente.
 - **Correção (iteração 1):** re-apontados os 11 symlinks para `skills/personal/<slug>` via `ln -sfn`. Verificado: 11 OK, 0 quebrados. `make-dev` agora aponta pro lp-skills (pré-requisito seguro pra deletar o labzz no Step 10).
