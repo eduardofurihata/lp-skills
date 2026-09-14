@@ -69,7 +69,7 @@ Nomear um benchmark é trabalho de **PM** — passa no Teste de papel. Dizer com
 
 1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `jira` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Dependência obrigatória: ele lê a memória do projeto e, se não houver board gravado, pergunta ao usuário e grava. Devolve `{site, key, boardId, boardName, url, origem}`.
 2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Dependência obrigatória: lê `.claude/ship-setup/setup.md` (versionado no repositório) e, se não existir, infere, pergunta o mínimo e grava. Daqui o `/card` usa só o **§ Jira** (`Rastreamento`, `Idioma dos cards`, `DoD`).
-3. **`pipeline/references/composicao.md`** — a ordem de execução é fixa, `repro → card → alvo`: `/repro` no argumento **sem reprodução feita** → delegue ao `/repro` primeiro (`Skill(skill: "repro", args: "/card <verbos restantes> <descrição>")`) e **não rode**; alvo no argumento → crie o card (passos 1-5) e delegue no passo 6.
+3. **`pipeline/SKILL.md` § composicao** — a ordem de execução é fixa, `repro → card → alvo`: `/repro` no argumento **sem reprodução feita** → delegue ao `/repro` primeiro (`Skill(skill: "repro", args: "/card <verbos restantes> <descrição>")`) e **não rode**; alvo no argumento → crie o card (passos 1-5) e delegue no passo 6.
 
 **`Rastreamento` ≠ `Jira`** (kanban local, nenhum) → **recuse com o motivo nomeado**: *"Este repositório não usa Jira (`Rastreamento: <x>`); não há onde criar o card."* Com alvo no argumento, delegue mesmo assim, sem key: `Skill(skill: "<alvo>", args: "<descrição>")` — o pipeline roda sem card, dito em voz alta.
 
@@ -139,7 +139,7 @@ Com o board em mãos: `jira_get_sprints_from_board` (`state: active`) → `jira_
 
 Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não é opcional — quem for executar precisa ver o que originou o pedido.
 
-**O upload existe no MCP, mas não onde se procura:** não há tool `jira_upload_attachment`; o upload é o parâmetro **`attachments` do `jira_update_issue`**, e o arquivo precisa estar **dentro do CWD**. Mapeamento completo, com os erros e o porquê: **`references/jira-anexos.md`** — abra antes de anexar.
+**O upload existe no MCP, mas não onde se procura:** não há tool `jira_upload_attachment`; o upload é o parâmetro **`attachments` do `jira_update_issue`**, e o arquivo precisa estar **dentro do CWD**. Mapeamento completo, com os erros e o porquê: **§ Anexar arquivo a um card do Jira via MCP — mapeamento** — abra antes de anexar.
 
 1. **Materializar no projeto** — copie cada imagem para `.card-refs/` no diretório atual (obrigatório: caminho fora do CWD é rejeitado).
 2. **Anexar** (o card já existe, então já temos a key):
@@ -192,7 +192,7 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 - "Esqueci uma das três seções (`## Referência de mercado`, `## Como resolver`, `## Como testar`)" → card incompleto. As três, sempre.
 
 **Anexos**
-- "Não achei tool de upload no MCP, então pulei" → NÃO. É `jira_update_issue` + `attachments` (`references/jira-anexos.md`).
+- "Não achei tool de upload no MCP, então pulei" → NÃO. É `jira_update_issue` + `attachments` (§ Anexar arquivo a um card do Jira via MCP — mapeamento).
 - "Passei o caminho absoluto de `~/Downloads`" → é rejeitado. Copie pro projeto e use caminho relativo.
 - "O update retornou ok, então anexou" → NÃO. Anexo falha em silêncio; confira `attachment_results`.
 - "O usuário viu a imagem no chat, não precisa anexar" → NÃO. Quem executa o card não estava na conversa.
@@ -207,8 +207,74 @@ Toda imagem enviada como referência pra escrever o card **sobe pro card**. Não
 - "`Rastreamento: kanban local`, então crio o card no kanban" → NÃO. Sem Jira, recusa com o motivo. O kanban local é do `/method`.
 - "`/card /prod`, criei o card e parei" → NÃO. Composto com alvo, cria **e delega** com a key. Parar é só sozinho.
 - "`/repro /card`, refaço a reprodução pra escrever o card" → NÃO. O `/repro` já rodou; o `## Como testar` sai do bloco dele na conversa.
-- "`/prod /card` — não fui digitado, ignoro" → NÃO. O `/prod` delega para cá (`composicao.md`); a ordem de execução é fixa.
+- "`/prod /card` — não fui digitado, ignoro" → NÃO. O `/prod` delega para cá (`pipeline/SKILL.md` § composicao); a ordem de execução é fixa.
 - "Achei um bug no review do `/homolog`, crio o card" → NÃO. O pipeline **nunca cria card sozinho**. Só este modificador, quando o usuário o digita.
 - "1 card gigante com 3 entregas" → NÃO. 1 card = 1 entrega; proponha split.
 - "Crio sem checar duplicata" → cheque antes (passo 2).
 - "Deixei no backlog sem avisar" → NÃO. Default é **sprint ativo**; backlog só sem sprint ativo — e **avisa no report**.
+
+## Anexar arquivo a um card do Jira via MCP — mapeamento
+
+> **Existe upload via MCP.** O que não existe é uma tool chamada `jira_upload_attachment` — e é procurar por ela que leva à conclusão errada de que "o MCP não faz upload". Esta seção mapeia o caminho certo, verificado no código do `mcp-atlassian` 0.23.x.
+
+### O caminho certo, em uma linha
+
+**`mcp__atlassian__jira_update_issue` com o parâmetro `attachments`.**
+
+```
+mcp__atlassian__jira_update_issue
+  issue_key:   NIV-42
+  fields:      "{}"                                   ← obrigatório mesmo quando só se anexa
+  attachments: ".card-refs/ref-01.png,.card-refs/ref-02.png"
+```
+
+`attachments` aceita **lista separada por vírgula** ou **JSON array string** (`'[".card-refs/a.png"]'`).
+
+### As quatro regras que fazem isso funcionar (ou falhar em silêncio)
+
+#### 1. Não existe tool de upload dedicada
+
+O servidor expõe, para anexos, apenas **leitura**: `jira_download_attachments` e `jira_get_issue_images`. O upload vive **dentro** do `update_issue` (`servers/jira.py` → `jira/issues.py`, que chama `upload_attachments()` de `jira/attachments.py`). Procurar por "upload" na lista de tools não encontra nada — e a ausência não significa que não dá.
+
+#### 2. `jira_create_issue` NÃO aceita `attachments`
+
+Anexar é **sempre um segundo passo**, depois de o card existir e ter key. Não tente criar já com anexo.
+
+#### 3. O arquivo precisa estar DENTRO do CWD do servidor MCP
+
+O caminho passa por uma validação anti-traversal (`utils/io.py`): ele é resolvido contra o diretório de trabalho e **rejeitado se escapar**. Symlink é resolvido antes, então linkar não contorna.
+
+```
+ValueError: Path traversal detected: /home/user/Downloads/print.png resolves outside /home/user/GitHub/projeto
+```
+
+- **Consequência prática:** imagem em `~/Downloads`, `/tmp` ou qualquer lugar fora do projeto **falha**. Copie para dentro do projeto (ex.: `.card-refs/`) e passe **caminho relativo**.
+- **A mensagem de erro é útil:** ela revela o `<base>` — o CWD real do servidor. Se não for o diretório que você esperava, é para lá que o arquivo precisa ir.
+
+#### 4. Anexo que falha NÃO falha o update
+
+O código loga o erro e **segue com o update** ("continue with the update even if attachments fail"). O retorno traz `attachment_results` em `custom_fields`.
+
+> **Portanto: verificar é obrigatório.** Sem conferir `attachment_results` (ou reler com `jira_get_issue`), você reporta um sucesso que pode não ter acontecido. Nunca diga "anexado" sem ter olhado.
+
+### Receita completa
+
+```
+1. mkdir .card-refs/  e copiar as imagens pra lá   (nomes curtos e descritivos)
+2. jira_update_issue  issue_key=<KEY>-<N>  fields="{}"  attachments=".card-refs/a.png,.card-refs/b.png"
+3. conferir attachment_results  (ou jira_get_issue) — quantos subiram de quantos
+4. atualizar a descrição com "## Referências visuais" citando os anexos pelo nome
+5. rm -rf .card-refs/
+```
+
+### Imagem colada no chat
+
+Imagem **colada** na conversa não vira arquivo em disco — não há caminho para passar. **Peça o caminho ao usuário** (ou que ele salve o arquivo). Já estão em disco, e servem direto: imagem arrastada/informada por caminho, screenshot do Playwright, arquivo baixado.
+
+### Por que não usar a API REST direto
+
+Funcionaria (`POST /rest/api/3/issue/{key}/attachments` com `X-Atlassian-Token: no-check`), mas exigiria Basic Auth com e-mail + API token — credencial nova, gerenciada fora do MCP, com risco de vazar para o repositório. **O MCP já está autenticado no site certo.** Use o MCP.
+
+### Reúso
+
+A mecânica é do Jira, não do `/card`. `/work` e `/pull-request` também tocam cards e podem consumir esta seção quando precisarem anexar (evidência de QA, screenshot de review) — sem redefinir nada.

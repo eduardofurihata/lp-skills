@@ -15,7 +15,7 @@ Dono **único** de dois fatos que ninguém mais grava:
 | **O board** — site, key, boardId, boardName, url | `~/.claude/projects/<slug>/memory/jira.md` | memória da **máquina**: coordenada de quem usa |
 | **A estrutura** — colunas/status reais, tipos de issue, etapa do pipeline → status, se comenta, manhas do MCP | `.claude/ship-setup/jira.md` (ou `.local.md`) | **versionado** no projeto: igual para todo mundo que clona |
 
-Todo alvo do pipeline (`/work`, `/pull-request`, `/homolog`, `/prod`) e todo modificador (`/repro`, `/card`) começa passando por aqui — nenhum deles descobre, assume ou pergunta board ou status por conta própria. O motor `jira-sync` (`pipeline/references/jira-sync.md`) **lê a estrutura** para saber para qual status mover o card em cada etapa e se comenta; o `/card` a lê para saber o tipo de issue.
+Todo alvo do pipeline (`/work`, `/pull-request`, `/homolog`, `/prod`) e todo modificador (`/repro`, `/card`) começa passando por aqui — nenhum deles descobre, assume ou pergunta board ou status por conta própria. O motor `jira-sync` (`pipeline/SKILL.md` § jira-sync) **lê a estrutura** para saber para qual status mover o card em cada etapa e se comenta; o `/card` a lê para saber o tipo de issue.
 
 > **Escopo: o Jira como está organizado, não os cards.** Não cria card, não move status, não comenta — isso é o `jira-sync` e o `/card`, que leem daqui. Resolve *onde* o trabalho vive e *como esse board funciona*, e devolve isso pra quem chamou.
 
@@ -181,13 +181,13 @@ O arquivo é o do **modo** que o `/setup` decidiu para este repositório (`arqui
 |---|---|
 | **Colunas / status** | `mcp__atlassian__jira_search` (JQL `project = <KEY> ORDER BY updated DESC`, `fields: status`, `limit: 50`) → os `status.name` distintos; `mcp__atlassian__jira_get_transitions` num card de cada status visto → os destinos completam a lista. Ordem: a do board (backlog → feito). Nomes **exatos** |
 | **Tipos de issue** | `mcp__atlassian__jira_get_project_issue_types` (`project_key`) → os que existem. `Tipo para bug` = o que se chama Bug/Erro/Defeito; `Tipo para o resto` = Tarefa/Task/Story — candidato por nome, **confirmado** |
-| **Etapa → status** | candidato por nome, na tabela do `references/template.md`: *trabalho começou* → Em andamento/In Progress/Doing · *publicado* → Em revisão/Code Review/Review · *integrado* e *homolog* → Verificar/Homologação/QA/Staging · *produção* → Concluído/Done/Pronto · *rework* → o mesmo de *trabalho começou*. Etapa sem status equivalente → `—` |
+| **Etapa → status** | candidato por nome, na tabela do § Template: *trabalho começou* → Em andamento/In Progress/Doing · *publicado* → Em revisão/Code Review/Review · *integrado* e *homolog* → Verificar/Homologação/QA/Staging · *produção* → Concluído/Done/Pronto · *rework* → o mesmo de *trabalho começou*. Etapa sem status equivalente → `—` |
 | **Comenta?** | default do template; o usuário desliga o que não quiser |
 | **MCP** | as manhas que já se conhecem (upload por `jira_update_issue` + `attachments`; `comment` de `jira_transition_issue` é ADF — comente separado) + o que se observou nesta sessão, se algo falhou e depois funcionou |
 
 **Uma pergunta, isolada** (AskUserQuestion), mostrando a tabela etapa→status **preenchida** com os candidatos e as colunas reais ao lado — o usuário confirma ou corrige os nomes. Colunas e tipos não se perguntam: são o que o site devolveu. Sem MCP → diga que não deu para mapear e peça as colunas em texto.
 
-**Validar e gravar** — consistência do `references/template.md` (status da tabela ⊂ `Colunas`; `Tipo para bug` ∈ `Tipos de issue`). Contradição → mostre e pergunte de novo; **não grave**. `mkdir -p .claude/ship-setup` e escreva a partir do template, no arquivo do modo. Modo **time**: avise que é versionado e entra no commit de quem chamou. Esta skill não commita.
+**Validar e gravar** — consistência do § Template (status da tabela ⊂ `Colunas`; `Tipo para bug` ∈ `Tipos de issue`). Contradição → mostre e pergunte de novo; **não grave**. `mkdir -p .claude/ship-setup` e escreva a partir do template, no arquivo do modo. Modo **time**: avise que é versionado e entra no commit de quem chamou. Esta skill não commita.
 
 ### 7. Devolver
 
@@ -235,3 +235,62 @@ Trocar o board e `ler` são as únicas situações em que os arquivos são reesc
 - "Rodei `mkdir -p` no diretório de memória por segurança" → desnecessário. Ele já existe; escreva direto. (`.claude/ship-setup/` é diferente: pode não existir — `mkdir -p` lá.)
 - "Gravei o arquivo e esqueci o `MEMORY.md`" → NÃO. Memória sem linha no índice é memória que ninguém acha.
 - "Perguntei o board de novo porque a sessão é nova" → NÃO. Sessão nova, mesmo repositório, mesma memória. Leia o arquivo.
+
+## Template — `.claude/ship-setup/jira.md`
+
+Copie o bloco abaixo para `.claude/ship-setup/jira.md` na raiz do repositório-alvo — ou para `.claude/ship-setup/jira.local.md` quando o processo é **só seu** (o modo é o que o `/setup` decidiu no passo 0 dele; o do time vale quando os dois existem). É a **estrutura** do Jira deste projeto: o que é igual para todo mundo que clona. O **board** (site, key, id) não entra aqui — é coordenada de quem usa e mora na memória da máquina (`/jira`, passo 1). Os comentários HTML são dica de preenchimento, não valor.
+
+```markdown
+# Jira — <projeto>
+
+> Estrutura do Jira deste projeto. Dono: `/jira`. Lido pelo motor `jira-sync` a cada etapa do pipeline
+> que toca card, e pelo `/card` ao criar. NÃO mora aqui: o board (memória da máquina, `/jira`) ·
+> o sprint ativo (descoberto a cada uso) · as convenções do time (`.claude/ship-setup/setup.md`).
+
+## Board
+- Colunas: Backlog · A fazer · Em andamento · Em revisão · Homologação · Concluído     <!-- na ordem do board, nomes EXATOS -->
+- Tipos de issue: Tarefa · Bug · História · Epic                                        <!-- os que `jira_get_project_issue_types` devolve -->
+- Tipo para bug: Bug                                                                     <!-- o que o /card usa quando é bug -->
+- Tipo para o resto: Tarefa                                                              <!-- melhoria, feature, tela -->
+
+## Etapa do pipeline → status                <!-- lido pelo jira-sync: transição por NOME de status, nunca por id (o id muda) -->
+| Etapa | Status neste board | Comenta? |
+|---|---|---|
+| trabalho começou (estágio `commit` aberto)         | Em andamento  | não |
+| publicado — PR aberto/atualizado, ou push sem PR   | Em revisão    | sim |
+| integrado — mergeado na integração                 | Homologação   | sim |
+| no ar em homolog, verificado                       | Homologação   | sim |
+| no ar em produção, verificado                      | Concluído     | sim |
+| devolvido ao dev (rework)                          | Em andamento  | sim |
+<!-- status que não existe neste board → "—": o jira-sync comenta e NÃO transiciona, e avisa -->
+
+## Comentário
+- Idioma: pt-BR                              <!-- o mesmo do § Jira do setup.md -->
+- Formato: `## O que foi feito` leigo + `---` + `<rótulo>: <URL | PR | commit>`   <!-- o do jira-sync; mude só se o time exigir outro -->
+- Nome do card sempre claro: título do PR, `## Cards` do PR e cada comentário citam `<KEY>-<N> — <título>`
+
+## MCP — o que este servidor faz, e como                  <!-- as manhas: o que se descobre tropeçando, escrito UMA vez -->
+- Servidor: mcp-atlassian (`mcp__atlassian__*`) · site: <site>.atlassian.net · um site por servidor
+- Upload de anexo: FUNCIONA — não há tool `jira_upload_attachment`; é `jira_update_issue` com `fields: "{}"` + `attachments: "<caminhos>"`. O arquivo tem de estar DENTRO do CWD (path traversal fora); `jira_create_issue` não aceita anexo (sempre 2º passo); anexo que falha NÃO falha o update — confira `attachment_results`. Receita completa no `/card` (`card/SKILL.md` § Anexar arquivo a um card do Jira via MCP — mapeamento)
+- Comentário na transição: NÃO use o parâmetro `comment` de `jira_transition_issue` (é ADF); comente antes com `jira_add_comment`, transicione depois
+- <outra manha observada: o que parecia não funcionar, o que funciona, como>
+```
+
+### Como preencher
+
+| Campo | De onde sai | Como |
+|---|---|---|
+| Colunas | `jira_search` (JQL `project = <KEY>`, `fields: status`, `limit: 50`) + `jira_get_transitions` num card de cada coluna visível | os `status.name` distintos, na ordem em que aparecem no board; **nomes exatos** — é por nome que o `jira-sync` transiciona |
+| Tipos de issue | `jira_get_project_issue_types` (`project_key`) | os que existem; `Tipo para bug`/`Tipo para o resto` são a escolha do time entre eles |
+| Etapa → status | candidato por nome (Em andamento/In Progress/Doing · Em revisão/Code Review · Verificar/Homologação/QA · Concluído/Done) | **confirma com o usuário** numa pergunta isolada, mostrando a tabela preenchida — etapa sem status equivalente fica `—` |
+| Comenta? | default da tabela acima | o time pode desligar uma etapa; a linha `trabalho começou` nasce `não` porque a transição já diz tudo |
+| MCP | o que já se sabe (upload, ADF) + o que se observou nesta sessão | escreva o **sintoma** (o que parecia não funcionar) e o **caminho** (o que funciona) — é o que impede a próxima pessoa de tropeçar de novo |
+
+### Consistência (validada antes de gravar)
+
+| Se | Então |
+|---|---|
+| status na tabela etapa→status que não está em `Colunas` | não grava — ou é typo, ou a coluna precisa entrar |
+| `Tipo para bug` que não está em `Tipos de issue` | não grava |
+| projeto sem board ágil (`boardId` vazio na memória) | `Colunas` são os status do workflow (`jira_get_transitions`), não colunas visuais; o resto igual |
+| `.claude/ship-setup/setup.md § Jira → Rastreamento` ≠ `Jira` | este arquivo **não existe** — o `/jira` não roda neste repositório |

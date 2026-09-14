@@ -17,7 +17,7 @@ Design não decide **o que** o produto faz — decide se o que ele faz **chega i
 | Invocação | Modo | O que acontece |
 |---|---|---|
 | sem argumento — pelo usuário ou por outra skill | **régua** | Leia este arquivo inteiro agora (sem a leitura, a invocação não aconteceu). Os princípios e as provas abaixo valem para tudo que você tocar daqui em diante. Sem passada, sem nota, sem output final. |
-| com alvo | **alvo** | Fluxo abaixo: os alvos, os pilares e os pesos desta régua, rodando o motor de `../principles/references/fluxo-modo-alvo.md` — inventário → achados → baldes → nota → corrige → repete até todo pilar ≥ 95. |
+| com alvo | **alvo** | Fluxo abaixo: os alvos, os pilares e os pesos desta régua, rodando o motor de `../principles/SKILL.md` § Fluxo do modo alvo — inventário → achados → baldes → nota → corrige → repete até todo pilar ≥ 95. |
 
 **A quem se aplica:** todo trabalho com **superfície visual** — uma tela, um componente, um fluxo, um e-mail, um documento gerado. Sem superfície visual, esta doutrina não tem o que cobrar: declare isso uma vez e siga.
 
@@ -97,7 +97,7 @@ O benchmark — o calibre dos líderes do domínio como **piso**, e 10x acima de
 
 # Fluxo (modo alvo)
 
-**Leia `../principles/references/fluxo-modo-alvo.md` agora** — é o motor desta passada: snapshot, inventário do zero, baldes A/B/C, fórmula da nota, checks, correção, repetição até todo pilar ≥ 95 e Output final. É o mesmo motor que o `/principles` roda, e ele é a fonte única dessas regras. Sem essa leitura, o modo alvo não roda. Daqui sai o que é **desta** régua:
+**Leia `../principles/SKILL.md` § Fluxo do modo alvo agora** — é o motor desta passada: snapshot, inventário do zero, baldes A/B/C, fórmula da nota, checks, correção, repetição até todo pilar ≥ 95 e Output final. É o mesmo motor que o `/principles` roda, e ele é a fonte única dessas regras. Sem essa leitura, o modo alvo não roda. Daqui sai o que é **desta** régua:
 
 ## Alvos — passo 1
 

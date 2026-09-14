@@ -8,7 +8,7 @@ argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 
 # /infra — O mapa da infra deste projeto
 
-Dono **único** de `.claude/ship-setup/infra.md`. Responde *"o que este projeto usa de infra, onde, sob qual conta — e onde vive cada segredo"*. É o **inventário**; o **processo** (como sobe, como checa, como volta) é o `.claude/ship-setup/deploy.md`, do `pipeline/references/deploy-context.md`, e **aplicar** configuração é o `pipeline/references/env-config.md`. Aqui não se seta variável, não se faz deploy, não se cria conta.
+Dono **único** de `.claude/ship-setup/infra.md`. Responde *"o que este projeto usa de infra, onde, sob qual conta — e onde vive cada segredo"*. É o **inventário**; o **processo** (como sobe, como checa, como volta) é o `.claude/ship-setup/deploy.md`, do `pipeline/SKILL.md` § deploy-context, e **aplicar** configuração é o `pipeline/SKILL.md` § env-config. Aqui não se seta variável, não se faz deploy, não se cria conta.
 
 > **Escopo: inventário sem valor.** O arquivo é versionado. Identificador entra; credencial, nunca.
 
@@ -105,7 +105,7 @@ Apresente separado: *"inferi isto (destas fontes); confirmei aquilo (por CLI); p
 
 ### 5. Escrever e reportar o diff
 
-Escreva a partir de **`references/template.md`** (`mkdir -p .claude/ship-setup`), no arquivo do **modo** (`infra.md` ou `infra.local.md` — passo 1). Depois, contra o que o passo 1 leu:
+Escreva a partir de **§ Template** (`mkdir -p .claude/ship-setup`), no arquivo do **modo** (`infra.md` ou `infra.local.md` — passo 1). Depois, contra o que o passo 1 leu:
 
 ```
 🗺️ Infra: <N> provedores · <M> segredos mapeados · <K> artefatos   [criado agora | atualizado | sem mudança]
@@ -136,8 +136,8 @@ Depois de gravar, **no modo time**: `git check-ignore -v .claude/ship-setup/infr
 | Arquivo | Dono | O que guarda | Onde este mapa entra |
 |---|---|---|---|
 | `.claude/ship-setup/setup.md` | `/setup` | convenções do time | § Infra aponta pra cá |
-| `.claude/ship-setup/deploy.md` | `deploy-context.md` | processo: ambientes, como checar, como setar, rollback | § Configuração diz o **comando** para setar; **onde vive** cada segredo é daqui |
-| `env-config.md` (motor do `/homolog`/`/prod`) | `/prod` | aplica configuração no ambiente | lê § Onde vive cada segredo; sem `infra.md` → invoca `/infra` antes |
+| `.claude/ship-setup/deploy.md` | `pipeline/SKILL.md` § deploy-context | processo: ambientes, como checar, como setar, rollback | § Configuração diz o **comando** para setar; **onde vive** cada segredo é daqui |
+| `pipeline/SKILL.md` § env-config (motor do `/homolog`/`/prod`) | `/prod` | aplica configuração no ambiente | lê § Onde vive cada segredo; sem `infra.md` → invoca `/infra` antes |
 | `.secrets/README.md` | o projeto | "por que `.secrets`" + o que mora ali | fonte de leitura; depois do mapa pode virar "por quê + ponteiro pro `infra.md`" (decisão do projeto, não desta skill) |
 | `~/GitHub/eduzz-aws` (`MAPA-AWS.md`, `aws-prod`) | Eduzz/Labzz | a conta inteira | o mapa aponta pra lá e guarda só o recorte deste projeto |
 
@@ -154,3 +154,86 @@ Depois de gravar, **no modo time**: `git check-ignore -v .claude/ship-setup/infr
 - "Anoto quantos containers/serviços estão rodando" → NÃO. Estado envelhece errado; o mapa é julgamento. Número é `describe` da hora.
 - "Sumiu do `.secrets/`, apago do mapa" → NÃO. Pergunte: saiu de uso ou mudou de lugar? O mapa é onde o time vai procurar.
 - "Já rodei hoje, o mapa está atualizado" → NÃO. Diff é barato; `.secrets/` muda sem avisar ninguém.
+
+## Template — `.claude/ship-setup/infra.md`
+
+Escrito pelo `/infra` (passo 5 do fluxo) a partir do que foi inferido, confirmado e perguntado. **Nenhum valor de segredo, em nenhuma linha** — o gate anti-vazamento (passo 6) recusa o arquivo se um aparecer. Colunas vazias ficam `—`; o que não foi confirmado fica `não confirmado (motivo)`.
+
+```markdown
+# Infra — <projeto>
+
+> Mantido pelo `/infra`. **Inventário**: o que existe, onde, sob qual conta, e onde vive cada segredo — nunca o valor.
+> Processo de deploy (ambientes, como checar, como setar, rollback): `.claude/ship-setup/deploy.md`.
+> Convenções do time: `.claude/ship-setup/setup.md`.
+<!-- Eduzz/Labzz: > Conta AWS inteira: `~/GitHub/eduzz-aws` (`docs/MAPA-AWS.md`, skill `aws-prod`). Este mapa é só o recorte deste projeto — stack `<qual>` do § 2 de lá. -->
+
+## Provedores e contas
+| Provedor | Conta / projeto (identificador) | Região | Para quê | Confirmado por |
+|---|---|---|---|---|
+| Vercel | projeto `<nome>` (`prj_…`) | — | hospedagem | `.vercel/project.json` · `vercel project ls` |
+| Neon | projeto `<nome>` | `<região>` | Postgres de produção | `neonctl projects list` |
+| AWS | conta `<id>` | `us-east-1` | <serviços> | `aws sts get-caller-identity` |
+| Google Cloud | projeto `<id>` (nº `<n>`) | — | <APIs> | `gcloud config list` |
+| … | | | | não confirmado (CLI não autenticada) |
+
+## Serviços
+| Serviço | Onde roda | Domínio / URL | Banco / storage |
+|---|---|---|---|
+| app | Vercel (prod = `main`) | https://… | Neon `<projeto>` |
+| cron diário | cron-job.org | → `/api/cron/…` | — |
+
+## Domínios e DNS
+| Domínio | Registrador | DNS | Aponta para | Observação |
+|---|---|---|---|---|
+| `<apex>` | Registro.br | Cloudflare | Vercel (A + CNAME) | DNSSEC ativo · TLS pela Vercel |
+
+## Onde vive cada segredo   <!-- NOME e LUGAR. Nunca o valor. -->
+| Segredo (nome da variável) | Onde mora localmente | Onde mora no ambiente | Como se obtém / renova |
+|---|---|---|---|
+| `DATABASE_URL` | `.secrets/tokens.env` (cópia em `.env.prod`) | Vercel → Settings → Environment Variables | painel Neon → Connection string |
+| `RESEND_API_KEY` | `.secrets/tokens.env` | Vercel | painel Resend → API Keys |
+| `JIRA_API_TOKEN` | `.secrets/atlassian.env` (⚠️ cópia — o mesmo token vive em `<outro repo>`) | `.mcp.json` lê do arquivo | id.atlassian.com → API tokens |
+| chave SSH `<nome>` | `.secrets/<arquivo>` + `<arquivo>.pub` (+ passphrase em `<arquivo>-passphrase`) | — | gerada localmente; pública cadastrada em `<onde>` |
+| conta de serviço Google | `.secrets/google-service-account.json` | — | `gcloud iam service-accounts keys create` |
+| `VERCEL_TOKEN` | **não mora aqui** — só no GitHub | GitHub → Settings → Secrets (`VERCEL_TOKEN`) | Vercel → Tokens |
+
+## Artefatos em `.secrets/` (não são credencial)
+| Caminho | O que é | De quando | Pode apagar? |
+|---|---|---|---|
+| `.secrets/<x>-dump/` | dump pré-migração do banco `<y>` | 2026-07-31 | depois de validar a migração |
+| `.secrets/<x>-desativacao-<data>/` | `tfstate`, `tfvars`, exports do ECS/ALB/Route53 de antes da desativação | <data> | histórico — manter |
+| `.secrets/<x>-REMOVIDO` | credencial revogada, mantida como registro | — | sim |
+
+## Se vazar — ordem de revogação
+1. `<credencial-mestra>` primeiro só se `<painel>` já estiver aberto — senão tranca fora.
+2. `<token>` em `<painel> → <tela>`.
+3. …
+
+## Identificadores em uso (não são segredo)
+```
+<provedor>
+  conta ........... <id>  "<nome>"
+  projeto ......... <id>
+  ⚠️ <conta parecida que NÃO é a deste projeto, e por quê>
+```
+```
+
+### O que entra × o que não entra
+
+| Entra (identificador) | Não entra (credencial / estado) |
+|---|---|
+| account id, project id, org id, número de conta | chave, token, senha, passphrase, connection string com senha |
+| região, nome de serviço, domínio, URL pública | conteúdo de `*.pem`, `id_*`, `*.json` de conta de serviço |
+| nome de variável e **onde** ela mora | o valor da variável |
+| nome de arquivo em `.secrets/` e o que ele é | o conteúdo do arquivo |
+| "há rotação em andamento — não apague a `-old`" (julgamento) | quantos containers rodam, fatura, ocupação de disco (estado) |
+
+### Exemplo de diff (report do passo 5)
+
+```
+🗺️ Infra: 7 provedores · 14 segredos mapeados · 3 artefatos   [atualizado]
+  + apareceu:  .secrets/cloudflare.env (CLOUDFLARE_DNS_TOKEN) · provedor Cloudflare
+  − sumiu:     .secrets/gratta-urls.txt (URL vencida — o README já previa o descarte)
+  ~ mudou:     Resend: domínio verificado `envio.…` → apex (README, 26/08)
+  ? não confirmado: conta AWS (aws CLI não autenticada)
+```

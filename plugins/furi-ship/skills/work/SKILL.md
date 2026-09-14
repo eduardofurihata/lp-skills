@@ -20,13 +20,13 @@ O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o
 ## Iron Law
 
 > **Precisão > tokens > velocidade.** Mire **10x acima da referência #1 do mercado** (padrão do `/solve`). "É simples, pulo" = a violação.
-> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** e o **design** (quando tem tela) valem em **todos** os steps — doutrina em `plugins/furi-build/skills/principles/SKILL.md`, lente por step nos references do `/method` (pacote `furi-build`, carregados pelo `/method` que o `work-cycle` invoca). Card "pequeno" não relaxa nenhum deles.
+> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** e o **design** (quando tem tela) valem em **todos** os steps — doutrina em `plugins/furi-build/skills/principles/SKILL.md`, lente por step nas seções § Step N → Princípios neste step do `/method` (pacote `furi-build`, carregados pelo `/method` que o `work-cycle` invoca). Card "pequeno" não relaxa nenhum deles.
 >
 > **O alvo é estado, não etapa.** `/work` num card já commitado é gap zero, dito com a evidência. `/work` num card sem branch cria a branch, entende, implementa e commita — sem mandar ninguém "rodar outra coisa antes".
 
 ## Argument parsing
 
-`composicao.md` (`pipeline/references/composicao.md`) primeiro: o argumento pode trazer um **modificador** (`/repro`, `/card`) ou um **alvo mais distante** (`/pull-request`, `/homolog`, `/prod`).
+`pipeline/SKILL.md` § composicao (`pipeline/SKILL.md` § composicao) primeiro: o argumento pode trazer um **modificador** (`/repro`, `/card`) ou um **alvo mais distante** (`/pull-request`, `/homolog`, `/prod`).
 
 | Arg | O que acontece |
 |---|---|
@@ -41,7 +41,7 @@ O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o
 
 - **Qualquer projeto** do Atlassian, via `mcp__atlassian__*`. A key sai do argumento ou da **memória do projeto** — nada hardcoded. **Sem Jira** (`/setup` § Jira `Rastreamento` ≠ Jira) o pipeline roda inteiro sem card.
 - **Board e estrutura do Jira vêm do `/jira`**; **modo de trabalho e nome da branch vêm do `/setup`** § Branch (`branch por card` · `branch acumula cards` · `direto na integração`) — Step 0, dependências obrigatórias, lidas a **cada** invocação. Pedido explícito na sessão ("hoje quero branch") vence para esta invocação e não reescreve o arquivo; a saída oferece `/setup branch` se for pra virar padrão.
-- **A branch nasce no estágio `branch`** (`pipeline/references/branch.md`), antes de qualquer código; **`<integração>` é detectada** (`pipeline/references/deploy-context.md` § 1), nunca assumida. O `/method` **nunca cria branch**.
+- **A branch nasce no estágio `branch`** (`pipeline/SKILL.md` § branch), antes de qualquer código; **`<integração>` é detectada** (`pipeline/SKILL.md` § deploy-context, passo 1), nunca assumida. O `/method` **nunca cria branch**.
 - **Status e comentário no card são do `jira-sync`**, que lê o `jira.md` do projeto — nunca inventados aqui.
 
 <HARD-GATE>
@@ -57,9 +57,9 @@ O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o
 ## Step 0 — Jira, convenções, contexto e composição
 
 1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `jira` também resolve). Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. Devolve `{rastreamento, site, key, boardId, boardName, url, estrutura, origem}` — com `rastreamento ≠ Jira`, devolve isso e o pipeline segue sem card.
-2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Devolve `{branch: {modo, nome}, commit, pr, jira: {rastreamento, …}, infra, guidelines, origem, arquivo}` — o `branch.md` usa `branch`; o `/method` usa `commit`. Duas invocações separadas, cada uma com a sua pergunta isolada (uma vez na vida do repositório).
-3. **`pipeline/references/deploy-context.md`** § 1 — `<integração>` detectada (e o `deploy.md` lido, se existir).
-4. **`pipeline/references/composicao.md`** — o alvo efetivo: estágios e paradas dos modificadores presentes, o verbo tirado do argumento, o objetivo limpo.
+2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Devolve `{branch: {modo, nome}, commit, pr, jira: {rastreamento, …}, infra, guidelines, origem, arquivo}` — o `pipeline/SKILL.md` § branch usa `branch`; o `/method` usa `commit`. Duas invocações separadas, cada uma com a sua pergunta isolada (uma vez na vida do repositório).
+3. **`pipeline/SKILL.md` § deploy-context, passo 1** — `<integração>` detectada (e o `deploy.md` lido, se existir).
+4. **`pipeline/SKILL.md` § composicao** — o alvo efetivo: estágios e paradas dos modificadores presentes, o verbo tirado do argumento, o objetivo limpo.
 
 ## Step 1 — Declarar o alvo e entregar ao `reconcile`
 
@@ -74,9 +74,9 @@ alvo = {
 }
 ```
 
-Entregue ao **`pipeline/references/reconcile.md`**, que faz o resto: publica o diagnóstico da faixa **antes** de agir, fecha os estágios abertos na ordem — `card` (`/card`, só se composto) → `branch` (`branch.md`) → `reprodução` (`/repro`, só se composto) → `commit` (`work-cycle.md` → `/method`) — re-diagnostica a cada um, e para no `commit`.
+Entregue ao **`pipeline/SKILL.md` § reconcile**, que faz o resto: publica o diagnóstico da faixa **antes** de agir, fecha os estágios abertos na ordem — `card` (`/card`, só se composto) → `branch` (`pipeline/SKILL.md` § branch) → `reprodução` (`/repro`, só se composto) → `commit` (`pipeline/SKILL.md` § work-cycle → `/method`) — re-diagnostica a cada um, e para no `commit`.
 
-Os motores vivem em `pipeline/references/`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de trabalho precisar mudar, ela muda no motor, para os quatro alvos de uma vez. Na borda, o `work-cycle` invoca o **`/method`** (`furi-build:method`) e, quando a QA está pendente, o **`/todo`** (`furi-build:todo`) — via Skill tool, nunca reproduzidos de memória.
+Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplemente nenhum aqui** — se uma regra do ciclo de trabalho precisar mudar, ela muda no motor, para os quatro alvos de uma vez. Na borda, o `work-cycle` invoca o **`/method`** (`furi-build:method`) e, quando a QA está pendente, o **`/todo`** (`furi-build:todo`) — via Skill tool, nunca reproduzidos de memória.
 
 ## Saída
 
@@ -105,11 +105,11 @@ Houve override de sessão no estágio `branch`? Uma linha a mais, **oferecendo**
 - "Assumi que crio branch (é o fluxo dos devs)" / "assumi que trabalho direto (é o meu repo)" → NÃO. O modo vem do **`/setup`** § Branch. Sem arquivo, o `/setup` pergunta — uma vez na vida do repositório.
 - "O usuário pediu branch hoje, atualizei o `.claude/ship-setup/setup.md`" → NÃO. Override de sessão vale pra invocação. Só `/setup branch` reescreve.
 - "Comecei pelo `/method`, a branch eu vejo depois" → NÃO. O diagnóstico vem primeiro; `branch` fecha antes de `commit`. O `/method` nunca cria branch.
-- "Resolvi a branch de cabeça (`checkout dev`, `checkout main`, renomeei o lote)" → NÃO. É o motor `branch.md`: integração pela topologia, modo pelo `/setup`, lote pelos PRs.
+- "Resolvi a branch de cabeça (`checkout dev`, `checkout main`, renomeei o lote)" → NÃO. É o motor `pipeline/SKILL.md` § branch: integração pela topologia, modo pelo `/setup`, lote pelos PRs.
 - "Já está commitado, mas rodo o `/method` de novo pra garantir" → NÃO. Gap zero se declara com a evidência; não se refaz.
 - "Não tem card, então não dá pra trabalhar" → NÃO. Sem Jira o objetivo é a descrição ou o que está na árvore. Nem tudo tem card.
 - "Não tem card, então crio um" → NÃO. Só com `/card` composto. O pipeline nunca cria card sozinho.
-- "`/work /repro`, então rodo o `/repro` inteiro antes" → NÃO. É **um** loop: o estágio `reprodução` e a parada entram na faixa deste alvo (`composicao.md`).
+- "`/work /repro`, então rodo o `/repro` inteiro antes" → NÃO. É **um** loop: o estágio `reprodução` e a parada entram na faixa deste alvo (`pipeline/SKILL.md` § composicao).
 - "Digitaram `/work /prod`, faço o `/work` e aviso" → NÃO. Vence o mais distante: delega ao `/prod` e não roda.
 - "Já conheço o `/solve` / o `/jira` / o `/setup` / o `/method`, sigo sem invocar" → NÃO. Skill entra pelo Skill tool, **toda** vez.
 - "Terminei, já abro o PR / dou push" → NÃO. `/work` para no **commit local**. Push é a faixa do `/pull-request`.

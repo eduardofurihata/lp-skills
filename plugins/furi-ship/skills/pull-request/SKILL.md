@@ -22,7 +22,7 @@ O segundo **alvo** do pipeline: o estado pedido é **a branch em `origin`, com o
 
 ## Argument parsing
 
-`composicao.md` primeiro: o argumento pode trazer um **modificador** (`/repro`, `/card`) ou um **alvo mais distante** (`/homolog`, `/prod`) — ou `/work`, que perde para este.
+`pipeline/SKILL.md` § composicao primeiro: o argumento pode trazer um **modificador** (`/repro`, `/card`) ou um **alvo mais distante** (`/homolog`, `/prod`) — ou `/work`, que perde para este.
 
 | Arg | O que acontece |
 |---|---|
@@ -33,7 +33,7 @@ O segundo **alvo** do pipeline: o estado pedido é **a branch em `origin`, com o
 
 ## Convenções (CONTRATO)
 
-- **Base do PR = `<integração>` detectada** (`pipeline/references/deploy-context.md` § 1) — nunca assumida. Duas branches → `<integração>`; branch única → `<produção>` (= integração). **Nunca `main` quando existe `<integração>`.**
+- **Base do PR = `<integração>` detectada** (`pipeline/SKILL.md` § deploy-context, passo 1) — nunca assumida. Duas branches → `<integração>`; branch única → `<produção>` (= integração). **Nunca `main` quando existe `<integração>`.**
 - **`Abre PR`, `Template` e a posição da key vêm do `/setup`** (§ PR, § Commit). **Board e estrutura do Jira vêm do `/jira`.** Step 0, a cada invocação.
 - **Os cards da branch vêm dos commits** (`git log origin/<integração>..HEAD --no-merges`, subject + trailer `Jira:`). Num lote, o nome da branch é só o do 1º card.
 - **Sem Jira** (`Rastreamento` ≠ Jira): publica sem card, `## Cards` diz isso, e o espelho é no-op declarado.
@@ -41,7 +41,7 @@ O segundo **alvo** do pipeline: o estado pedido é **a branch em `origin`, com o
 <HARD-GATE>
 1. **Diagnóstico publicado antes de qualquer ação** — a faixa `card?` → `branch` → `reprodução?` → `commit` → `push` → `pr?`, com a evidência de cada estágio.
 2. NÃO publique o que não está commitado pelo `/method` — estágio `commit` aberto é fechado pelo `work-cycle`, não por commit avulso.
-3. NÃO resolva conflito com a integração aqui — é o estágio `branch` reaberto (`branch.md` § 5) e o `work-cycle` re-testa; publica-se só o que passou.
+3. NÃO resolva conflito com a integração aqui — é o estágio `branch` reaberto (`pipeline/SKILL.md` § branch, passo 5) e o `work-cycle` re-testa; publica-se só o que passou.
 4. NÃO crie um segundo PR para a mesma branch. Aberto → `gh pr edit`.
 5. NÃO mire `main` quando existe `<integração>`. Produção é `/prod`.
 6. NÃO mande o usuário "rodar o `/work` antes": estágio aberto é gap que o loop fecha.
@@ -53,8 +53,8 @@ O segundo **alvo** do pipeline: o estado pedido é **a branch em `origin`, com o
 
 1. **Invoque o `/jira`** — via **Skill tool** (`furi-ship:jira`; a forma curta `jira` também resolve). Chamada real: sem a invocação, o passo não aconteceu. Devolve `{rastreamento, site, key, …, estrutura}` — é de lá que saem a `<KEY>` do título e do `## Cards`, e o status/comentário da etapa **publicado**.
 2. **Invoque o `/setup`** — via **Skill tool** (`furi-ship:setup`; a forma curta `setup` também resolve). Daqui saem `Abre PR` (o estágio `pr` existe?), `Template` (o corpo) e a posição da key (§ Commit — o título). Duas invocações separadas, cada uma com a sua pergunta isolada.
-3. **`pipeline/references/deploy-context.md`** § 1 — `<integração>` detectada; topologia.
-4. **`pipeline/references/composicao.md`** — o alvo efetivo.
+3. **`pipeline/SKILL.md` § deploy-context, passo 1** — `<integração>` detectada; topologia.
+4. **`pipeline/SKILL.md` § composicao** — o alvo efetivo.
 
 ## Step 1 — Declarar o alvo e entregar ao `reconcile`
 
@@ -69,9 +69,9 @@ alvo = {
 }
 ```
 
-Entregue ao **`pipeline/references/reconcile.md`**: diagnóstico da faixa publicado, estágios fechados na ordem — os de trás (`branch`, `commit`) pelos motores deles se estiverem abertos; `push` e `pr` pelo **`pr-publish.md`** (push · contexto dos commits · PR criado ou atualizado com o corpo 3-em-1 · espelho em cada card via `jira-sync` · kanban `10-done → 11-ship`) — re-diagnóstico a cada um, e para em `pr`.
+Entregue ao **`pipeline/SKILL.md` § reconcile**: diagnóstico da faixa publicado, estágios fechados na ordem — os de trás (`branch`, `commit`) pelos motores deles se estiverem abertos; `push` e `pr` pelo **`pipeline/SKILL.md` § pr-publish** (push · contexto dos commits · PR criado ou atualizado com o corpo 3-em-1 · espelho em cada card via `jira-sync` · kanban `10-done → 11-ship`) — re-diagnóstico a cada um, e para em `pr`.
 
-**Não reimplemente nenhum motor aqui.** A mecânica do PR (título, corpo, template, idempotência, espelho) mora no `pr-publish.md`, para os quatro alvos.
+**Não reimplemente nenhum motor aqui.** A mecânica do PR (título, corpo, template, idempotência, espelho) mora no `pipeline/SKILL.md` § pr-publish, para os quatro alvos.
 
 ## Saída
 
@@ -104,4 +104,4 @@ Entregue ao **`pipeline/references/reconcile.md`**: diagnóstico da faixa public
 - "Sem card, então sem PR" → NÃO. Publicação sem card é válida e é dita.
 - "Comentei no Jira só no card do nome da branch" → NÃO. Em **cada** card dos commits, com o nome claro.
 - "Digitaram `/pull-request /prod`, faço o PR e aviso" → NÃO. Vence o mais distante: delega ao `/prod`.
-- "Copio o corpo do PR pra dentro daqui" → NÃO. Mora no `pr-publish.md`, para os quatro alvos.
+- "Copio o corpo do PR pra dentro daqui" → NÃO. Mora no `pipeline/SKILL.md` § pr-publish, para os quatro alvos.
