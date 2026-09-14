@@ -153,7 +153,7 @@ jira    → method
 merge   → todo
 afl     → jira
 ```
-Sem deps: `apf, ask, card, chat, chat-out, claude-modes, commit, make-dev, notion-pull, notion-push, pr`.
+Sem deps: `ask, card, chat, chat-out, claude-modes, commit, make-dev, notion-pull, notion-push, pr`.
 No plugin.json declara-se só a dep **direta**; o Claude Code resolve transitivo.
 
 ## Artefatos a criar/editar
@@ -210,7 +210,7 @@ lp-skills/
 - Requisito mínimo documentado: Claude Code recente (v2.1.142+ recomendado; `skills:["./"]` cobre versões anteriores).
 
 ## Cleanup (máquina do autor)
-- Remover symlinks em `~/.claude/skills/*` cujo target casa `…/GitHub/lp-skills/skills/*` (16 links: afl, apf, ask, card, chat, chat-out, claude-modes, commit, fast, jira, make-dev, merge, method, notion-pull, notion-push, pr, solve, todo, work).
+- Remover symlinks em `~/.claude/skills/*` cujo target casa `…/GitHub/lp-skills/skills/*` (15 links: afl, ask, card, chat, chat-out, claude-modes, commit, fast, jira, make-dev, merge, method, notion-pull, notion-push, pr, solve, todo, work).
 - Remover do `~/.claude/settings.json` o hook `SessionStart` que roda `sync-skills.sh`.
 - **Preservar**: `ui-ux-pro-max/`, `video-teams/` (dirs reais, não geridos por este repo) e o arquivo `method.bak-*.7z`.
 

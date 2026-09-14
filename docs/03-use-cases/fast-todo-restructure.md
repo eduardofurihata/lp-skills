@@ -205,8 +205,8 @@ UCs abaixo são derivados das stories E reconciliados com o código existente (R
   1. `git push origin main`
   2. Vercel detecta push, dispara build automático
   3. Após build Ready: visitar https://lp-skills.vercel.app
-  4. Confirmar 8 cards (apf, ask, chat, chat-out, commit, fast, method, todo)
-- **Resultado esperado**: 8 cards visíveis
+  4. Confirmar 7 cards (ask, chat, chat-out, commit, fast, method, todo)
+- **Resultado esperado**: 7 cards visíveis
 
 ### UC-19 — Cache invalidação manual (se UC-18 falhar)
 - **Ator**: Manutenedor
@@ -216,4 +216,4 @@ UCs abaixo são derivados das stories E reconciliados com o código existente (R
   2. Desmarcar "Use existing Build Cache"
   3. Aguardar Ready
   4. Re-visitar LP
-- **Resultado esperado**: 8 cards visíveis após cache limpa
+- **Resultado esperado**: 7 cards visíveis após cache limpa
