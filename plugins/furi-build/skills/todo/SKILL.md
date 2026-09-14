@@ -319,8 +319,8 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
         → TC de **texto gerado por IA** (Step 5): a evidência é a saída REAL — **transcrição integral**
           colada em `kanban/09-run-test/<feature>.md`, com o screenshot junto. Texto que lê **igual ou pior**
           que a referência #1 do spec = FAILED; "rodou e o texto apareceu" NÃO é PASSED.
-          Formato e critérios: `method/SKILL.md` § Step 9 → Evidência de texto.
-     d. Bug encontrado → CLASSIFICAR primeiro (A/B/C — ver `method/SKILL.md` § Follow-ups):
+          Formato e critérios: `method/references/step-09-testing.md` → Evidência de texto.
+     d. Bug encontrado → CLASSIFICAR primeiro (A/B/C — ver `method/references/follow-ups.md`):
         - escopo novo que este trabalho expôs → balde B: registrar ABERTO no ledger
           (`## Follow-ups` do card de to-do). NÃO corrige aqui — vira ciclo /method na Phase 4
         - pré-existente e não tocado → balde C: DESCARTADO + justificativa
@@ -445,7 +445,7 @@ A Phase 4 é o Step 10 do `/method`, e o Step 10 tem gateway de **entrada**: o l
 4. Marque `RESOLVIDO-POR-CICLO` no ledger + link do done doc.
 5. **Republique o Gate.** Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ continua.
 
-Triagem A/B/C e racionalizações: `method/SKILL.md` § Follow-ups.
+Triagem A/B/C e racionalizações: `method/references/follow-ups.md`.
 
 | Racionalização proibida | Realidade |
 |------------------------|-----------|

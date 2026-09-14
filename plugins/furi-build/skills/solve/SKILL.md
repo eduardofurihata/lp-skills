@@ -44,7 +44,7 @@ Nível 10x é também no código, não só no resultado visível — e não é f
 
 **Auto-check visual antes de entregar** (junto com "o líder do domínio trocaria o dele por isto?"): *a tela deixou o benchmark **para trás** — 10x, não empate —, ou só ficou parecida com as outras do produto?* O resto do auto-check — visual e de engenharia — é das doutrinas, já carregadas pelas duas chamadas.
 
-> Rodando dentro do `/method`: as doutrinas e as racionalizações estão em `principles/SKILL.md` e `ui/SKILL.md`; a lente de cada step e as linhas obrigatórias do Gateway Check estão nas seções do `/method` (`method/SKILL.md` § Step N → Princípios neste step e `method/SKILL.md` § Gateways) — mesmas doutrinas, cobradas step a step.
+> Rodando dentro do `/method`: as doutrinas e as racionalizações estão em `principles/SKILL.md` e `ui/SKILL.md`; a lente de cada step e as linhas obrigatórias do Gateway Check estão nas seções do `/method` (`method/references/step-NN-*.md` → Princípios neste step e `method/references/gateways.md`) — mesmas doutrinas, cobradas step a step.
 
 ## PARE se pensar
 "tá bom o suficiente" · "igualei o líder, tá ótimo" · "10x é força de expressão" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "refatoro depois, numa PR só de refactor" · "a UI tá igual às outras, então tá certa" · "é só uma cor, hardcode não faz mal" · "a11y/mobile/estado vazio depois" · "depois a gente escala" · "com poucos registros funciona" · "já conheço o `/principles`, sigo sem invocar" · "já conheço o `/ui`, sigo sem invocar"

@@ -1378,7 +1378,7 @@ O MCP alcança apenas o site do `JIRA_URL` configurado. Key ausente naquele site
 
 **Responsabilidade única:** dado um achado fora do escopo do card, dizer **de quem é a ponta**, **qual é a classe** e **registrá-lo com a prova** no relatório do review. Não conserta, não abre PR, não mergeia — e **não cria card**: o pipeline nunca cria card sozinho; abrir um é decisão do usuário, depois, com `/card`.
 
-> **Não confundir com `plugins/furi-build/skills/method/SKILL.md` § Follow-ups.** Aquele é a triagem do **dev** (A/B/C, destino: ciclo `/method`, e "vira card" é **proibido** como saída dele). Este é a triagem do **reviewer**, cujo destino é o **relatório com a prova** — classificado para que o usuário decida, em cinco segundos, se abre um card. As duas coexistem porque os atores são diferentes; fundi-las abriria a rota de escape que mata o loop de convergência do `/method`.
+> **Não confundir com `plugins/furi-build/skills/method/references/follow-ups.md`.** Aquele é a triagem do **dev** (A/B/C, destino: ciclo `/method`, e "vira card" é **proibido** como saída dele). Este é a triagem do **reviewer**, cujo destino é o **relatório com a prova** — classificado para que o usuário decida, em cinco segundos, se abre um card. As duas coexistem porque os atores são diferentes; fundi-las abriria a rota de escape que mata o loop de convergência do `/method`.
 
 ### Iron Law
 
