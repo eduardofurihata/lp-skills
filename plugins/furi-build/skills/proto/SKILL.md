@@ -1,9 +1,9 @@
 ---
 name: proto
-description: 'Use when user invokes /proto to recreate a screen in 3 versions, each on a temporary parallel route in the same app ({rota-original}-v1/-v2/-v3), respecting the app design system, covering mobile and desktop at the project breakpoints, at /solve quality — designed as the screen SHOULD be, not as it is. Triggers on "recria essa tela em 3 versões", "redesenha essa tela", "prototipa variações dessa tela", "quero comparar opções de UI". Ends with the 3 URLs and a recommendation so the user picks one; the chosen version is implemented later by /method or /fast.'
+description: 'Use when user invokes /proto to recreate a screen in 3 versions, each on a temporary parallel route in the same app ({rota-original}-v1/-v2/-v3), respecting the app design system, covering mobile and desktop at the project breakpoints, at /solve quality — designed as the screen SHOULD be, not as it is. Triggers on "recria essa tela em 3 versões", "redesenha essa tela", "prototipa variações dessa tela", "quero comparar opções de UI". Ends with the 3 URLs and a recommendation so the user picks one; the chosen version is implemented later by /method.'
 effort: max
 requires: solve
-handoff: [method, fast]
+handoff: method
 argument-hint: "[rota, tela ou print]"
 ---
 
@@ -19,7 +19,7 @@ O entregável não é uma tela. É uma **escolha**.
 
 - **O design system do app.** Tokens, componentes, tipografia, ícones e escalas são os do projeto, lidos do projeto (e de `docs/04-spec/design-system.md`, se existir). Nada inventado fora deles; o que o DS não tem, sai da **composição** do que ele tem. Doutrina completa — tokens como fonte única, atomicidade, composição > configuração, headless, estados, Jakob, a11y AA: **`ui/SKILL.md`**. Aqui não se **promove** ao DS: protótipo é descartável; a promoção acontece no `/method`, quando a versão escolhida for implementada.
 
-- **Rotas paralelas temporárias.** `{rota-original}-v1`, `-v2`, `-v3` no mesmo app. A rota original e o código compartilhado ficam intocados — o que é novo nasce dentro da pasta da própria versão. São descartáveis por contrato: a versão escolhida é implementada na rota real (`/method` ou `/fast`) e as `-v*` somem.
+- **Rotas paralelas temporárias.** `{rota-original}-v1`, `-v2`, `-v3` no mesmo app. A rota original e o código compartilhado ficam intocados — o que é novo nasce dentro da pasta da própria versão. São descartáveis por contrato: a versão escolhida é implementada na rota real (`/method`) e as `-v*` somem.
 
 - **Mobile e desktop.** Cada versão desenhada para as duas pontas, nos **breakpoints do projeto** — mobile não é desktop encolhido, desktop não é mobile esticado, e nada quebra no meio do caminho.
 

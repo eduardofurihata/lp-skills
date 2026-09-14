@@ -1,6 +1,6 @@
 ---
 name: todo
-description: 'Use when ready to run QA on features queued in kanban/06-todo/ (cards created by /fast, pending front-validation). Executes testing via front (step 9) and promotes passing features to kanban/10-done/ with `tests: passed`'
+description: 'Use when ready to run QA on features queued in kanban/06-todo/ (cards a /method run left behind before Step 9, pending front-validation). Executes testing via front (step 9) and promotes passing features to kanban/10-done/ with `tests: passed`'
 effort: max
 requires: [method, solve]
 argument-hint: "[feature-name or 'all']"
@@ -9,9 +9,9 @@ argument-hint: "[feature-name or 'all']"
 Executa a fase de QA (step 9 do /method) para features pendentes na coluna `kanban/06-todo/`.
 **No kanban, a COLUNA é o status:** todo card em `kanban/06-todo/` é uma feature pendente de QA — não há filtro de frontmatter. O /todo valida via front e, ao passar 100%, **promove** a feature para `kanban/10-done/<feature>.md` com `tests: passed` e **deleta** o card de `kanban/06-todo/`.
 
-Distinção `[novo]` vs `[legacy]` (decide se roda Step 8 — Code Review):
-- `[novo]` — já existe `kanban/08-code-review/<feature>.md` (o /fast já rodou o code review). /todo NÃO repete o Step 8.
-- `[legacy]` — não há relatório de code review. /todo roda o Step 8 agora (o /fast antigo não rodava).
+Distinção `[revisado]` vs `[sem review]` (decide se roda Step 8 — Code Review):
+- `[revisado]` — já existe `kanban/08-code-review/<feature>.md` (o Step 8 já rodou). /todo NÃO repete o Step 8.
+- `[sem review]` — não há relatório de code review (o ciclo parou antes do Step 8). /todo roda o Step 8 agora.
 
 ## Ordem de Operações ao Ativar
 
@@ -20,8 +20,8 @@ Distinção `[novo]` vs `[legacy]` (decide se roda Step 8 — Code Review):
 <HARD-GATE>
 NÃO marque test cases como PASSED sem executar via front.
 NÃO avance da execução para Done sem 100% PASSED com ZERO mudanças de código.
-QUALQUER fix de código invalida o ciclo: volta ao Code Review (se legacy) ou re-executa TCs e retesta TUDO.
-NÃO promova para `kanban/10-done/` com follow-up ABERTO no ledger. O /todo faz o Step 10 do /method — logo, roda o **Gate de Convergência** (Phase 4) e resolve cada item aberto **invocando o `/method` via Skill tool** — ciclo COMPLETO (1→10, com `/solve`, sem commit). /fast captura e deixa aberto; **quem converge é o /todo**.
+QUALQUER fix de código invalida o ciclo: volta ao Code Review (se `[sem review]`) ou re-executa TCs e retesta TUDO.
+NÃO promova para `kanban/10-done/` com follow-up ABERTO no ledger. O /todo faz o Step 10 do /method — logo, roda o **Gate de Convergência** (Phase 4) e resolve cada item aberto **invocando o `/method` via Skill tool** — ciclo COMPLETO (1→10, com `/solve`, sem commit). O ciclo que deixou o card capturou e deixou aberto; **quem converge é o /todo**.
 </HARD-GATE>
 
 ## REGRA FUNDAMENTAL: Precisão > Economia de Tempo ou Tokens
@@ -54,9 +54,9 @@ digraph todo {
     has_features [label="Features pendentes?" shape=diamond];
     none [label="Nenhuma feature\npendente" shape=box];
     select [label="Selecionar feature" shape=box];
-    is_legacy [label="É legacy?\n(sem kanban/08-code-review)" shape=diamond];
+    sem_review [label="Sem review?\n(sem kanban/08-code-review)" shape=diamond];
     context [label="Ler referências\n(steps 1-7)" shape=box];
-    review [label="Step 8 — Code Review\n(legacy only — loop até limpo)" shape=box];
+    review [label="Step 8 — Code Review\n(só sem review — loop até limpo)" shape=box];
     testing [label="Step 9 — Run Test\n(TODOS os TCs via front)" shape=box];
     passed [label="100% PASSED\nsem mudanças?" shape=diamond];
     gate [label="Gate de Convergência\nledger seco?" shape=diamond];
@@ -70,12 +70,12 @@ digraph todo {
     has_features -> none [label="não"];
     has_features -> select [label="sim"];
     select -> context;
-    context -> is_legacy;
-    is_legacy -> review [label="sim — legacy"];
-    is_legacy -> testing [label="não — novo /fast"];
+    context -> sem_review;
+    sem_review -> review [label="sim — sem review"];
+    sem_review -> testing [label="não — já revisado"];
     review -> testing;
     testing -> passed;
-    passed -> review [label="não — fix → re-review (se legacy)"];
+    passed -> review [label="não — fix → re-review (se sem review)"];
     passed -> gate [label="sim"];
     gate -> cycle [label="não — item ABERTO"];
     cycle -> gate [label="ledger atualizado"];
@@ -94,16 +94,16 @@ digraph todo {
 1. `Glob kanban/06-todo/*.md`
 2. **Todo card aqui é pendente de QA** — no kanban, a coluna É o status. NÃO há filtro de frontmatter (cards de `06-todo` são task-breakdowns, normalmente sem frontmatter).
 3. Para cada card, o nome da feature = nome do arquivo. Ler o conteúdo (task-breakdown / notas).
-4. Marcar cada feature como `[novo]` ou `[legacy]`:
-   - `[novo]` — existe `kanban/08-code-review/<feature>.md` → /fast já rodou Step 8.
-   - `[legacy]` — não existe relatório de code review → /todo roda Step 8.
+4. Marcar cada feature como `[revisado]` ou `[sem review]`:
+   - `[revisado]` — existe `kanban/08-code-review/<feature>.md` → Step 8 já rodou.
+   - `[sem review]` — não existe relatório de code review → /todo roda Step 8.
 5. Apresentar lista:
 
 ```
 Features pendentes de QA:
 
-1. <feature-A> (branch: X, criado: YYYY-MM-DD) [novo]
-2. <feature-B> (branch: Y, criado: YYYY-MM-DD) [legacy]
+1. <feature-A> (branch: X, criado: YYYY-MM-DD) [revisado]
+2. <feature-B> (branch: Y, criado: YYYY-MM-DD) [sem review]
 
 Qual feature deseja validar? (número, nome, ou "all")
 ```
@@ -120,12 +120,12 @@ Qual feature deseja validar? (número, nome, ou "all")
 
 | Tipo da feature | Code Review? | Por quê |
 |------------------------|--------------|---------|
-| `[novo]` — existe `kanban/08-code-review/<feature>.md` | ❌ **NÃO** rodar — já rodou no /fast | Step 8 já foi executado pelo /fast. /todo só lê o relatório como contexto antes da execução. |
-| `[legacy]` — sem relatório de code review | ✅ **SIM** rodar | /fast antigo parava em 7b; Step 8 nunca rodou. /todo precisa fazê-lo agora. |
+| `[revisado]` — existe `kanban/08-code-review/<feature>.md` | ❌ **NÃO** rodar — já rodou | Step 8 já foi executado no ciclo que deixou o card. /todo só lê o relatório como contexto antes da execução. |
+| `[sem review]` — sem relatório de code review | ✅ **SIM** rodar | O ciclo parou antes do Step 8; ele nunca rodou. /todo precisa fazê-lo agora. |
 
-**Regra inviolável:** features `[novo]` NÃO repetem code review. Features `[legacy]` SEMPRE rodam. Sem exceção. Na dúvida (sem relatório em `kanban/08-code-review/`), default para legacy (rodar review).
+**Regra inviolável:** features `[revisado]` NÃO repetem code review. Features `[sem review]` SEMPRE rodam. Sem exceção. Na dúvida (sem relatório em `kanban/08-code-review/`), default para `[sem review]` (rodar review).
 
-**Se a feature for `[novo]`, pule para Phase 3.** As subseções abaixo (Preparação, Revisão em Loop, Relatório) aplicam-se APENAS a features `[legacy]`.
+**Se a feature for `[revisado]`, pule para Phase 3.** As subseções abaixo (Preparação, Revisão em Loop, Relatório) aplicam-se APENAS a features `[sem review]`.
 
 ### Preparação
 
@@ -327,8 +327,8 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA DE CÓDIGO:
         - dentro do escopo documentado → balde A: corrigir IMEDIATAMENTE → ATENÇÃO:
         QUALQUER fix invalida o ciclo:
         - RESETE todos os `- [x]` do checklist de QA (`kanban/06-todo/`) para `- [ ]` — vai retestar TUDO
-        - `[legacy]`: volta ao Phase 2 (Code Review) → retesta TUDO
-        - `[novo]`: volta ao Phase 3 (re-executa TODOS os TCs do zero — code review do /fast cobre apenas o código original, fixes do /todo são código novo não revisado; se fix for não-trivial, considere escalar de volta para /fast e re-rodar Step 8)
+        - `[sem review]`: volta ao Phase 2 (Code Review) → retesta TUDO
+        - `[revisado]`: volta ao Phase 3 (re-executa TODOS os TCs do zero — o code review existente cobre apenas o código original, fixes do /todo são código novo não revisado; se fix for não-trivial, re-rode o Step 8 antes de retestar)
      e. Todos TCs do batch PASSED → TaskUpdate → completed
   4. Todos PASSED sem mudança → Phase 4
 ```
@@ -407,7 +407,7 @@ Por que: o teste front é exponencialmente mais forte que análise de código. C
 NUNCA SKIP ou BLOCKED — resolva o impedimento
 NUNCA "Ran tsc, no errors" — tsc é pré-requisito, não teste
 NUNCA "Verified via code" — execute via FRONT com screenshot
-NUNCA "Fix was trivial, doesn't need re-test" — QUALQUER fix invalida o ciclo (legacy: volta Phase 2; novo: re-executa Phase 3)
+NUNCA "Fix was trivial, doesn't need re-test" — QUALQUER fix invalida o ciclo (sem review: volta Phase 2; revisado: re-executa Phase 3)
 NUNCA batch fixes — corrija CADA bug IMEDIATAMENTE ao encontrar
 NUNCA "I'll test the rest later" — TODOS os TCs, AGORA
 NUNCA workaround pra fazer o TC passar — duplicar lógica, regra de negócio no
@@ -426,7 +426,7 @@ Ao passar 100% dos TCs sem nenhuma mudança de código, **promova** a feature de
 
 ### Gate de Convergência — BLOQUEANTE (publicar no chat ANTES de promover)
 
-A Phase 4 é o Step 10 do `/method`, e o Step 10 tem gateway de **entrada**: o ledger de follow-ups (seção `## Follow-ups` do card de to-do, semeada pelo /fast no Step 6) precisa estar **seco**. Publique:
+A Phase 4 é o Step 10 do `/method`, e o Step 10 tem gateway de **entrada**: o ledger de follow-ups (seção `## Follow-ups` do card de to-do, semeada no Step 6) precisa estar **seco**. Publique:
 
 ```markdown
 ## Gate de Convergência — Follow-ups
@@ -449,7 +449,7 @@ Triagem A/B/C e racionalizações: `method/references/follow-ups.md`.
 
 | Racionalização proibida | Realidade |
 |------------------------|-----------|
-| "O /fast que deixou aberto, não é meu problema" | É. /fast captura, **/todo converge**. O card de to-do é o handoff. BLOQUEADO. |
+| "Quem deixou aberto foi o ciclo anterior, não é meu problema" | É. O ciclo captura, **/todo converge**. O card de to-do é o handoff. BLOQUEADO. |
 | "Os TCs passaram, a feature está pronta" | TC verde ≠ ledger seco. São gates diferentes. BLOQUEADO. |
 | "Abro card no Jira pro follow-up e promovo" | Card de follow-up é do **reviewer** (`/homolog`, `/prod`), nunca saída do dev. BLOQUEADO. |
 | "Sobrou 1 item, é pequeno" | Gate é binário. 1 `ABERTO` = BLOQUEADO. |
@@ -462,7 +462,7 @@ Triagem A/B/C e racionalizações: `method/references/follow-ups.md`.
 
 ### Criar o card de done
 
-**`/fast` não cria card de done** (ele para no Step 8). Quem cria `kanban/10-done/<feature>.md` é o `/todo`, agora — após a QA passar. (Antes o /fast criava um done com `tests: pending`; não mais. Por isso o /todo sempre CRIA o done aqui.)
+**Card em `kanban/06-todo/` não tem done** (o ciclo parou antes do Step 10). Quem cria `kanban/10-done/<feature>.md` é o `/todo`, agora — após a QA passar. Por isso o /todo sempre CRIA o done aqui.
 
 1. **Criar** `kanban/10-done/<feature>.md` com frontmatter + links para todos os docs (steps 1-9), arquivos de código alterados, **checklist `## Test Cases (QA)` com tudo `- [x] TC-N`** e o **`## Follow-ups` final** (status final — copiados do card `kanban/06-todo/` ANTES do `rm`):
    ```yaml
@@ -516,15 +516,15 @@ Triagem A/B/C e racionalizações: `method/references/follow-ups.md`.
 
 ## Red Flags — STOP e Revise
 
-- "Feature é `[legacy]`, code review é desnecessário" → NÃO. Para `[legacy]`, Step 8 é obrigatório (não foi rodado pelo /fast antigo).
-- "Feature é `[novo]`, vou rodar code review pra garantir" → NÃO. Para `[novo]`, /fast já rodou Step 8. Re-rodar é desperdício e contradiz o contrato.
+- "Feature é `[sem review]`, code review é desnecessário" → NÃO. Para `[sem review]`, Step 8 é obrigatório (nunca rodou).
+- "Feature é `[revisado]`, vou rodar code review pra garantir" → NÃO. Para `[revisado]`, o Step 8 já rodou. Re-rodar é desperdício e contradiz o contrato.
 - "Esse TC é trivial, posso pular" → NÃO. TODOS os TCs.
 - "Vou marcar como PASSED sem screenshot" → NÃO. Screenshot = prova.
 - "O fix foi pequeno, não precisa re-test" → PRECISA. QUALQUER fix volta à execução completa.
 - "tsc passou, está testado" → tsc verifica tipos, não comportamento.
 - "BLOCKED — não consigo acessar" → Resolva o impedimento. Pergunte ao usuário se necessário.
 - "TCs passaram, promovo — o ledger eu vejo depois" → NÃO. Gate de Convergência é bloqueante da Phase 4.
-- "Follow-up foi o /fast que deixou, não é meu" → NÃO. /fast captura, **/todo converge**.
+- "Follow-up foi o ciclo anterior que deixou, não é meu" → NÃO. O ciclo captura, **/todo converge**.
 - "Resolvo o follow-up direto no código" → NÃO. Escopo novo = `/method` completo (1→10, com `/solve`).
 - "Já conheço o `/solve` / rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" → NÃO. Mencionar não é invocar: a skill entra pelo Skill tool, **toda** vez.
 - "Vou commitar os ciclos de follow-up" → NÃO. /todo não commita, nem os ciclos.
