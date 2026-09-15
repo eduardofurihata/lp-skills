@@ -1,5 +1,11 @@
 # Step 3 — Use Cases
 
+## Chame antes de escrever
+
+- **`/solve`** (Skill tool) — o padrão desta passada: referência #1 do mercado. Invocação real, não de memória.
+- **`principios.md`** § Lente por step — o que SOLID · DRY · KISS · YAGNI · LoD · Motores cobram **neste** step (mais `design.md`, se a feature tem superfície visual).
+- **`follow-ups.md`** — achado fora do escopo documentado entra no Ledger classificado A/B/C; a linha de follow-ups é obrigatória no Gateway Check.
+
 ## Reler antes
 - Step 2 (User Stories)
 

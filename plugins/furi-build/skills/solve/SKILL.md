@@ -11,6 +11,8 @@ Resolva mirando ser a **referência #1 do mercado** — no calibre dos **big pop
 
 **Isto não é mais um MVP.** Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício.
 
+**Refazer é no lugar.** "Do zero" é sobre o conteúdo, não sobre o endereço: o arquivo, módulo, componente ou doc que já cobre a capacidade é **o que se reescreve** — nunca um `-v2`, um `-new`, um paralelo ao lado do antigo "pra limpar depois". Existe algo semelhante? **Ele** sobe ao nível #1, mesmo que o que ele faz hoje tenha mudado. Arquivo novo é só quando **nada** cobre a capacidade — e isso se prova com o grep, não se presume.
+
 ## Como resolver
 
 1. **Defina a referência — e a capacidade em jogo.** Quem são os líderes reconhecidos DESTE domínio — os big pop tech apps que o mercado admira (descubra pelo contexto da tarefa)? O que eles fazem é a **baseline** — o piso, nunca o teto. Ao mesmo tempo, nomeie **qual capacidade** a tarefa exige e **quem é o dono dela** hoje (o motor, se existir).
@@ -59,4 +61,4 @@ KISS/YAGNI matam a complexidade *desnecessária*; a complexidade *necessária* p
 > Rodando dentro do `/method`: a lente de cada step, as linhas obrigatórias do Gateway Check e as racionalizações estão em `method/references/principios.md` e `method/references/design.md` — mesma doutrina, cobrada step a step.
 
 ## PARE se pensar
-"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "copio e adapto, é mais rápido" · "deixo preparado pro dia que precisar" · "o arquivo já estava ruim, não fui eu" · "SOLID eu cubro com o SRP" · "é só mais um `if`, não precisa de motor" · "cada tela trata do seu jeito" · "só puxei o campo lá de dentro" · "abri só pra ler, não conta" · "refatoro depois, numa PR só de refactor" · "a UI tá igual às outras, então tá certa" · "é só uma cor, hardcode não faz mal" · "a11y/mobile/estado vazio depois"
+"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "copio e adapto, é mais rápido" · "o existente tá longe demais do nível, começo outro do lado" · "crio o novo agora, o antigo eu apago depois" · "deixo preparado pro dia que precisar" · "o arquivo já estava ruim, não fui eu" · "SOLID eu cubro com o SRP" · "é só mais um `if`, não precisa de motor" · "cada tela trata do seu jeito" · "só puxei o campo lá de dentro" · "abri só pra ler, não conta" · "refatoro depois, numa PR só de refactor" · "a UI tá igual às outras, então tá certa" · "é só uma cor, hardcode não faz mal" · "a11y/mobile/estado vazio depois"
