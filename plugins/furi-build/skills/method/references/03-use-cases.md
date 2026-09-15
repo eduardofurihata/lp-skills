@@ -1,6 +1,6 @@
 # Step 3 — Use Cases
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
 
 ## Regra
 
@@ -18,7 +18,7 @@ Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Nã
 
 ## Artefato
 
-`docs/03-use-cases/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`). Toda story do Step 2 tem UC(s) aqui; UC sem story de lá não entra.
+`docs/03-use-cases/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Toda story do Step 2 tem UC(s) aqui; UC sem story de lá não entra.
 
 ```markdown
 # <Tópico> — Use Cases
@@ -55,4 +55,9 @@ Tabela de assinaturas **única** — assinatura repetida em dois UCs é uma linh
 
 ## Gateway 3 → 4
 
-Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.
+- [ ] Use Cases derivados por **(ator × fluxo × estado)**, sem agrupar; todo UC rastreia a uma story
+- [ ] Tabela de assinaturas **única**, sem duplicata
+- [ ] Seção `## Verificação de Realidade` com cada passo do happy path mapeado a `arquivo:linha` OU 🔨 gap
+- [ ] **Se tem UI:** cada UC lista seus **estados de tela** (vazio · carregando · erro · sucesso · limite)
+- [ ] Artefato `docs/03-use-cases/<tópico>.md` existe com conteúdo substantivo
+- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

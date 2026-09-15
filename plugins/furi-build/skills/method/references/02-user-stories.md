@@ -2,11 +2,11 @@
 
 **`Como <persona>, quero <ação> para <benefício>.`** Em linguagem de usuário: "quero um botão que chame o endpoint X" não é story, é solução disfarçada de necessidade.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
 
 ## Artefato
 
-`docs/02-user-stories/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`). Toda persona do Step 1 tem story aqui; story sem persona de lá não entra.
+`docs/02-user-stories/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Toda persona do Step 1 tem story aqui; story sem persona de lá não entra.
 
 ```markdown
 # <Tópico> — User Stories
@@ -28,4 +28,7 @@ Cada story vira requisito: é dela que o Step 3 deriva os Use Cases.
 
 ## Gateway 2 → 3
 
-Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.
+- [ ] Stories cobrem **todas** as personas do Step 1; nenhuma story sem persona de lá
+- [ ] Formato "Como X, quero Y para Z" em cada uma, em linguagem de usuário
+- [ ] Artefato `docs/02-user-stories/<tópico>.md` existe com conteúdo substantivo
+- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

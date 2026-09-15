@@ -81,7 +81,7 @@ Entregue ao **`pipeline/SKILL.md` § reconcile**: diagnóstico da faixa publicad
 - PR:     <URL>   (base: <integração>)        ← sem PR: "— (§ PR `Abre PR: não` — push em <branch> @ <hash>)"
 - Branch: <branch>   [<n> cards, dos commits]
 - Jira:   <status da etapa "publicado" em cada card (comentário + transição) | — sem Jira>
-- Kanban: kanban/11-ship/<feature>.md
+- Kanban: kanban/13-ship/<feature>.md
 - Próximo: /homolog (review + QA + merge + deploy + verificação no ar) — ou /prod, em branch única
 ```
 

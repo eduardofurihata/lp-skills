@@ -80,12 +80,12 @@ O benchmark do `/solve` (referência #1, calibre dos big pop tech apps) aplicado
 Sem argumento, a doutrina acima passa a valer para o trabalho em curso — é isso que um protocolo que invoca esta skill quer. Com um alvo, ela vira uma passada:
 
 1. **Alvo.** `tela`, `componente`, `rota`, `pasta/` ou `diff` (o working tree). `audit` no fim = só relatório, nada é editado.
-2. **Perímetro.** O alvo + o que você abriu para entender + os componentes que ele compõe + **o design system do projeto** (tokens, tema, componentes de UI — e `docs/04-design/design-system.md`, se o projeto o mantém). Declare-o antes de mexer.
+2. **Perímetro.** O alvo + o que você abriu para entender + os componentes que ele compõe + **o design system do projeto** (tokens, tema, componentes de UI — e `docs/05-design/design-system.md`, se o projeto o mantém). Declare-o antes de mexer.
 3. **Passada, princípio a princípio e POR NOME.** A tabela dos 9 é o checklist — para cada linha, a *falha típica* aconteceu aqui? Some a régua do moderno: **todos os estados** (vazio · carregando · erro · sucesso · limite; hover · focus-visible · active · disabled · loading · selected) × **breakpoints do projeto** (320px de piso) × **a11y AA**. Veja a tela rodando, estado por estado — snapshot e screenshot, não dedução do código.
 4. **Corrigir** o que está abaixo do nível, dentro do perímetro: **reusar → compor → promover**, nunca peça visual solta na pasta da feature; padrão ruim no perímetro se **eleva**; zero literal onde cabe token. **Sem mudar comportamento:** o que a tela faz continua igual; se corrigir exige mudar fluxo ou regra, isso é achado, não correção. Fora do perímetro: **lista**, não mexe.
 5. **Relatório**: por tela/componente, o que subiu · o que já estava no nível #1 (declarado) · **o que o DS ganhou** (tokens e componentes promovidos) · achados fora do perímetro · o que exigiria mudança de comportamento (não feito). **Nunca commita, nunca cria branch** — quem decide o que fazer com a passada é quem a pediu.
 
-> Dentro do `/method`: quando a superfície visual é derivada (Step 4a), cada step traz a **lente** desta doutrina no bullet *Design* da seção *Princípios neste step* do próprio reference (`method/references/`), e a declara na linha de design do Gateway Check (`method/references/gateways.md`) — mesma doutrina, cobrada step a step.
+> Dentro do `/method`: quando a superfície visual é derivada (Step 4), cada step traz a **lente** desta doutrina no bullet *Design* da seção *Princípios neste step* do próprio reference (`method/references/`), e a declara na linha de design do Gateway Check (`method/SKILL.md` § Gateway Check) — mesma doutrina, cobrada step a step.
 
 ## Racionalizações proibidas
 

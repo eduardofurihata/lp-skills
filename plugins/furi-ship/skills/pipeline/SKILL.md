@@ -97,10 +97,10 @@ card? → branch → reprodução? → commit → push → pr? → integrado
 | **card** | `/card` compôs **e** `Rastreamento: Jira` | `jira_get_issue <KEY>-<N>` devolve a issue, status ≠ concluído | ninguém aqui: o `/card` **rodou antes** e delegou ao alvo com a key (§ composicao) — chega fechado; aberto = o loop reporta, nunca cria |
 | **branch** | sempre | `git branch --show-current` é a branch que § branch manda para este card e este setup · `git rev-list --left-right --count origin/<integração>...HEAD` → coluna da esquerda `0` (não está atrás) · se `origin/<branch>` existe, idem contra ela | § branch |
 | **reprodução** | `/repro` compôs | o bug foi reproduzido na superfície certa com nota ≥ 90 **e o usuário viu** (parada 1) — nesta conversa, ou no registro `docs/jira/todo/<KEY>-<N>.md` | ninguém aqui: o `/repro` **rodou antes** e delegou (§ composicao) — chega fechado; aberto = o alvo devia ter delegado ao `/repro`, e o loop reporta |
-| **commit** | sempre | `git status --porcelain` vazio · `git log origin/<integração>..HEAD --no-merges` tem o trabalho do objetivo · `kanban/09-run-test/<feature>.md` existe, 100% PASSED · `kanban/10-done/<feature>.md` existe com `tests: passed` e `## Follow-ups` sem item `ABERTO` · `kanban/06-todo/<feature>.md` **não** existe | § work-cycle |
+| **commit** | sempre | `git status --porcelain` vazio · `git log origin/<integração>..HEAD --no-merges` tem o trabalho do objetivo · `kanban/10-run-test/<feature>.md` existe, 100% PASSED · `kanban/12-done/<feature>.md` existe com `tests: passed` e `## Follow-ups` sem item `ABERTO` · `kanban/07-todo/<feature>.md` **não** existe | § work-cycle |
 | **push** | sempre | `git rev-parse HEAD` == `git rev-parse origin/<branch>` | § pr-publish |
 | **pr** | § PR `Abre PR: sim` | `gh pr list --head <branch> --base <integração> --state open --json number,url` → exatamente 1, com `## Cards` cobrindo todas as keys dos commits | § pr-publish |
-| **integrado** | sempre | `git merge-base --is-ancestor <HEAD da branch> origin/<integração>` sai 0 · com PR: `gh pr view <n> --json state` → `MERGED`, branch deletada (remota **e** local) · `kanban/08-code-review/<feature>.md` existe | § pr-cycle (review · QA · aprovação · merge — ou rejeição) |
+| **integrado** | sempre | `git merge-base --is-ancestor <HEAD da branch> origin/<integração>` sai 0 · com PR: `gh pr view <n> --json state` → `MERGED`, branch deletada (remota **e** local) · `kanban/09-code-review/<feature>.md` existe | § pr-cycle (review · QA · aprovação · merge — ou rejeição) |
 | **publicado@\<amb\>** | o ambiente existe no `deploy.md § Ambientes` | § deploy-run → **verde** com `headSha` cobrindo o HEAD de `origin/<branch do ambiente>` | § deploy-run |
 | **configurado@\<amb\>** | idem | § env-config → `pendentes[]` vazio para o `## DevOps` de tudo que entrou desde o último verificado | § env-config |
 | **verificado@\<amb\>** | idem | § smoke → todos os cards no ar desde o último smoke verde passam na URL do ambiente | § smoke |
@@ -156,7 +156,7 @@ Publicar:
 | Estágio | Estado | Evidência | Motor |
 |---|---|---|---|
 | branch | fechado | `git branch --show-current` → `niv-42` · 0 atrás de origin/dev | — |
-| commit | fechado | `git status --porcelain` → vazio · kanban/10-done/niv-42.md `tests: passed` | — |
+| commit | fechado | `git status --porcelain` → vazio · kanban/12-done/niv-42.md `tests: passed` | — |
 | push | ABERTO | HEAD a1b2c3 ≠ origin/niv-42 (não existe) | pr-publish |
 | pr | ABERTO | `gh pr list --head niv-42` → [] | pr-publish |
 | integrado | ABERTO | — | pr-cycle |
@@ -587,27 +587,27 @@ Pedido explícito nesta sessão ("hoje quero branch" num repo `direto`) vence **
 
 | Entrada | Saída |
 |---|---|
-| objetivo (`<KEY>-<N>`, ou a descrição do trabalho sem card) + `branch` (já sincronizada, do estágio anterior) + `setup` (§ Commit) + `jira` (estrutura, ou `rastreamento ≠ Jira`) | commit local na branch, QA em `kanban/09-run-test/<feature>.md` 100% PASSED, `kanban/10-done/<feature>.md` com `tests: passed` e ledger seco, `{commit, feature, keys[]}` para o loop |
+| objetivo (`<KEY>-<N>`, ou a descrição do trabalho sem card) + `branch` (já sincronizada, do estágio anterior) + `setup` (§ Commit) + `jira` (estrutura, ou `rastreamento ≠ Jira`) | commit local na branch, QA em `kanban/10-run-test/<feature>.md` 100% PASSED, `kanban/12-done/<feature>.md` com `tests: passed` e ledger seco, `{commit, feature, keys[]}` para o loop |
 
 ### Sinal de fechado (o que o `reconcile` confere)
 
 ```bash
 git status --porcelain                                   # vazio
 git log origin/<integração>..HEAD --no-merges --format=%s # tem o trabalho do objetivo (a key, quando há card)
-ls kanban/09-run-test/<feature>.md                       # existe, todos os casos PASSED
-ls kanban/10-done/<feature>.md                           # existe, `tests: passed`, `## Follow-ups` sem item ABERTO
-ls kanban/06-todo/<feature>.md                           # NÃO existe — o card saiu do todo antes do commit
+ls kanban/10-run-test/<feature>.md                       # existe, todos os casos PASSED
+ls kanban/12-done/<feature>.md                           # existe, `tests: passed`, `## Follow-ups` sem item ABERTO
+ls kanban/07-todo/<feature>.md                           # NÃO existe — o card saiu do todo antes do commit
 ```
 
-> `kanban/08-code-review/<feature>.md` **não** entra no sinal conferido: o § pr-cycle escreve o relatório dele no mesmo caminho, e depois de uma rejeição o arquivo está lá sem provar nada sobre este estágio. O review é exigido pelo estado (§ 4, item 2); o que o loop confere é QA + done + ledger.
+> `kanban/09-code-review/<feature>.md` **não** entra no sinal conferido: o § pr-cycle escreve o relatório dele no mesmo caminho, e depois de uma rejeição o arquivo está lá sem provar nada sobre este estágio. O review é exigido pelo estado (§ 4, item 2); o que o loop confere é QA + done + ledger.
 
 **Ambíguo:**
 
 | Sinal | O que fazer |
 |---|---|
 | árvore suja com código, sem commit | **não** commita avulso: é código sem review nem QA registrados — volta ao § 4, que absorve a árvore como ponto de partida |
-| card em `kanban/06-todo/` | o trabalho parou antes do teste: volta ao § 4, que **retoma do que existe** (lê docs, card, plano e review) e fecha o que falta — QA 100% PASSED e o commit, com o card em `10-done/` |
-| `10-done` existe mas `tests:` não é `passed`, ou o ledger tem item `ABERTO` | "done sem prova" = não testado; ledger sujo = pendência conhecida. Mesma coisa: volta ao § 4 e o estado se fecha |
+| card em `kanban/07-todo/` | o trabalho parou antes do teste: volta ao § 4, que **retoma do que existe** (lê docs, card, plano e review) e fecha o que falta — QA 100% PASSED e o commit, com o card em `10-done/` |
+| `12-done` existe mas `tests:` não é `passed`, ou o ledger tem item `ABERTO` | "done sem prova" = não testado; ledger sujo = pendência conhecida. Mesma coisa: volta ao § 4 e o estado se fecha |
 | commits na branch **sem key nenhuma** e há card | o commit anterior não seguiu o § Commit — não reescreva histórico; o commit deste ciclo leva a key, e o `pr-publish` deriva os cards dos commits que a têm |
 | sem card e a árvore está limpa | não há objetivo: o estágio está **fechado por vazio** — o loop reporta gap zero |
 
@@ -643,24 +643,24 @@ Nota **0–100** à clareza do que precisa ser feito:
 Este motor **não prescreve protocolo**: declara o **estado em que a branch tem de ficar**. Como se chega lá é de quem fecha. Ao fim deste passo, na branch de trabalho:
 
 1. **Implementado** — o objetivo está no código. Código que já estava na árvore é **insumo**, não entrega: entra no mesmo fechamento e sai revisado e testado como o resto.
-2. **Revisado a frio** — o diff foi revisado contra os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter, Motores**: toda capacidade com **um** dono), contra os padrões do projeto (`.claude/patterns.md`) e, se há tela, contra o design: tokens como fonte única, todos os estados (vazio, carregando, erro, sucesso), responsivo e **WCAG AA como piso**. Relatório em `kanban/08-code-review/<feature>.md`.
-3. **Testado com evidência** — os casos de teste do objetivo (o `## Como testar` do card, ou `docs/05-test-cases/<feature>.md`) executados **na superfície onde o usuário vê**, 100% PASSED, com evidência por caso (screenshot com caminho), em `kanban/09-run-test/<feature>.md`. "`tsc` passou" não é teste; "conferi no código" também não.
+2. **Revisado a frio** — o diff foi revisado contra os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter, Motores**: toda capacidade com **um** dono), contra os padrões do projeto (`.claude/patterns.md`) e, se há tela, contra o design: tokens como fonte única, todos os estados (vazio, carregando, erro, sucesso), responsivo e **WCAG AA como piso**. Relatório em `kanban/09-code-review/<feature>.md`.
+3. **Testado com evidência** — os casos de teste do objetivo (o `## Como testar` do card, ou `docs/06-test-cases/<feature>.md`) executados **na superfície onde o usuário vê**, 100% PASSED, com evidência por caso (screenshot com caminho), em `kanban/10-run-test/<feature>.md`. "`tsc` passou" não é teste; "conferi no código" também não.
 4. **Sem pendência conhecida** — nada adiado. Achado que este trabalho criou, tocou ou expôs se resolve **agora**, no mesmo fechamento. Item registrado como `ABERTO` mantém o estágio **aberto** — e "vira card depois" não é saída: o pipeline nunca cria card sozinho.
-5. **Documentado** — os artefatos do objetivo existem (`docs/01-problem/` … `docs/05-test-cases/`), o card saiu de `kanban/06-todo/` e virou `kanban/10-done/<feature>.md` com `tests: passed` e o ledger `## Follow-ups` seco.
+5. **Documentado** — os artefatos do objetivo existem (`docs/01-problem/` … `docs/06-test-cases/`), o card saiu de `kanban/07-todo/` e virou `kanban/12-done/<feature>.md` com `tests: passed` e o ledger `## Follow-ups` seco.
 6. **Um commit** — um único commit local cobrindo código + docs + card de done + a remoção do card de todo (**mover primeiro, commitar por último** — nunca commit → move → commit de novo), com a **key do card ativo** (a que veio no argumento, nunca a do nome da branch) onde o § Commit do `/setup` mandar.
 7. **Sem tocar na branch** — fechar este estágio **não cria nem troca branch, nem abre worktree**: `git checkout -b`, `git switch -c`, `git branch <nome>`, `git worktree add` estão proibidos aqui. A branch nasceu no estágio anterior, e o nome dela é o que liga card, lote e PR.
 8. **Sem publicar** — não pusha, não abre PR, não mergeia. Isso é dos estágios seguintes.
 
 > Estes arquivos são o **contrato deste pipeline**, não o rastro de uma ferramenta: quem fecha o estágio os produz, e é por eles que o loop prova que o estágio fechou. Num projeto que ainda não os tem, o primeiro fechamento os cria.
 
-**Retomar, não recomeçar.** O que já existe é ponto de partida — docs, card, plano e review anteriores se leem antes de refazer qualquer coisa. Card em `kanban/06-todo/` é trabalho que parou antes do teste: fecha-se o que falta (QA e commit), não se reescreve o que passou.
+**Retomar, não recomeçar.** O que já existe é ponto de partida — docs, card, plano e review anteriores se leem antes de refazer qualquer coisa. Card em `kanban/07-todo/` é trabalho que parou antes do teste: fecha-se o que falta (QA e commit), não se reescreve o que passou.
 
 Não convergiu em ~3 passadas → devolve ao loop com **o que resistiu**; o alvo não é declarado atingido.
 
 #### 5. Devolver ao loop
 
 ```
-{ commit: <hash>, feature: <nome>, keys: [<KEY>-<N>], kanban: kanban/10-done/<feature>.md }
+{ commit: <hash>, feature: <nome>, keys: [<KEY>-<N>], kanban: kanban/12-done/<feature>.md }
 ```
 
 O loop re-diagnostica: `commit` fechado abre `push`. Se o alvo era `/work`, o loop para aqui e a skill reporta.
@@ -692,7 +692,7 @@ O loop re-diagnostica: `commit` fechado abre `push`. Se o alvo era `/work`, o lo
 
 | Entrada | Saída |
 |---|---|
-| branch de trabalho (com o commit do estágio anterior) + `<integração>` (do § deploy-context, passo 1) + `setup` (§ PR `Abre PR`, `Template`; § Commit posição da key) + `jira` (estrutura ou `≠ Jira`) | branch em `origin`; PR criado/atualizado (ou "publicado sem PR"); cards comentados/transicionados; kanban em `11-ship`; `{pr, url, keys[]}` para o loop |
+| branch de trabalho (com o commit do estágio anterior) + `<integração>` (do § deploy-context, passo 1) + `setup` (§ PR `Abre PR`, `Template`; § Commit posição da key) + `jira` (estrutura ou `≠ Jira`) | branch em `origin`; PR criado/atualizado (ou "publicado sem PR"); cards comentados/transicionados; kanban em `13-ship`; `{pr, url, keys[]}` para o loop |
 
 ### Sinal de fechado (o que o `reconcile` confere)
 
@@ -731,7 +731,7 @@ Sempre — inclusive com `Abre PR: não`: publicar é isto; o PR é o que vem de
   ```
   Só o **subject** e o trailer `Jira:` — o corpo livre cita cards *relacionados*, não os do commit; `--no-merges` porque um merge da integração traz keys alheias. Nenhuma key em commit nenhum → a do nome da branch; nenhuma em lugar algum → **publicação sem card** (diga isso, não invente uma — e sem Jira é o normal). Para cada key, `mcp__atlassian__jira_get_issue` → o título vai no `## Cards`.
 - `git diff <integração>...<branch>` — o que realmente mudou.
-- Docs do feature: `docs/01-problem` … `docs/05-test-cases` + `kanban/09-run-test` — de **cada** card do lote.
+- Docs do feature: `docs/01-problem` … `docs/06-test-cases` + `kanban/10-run-test` — de **cada** card do lote.
 - Extrair daí: **o problema em linguagem leiga**, a **solução técnica**, os **TCs**, e o **impacto de deploy** (migrations? env novas? deps?).
 
 #### 3. Abrir ou atualizar o PR — corpo 3-em-1
@@ -794,14 +794,14 @@ Para **cada** card do passo 2 — não só o do nome da branch. § jira-sync com
 #### 5. Promover o kanban
 
 ```bash
-mv kanban/10-done/<feature>.md kanban/11-ship/<feature>.md
+mv kanban/12-done/<feature>.md kanban/13-ship/<feature>.md
 ```
 Frontmatter:
 ```yaml
 pr: <URL do PR>                # sem PR: "— (push em <branch>)"
 status: in-review
 ```
-> O feature **não estava** em `kanban/10-done/`? É sinal de QA não rodada — mas se este motor rodou, o estágio `commit` estava fechado e o `work-cycle` já passou por isso. Anote e siga; o `pr-cycle` confere de novo antes de mergear.
+> O feature **não estava** em `kanban/12-done/`? É sinal de QA não rodada — mas se este motor rodou, o estágio `commit` estava fechado e o `work-cycle` já passou por isso. Anote e siga; o `pr-cycle` confere de novo antes de mergear.
 
 #### 6. Devolver ao loop
 
@@ -832,13 +832,13 @@ O loop re-diagnostica: `pr` (ou `push`) fechado abre `integrado`. Se o alvo era 
 
 ### Iron Law
 
-> **O code review do diff é SEMPRE teu** — ninguém revisa por você, isso é inegociável. Já o **front-test é rede de segurança, não redo**: se a QA está **documentada e 100% PASSED** (`kanban/09-run-test/<feature>.md`, todos os TCs do card ✅), **confia e segue**. Re-autentica via front **só** quando a QA (1) **falhou**, (2) **não está explícito que passou**, ou (3) **tem TODO pendente** (card em `06-todo/`).
+> **O code review do diff é SEMPRE teu** — ninguém revisa por você, isso é inegociável. Já o **front-test é rede de segurança, não redo**: se a QA está **documentada e 100% PASSED** (`kanban/10-run-test/<feature>.md`, todos os TCs do card ✅), **confia e segue**. Re-autentica via front **só** quando a QA (1) **falhou**, (2) **não está explícito que passou**, ou (3) **tem TODO pendente** (card em `06-todo/`).
 >
 > **Mergear não é obrigatório — isto é um GATE, não uma esteira.** PR de qualidade inaceitável é **rejeitado e devolvido**, não empurrado para dentro. Bloquear lixo é o gate **funcionando**. Conserto pontual → corrige na hora; quando "consertar" vira "reimplementar", **rejeita**.
 
 <HARD-GATE>
 1. NÃO mergeie sem **code review limpo** (sempre teu). Autenticação via front é exigida só quando a QA do dev falhou / não está explícito que passou / tem TODO pendente.
-2. Card em `kanban/06-todo/` (QA não rodou) e é o card DESTE PR → o estado do estágio `commit` (**§ work-cycle → O estado exigido**) não está fechado naquela branch: feche-o lá ANTES de mergear, ou **rejeite** (§ 5).
+2. Card em `kanban/07-todo/` (QA não rodou) e é o card DESTE PR → o estado do estágio `commit` (**§ work-cycle → O estado exigido**) não está fechado naquela branch: feche-o lá ANTES de mergear, ou **rejeite** (§ 5).
 3. NÃO feche o estágio `commit` de card órfão (sem PR/branch) — isso é lixo de rota, vai pro cleanup (§ 7).
 4. QUALQUER fix durante o review invalida o passe → volta ao review + re-autentica.
 5. **Mergear NÃO é garantido — REJEITAR é saída válida** (§ 5).
@@ -863,12 +863,12 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 
 | Estado do feature | Ação |
 |---|---|
-| Em `10-done`/`11-ship` **com `09-run-test` 100% PASSED** | QA já foi feita via front no Step 9 → **confia**. Só code review; **pula o front-test** |
-| Em `10-done`/`11-ship` mas QA **ausente / ambígua / falhada** | "Done" sem prova = não-testado → review **com** front-test |
-| Em `kanban/06-todo/` (QA pendente) | O estado do estágio `commit` (**§ work-cycle → O estado exigido**) não está fechado nesta branch: o trabalho parou antes do teste. Traga a branch do PR (`git fetch origin && git checkout <branch>`) e **feche o estado ali** — QA 100% PASSED em `kanban/09-run-test/`, card em `10-done/` com `tests: passed`, ledger seco, um commit — e `git push origin <branch>` para o PR carregar. Só então o review. Não é seu para fechar, ou não converge em ~3 passadas → **rejeita** (§ 5) com o motivo nomeado: QA pendente |
+| Em `12-done`/`13-ship` **com `10-run-test` 100% PASSED** | QA já foi feita via front → **confia**. Só code review; **pula o front-test** |
+| Em `12-done`/`13-ship` mas QA **ausente / ambígua / falhada** | "Done" sem prova = não-testado → review **com** front-test |
+| Em `kanban/07-todo/` (QA pendente) | O estado do estágio `commit` (**§ work-cycle → O estado exigido**) não está fechado nesta branch: o trabalho parou antes do teste. Traga a branch do PR (`git fetch origin && git checkout <branch>`) e **feche o estado ali** — QA 100% PASSED em `kanban/10-run-test/`, card em `10-done/` com `tests: passed`, ledger seco, um commit — e `git push origin <branch>` para o PR carregar. Só então o review. Não é seu para fechar, ou não converge em ~3 passadas → **rejeita** (§ 5) com o motivo nomeado: QA pendente |
 | Sem card no kanban (dev trabalhou cru) | **PARAR e avisar:** sem test cases não dá para autenticar QA. Perguntar como proceder |
 
-4. **Gate de convergência do dev — ledger de follow-ups.** Abrir `kanban/10-done/<feature>.md`, seção `## Follow-ups`:
+4. **Gate de convergência do dev — ledger de follow-ups.** Abrir `kanban/12-done/<feature>.md`, seção `## Follow-ups`:
 
 | Ledger | Ação |
 |---|---|
@@ -876,11 +876,11 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 | Presente **com item `ABERTO`** | ❌ **Rejeita** (§ 5) — viola o contrato do estágio `commit` (§ work-cycle, item 4: o done doc declara o ledger seco). Pendência conhecida não vira card: volta pro dev fechar |
 | **Ausente** (card antigo / dev cru) | Não rejeita por si só — revisa **o diff** com mais cuidado. Achado aqui passa pelo § findings como qualquer outro; ledger ausente **não** é licença para caçar fora do diff |
 
-> O gate olha **só o card do PR**. Outros pendentes em `06-todo/` vão pro cleanup (§ 7).
+> O gate olha **só o card do PR**. Outros pendentes em `07-todo/` vão pro cleanup (§ 7).
 
 ### 3 — Review + autenticar a resolução (loop até limpo **ou** rejeita)
 
-1. **Code review do diff** (o mesmo calibre que o § work-cycle exige de quem implementa): `gh pr diff <n>` → cada arquivo — bugs, edge cases, padrões do projeto (`.claude/patterns.md` — ou, se o projeto ainda não migrou, o caminho antigo `docs/00-context/technical/patterns.md`; este motor **lê**, nunca escreve esse arquivo), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/08-code-review/<feature>.md`.
+1. **Code review do diff** (o mesmo calibre que o § work-cycle exige de quem implementa): `gh pr diff <n>` → cada arquivo — bugs, edge cases, padrões do projeto (`.claude/patterns.md` — ou, se o projeto ainda não migrou, o caminho antigo `docs/00-context/technical/patterns.md`; este motor **lê**, nunca escreve esse arquivo), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/09-code-review/<feature>.md`.
    - **Escopo = o diff.** Os arquivos que o PR toca, mais o que eles chamam direto. Auditoria do repo inteiro **não é este passo**: o que aparecer fora do diff é achado pré-existente e passa pelo § findings.
    - **Princípios, um a um e por nome** — a mesma lista que o § work-cycle cobra de quem implementa: **SOLID** — **SRP** (responsabilidade única, camadas, >40 linhas), **OCP** (comportamento novo entrou como `if` no meio do que já funcionava?), **LSP** (implementação lança onde o contrato não prevê?), **ISP** (interface maior que o cliente?), **DIP** (regra de negócio importando client de infra?) · **DRY** (duplicou o que já existe? conferir com grep, e o grep é sobre **símbolo que o diff introduz**, não varredura do repo) · **KISS** · **YAGNI** (entrou abstração que nenhum UC pede?) · **LoD / acoplamento / direção de dependências** · **Motores** (a capacidade tem dono, ou o diff criou a segunda fonte da mesma regra?). Violação **sem sintoma observável** é classe **C** no § findings: linha no relatório, nunca card.
    - **Design, se o diff tem tela:** tokens como fonte única (sobrou literal de cor, espaçamento ou tipografia?) · **todos os estados** (vazio, carregando, erro, sucesso; hover, focus-visible, disabled) · responsivo nos breakpoints do projeto · **acessibilidade com WCAG AA como piso** · consistência com o design system — e padrão existente abaixo do nível **não se copia**: eleva-se ou vira achado.
@@ -937,11 +937,11 @@ git branch --list <branch>; git ls-remote --heads origin <branch>
 
 1. **Card:** § jira-sync com a etapa **integrado** (fonte única — status e "comenta?" vêm do `jira.md`).
 2. **PR:** responder discussão aberta (`gh pr comment`).
-3. **Kanban:** `kanban/11-ship/<feature>.md` com `merged`, `merged_at`, `merge_commit`. Ledger **stale** (item `ABERTO`/`ADIADO` que outro ciclo deste mesmo PR resolveu) → corrija: card de ship que mente sobre convergência envenena o gate da próxima release.
+3. **Kanban:** `kanban/13-ship/<feature>.md` com `merged`, `merged_at`, `merge_commit`. Ledger **stale** (item `ABERTO`/`ADIADO` que outro ciclo deste mesmo PR resolveu) → corrija: card de ship que mente sobre convergência envenena o gate da próxima release.
 4. **Commitar e pushar o que você editou — OBRIGATÓRIO, não "depois".** O `gh pr merge` acontece no GitHub, então `origin/<integração>` já andou; o kanban é edição **local**. Sem este passo a árvore fica suja e os cards no `origin` ainda dizem `in-review` — e o `/prod` promoveria uma integração **sem** o que você escreveu.
    ```bash
    # paths EXPLÍCITOS — sessões paralelas compartilham a árvore; `git add -A` rouba o trabalho alheio
-   git add kanban/11-ship/<feature>.md [outros arquivos que VOCÊ editou]
+   git add kanban/13-ship/<feature>.md [outros arquivos que VOCÊ editou]
    git commit -m "chore(kanban): marca <feature> como mergeado em <integração>"
    git push origin <integração>          # dispara o pre-push gate (lint/typecheck/testes/build)
 
@@ -959,7 +959,7 @@ Rejeitar é seguro: nada vai para a integração nem para o ar, branch e PR fica
 1. **Request-changes** com feedback concreto e acionável, por item, apontando arquivo/linha: `gh pr review <n> --request-changes --body "<o quê + por quê + o que precisa mudar>"`.
 2. **NÃO** mergeia, **NÃO** apaga a branch — o dev precisa dela.
 3. **Card → devolve pro dev:** § jira-sync com a etapa **devolvido ao dev** — comentário com o que reprovou + link do review; o status é o que o `jira.md` mapeia para rework.
-4. **Kanban → rework:** mover o card para `kanban/07-implementation/<feature>.md` com `status: rework` + motivo. Não deixar em `10-done`/`11-ship` (mentiria "pronto"). *(Dev cru, sem card — pula.)*
+4. **Kanban → rework:** mover o card para `kanban/08-implementation/<feature>.md` com `status: rework` + motivo. Não deixar em `12-done`/`13-ship` (mentiria "pronto"). *(Dev cru, sem card — pula.)*
 5. **Escopo lateral** que apareceu: ponta que o dev tinha superfície para ver **volta no request-changes**; ponta que só o review externo enxerga passa pelo § findings. O **core volta pro dev**, não se enfia no PR rejeitado.
 6. **Reporta e encerra.** Sem merge, sem deploy.
 
@@ -969,18 +969,18 @@ Trabalho commitado em feature branch e nenhum PR → **não é gap deste motor**
 
 ### 7 — Cleanup de órfãos (confirm-first)
 
-Varrer `kanban/06-todo/` e classificar cada card que **não é** o do PR:
+Varrer `kanban/07-todo/` e classificar cada card que **não é** o do PR:
 - Tem **PR aberto** ou **branch viva** → QA pendente real. **Deixar quieto.**
 - **Órfão** (sem PR, sem branch) → provável lixo de rota abandonada.
 
-Listar os órfãos e **perguntar**: *"Esses cards em `06-todo/` não têm PR nem branch — rota mudou e podem ser removidos, ou é QA pendente de verdade?"* Confirmado → `rm`. **Nunca** auto-deletar. **Nunca** fechar o estágio `commit` de um órfão.
+Listar os órfãos e **perguntar**: *"Esses cards em `07-todo/` não têm PR nem branch — rota mudou e podem ser removidos, ou é QA pendente de verdade?"* Confirmado → `rm`. **Nunca** auto-deletar. **Nunca** fechar o estágio `commit` de um órfão.
 
 ### Red Flags — STOP
 
-- "O dev marcou done **sem prova** (`09-run-test` ausente/ambíguo/falhado), mergeio assim mesmo" → NÃO. "Done" sem QA documentada = não-testado → front-test.
+- "O dev marcou done **sem prova** (`10-run-test` ausente/ambíguo/falhado), mergeio assim mesmo" → NÃO. "Done" sem QA documentada = não-testado → front-test.
 - "A QA passou 100% e está documentada, mas re-testo tudo no front por via das dúvidas" → NÃO (o oposto). Isso é **duplicar QA já feita direito**. O code review é teu; no front é **só seguir em frente**.
-- "Card em `06-todo`, mergeio e testo depois" → NÃO. Gate de QA: o estado do estágio `commit` fecha ANTES — ou rejeita.
-- "Fecho o `commit` de todos os pendentes de `06-todo`" → NÃO. Só o card do PR. Órfão é cleanup (§ 7).
+- "Card em `07-todo`, mergeio e testo depois" → NÃO. Gate de QA: o estado do estágio `commit` fecha ANTES — ou rejeita.
+- "Fecho o `commit` de todos os pendentes de `07-todo`" → NÃO. Só o card do PR. Órfão é cleanup (§ 7).
 - "Apago os órfãos de uma vez" → NÃO. Confirm-first, sempre.
 - "Fix pequeno no review, não re-testo" → NÃO. Qualquer fix → re-review + re-autentica.
 - "O loop de conserto não fecha, sigo reescrevendo no review" → NÃO. ~2–3 rodadas sem convergir = PR cru → REJEITA.
@@ -1193,7 +1193,7 @@ Verificar o `## Como testar` de **cada card** que deveria estar no ar **desde o 
 
 **Por quê:** um deploy publica o **acumulado** da branch. Se três PRs entraram e você só verifica o terceiro, os outros dois sobem sem ninguém olhar — e é exatamente a pergunta que quem valida faz ("todas as features subiram?").
 
-Como montar a lista: os cards dos PRs mergeados desde o último smoke verde, mais os commits diretos na branch de integração no mesmo intervalo. Sem `## Como testar` no card → usar os TCs de `docs/05-test-cases/<feature>.md`; sem nenhum dos dois → reportar que a feature **não é verificável** e por quê (não invente critério de aceite).
+Como montar a lista: os cards dos PRs mergeados desde o último smoke verde, mais os commits diretos na branch de integração no mesmo intervalo. Sem `## Como testar` no card → usar os TCs de `docs/06-test-cases/<feature>.md`; sem nenhum dos dois → reportar que a feature **não é verificável** e por quê (não invente critério de aceite).
 
 ### 2 — Como se executa
 
@@ -1202,7 +1202,7 @@ Playwright MCP, apontando para a **URL do ambiente** (do § deploy-context):
 1. Abrir a URL do ambiente. Não responde / 5xx / página de erro da plataforma → não é smoke falho de feature: é **ambiente fora do ar**, gap grave, reporte antes de qualquer outra coisa.
 2. Autenticar com as credenciais de teste do ambiente (o `deploy.md` diz **onde** estão — nunca guarda o valor).
 3. Para cada card: seguir os passos do `## Como testar` e observar o **resultado declarado**.
-4. Registrar evidência por card (screenshot com caminho) — a mesma régua do registro de QA em `kanban/09-run-test/`.
+4. Registrar evidência por card (screenshot com caminho) — a mesma régua do registro de QA em `kanban/10-run-test/`.
 
 **Ambiente de produção tem usuário real.** Smoke em prod é **leitura e caminho feliz**, com dado de teste quando é preciso escrever. Não criar pedido de verdade, não disparar cobrança, não mexer em dado de terceiro. Não dá para verificar sem efeito colateral → declare isso em vez de improvisar.
 
@@ -1470,7 +1470,7 @@ Não vale paráfrase, não vale "o UC-17 **implica** que", não vale "pelo espí
 ### Checagem negativa (A **e** B) + consequência material (B)
 
 **Comportamento deliberado não é achado.** Antes de propor **qualquer** A ou B, grepar:
-- `kanban/07-implementation/*.md` → seção **`### 3.2 O que NÃO vamos construir (YAGNI)`** — descarte explícito **com motivo**
+- `kanban/08-implementation/*.md` → seção **`### 3.2 O que NÃO vamos construir (YAGNI)`** — descarte explícito **com motivo**
 - decisão registrada (`docs/00-context/decisions/`, `D<NN>` citado em spec/código) ou comentário no código declarando o comportamento **intencional**
 
 Achou → **não é card**. No máximo uma **pergunta** ao usuário, se o motivo registrado parecer stale.
@@ -1484,7 +1484,7 @@ Achou → **não é card**. No máximo uma **pergunta** ao usuário, se o motivo
 
 ### Registrar — o único destino
 
-**Nada aqui cria card.** Todo achado vai para `kanban/08-code-review/<feature>.md`, seção **`## Achados do review`** — uma linha por achado, com **classe**, **prova** e se é **candidato a card**:
+**Nada aqui cria card.** Todo achado vai para `kanban/09-code-review/<feature>.md`, seção **`## Achados do review`** — uma linha por achado, com **classe**, **prova** e se é **candidato a card**:
 
 ```markdown
 ## Achados do review
@@ -1539,7 +1539,7 @@ A mesma tabela vai para o **relatório final da skill** (`Achados:` na saída do
 | Segunda feature completa, com telas e regras próprias | **sim**, e é o caso mais claro |
 | Correção pontual de bug encontrado no caminho, com sintoma no fluxo do card | **não** — é conserto in-place legítimo |
 
-Dúvida entre "elevou o perímetro" e "trouxe feature nova" → olhe o `kanban/07-implementation/<feature>.md` § 3.5: o perímetro estava **declarado** no plano. Fora do perímetro declarado e sem UC do card = excedente.
+Dúvida entre "elevou o perímetro" e "trouxe feature nova" → olhe o `kanban/08-implementation/<feature>.md` § 3.5: o perímetro estava **declarado** no plano. Fora do perímetro declarado e sem UC do card = excedente.
 
 ### 2 — Separável ou não?
 
@@ -1551,7 +1551,7 @@ Dúvida entre "elevou o perímetro" e "trouxe feature nova" → olhe o `kanban/0
 
 ### 3 — Devolver declarado
 
-Para cada excedente que vira trabalho futuro: **registre** — em `kanban/08-code-review/<feature>.md` § `## Achados do review` (a tabela do § findings, classe `E · EXCEDENTE`) e no relatório final da skill — **o que é**, **por que saiu deste PR** e **onde está** (branch/commit, para ninguém reescrever do zero). Em voz de produto, nunca prescrevendo implementação (a solução é de quem for resolver o card, com o escopo na mão). **Não invoque o `/card`**: o pipeline nunca cria card sozinho; o usuário abre, se quiser, e o registro é o que ele cola.
+Para cada excedente que vira trabalho futuro: **registre** — em `kanban/09-code-review/<feature>.md` § `## Achados do review` (a tabela do § findings, classe `E · EXCEDENTE`) e no relatório final da skill — **o que é**, **por que saiu deste PR** e **onde está** (branch/commit, para ninguém reescrever do zero). Em voz de produto, nunca prescrevendo implementação (a solução é de quem for resolver o card, com o escopo na mão). **Não invoque o `/card`**: o pipeline nunca cria card sozinho; o usuário abre, se quiser, e o registro é o que ele cola.
 
 No `request-changes`, dizer exatamente: o que sai, que fica registrado como candidato a card, e o que fica.
 

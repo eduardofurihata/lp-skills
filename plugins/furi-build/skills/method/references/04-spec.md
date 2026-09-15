@@ -1,12 +1,12 @@
-# Step 4a — Spec
+# Step 4 — Spec
 
-**Toda decisão em aberto, resolvida aqui — sem perguntar.** Zero ambiguidade sobra para o Step 5.
+**Toda decisão em aberto, resolvida aqui — sem perguntar.** Zero ambiguidade sobra para os steps seguintes.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
 
 ## Artefato
 
-`docs/04-spec/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`).
+`docs/04-spec/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`).
 
 ```markdown
 # <Tópico> — Spec
@@ -86,12 +86,20 @@ O step onde a arquitetura é decidida — **é aqui que YAGNI é mais barato**.
 - **DRY** — decisão que replica mecanismo já existente no projeto → a decisão é **reusar**.
 - **KISS** — entre duas soluções que atingem o nível #1, ganha a mais simples: complexidade só se paga com requisito, nunca com elegância.
 - **SRP** — fronteiras de módulo/camada explícitas.
-- **DIP + LoD** — cada decisão declara dependência de **abstração**, não de implementação (o motor define o contrato, a infra implementa), a **direção da dependência** e quem fala com quem. Fronteira mal desenhada aqui vira `a.b.c.d` no 7b.
+- **DIP + LoD** — cada decisão declara dependência de **abstração**, não de implementação (o motor define o contrato, a infra implementa), a **direção da dependência** e quem fala com quem. Fronteira mal desenhada aqui vira `a.b.c.d` no 8b.
 - **OCP** — onde a solução vai precisar crescer? o ponto de extensão é decisão, não improviso.
 - **Motor** — cada decisão declara **qual motor é dono da regra**; motor novo é nomeado e tem contrato desenhado aqui.
 - **Refatoração** — decisão que replica mecanismo existente vira **estender o motor que já existe**.
 - **Design** — aqui se **deriva a superfície visual** (§ Escopo derivado, nunca declarado). Decisão de arquitetura não fixa tela: o que é visual espera o 4b.
 
-## Gateway 4a → 4b
+## Gateway 4 → 5
 
-Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive. Sem superfície visual, a linha de Design declara `❌ N/A` **uma vez** aqui e o próximo step é o 5.
+- [ ] Autonomous Decision Loop fechou com **zero gaps**
+- [ ] Cada decisão (D-N) com justificativa + referência (`/solve` > código existente) + alternativas descartadas + **UC que a exige**
+- [ ] Cada decisão declara **qual motor é dono da regra**, a **direção da dependência** e o ponto de extensão previsto
+- [ ] **Escopo de plataforma** (web/android/ios) **derivado** aqui, não declarado
+- [ ] **Superfície visual derivada** (sim/não) — é o que liga o Step 5 e a linha de design nos gateways seguintes
+- [ ] Artefato `docs/04-spec/<tópico>.md` existe com conteúdo substantivo
+- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+
+**Sem superfície visual:** a linha de Design declara `❌ N/A — derivado do Step 4` **uma vez** aqui, o Step 5 não roda e os gateways seguintes herdam — o próximo é o **Step 6**.

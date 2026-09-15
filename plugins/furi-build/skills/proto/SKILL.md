@@ -17,7 +17,7 @@ O entregável não é uma tela. É uma **escolha**.
 
 - **3 versões que competem de verdade.** Três propostas para a mesma tela, cada uma apostando em algo diferente — e cada uma defensável como a melhor. Se as 3 pudessem coexistir como ajuste de espaçamento da mesma tela, não são 3 versões.
 
-- **O design system do app.** Tokens, componentes, tipografia, ícones e escalas são os do projeto, lidos do projeto (e de `docs/04-design/design-system.md`, se existir). Nada inventado fora deles; o que o DS não tem, sai da **composição** do que ele tem. Doutrina completa: o **`/front`**. Aqui não se **promove** ao DS: protótipo é descartável; a promoção acontece no `/method`, quando a versão escolhida for implementada.
+- **O design system do app.** Tokens, componentes, tipografia, ícones e escalas são os do projeto, lidos do projeto (e de `docs/05-design/design-system.md`, se existir). Nada inventado fora deles; o que o DS não tem, sai da **composição** do que ele tem. Doutrina completa: o **`/front`**. Aqui não se **promove** ao DS: protótipo é descartável; a promoção acontece no `/method`, quando a versão escolhida for implementada.
 
 - **Rotas paralelas temporárias.** `{rota-original}-v1`, `-v2`, `-v3` no mesmo app. A rota original e o código compartilhado ficam intocados — o que é novo nasce dentro da pasta da própria versão. São descartáveis por contrato: a versão escolhida é implementada na rota real (`/method`) e as `-v*` somem.
 

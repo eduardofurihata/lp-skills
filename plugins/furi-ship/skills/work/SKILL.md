@@ -32,7 +32,7 @@ O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o
 |---|---|
 | `KEY-N` (ou URL do card) | objetivo = o card, em **qualquer** projeto |
 | `<descrição>` sem key | objetivo = o trabalho descrito — projeto sem Jira, ou trabalho sem card |
-| vazio | CONTINUE: objetivo = o card/trabalho da branch atual (`docs/jira/todo/*.md` cuja `branch:` é a atual, ou o feature em `kanban/07-implementation/`); nenhum → "Nenhum trabalho ativo. Use `/work KEY-N` ou `/work <descrição>`" |
+| vazio | CONTINUE: objetivo = o card/trabalho da branch atual (`docs/jira/todo/*.md` cuja `branch:` é a atual, ou o feature em `kanban/08-implementation/`); nenhum → "Nenhum trabalho ativo. Use `/work KEY-N` ou `/work <descrição>`" |
 | `… /repro` | funde: o estágio `reprodução` entra antes do `commit`, com as duas paradas humanas |
 | `… /card` | funde: o estágio `card` entra antes de `branch` — o card é criado e vira o objetivo |
 | `… /pull-request` · `/homolog` · `/prod` | vence o mais distante: `Skill(skill: "<ele>", args: "<o resto>")` e este alvo **não roda** |
@@ -87,14 +87,14 @@ Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplem
    Setup:   <branch por card | branch acumula cards | direto na integração> [arquivo | criado agora | override de sessão]
    Branch:  <branch>  [feature branch | lote: <n> cards — <keys, dos commits> | direto na integração]
    Commit:  <hash>
-   Kanban:  kanban/10-done/<feature>.md
+   Kanban:  kanban/12-done/<feature>.md
    Jira:    <em andamento (transição) | — sem Jira>
    Próximo: /pull-request (push + PR) · /homolog · /prod — cada um leva daqui até o próprio estágio
 ```
 
 Houve override de sessão no estágio `branch`? Uma linha a mais, **oferecendo** — nunca gravando: *"Hoje foi `<modo>`; quer que vire o padrão deste repositório?"* — um "sim" e você invoca `/setup branch`.
 
-**Gap zero** (já estava commitado): `✅ /work KEY-N — já commitado: <hash> em <branch>, kanban/10-done/<feature>.md tests: passed. Nada a fazer. Próximo: /pull-request.`
+**Gap zero** (já estava commitado): `✅ /work KEY-N — já commitado: <hash> em <branch>, kanban/12-done/<feature>.md tests: passed. Nada a fazer. Próximo: /pull-request.`
 
 **Estágio que resistiu** (parada sem resposta, estado que não convergiu em ~3 passadas): `⚠️ /work KEY-N — parou em <estágio>: <por quê> · Destrava: <o quê>`.
 
