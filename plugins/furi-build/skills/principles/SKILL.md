@@ -125,7 +125,7 @@ Sem argumento, a doutrina acima passa a valer para o trabalho em curso — é is
 4. **Corrigir** o que está abaixo do nível, dentro do perímetro — tabela *Achou → Faça*, regra do saldo. **Sem mudar comportamento:** refatoração preserva o que o código faz; se corrigir exige mudar comportamento, isso é achado, não correção. Fora do perímetro: **lista**, não mexe.
 5. **Relatório**, por arquivo: o que subiu · o que já estava no nível #1 (declarado) · achados fora do perímetro · o que exigiria mudança de comportamento (não feito). **Nunca commita, nunca cria branch** — quem decide o que fazer com a passada é quem a pediu.
 
-> Dentro do `/method`: a lente de cada step e as linhas obrigatórias do Gateway Check estão em `method/references/lentes.md` — mesma doutrina, cobrada step a step.
+> Dentro do `/method`: cada step traz a **lente** desta doutrina na seção *Princípios neste step* do próprio reference (`method/references/`), e a declara na linha obrigatória do Gateway Check (`method/references/gateways.md`) — mesma doutrina, cobrada step a step.
 
 ## Racionalizações proibidas
 

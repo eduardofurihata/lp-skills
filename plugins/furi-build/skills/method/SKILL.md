@@ -28,7 +28,7 @@ requires: [solve, principles, front]
 
 **Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — e a reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual, no lugar do que existe — nunca um paralelo (`/solve`) — e sem merge para `main` sem autorização (regras acima).
 
-Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, refatoração contínua e design — são as Regras Invioláveis 8, 9 e 10; a doutrina mora nas skills `/principles` e `/front` (invocadas em todo step, com o `/solve`); a lente de cada step, em `references/lentes.md` — não aqui.
+Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, refatoração contínua e design — são as Regras Invioláveis 8, 9 e 10; a doutrina mora nas skills `/principles` e `/front` (invocadas em todo step, com o `/solve`); a lente, na seção *Princípios neste step* do reference de cada step — não aqui.
 
 ## Regras Invioláveis (fecham brechas conhecidas)
 
@@ -40,7 +40,7 @@ Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, re
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 1→10; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio de **quem revisa de fora**, nunca saída do dev. Ver `references/follow-ups.md`.
 
-8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**), DRY, KISS, YAGNI, Law of Demeter e **Motores**, cada um pela lente do step, **declarados na linha obrigatória de todo Gateway Check** — doutrina no `/principles`, invocado em todo step; lente em `references/lentes.md`.
+8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**), DRY, KISS, YAGNI, Law of Demeter e **Motores**, cada um pela lente do step, **declarados na linha obrigatória de todo Gateway Check** — doutrina no `/principles`, invocado em todo step; a lente, na seção *Princípios neste step* do reference de cada step.
 
 9. **Refatoração é regime.** Tudo por onde o trabalho passa sobe (perímetro + regra do saldo), com linha própria em todo Gateway Check — `principles/SKILL.md` § Refatoração contínua.
 
@@ -65,9 +65,9 @@ Contra-argumento de cada racionalização: `references/rationalizations.md` (pro
 | 9 | Run Test | `kanban/09-run-test/` | `<tópico>.md` | TCs (5) + Review (8b) | `references/09-testing.md` |
 | 10 | Done | `kanban/10-done/` | `<tópico>.md` | — | `references/10-done.md` |
 
-O **Step 4b só roda com superfície visual**, derivada no 4a (`references/lentes.md` § Design — a quem se aplica).
+O **Step 4b só roda com superfície visual**, derivada no 4a (`references/04-spec.md` § Escopo derivado, nunca declarado).
 
-> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `references/lentes.md`. Não duplicada aqui, e não executável de memória.
+> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está no reference do próprio step, na seção *Princípios neste step*. Não duplicada aqui, e não executável de memória.
 
 ## Ordem de Operações ao Ativar
 
@@ -197,12 +197,11 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 
 ## Arquivos de Referência
 
-- `references/lentes.md` — a **lente** do `/method` sobre as doutrinas do `/principles` e do `/front`: o que cada step cobra e quando a linha de design entra (a doutrina em si mora nas duas skills, invocadas em todo step)
 - `references/gateways.md` — formato do Gateway Check (as quatro linhas obrigatórias), critérios de todos os gateways, Gateway 9→10 detalhado e exceções
 - `references/follow-ups.md` — Ledger de Follow-ups, triagem A/B/C, Gate de Convergência, o loop até o passe seco e as racionalizações de follow-up
 - `references/rationalizations.md` — racionalizações do protocolo (steps, gateways, autoridade, retrofit, testing, pressão); as Red Flags são a lista acima
 - `references/inventario-docs.md` — protocolo do inventário inicial
-- `references/01-problema.md` até `references/10-done.md` — detalhamento por step
+- `references/01-problema.md` até `references/10-done.md` — detalhamento por step, cada um com a **lente** daquele step (§ *Princípios neste step*) sobre as doutrinas do `/principles` e do `/front`
 
 **Abra o reference relevante ao iniciar cada step. Não tente executar de memória.**
 

@@ -2,7 +2,7 @@
 
 **Uma frase.** Se não cabe em uma frase, você não entendeu o problema ainda.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## Artefato
 
@@ -20,6 +20,15 @@
 ## Afetados
 - <persona / role> (<como é afetada>)
 ```
+
+## Princípios neste step
+
+- **KISS** — a âncora deste step é KISS aplicado; e a frase descreve o **problema**, não a solução: "falta um endpoint de X" é solução disfarçada.
+- **YAGNI** — o problema é o que existe, não o adjacente que ninguém relatou.
+- **DRY** — o inventário achou doc que já cobre isso? **atualize**, não crie paralelo.
+- **Motor** — o problema nomeia a **capacidade que falta**, não a tela onde ela some.
+- **Refatoração** — doc que já cobre o domínio → **consolide**, não crie um paralelo.
+- **Design** (se tem UI) — nomeie a **fricção** (passo redundante, contexto perdido, ação que não se acha), não o widget: "falta um botão" não é problema; "o usuário não consegue voltar sem perder o que digitou" é.
 
 ## Gateway 1 → 2
 
