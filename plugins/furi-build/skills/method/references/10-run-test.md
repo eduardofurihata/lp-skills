@@ -1,12 +1,12 @@
-# Step 9 — Testing (Run Test)
+# Step 10 — Testing (Run Test)
 
 **Executar TODOS os TCs e verificar se o código funciona como esperado.**
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
 
 ## Artefato
 
-`kanban/09-run-test/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`). Guarda a evidência de cada TC (screenshot com path, ou o motivo do FAILED) e o `## Test Environment Setup`.
+`kanban/10-run-test/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Guarda a evidência de cada TC (screenshot com path, ou o motivo do FAILED) e o `## Test Environment Setup`.
 
 ## FRONT É FRONT — Regra Absoluta
 
@@ -25,7 +25,7 @@ Análise de código captura: lógica isolada. **Análise de código NÃO substit
 
 ```
 PRE-FLIGHT (executar PRIMEIRO):
-  1. Listar TODOS os N TCs do plano (docs/05-test-cases/)
+  1. Listar TODOS os N TCs do plano (docs/06-test-cases/)
   2. Para CADA TC, verificar:
      - Tenant / build / config necessário
      - Seed data / user type necessário
@@ -118,7 +118,7 @@ Se o TC é "N/A neste build" → deveria ter sido BLOCKED no pre-flight, não pu
 
 ```
 PROCEDIMENTO (antes de qualquer TC):
-  1. Ler TODOS os TCs de docs/05-test-cases/ (feature + regressão)
+  1. Ler TODOS os TCs de docs/06-test-cases/ (feature + regressão)
   2. Contar total de TCs (N)
   3. Agrupar TCs por tema/área (~10 por grupo)
   4. CAMADA 1 — Para CADA grupo, criar 1 TaskCreate:
@@ -141,7 +141,7 @@ PROCEDIMENTO (antes de qualquer TC):
 
 ```markdown
 ## Audit Pré-Execução — TaskCreate 1:1
-- TCs em `docs/05-test-cases/<tópico>.md`: **N**
+- TCs em `docs/06-test-cases/<tópico>.md`: **N**
 - TaskCreate de grupo criados: **G** — listar (TaskID → grupo)
 - TaskCreate individuais criados: **M** — listar (TaskID → TC-ID)
 - Ratio M == N? ✅ SIM / ❌ NÃO — TCs sem task individual: [listar TC-IDs]
@@ -163,19 +163,19 @@ PROCEDIMENTO (antes de qualquer TC):
 ```
 REPETIR até todos passarem SEM NENHUMA MUDANÇA:
   1. tsc/lint — se falhar, corrigir antes de testar
-  2. Consultar notas do relatório 8b — focar nos pontos críticos
+  2. Consultar notas do relatório 9b — focar nos pontos críticos
   3. Para CADA batch (task de grupo):
      a. TaskUpdate grupo → in_progress
      b. CADA TC do batch: executar DO ZERO via ferramenta apropriada
      c. PASSED (com screenshot/evidência) ou FAILED (motivo)
-        → atualize o checklist `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (regras em `06-todo.md` § Checklist de QA)
-     d. Bug → triagem A/B/C (`follow-ups.md`):
+        → atualize o checklist `## Test Cases (QA)` do card `kanban/07-todo/<tópico>.md` (regras em `07-todo.md` § Checklist de QA)
+     d. Bug → triagem A/B/C (`11-follow-ups.md`):
         - **A** → corrigir AGORA. Qualquer fix invalida o ciclo → RESETE o checklist de QA inteiro (vai retestar TUDO do zero)
         - **B** / **C** → registrar no ledger (`## Follow-ups` do card). NÃO corrige aqui — B vira ciclo /method no Gate de Convergência
      e. Todos TCs do batch PASSED → TaskUpdate grupo → completed
-  4. Organizar kanban/09-run-test/<tópico>.md
-  5. Algum FAILED com fix → volta ao Step 8 (Code Review) → retesta TUDO
-  6. Todos PASSED sem nenhuma mudança de código → Step 10
+  4. Organizar kanban/10-run-test/<tópico>.md
+  5. Algum FAILED com fix → volta ao Step 9 (Code Review) → retesta TUDO
+  6. Todos PASSED sem nenhuma mudança de código → Step 11
 ```
 
 ## Ferramenta por Contexto
@@ -214,7 +214,7 @@ PROCEDIMENTO (ao iniciar testes via front):
 - **FORCE via FRONT** — cada TC como usuário real: abrir app/browser, navegar, clicar, preencher, validar com screenshot. Sem atalhos de API, sem "verificar no código".
 - **Mobile = Android E iOS** — feature mobile testada em apenas uma plataforma = não testada.
 - **NUNCA marque PASSED apenas com tsc** — tsc verifica tipos, não comportamento.
-- **Qualquer fix de código** → fix invalida review → volta ao Step 8 → depois retesta TUDO no Step 9.
+- **Qualquer fix de código** → fix invalida review → volta ao Step 9 → depois retesta TUDO no Step 10.
 
 ## Resultado de TC — Binário
 
@@ -223,7 +223,7 @@ PROCEDIMENTO (ao iniciar testes via front):
 
 Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" entre TCs.
 
-## Audit Pós-Execução — BLOQUEANTE (publicar no chat ANTES do Gateway 9 → 10)
+## Audit Pós-Execução — BLOQUEANTE (publicar no chat ANTES do Gateway 10 → 11)
 
 **Quando achar que o Loop terminou e ANTES de publicar o Gateway 9 → 10, publique este bloco. Audit ausente = step 9 não terminou.**
 
@@ -231,18 +231,18 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 ## Audit Pós-Execução — Execução 1:1
 - Tasks individuais esperadas (do Audit Pré): **N**
 - Tasks individuais com status `completed`: **C** — listar (TaskID → TC-ID)
-- TCs com evidência (screenshot path em `kanban/09-run-test/<tópico>.md`): **E** — listar (TC-ID → path)
+- TCs com evidência (screenshot path em `kanban/10-run-test/<tópico>.md`): **E** — listar (TC-ID → path)
 - Ratio C == N? ✅ / ❌ — tasks pendentes: [listar TaskIDs]
 - Ratio E == N? ✅ / ❌ — TCs sem screenshot: [listar TC-IDs]
 - Status agregado: **N PASSED**, **0 FAILED**, **0 NOT_RUN**, **0 SKIPPED**, **0 BLOCKED** ✅ / ❌
 - Último ciclo sem mudanças de código? ✅ / ❌
-- Follow-ups detectados no Step 9: **F** — todos classificados no ledger (A/B/C)? ✅ / ❌
-- **Veredicto:** ✅ LIBERADO para Gateway 9 → 10 / ❌ BLOQUEADO — voltar ao Loop e executar pendentes
+- Follow-ups detectados no Step 10: **F** — todos classificados no ledger (A/B/C)? ✅ / ❌
+- **Veredicto:** ✅ LIBERADO para o Gateway 10 → 11 / ❌ BLOQUEADO — voltar ao Loop e executar pendentes
 ```
 
-> Follow-up de balde B **não bloqueia o Gateway 9 → 10** (o TC da feature passou) — ele bloqueia o **Gate de Convergência** logo depois, na entrada do Step 10. Registrar aqui é o que garante que ele chegue lá.
+> Follow-up de balde B **não bloqueia o Gateway 10 → 11** (o TC da feature passou) — ele bloqueia o **Step 11**, logo a seguir. Registrar aqui é o que garante que ele chegue lá.
 
-**❌ BLOQUEADO = PROIBIDO publicar Gateway 9 → 10 e PROIBIDO escrever qualquer resumo / report de conclusão.** Volte ao Loop, execute os TCs pendentes, produza evidência, republique o audit.
+**❌ BLOQUEADO = PROIBIDO publicar o Gateway 10 → 11 e PROIBIDO escrever qualquer resumo / report de conclusão.** Volte ao Loop, execute os TCs pendentes, produza evidência, republique o audit.
 
 | Racionalização proibida | Realidade |
 |------------------------|-----------|
@@ -260,11 +260,11 @@ Um screenshot do happy path em desktop é a fatia que nunca quebra. Para TC que 
 - **Breakpoints do projeto**, com **320px** como piso.
 - **Interação:** foco visível por teclado nos controles do fluxo.
 
-Documente os paths em `kanban/09-run-test/<tópico>.md` identificando **qual estado e qual breakpoint** cada arquivo prova. Estado que o UC listou e que não tem evidência = TC incompleto, não PASSED.
+Documente os paths em `kanban/10-run-test/<tópico>.md` identificando **qual estado e qual breakpoint** cada arquivo prova. Estado que o UC listou e que não tem evidência = TC incompleto, não PASSED.
 
 ## Princípios neste step
 
-O Step 9 não escreve feature — escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de fazer o TC passar, nasce o remendo.
+O Step 10 não escreve feature — escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de fazer o TC passar, nasce o remendo.
 
 - **Todos os princípios** — fix é código; **workaround que faz o TC passar violando SRP/DRY é FAILED disfarçado**.
 - **KISS** — o fix mais simples que resolve a causa; não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
@@ -272,7 +272,41 @@ O Step 9 não escreve feature — escreve **fixes**, e é aí que o protocolo ma
 - **Refatoração** — fix novo reabre o perímetro do fix; os arquivos que ele tocou entram na regra do saldo.
 - **Design** (se tem UI) — evidência por **estado × breakpoint**, não só o happy path em desktop. Remendo de CSS que faz o TC passar é FAILED disfarçado.
 
-## Gateway 9 → 10
+## Gateway 10 → 11 (o mais crítico)
 
-Ver `gateways.md` seção "Gateway 9 → 10" (detalhado).
-Inclui as linhas de **princípios**, **refatoração** e **design**, e o critério de evidência por estado × breakpoint.
+**Pré-requisitos formais (ambos obrigatórios, publicados no chat ANTES deste Gateway):** o **Audit Pré-Execução** ✅ (ratio M==N de TaskCreate individual, antes de qualquer TC rodar) e o **Audit Pós-Execução** ✅ (ratio C==N de completed + E==N de evidência). **Sem os dois no chat com ✅, este Gateway não pode ser publicado** — publicá-lo sem eles é violação automática.
+
+| Critério | Verificação obrigatória |
+|----------|-------------------------|
+| Audit Pré-Execução publicado ✅? | Bloco visível no chat com ratio M==N confirmado antes do primeiro TC |
+| Audit Pós-Execução publicado ✅? | Bloco visível no chat com C==N, E==N, status agregado 100% PASSED |
+| Cada TC tem TaskCreate próprio? | Duas camadas: 1 por grupo + 1 por TC individual. Ambas obrigatórias |
+| Todos TCs executados via front? | Cada TC tem screenshot com path documentado em `kanban/10-run-test/` |
+| Evidence count = TC count? | Reconciliação: Predicted N = Evidence M. Delta = 0 obrigatório |
+| Zero NOT_RUN / SKIPPED / BLOCKED? | Nenhum TC sem status de execução real |
+| Zero FAILED? | TODOS os TCs em PASSED |
+| Zero mudanças no último ciclo? | Último passe = 100% PASSED SEM nenhum fix de código |
+| Mobile: iOS + Android cobertos? | Toda feature mobile com evidência nas DUAS plataformas |
+| Nenhum TC passou por workaround? | Todo fix do ciclo respeita os princípios (`/principles`). TC que só passa violando SRP/DRY = **FAILED disfarçado**. O fix vai **para o motor**, nunca de remendo no chamador |
+| UI: evidência por estado × breakpoint? | Cada TC de UI com evidência nos **estados** (vazio, carregando, erro, sucesso, limite) e nos **breakpoints do projeto**, não só o happy path em desktop (`/front`) |
+
+```markdown
+## Gateway Check — Step 10 → Step 11
+- Audit Pré-Execução publicado? ✅ SIM (referência ao bloco) / ❌ NÃO
+- Audit Pós-Execução publicado? ✅ SIM (referência ao bloco) / ❌ NÃO
+- TCs planejados: N
+- Tasks de grupo criadas: G (✅ todos os TCs cobertos por algum grupo)
+- Tasks individuais criadas (1 por TC): N (✅ ratio 1:1)
+- TCs executados com evidência: N (✅ delta = 0)
+- Status: N PASSED, 0 FAILED, 0 NOT_RUN, 0 SKIPPED, 0 BLOCKED
+- Último ciclo sem mudanças de código? ✅ SIM
+- Mobile iOS + Android? ✅ SIM / N/A (escopo derivado no Step 4 confirma feature sem superfície mobile)
+- UI: evidência por estado × breakpoint? ✅ SIM / N/A (sem superfície visual)
+- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ nenhum fix do ciclo passou por workaround — os fixes voltaram ao Step 9 e foram para o motor, não para o chamador
+- **Refatoração (tudo por onde passou):** ✅ o perímetro dos fixes deste ciclo foi reaberto e elevado
+- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ nenhum fix visual foi remendo de CSS   ← só com superfície visual
+- **Follow-ups detectados neste step:** N (registrados no ledger, classificados A/B/C) / nenhum
+- **Veredicto: ✅ LIBERADO para Step 11** / ❌ BLOQUEADO — motivo: [listar]
+```
+
+> Follow-up de balde B **não bloqueia este gateway** (o TC da feature passou) — ele bloqueia o **Step 11**, logo a seguir. Registrar aqui é o que garante que ele chegue lá.

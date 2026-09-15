@@ -84,7 +84,7 @@ Os motores são as seções `§ <motor>` do `pipeline/SKILL.md`. **Não reimplem
 - PRs:      #<n> aprovado + mergeado em `<integração>`  ·  branch deletada: remota ✓ + local ✓
             [#<m> REJEITADO — <motivo>]   |   sem PR: <k> commits revisados na <integração>
 - QA:       <já estava verde | fechei o estágio commit na branch do PR: X/X PASSED>
-- Review:   limpo (kanban/08-code-review/<feature>.md)
+- Review:   limpo (kanban/09-code-review/<feature>.md)
 - Deploy:   run <id> ✓ verde
 - Config:   <N aplicadas: VAR_X, migration Y | nada a aplicar>
 - Smoke:    <URL de homolog> — <N>/<N> cards verificados no ar

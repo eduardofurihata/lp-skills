@@ -2,11 +2,11 @@
 
 **Uma frase.** Se não cabe em uma frase, você não entendeu o problema ainda.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
 
 ## Artefato
 
-`docs/01-problem/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`).
+`docs/01-problem/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`).
 
 ```markdown
 # <Tópico>
@@ -32,4 +32,7 @@
 
 ## Gateway 1 → 2
 
-Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.
+- [ ] Problema em **1 frase clara**
+- [ ] Quem é afetado identificado (persona/role)
+- [ ] Artefato `docs/01-problem/<tópico>.md` existe com conteúdo substantivo — doc do mesmo domínio foi **atualizado**, não duplicado
+- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

@@ -1,12 +1,12 @@
-# Step 4b — Design
+# Step 5 — Design
 
-**Como cada tela deveria ser — decidida antes de qualquer código, a partir do design system.** Só roda com superfície visual (derivada no Step 4a); sem ela, o Gateway 4a → 4b já declarou N/A e o próximo step é o 5.
+**Como cada tela deveria ser — decidida antes de qualquer código, a partir do design system.** Só roda com superfície visual (derivada no Step 4); sem ela, o Gateway 4 → 5 já declarou N/A e o próximo step é o 6.
 
-**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
 
 ## Artefato
 
-`docs/04-design/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`). Toda tela que os UCs (Step 3) atravessam está aqui; tela sem UC não entra.
+`docs/05-design/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Toda tela que os UCs (Step 3) atravessam está aqui; tela sem UC não entra.
 
 ```markdown
 # <Tópico> — Design
@@ -26,7 +26,7 @@
 - <token / componente> — <por que nada existente serve>   (ou: nada — a feature coube no DS existente)
 ```
 
-`docs/04-design/design-system.md` — **único e cumulativo**, vive entre features: cada uma lê, usa e faz crescer. Projeto sem DS? A primeira feature o **funda** com o mínimo que os UCs exigem (YAGNI: nada de paleta inteira para uma tela).
+`docs/05-design/design-system.md` — **único e cumulativo**, vive entre features: cada uma lê, usa e faz crescer. Projeto sem DS? A primeira feature o **funda** com o mínimo que os UCs exigem (YAGNI: nada de paleta inteira para uma tela).
 
 ```markdown
 # Design System
@@ -61,6 +61,10 @@
 - **Refatoração** — padrão do DS abaixo do nível #1 no perímetro → **eleva** (ou ledger).
 - **Design** — é o corpo deste step (o artefato acima é a lente em forma de template). O que se cobra por princípio: **reusar → compor → promover** nesta ordem, promoção **registrada no DS agora** (o 7b só usa), desvio de padrão consagrado só com motivo escrito, e a11y AA como piso — não como meta.
 
-## Gateway 4b → 5
+## Gateway 5 → 6
 
-Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.
+- [ ] `docs/05-design/<tópico>.md` cobre **toda tela** que os UCs atravessam — componentes do DS (reusa / compõe / promove), hierarquia, **estados** (vazio · carregando · erro · sucesso · limite) e **breakpoints do projeto** (piso 320px)
+- [ ] Benchmark visual citado; padrão consagrado (Jakob) nomeado, desvio com motivo escrito
+- [ ] `docs/05-design/design-system.md` inventariado e com as **promoções já registradas** nele
+- [ ] a11y alvo (**AA**) definido
+- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

@@ -43,7 +43,7 @@ Dono **único** de `.claude/ship-setup/setup.md`. Todo alvo do pipeline (`/work`
 
 ## Onde mora
 
-`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de entrega no repositório-alvo: `setup.md` (este), `jira.md` (`/jira`), `infra.md` (`/infra`) e `deploy.md` (`deploy-context`), com as variantes `.local.md` ao lado. O `.claude/patterns.md` (padrões de código do projeto) fica na raiz de `.claude/`, e não em `ship-setup/`: ele não é do processo de entrega — quem o escreve é quem implementa, e `ship-setup/` é só do que esta skill possui. É a casa do conhecimento **permanente** do projeto: o que não é por feature (`docs/01-problem/` … `docs/05-test-cases/`, `kanban/`) e não é da máquina (`~/.claude/projects/`).
+`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de entrega no repositório-alvo: `setup.md` (este), `jira.md` (`/jira`), `infra.md` (`/infra`) e `deploy.md` (`deploy-context`), com as variantes `.local.md` ao lado. O `.claude/patterns.md` (padrões de código do projeto) fica na raiz de `.claude/`, e não em `ship-setup/`: ele não é do processo de entrega — quem o escreve é quem implementa, e `ship-setup/` é só do que esta skill possui. É a casa do conhecimento **permanente** do projeto: o que não é por feature (`docs/01-problem/` … `docs/06-test-cases/`, `kanban/`) e não é da máquina (`~/.claude/projects/`).
 
 Por que `.claude/` e não `CLAUDE.md`: um `.md` solto em `.claude/` **não** é carregado automaticamente — só `CLAUDE.md`, `settings.json`, `rules/`, `skills/`, `agents/` e `commands/` são. É exatamente o que se quer: o arquivo só entra quando alguém o lê por caminho. **Nunca** o mova para `.claude/rules/` nem o importe do `CLAUDE.md`.
 
@@ -312,7 +312,7 @@ Repositório de branch única, sem Jira, ~40 commits diretos na `main` e 1 PR na
 ## Jira
 - Rastreamento: kanban local             <!-- sem Jira: cards são kanban/ local -->
 - Idioma dos cards: —
-- DoD: `pnpm check` verde + card em `kanban/10-done/`
+- DoD: `pnpm check` verde + card em `kanban/12-done/`
 - Estrutura: —
 
 ## Infra

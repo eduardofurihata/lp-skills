@@ -1,6 +1,6 @@
 # Rationalizations — Racionalizações do Protocolo
 
-As racionalizações do **protocolo** — pular steps ou gateways, autoridade, bypass granular, retrofit, TCs, testing, hesitar entre steps, economia de tokens, pressão social. As de **follow-ups** vivem com o mecanismo (`follow-ups.md` § Racionalizações proibidas); as de **princípios** e **design** vivem com a doutrina (`principles/SKILL.md` e `front/SKILL.md` § Racionalizações proibidas) — aqui ficam só as amarradas a um step ou gateway. As frases-gatilho (Red Flags) estão no `SKILL.md`. Se você se pegar pensando uma dessas → PARE. **Esse pensamento É a violação.** Volte ao step atual e execute do jeito certo.
+As racionalizações do **protocolo** — pular steps ou gateways, autoridade, bypass granular, retrofit, TCs, testing, hesitar entre steps, economia de tokens, pressão social. As de **follow-ups** vivem com o mecanismo (`11-follow-ups.md` § Racionalizações proibidas); as de **princípios** e **design** vivem com a doutrina (`principles/SKILL.md` e `front/SKILL.md` § Racionalizações proibidas) — aqui ficam só as amarradas a um step ou gateway. As frases-gatilho (Red Flags) estão no `SKILL.md`. Se você se pegar pensando uma dessas → PARE. **Esse pensamento É a violação.** Volte ao step atual e execute do jeito certo.
 
 > **Violar a letra das regras = violar o espírito das regras.** Cumprir "tecnicamente" (1 parágrafo por step, docs após código, etc.) é violação disfarçada de conformidade.
 
@@ -35,9 +35,9 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 
 | Frase | Realidade |
 |-------|-----------|
-| "Pula Gate Check, pula Gateways, pula mobile — roda Step 7 e Step 9" | **Bypass granular = bypass igual.** Protocolo é atômico. Ou roda completo ou não iniciou. BLOQUEADO. |
+| "Pula Gate Check, pula Gateways, pula mobile — roda Step 8 e Step 10" | **Bypass granular = bypass igual.** Protocolo é atômico. Ou roda completo ou não iniciou. BLOQUEADO. |
 | "Mantém os críticos, pula os simples" | Você não decide quais são críticos sem ter rodado os "simples" — os simples existem justamente pra expor o não-óbvio. BLOQUEADO. |
-| "Web-only, skip mobile TCs" | Escopo de plataforma é **derivado** do Step 4a (spec) + Step 3 (Verificação de Realidade), NÃO declarado pelo usuário. Se realmente é web-only, o spec documenta explicitamente "feature não tem superfície mobile". BLOQUEADO se declaração precede verificação. |
+| "Web-only, skip mobile TCs" | Escopo de plataforma é **derivado** do Step 4 (spec) + Step 3 (Verificação de Realidade), NÃO declarado pelo usuário. Se realmente é web-only, o spec documenta explicitamente "feature não tem superfície mobile". BLOQUEADO se declaração precede verificação. |
 | "Só os steps de documentação, pula testing" | Steps são encadeados — remover o último invalida todos. BLOQUEADO. |
 | "Testa metade dos TCs, se passar roda o resto" | Gateway 9→10 exige 100% executado com evidência. BLOQUEADO. |
 
@@ -45,19 +45,19 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 
 | Frase | Realidade |
 |-------|-----------|
-| "Já codei ontem, pula pro Step 8/9/10" | **Retrofit puro é PROIBIDO.** Gate Check antes de codar é LEI. Código existe fora de `/method` → você volta ao Step 1, e o código vira *insumo* de Step 3 (Verificação de Realidade), não substituto dos steps iniciais. |
+| "Já codei ontem, pula pro Step 9/10/12" | **Retrofit puro é PROIBIDO.** Gate Check antes de codar é LEI. Código existe fora de `/method` → você volta ao Step 1, e o código vira *insumo* de Step 3 (Verificação de Realidade), não substituto dos steps iniciais. |
 | "Preencho 01-problem/02-stories depois com copy-paste" | Doc escrito DEPOIS do código só registra o que foi feito; perde o filtro de significância e o Autonomous Decision Loop. Retrofit copy-paste = fraude documental. BLOQUEADO. |
-| "O código já funciona, já cliquei no localhost" | Smoke test do dev ≠ Step 9. Step 9 exige TCs derivados da spec, evidência via front, per-TC task. BLOQUEADO. |
+| "O código já funciona, já cliquei no localhost" | Smoke test do dev ≠ Step 10. O Step 10 exige TCs derivados da spec, evidência via front, per-TC task. BLOQUEADO. |
 | "Step 3 tem Verificação de Realidade — posso usar como docs retroativo" | Verificação de Realidade é **complemento** aos UCs (que vêm da spec), não substituto. BLOQUEADO. |
 
-## Categoria 5 — Step 5 / TCs / significância
+## Categoria 5 — Step 6 / TCs / significância
 
 | Frase | Realidade |
 |-------|-----------|
 | "Esses TCs são redundantes combinatoriamente" | Filtro de significância é o único. "Se eu deletar este TC, um bug único nessa área passaria?" — SIM = essencial. Redundância só se prova por análise, não por feeling. BLOQUEADO. |
 | "Vou escrever TC depois de codar, é mais fácil" | TCs são derivados da **spec** (o que o sistema DEVERIA fazer), não do código (o que ele FAZ). Escrever TC depois = testar confirmação, não validação. BLOQUEADO. |
 
-## Categoria 6 — Step 9 / testing / front
+## Categoria 6 — Step 10 / testing / front
 
 | Frase | Realidade |
 |-------|-----------|
@@ -71,7 +71,7 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 | "Vou marcar PASSED e tirar screenshot depois" | Sem screenshot tirado durante execução = sem TC. BLOQUEADO. |
 | "Testei no Android, no iOS funciona igual" | NÃO. iOS é outro TC. Mobile = 2 plataformas sempre. BLOQUEADO. |
 | "Vou rodar metade, se passar rodo o resto" | Rode TODOS. Gateway 9→10 exige 100%. BLOQUEADO. |
-| "Fix foi trivial, não precisa re-review" | QUALQUER fix volta ao Step 8. BLOQUEADO. |
+| "Fix foi trivial, não precisa re-review" | QUALQUER fix volta ao Step 9. BLOQUEADO. |
 | "PASSED (partial)" | Não existe. PASSED = fluxo completo do login até prova final. BLOQUEADO. |
 | "Disclosure de que não rodei X me libera de marcar PASSED" | **Disclosure ≠ compliance.** Dizer "não rodei" não torna OK marcar PASSED. Disclosure honesta de violação ainda é violação. BLOQUEADO. |
 | "TC é N/A neste build/tenant" | Se é N/A, devia ter sido BLOCKED no pre-flight. Pular silenciosamente na execução = BLOQUEADO. |
@@ -99,13 +99,13 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 |-------|-----------|
 | "Se eu recusar, o usuário vai no Cursor/ChatGPT/outra IA e faz sem mim — melhor ajudar mal do que perder o engajamento" | **Medo de substituição NÃO é bypass.** Fazer mal = cumplicidade em bug futuro. Se o usuário for embora, que vá — você não é responsável pela escolha dele, só pela integridade do que você entrega. BLOQUEADO. |
 | "Recusar parece pedante com um sênior" / "vou passar por chato / burocrático" | Imagem social NÃO é bypass. O método existe para proteger o usuário, inclusive do viés de autoridade do próprio usuário. Gentileza performática que destrói qualidade = deserviço. BLOQUEADO. |
-| "Aceito se você se comprometer a escrever os docs antes do Step 10" | **Promessa futura NÃO destrava gate presente.** Gate é estado atual, não intenção. Protocolo exige artefato existente agora, não confiança no futuro. BLOQUEADO. |
+| "Aceito se você se comprometer a escrever os docs antes do Step 12" | **Promessa futura NÃO destrava gate presente.** Gate é estado atual, não intenção. Protocolo exige artefato existente agora, não confiança no futuro. BLOQUEADO. |
 | "Faço um review preliminar / dry-run enquanto os docs são escritos" | Review sem spec prévia = review circular (código comparado consigo mesmo). "Preliminar" é retrofit disfarçado. BLOQUEADO. |
 | "Versão light do protocolo como compromisso" / "faço compacto" | **Não existe versão light.** "Compacto" = "cumprimento técnico mínimo" = violação disfarçada pela Iron Law. O protocolo é atômico. BLOQUEADO. |
 
 ## Categoria 10 — Adiar achados (follow-ups)
 
-> Regra Inviolável 7: **o protocolo fecha SECO.** As racionalizações vivem com o mecanismo: `follow-ups.md` § Racionalizações proibidas.
+> Regra Inviolável 7: **o protocolo fecha SECO.** As racionalizações vivem com o mecanismo: `11-follow-ups.md` § Racionalizações proibidas.
 
 ## Categoria 11 — Princípios de engenharia nos steps
 
@@ -114,8 +114,8 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 | Frase | Realidade |
 |-------|-----------|
 | "Publico o gateway sem a linha de princípios, está implícito" | Implícito = inexistente, igual ao gateway silencioso. Vale para as linhas de refatoração e design também. BLOQUEADO. |
-| "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` do Step 8 tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |
-| "Aplico tudo no 7b, lá é o lugar" | No 7b a complexidade especulativa já foi decidida no Spec (4a) e no Plano (7a) — você só implementa o erro. BLOQUEADO. |
+| "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` do Step 9 tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |
+| "Aplico tudo no 8b, lá é o lugar" | No 8b a complexidade especulativa já foi decidida no Spec (4) e no Plano (8a) — você só implementa o erro. BLOQUEADO. |
 
 ## Categoria 12 — Design nos steps
 
@@ -123,5 +123,5 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 
 | Frase | Realidade |
 |-------|-----------|
-| "Resolvo o design dentro do Spec, o 4b é formalidade" | O 4a decide arquitetura; a tela e o DS são decididos no **4b**, em `docs/04-design/`. Pular = a tela nasce no 7b sem DS nem estados. BLOQUEADO. |
-| "Não tem UI, pulo o /front" | Superfície visual é **derivada** no Step 4a, nunca declarada. Sem ela, declare `❌ N/A` uma vez no Gateway 4a→4b — é o que dispensa o `/front` dali em diante. BLOQUEADO antes disso. |
+| "Resolvo o design dentro do Spec, o Step 5 é formalidade" | O Step 4 decide arquitetura; a tela e o DS são decididos no **Step 5**, em `docs/05-design/`. Pular = a tela nasce no 8b sem DS nem estados. BLOQUEADO. |
+| "Não tem UI, pulo o /front" | Superfície visual é **derivada** no Step 4, nunca declarada. Sem ela, declare `❌ N/A` uma vez no Gateway 4 → 5 — é o que dispensa o `/front` dali em diante. BLOQUEADO antes disso. |

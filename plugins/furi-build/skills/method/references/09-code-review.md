@@ -1,15 +1,15 @@
-# Step 8 — Code Review Crítico
+# Step 9 — Code Review Crítico
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
 
 **A lente deste step é o próprio step:** o loop 8a revisa princípio a princípio e por nome, e o relatório 8b registra um veredicto por princípio. Motor (a capacidade vazou? há segunda fonte da mesma regra?) e saldo do perímetro são linhas do checklist, não observações.
 
-## 8a — Revisão em Loop
+## 9a — Revisão em Loop
 
 ```
 REPETIR até 100% limpo:
   1. git status + git diff (e --cached) — TODAS as mudanças desta feature, ainda não commitadas
-  2. Reler plano (7a) — código implementa tudo?
+  2. Reler plano (8a) — código implementa tudo?
   3. Reler TCs (5) — todos cenários cobertos?
   4. Reler use cases (3) — edge cases tratados?
   5. Revisar CADA arquivo:
@@ -27,18 +27,18 @@ REPETIR até 100% limpo:
      - **Princípios, UM A UM e POR NOME:** a tabela do `/principles` é o checklist — para cada linha, a *falha típica* aconteceu aqui? Os cinco do SOLID inclusive. E o plano foi cumprido — § 3.1 (reúso), § 3.2 (nada furado sem registro), § 3.3 (motores)?
      - **Design, UM A UM e POR NOME** (só com superfície visual): a tabela do `/front`, mesma mecânica; § 3.4 do plano cumprido?
      - **Nível referência #1** (`/solve`): está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"?
-  6. Problema encontrado → triagem A/B/C (`follow-ups.md`):
+  6. Problema encontrado → triagem A/B/C (`11-follow-ups.md`):
      - **A** → corrigir IMEDIATAMENTE → voltar ao 1
      - **B** / **C** → registrar no ledger (`## Follow-ups` do card de to-do); B vira ciclo /method no Gate de Convergência
   7. PR existente → atualizar comentários/descrição
   8. Loop até ZERO issues de balde A — NÃO aceitar "bom o suficiente"
 ```
 
-O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer aqui pode ficar só na cabeça ou só no relatório:** ou é corrigido agora (A), ou está `ABERTO` no ledger (B), ou está `DESCARTADO` com justificativa (C).
+O Step 9 é o maior detector de follow-up do protocolo. **Nada do que aparecer aqui pode ficar só na cabeça ou só no relatório:** ou é corrigido agora (A), ou está `ABERTO` no ledger (B), ou está `DESCARTADO` com justificativa (C).
 
-## 8b — Relatório
+## 9b — Relatório
 
-**Organizar** `kanban/08-code-review/` → criar/atualizar `<tópico>.md`:
+**Organizar** `kanban/09-code-review/` → criar/atualizar `<tópico>.md`:
 
 ```markdown
 # Relatório de Code Review — <feature>
@@ -93,7 +93,7 @@ Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio nã
 | A11y (WCAG AA) + responsivo (breakpoints, 320px) | ✅/⚠️ | |
 | DS evoluiu (promoções registradas, nada solto na feature) | ✅/⚠️ | |
 
-Feature sem superfície visual: escreva `N/A — sem superfície visual (derivado do Step 4a)` **uma vez**, no lugar da tabela.
+Feature sem superfície visual: escreva `N/A — sem superfície visual (derivado do Step 4)` **uma vez**, no lugar da tabela.
 
 ## Follow-ups Emitidos
 | # | Achado | Balde (A/B/C) | Status | Destino |
@@ -114,9 +114,16 @@ Nenhum? → "nenhum follow-up emitido neste review".
 - Qualquer erro encontrado = corrigido imediatamente, não apenas documentado
 - **Achado fora do escopo ≠ achado ignorado.** Não cabe corrigir aqui (é escopo novo) → **ledger**, não "anoto no relatório e sigo". Relatório documenta; ledger obriga a resolver.
 - Relatório **brutalmente honesto**
-- Veredicto ❌ → voltar ao 7b → rodar Step 8 inteiro novamente
+- Veredicto ❌ → voltar ao 8b → rodar o Step 9 inteiro novamente
 - Sem o .md criado = step NÃO completo
 
-## Gateway 8 → 9
+## Gateway 9 → 10
 
-Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.
+- [ ] Veredicto **APROVADO** em 9b; zero issues pendentes (balde A)
+- [ ] `## Análise de Qualidade` preenchida **por princípio** (os cinco do SOLID inclusive) — nenhuma linha em branco
+- [ ] **Se tem UI:** `## Análise de Design` preenchida por princípio — nenhuma linha em branco
+- [ ] **Saldo do perímetro conferido** — cada arquivo subiu, ou está declarado como já no nível #1
+- [ ] Achados fora de escopo classificados no ledger (A/B/C) e `## Follow-ups Emitidos` preenchida
+- [ ] PR existente atualizado (se houver)
+- [ ] Artefato `kanban/09-code-review/<tópico>.md` existe com conteúdo substantivo
+- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
