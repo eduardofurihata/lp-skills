@@ -2,7 +2,7 @@
 
 > **Step terminal.** É o último step do protocolo — **não existe Step 13**. Aqui a feature é movida para `done` (card promovido) e **só então** o trabalho é **commitado** — num único commit — na branch atual. **Ordem é contrato: mover primeiro, commitar por último.**
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Pré-requisito
 

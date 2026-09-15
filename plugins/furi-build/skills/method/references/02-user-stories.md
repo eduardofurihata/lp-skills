@@ -2,7 +2,7 @@
 
 **`Como <persona>, quero <ação> para <benefício>.`** Em linguagem de usuário: "quero um botão que chame o endpoint X" não é story, é solução disfarçada de necessidade.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 

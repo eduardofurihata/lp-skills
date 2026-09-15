@@ -2,7 +2,7 @@
 
 **Executar TODOS os TCs e verificar se o código funciona como esperado.**
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 
@@ -225,7 +225,7 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 
 ## Audit Pós-Execução — BLOQUEANTE (publicar no chat ANTES do Gateway 10 → 11)
 
-**Quando achar que o Loop terminou e ANTES de publicar o Gateway 9 → 10, publique este bloco. Audit ausente = step 9 não terminou.**
+**Quando achar que o Loop terminou e ANTES de publicar o Gateway 10 → 11, publique este bloco. Audit ausente = step 9 não terminou.**
 
 ```markdown
 ## Audit Pós-Execução — Execução 1:1
@@ -271,6 +271,28 @@ O Step 10 não escreve feature — escreve **fixes**, e é aí que o protocolo m
 - **Motor** — o fix vai **para o motor**, nunca de remendo no chamador: corrigir na tela o que o motor calcula errado cria a segunda fonte da regra.
 - **Refatoração** — fix novo reabre o perímetro do fix; os arquivos que ele tocou entram na regra do saldo.
 - **Design** (se tem UI) — evidência por **estado × breakpoint**, não só o happy path em desktop. Remendo de CSS que faz o TC passar é FAILED disfarçado.
+
+## PARE se pensar
+
+O Step 10 é onde mais se trapaceia — a pressão de "fazer passar" produz estas frases:
+
+| Se você pensar | A realidade |
+|---|---|
+| "Verifiquei no código, marco PASSED" | Código ≠ comportamento. FRONT É FRONT. BLOQUEADO. |
+| "tsc/lint passou, está testado" | tsc verifica tipos. Não é teste. BLOQUEADO. |
+| "A tela carregou, marco PASSED" | Tela carregar ≠ TC passar. Passa só se o RESULTADO ESPERADO for atingido. BLOQUEADO. |
+| "PASSED (partial)" | Não existe. PASSED = fluxo completo, do login à prova final. BLOQUEADO. |
+| "TC parecido já passou, esse herda o resultado" | Cada TC roda isolado. Sem herança. BLOQUEADO. |
+| "Vou pular este TC porque é trivial" | Trivial ≠ opcional. Execute todos. BLOQUEADO. |
+| "Vou rodar metade, se passar rodo o resto" | O Gateway 10 → 11 exige 100% executado com evidência. BLOQUEADO. |
+| "TC é N/A neste build/tenant" | Se é N/A, devia ter sido BLOCKED no pre-flight. Pular silenciosamente na execução = BLOQUEADO. |
+| "BLOCKED — não consigo acessar" | Resolva o bloqueio: CRIE AS CONDIÇÕES. Você tem ambiente dev. BLOQUEADO se não tentou criar. |
+| "Não tenho o usuário/dado/estado certo" | CRIE. Signup, insert no DB, painel admin, chamada de API — o que for preciso. BLOQUEADO. |
+| "Vou marcar PASSED e tirar screenshot depois" | Sem screenshot tirado durante a execução = sem TC. BLOQUEADO. |
+| "Testei no Android, no iOS funciona igual" | NÃO. iOS é outra execução. Mobile = 2 plataformas, sempre. BLOQUEADO. |
+| "Disclosure de que não rodei X me libera de marcar PASSED" | **Disclosure ≠ compliance.** Dizer "não rodei" não torna OK marcar PASSED — disclosure honesta de violação ainda é violação. BLOQUEADO. |
+| "Criei só task por grupo, TCs individuais são desnecessários" | Ambas as camadas são obrigatórias: grupo = organização, TC individual = rastreamento granular. BLOQUEADO. |
+| "Fix foi trivial, não precisa re-review" | QUALQUER fix volta ao Step 9. BLOQUEADO. |
 
 ## Gateway 10 → 11 (o mais crítico)
 

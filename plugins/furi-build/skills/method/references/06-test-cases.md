@@ -2,7 +2,7 @@
 
 **TC profissional, adversarial, captura um bug único — e roda via front no Step 10.** Contempla as possibilidades relevantes em produção: a nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 
@@ -71,6 +71,11 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 - **Motor** — o TC exercita o **comportamento do motor pelo front**, nunca a peça interna: TC que espia estado interno testa implementação, não comportamento.
 - **Refatoração** — TC redundante → **funda** (é o próprio filtro de significância).
 - **Design** (se tem UI) — a cobertura contempla **estados × breakpoints** e a11y como **lente, não como TC extra**: um TC denso cobre a tela em mobile e desktop; dois TCs gêmeos por breakpoint furam o teto.
+
+## PARE se pensar
+
+- **"Esses TCs são redundantes combinatoriamente."** O filtro de significância é o único critério: *"se eu deletar este TC, um bug único nessa área passaria?"* — SIM = essencial. Redundância se prova por análise, não por feeling. BLOQUEADO.
+- **"Vou escrever TC depois de codar, é mais fácil."** TCs derivam da **spec** (o que o sistema DEVERIA fazer), não do código (o que ele FAZ). Escrever depois = testar confirmação, não validação. BLOQUEADO.
 
 ## Gateway 6 → 7
 

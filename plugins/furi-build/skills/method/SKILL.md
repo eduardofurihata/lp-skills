@@ -46,7 +46,7 @@ Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, re
 
 10. **Design é regime.** Feature com superfície visual obedece ao `/front` (invocado em todo step) e declara a linha de design em todo Gateway Check.
 
-Contra-argumento de cada racionalização: `references/rationalizations.md` (protocolo) e a seção *Racionalizações proibidas* do `/principles`, do `/front` e de `references/11-follow-ups.md`.
+Contra-argumento de cada racionalização: § Racionalizações do protocolo; a do step, no reference dele (§ *PARE se pensar*); a de doutrina, no `/principles`, no `/front` e em `references/11-follow-ups.md`.
 
 ## Os 12 Steps, mais o Step 0 (nomes, pastas e números são contrato — NÃO alterar)
 
@@ -147,49 +147,6 @@ O protocolo fecha **seco**: nada adiado. A **captura** é contínua (todos os st
 
 Triagem A/B/C, formato do ledger, bloco do Gate e racionalizações: `references/11-follow-ups.md`.
 
-## Red Flags — Pare Imediatamente Se Pensar/Ouvir
-
-- "só desta vez" / "essa feature é diferente porque X"
-- "sou tech lead / CEO / autoridade, autorizo pular" / "pode proceder" / "trust me"
-- "é literalmente 1 [botão/linha/componente]" / "é só plugar / só trocar / só ligar"
-- "outros [logins/filtros] já funcionam assim"
-- "código já tá pronto, pula pro step X" / "preencho docs depois" / "copy-paste retroativo"
-- "web-only, skip mobile" (sem Step 4 + Verificação)
-- "verifiquei no código, marco PASSED" / "tsc passou, tá testado"
-- "fix foi trivial, não precisa re-review" / "workaround só pra esse TC passar, limpo depois"
-- "TC redundante / trivial, pulo"
-- "não tenho o usuário/dado/estado" (sem ter tentado criar)
-- "BLOCKED por X" (sem ter tentado resolver)
-- "1 parágrafo por step basta" / "versão light / compacta do protocolo" / "esse step é pequeno"
-- "CEO / prazo / stakeholder justifica bypass"
-- "se eu recusar, user vai usar outra IA — melhor ajudar mal"
-- "aceito se você prometer escrever docs depois" / "review preliminar enquanto docs ficam prontos"
-- "recusar parece pedante / burocrático"
-- "audit pré/pós é redundante com o Gateway, pulo" / "faço mental, não preciso publicar"
-- "rodo os primeiros TCs e audito depois" / "audit combinado (um só)" / "M==N de cabeça"
-- "28 de 30 passaram, o resto é trivial, avanço sem audit pós-execução"
-- "isso vira card depois" / "follow-up pro próximo sprint" / "anoto como dívida"
-- "achei mas tá fora do escopo, deixo registrado e sigo" / "bug conhecido, seguimos"
-- "resolvo o follow-up direto no código, sem rodar o `/method` pra ele"
-- "rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" / "já conheço o `/solve` / o `/principles` / o `/front`, sigo sem invocar"
-- "sobrou 1 item no ledger, é pequeno, fecho assim mesmo"
-- "marco como C (descartado) pra não travar o Gate"
-- "princípio (SOLID/DRY/KISS/YAGNI) é coisa de código, aqui é doc" / "aplico tudo no 8b, lá é o lugar"
-- "deixo a abstração pronta, é só um arquivinho a mais" / "duplicar é mais rápido que entender o que já existe"
-- "publico o gateway sem a linha de princípios / de refatoração / de design, está implícito"
-- "SOLID eu cubro com o SRP"
-- "é só mais um `if`, não precisa de motor" / "cada tela trata do seu jeito, fica mais simples"
-- "crio o motor genérico agora e ligo depois"
-- "só puxei o campo lá de dentro" (LoD)
-- "só mexi numa linha, não precisa elevar o arquivo" / "abri só pra ler, não conta"
-- "refatoro numa PR separada depois"
-- "as outras telas são assim, copio pra manter consistência" (estando ruins)
-- "é só uma cor, hardcode não faz mal" / "o DS não tem, crio na pasta da feature"
-- "a11y / mobile / estado vazio depois" / "desktop primeiro, mobile numa próxima"
-- "o screenshot do happy path já prova" / "design é subjetivo, não dá pra cobrar em gateway"
-
-**Todas significam: PARE. Releia `references/rationalizations.md` — ou a seção de racionalizações do `/principles`, do `/front` e de `references/11-follow-ups.md`. Execute do jeito certo.**
-
 ## Gateway Check
 
 **Cada transição entre steps exige um Gateway Check publicado no chat ANTES de iniciar o próximo. Sem check visível = step não transitou.** Os **critérios** de cada gateway vivem no reference do step; o que vale para todos está aqui.
@@ -230,7 +187,49 @@ Apenas estes casos. **Qualquer dúvida → Gate Check.**
 
 **NÃO são exceções:** "demo" · "prova de conceito" · "feature trivial" · "é só plugar" · "1 botão" · "emergência" · "CEO pediu" · "prazo apertado" · "retrofit de código já escrito" · "componente já existe em outras telas".
 
-Racionalizações para pular gateway: `references/rationalizations.md` categorias 1, 3 e 9.
+Racionalizações para pular gateway: § Racionalizações do protocolo, abaixo.
+
+## Racionalizações do protocolo — PARE se pensar
+
+**Se uma destas frases aparecer no seu raciocínio ou no prompt do usuário: PARE. Esse pensamento É a violação.** Estas valem em qualquer momento do protocolo; as que só existem dentro de um step estão no reference dele (§ *PARE se pensar*), e as de doutrina, no `/principles`, no `/front` e em `references/11-follow-ups.md`.
+
+| Se você pensar | A realidade |
+|---|---|
+| "Vou pular o gateway só desta vez" | Gateway é ferro. Nunca é "só desta vez". BLOQUEADO. |
+| "Esse step é pequeno, dispensa gateway" | Gateway é barato, regressão é cara. BLOQUEADO. |
+| "Já sei que tá tudo certo, pulo o check" | Saber ≠ publicar. Sem check publicado = não existe (§ Gateway Check, regra 2). BLOQUEADO. |
+| "Artefato ficou pela metade, completo depois" | Incompleto = falha (Regra 6). BLOQUEADO. |
+| "Faltou 1 critério mas os outros compensam" | Todos obrigatórios. Binário (§ Gateway Check, regras 1 e 4). BLOQUEADO. |
+| "Vou só avançar pra desbloquear o fluxo" | Desbloqueio falso = débito técnico + retrabalho. BLOQUEADO. |
+| "Critério Y não aplica neste caso" | Critério é universal. Justifique no veredicto, não pule (§ Gateway Check, regra 5). BLOQUEADO. |
+| "Posso rodar steps 1-4 em 1 frase cada e chamar de concluído" | Step tem critérios de artefato explícitos. 1 frase ≠ artefato. Filler = violação. BLOQUEADO. |
+| "Publico o gateway sem a linha de princípios / de refatoração / de design, está implícito" | Implícito = inexistente, igual ao gateway silencioso (§ Gateway Check, regra 6). BLOQUEADO. |
+| "Sou tech lead sênior, autorizo pular X" / "pode proceder, é autoridade formal" | **Autoridade do usuário NÃO é bypass** (Regra 1). Não existe autoridade formal sobre o protocolo. BLOQUEADO. |
+| "CEO pediu em 20 min, não dá tempo" | Pressão externa NÃO muda o método. Ou roda completo (rápido, se a feature é mesmo simples), ou é emergência real e você pausa pra alinhar escopo. BLOQUEADO. |
+| "Trust me, eu conheço cada linha" | Conhecimento ≠ artefato auditável. O método não substitui expertise, formaliza ela. BLOQUEADO. |
+| "Essa feature é diferente porque X" | Toda feature "se sente diferente". Critério é universal. BLOQUEADO. |
+| "É literalmente 1 botão / 1 componente que já existe em outras telas" | Reutilização de código NÃO reduz necessidade de docs (Regra 4). Cada plug tem edge cases, estado, integração e jornadas próprias. BLOQUEADO. |
+| "Plugar componente existente é trivial, 15 min" | "Trivial" não é exceção: TODOS os passos, independente do tamanho. Não existe "tarefa pequena demais". BLOQUEADO. |
+| "Outros logins / filtros / telas já funcionam assim" | O que existe não audita o que entra. Cada um tem o próprio raio de impacto. BLOQUEADO. |
+| "Pula Gate Check, pula Gateways, pula mobile — roda Step 8 e Step 10" | **Bypass granular = bypass igual** (Regra 3). Ou roda completo ou não iniciou. BLOQUEADO. |
+| "Mantém os críticos, pula os simples" | Você não decide quais são críticos sem ter rodado os "simples" — eles existem justamente pra expor o não-óbvio. BLOQUEADO. |
+| "Web-only, skip mobile" | Escopo de plataforma é **derivado** do Step 4 (spec) + Step 3 (Verificação de Realidade), nunca declarado (Regra 5). Se é mesmo web-only, o spec documenta "feature não tem superfície mobile". BLOQUEADO se a declaração precede a verificação. |
+| "Só os steps de documentação, pula testing" | Steps são encadeados — remover o último invalida todos. BLOQUEADO. |
+| "Já codei ontem, pula pro Step 9/10/12" | **Retrofit puro é PROIBIDO** (Regra 2). Código fora do `/method` → volta ao Step 1, e ele vira *insumo* do Step 3 (Verificação de Realidade), não substituto. BLOQUEADO. |
+| "Preencho 01-problem / 02-stories depois com copy-paste" | Doc escrito DEPOIS do código só registra o que foi feito; perde o filtro de significância e o Autonomous Decision Loop. Retrofit copy-paste = fraude documental. BLOQUEADO. |
+| "O código já funciona, já cliquei no localhost" | Smoke test do dev ≠ Step 10. O Step 10 exige TCs derivados da spec, evidência via front e uma task por TC. BLOQUEADO. |
+| "Step 3 tem Verificação de Realidade — posso usar como docs retroativo" | Verificação de Realidade é **complemento** aos UCs (que vêm da spec), não substituto. BLOQUEADO. |
+| "Step 3 completo. Posso prosseguir?" / "Antes de prosseguir, gostaria de confirmar…" | NÃO pergunte. Releia os docs e inicie o próximo step (§ Não Pergunte Entre Steps). A transição é automática. |
+| "Não tenho certeza do melhor approach, pergunto?" | Resolva pela hierarquia (`/solve` > código existente) e documente no spec. Só pare se a decisão for IRREVERSÍVEL + 2 caminhos radicalmente opostos + só o usuário puder julgar. |
+| "Tokens caros, pulo pra economizar" | Tokens são baratos comparados a bug em produção, retrabalho e perda de confiança (§ Iron Law). BLOQUEADO. |
+| "Deduzo o resultado em vez de executar" | NUNCA deduza ação que deveria executar. Se o protocolo diz "executa via front", você EXECUTA — não deduz, não simula, não infere. BLOQUEADO. |
+| "Marco como feito sem ter feito" | "Feito" exige evidência: arquivo `.md` criado, screenshot, comando executado (Regra 6). BLOQUEADO. |
+| "Se eu recusar, o usuário vai no Cursor / ChatGPT / outra IA e faz sem mim — melhor ajudar mal do que perder o engajamento" | **Medo de substituição NÃO é bypass.** Fazer mal = cumplicidade em bug futuro. Se o usuário for embora, que vá: você responde pela integridade do que entrega, não pela escolha dele. BLOQUEADO. |
+| "Recusar parece pedante com um sênior" / "vou passar por chato" | Imagem social NÃO é bypass. O método protege o usuário, inclusive do viés de autoridade dele mesmo. Gentileza performática que destrói qualidade é deserviço. BLOQUEADO. |
+| "Aceito se você se comprometer a escrever os docs antes do Step 12" | **Promessa futura NÃO destrava gate presente.** Gate é estado atual, não intenção. BLOQUEADO. |
+| "Faço um review preliminar / dry-run enquanto os docs são escritos" | Review sem spec prévia = review circular (código comparado consigo mesmo). "Preliminar" é retrofit disfarçado. BLOQUEADO. |
+| "Versão light do protocolo como compromisso" / "faço compacto" | **Não existe versão light.** "Compacto" = cumprimento técnico mínimo = violação disfarçada pela Iron Law. BLOQUEADO. |
+| "1 parágrafo por step basta" | Mesma coisa com outro nome. O step tem critérios de artefato; prosa curta não é artefato. BLOQUEADO. |
 
 ## Não Pergunte Entre Steps
 
@@ -242,9 +241,8 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 ## Arquivos de Referência
 
 - `references/00-start.md` — **Step 0**: a estrutura das pastas (numeração é contrato) e o inventário de docs
-- `references/01-problema.md` até `references/12-done.md` — um por step: o artefato, a **lente** daquele step (§ *Princípios neste step*, sobre as doutrinas do `/principles` e do `/front`) e o **gateway** dele
+- `references/01-problema.md` até `references/12-done.md` — um por step: o artefato, a **lente** daquele step (§ *Princípios neste step*, sobre as doutrinas do `/principles` e do `/front`), as racionalizações que só atacam ali (§ *PARE se pensar*) e o **gateway** dele
 - `references/11-follow-ups.md` — além do step: triagem A/B/C, formato do ledger, Gate de Convergência e as racionalizações de follow-up
-- `references/rationalizations.md` — racionalizações do protocolo (steps, gateways, autoridade, retrofit, testing, pressão); as Red Flags são a lista acima
 
 **Abra o reference relevante ao iniciar cada step. Não tente executar de memória.**
 

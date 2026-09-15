@@ -2,7 +2,7 @@
 
 **O protocolo fecha SECO.** Nada de "abro um card pra isso depois": todo achado que este trabalho criou, tocou ou expôs é resolvido **dentro desta execução**, e escopo novo se resolve **invocando o `/method`** para ele — ciclo completo.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool
 
 **A captura é contínua** (Steps 1 a 10 alimentam o ledger, e cada Gateway Check declara quantos achados o step produziu); **a resolução é aqui**. Capturar durante e resolver num ponto só preserva a esteira (`SKILL.md` § Não Pergunte Entre Steps): o achado não interrompe a feature, mas também não escapa.
 
@@ -140,5 +140,5 @@ Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por 
 | "Só sobrou 1 item no ledger, é pequeno, fecho assim mesmo" | Gate é binário. 1 aberto = BLOQUEADO. |
 | "Marco como C pra não travar o Gate" | Classificação errada de propósito = fraude documental. Na dúvida entre B e C → **B**. BLOQUEADO. |
 | "Commito a feature e resolvo os follow-ups num commit depois" | Commit é o ÚLTIMO ato, depois da convergência. Dois commits = exatamente o que o Step 12 elimina. BLOQUEADO. |
-| "O ciclo de follow-up é pequeno, rodo uma versão light do /method" | Não existe versão light (Categoria 9 de `rationalizations.md`). O ciclo roda 0→12 completo. BLOQUEADO. |
+| "O ciclo de follow-up é pequeno, rodo uma versão light do /method" | Não existe versão light (`SKILL.md` § Racionalizações do protocolo). O ciclo roda 0→12 completo. BLOQUEADO. |
 | "Bug conhecido, seguimos e o usuário decide depois" | Achado real de balde B não vira "bug conhecido". Vira ciclo. BLOQUEADO. |

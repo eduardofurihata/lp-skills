@@ -2,7 +2,7 @@
 
 **Cada task = uma unidade resolvível em um prompt — e o card é a superfície viva da feature até o Done.** Ele carrega as tasks e o checklist de QA (o ledger de follow-ups tem arquivo próprio, § abaixo): é o que permite parar e retomar de onde parou.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 
