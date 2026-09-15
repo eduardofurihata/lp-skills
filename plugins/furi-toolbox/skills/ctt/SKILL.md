@@ -1,6 +1,7 @@
 ---
 name: ctt
 description: Use when user invokes /ctt to capture a request into the Claude Code task list (TaskCreate) instead of doing it now — an inbox for ideas that surface mid-conversation without derailing the current work.
+disable-model-invocation: true
 ---
 
 # /ctt

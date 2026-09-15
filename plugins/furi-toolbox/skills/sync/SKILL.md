@@ -4,6 +4,7 @@ description: 'Use when user invokes /sync with a branch expression like "main > 
 effort: max
 handoff: prod
 argument-hint: "<expressão> — ex: main > dev | dev = main | A = B > C gh = local"
+disable-model-invocation: true
 ---
 
 # /sync — sincronizar branches por notação

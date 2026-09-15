@@ -1,6 +1,7 @@
 ---
 name: ask
 description: Use when user invokes /ask to call the AskUserQuestion tool inline during the current task.
+disable-model-invocation: true
 ---
 
 # Ask

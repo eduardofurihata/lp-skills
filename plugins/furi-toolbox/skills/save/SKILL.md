@@ -5,6 +5,7 @@ argument-hint: "[mensagem opcional]"
 context: fork
 background: false
 effort: low
+disable-model-invocation: true
 ---
 
 # /save

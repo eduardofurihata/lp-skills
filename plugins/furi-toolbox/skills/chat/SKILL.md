@@ -1,7 +1,8 @@
 ---
 name: chat
-description: Use when you want deep analysis and smart answers without any file or system modifications — activates read-only guru mode
+description: 'Use when user invokes /chat — activates read-only guru mode: deep analysis and smart answers with no file or system modification.'
 effort: max
+disable-model-invocation: true
 ---
 
 # Chat Mode — Read-Only Guru

@@ -1,7 +1,8 @@
 ---
 name: chat-out
-description: Use when exiting /chat read-only mode to restore full read/write capabilities without losing conversation context
+description: 'Use when user invokes /chat-out to leave /chat read-only mode, restoring full read/write capabilities without losing conversation context.'
 handoff: chat
+disable-model-invocation: true
 ---
 
 # Exit Chat Mode

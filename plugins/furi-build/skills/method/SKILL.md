@@ -1,6 +1,6 @@
 ---
 name: method
-description: Use when user invokes /method, when starting feature work, or before any code change and `docs/01-problem/` through `docs/04-spec/` lacks artifact for the feature. Triggers on phrases like "implementa X", "novo feature", "fix não trivial". Not for typos, config tweaks, or read-only questions.
+description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — the rigorous engineering protocol: 10 steps from problem to committed code, each one reinvoking /solve for the quality bar, with a written artifact in `docs/01-problem/` through `docs/04-spec/` and the follow-up ledger closed dry. Covers feature work, behaviour change and non-trivial fixes; not for typos, config tweaks or read-only questions.'
 effort: max
 argument-hint: "[feature-name]"
 requires: solve

@@ -75,7 +75,9 @@ async function readSkill(
     return {
       slug,
       name: typeof data.name === "string" ? data.name : slug,
-      description: typeof data.description === "string" ? data.description : "",
+      description: stripGate(
+        typeof data.description === "string" ? data.description : "",
+      ),
       effort: typeof data.effort === "string" ? data.effort : undefined,
       argumentHint:
         typeof data["argument-hint"] === "string"
@@ -93,6 +95,17 @@ async function readSkill(
   } catch {
     return null;
   }
+}
+
+// O gate de invocação explícita ("Use ONLY when the user explicitly invokes …
+// NEVER activate on your own initiative.") é para o modelo, não para quem lê a
+// LP: sai inteiro, até a sentinela. Espelha stripGate() de scripts/generate-plugins.mjs.
+const GATE_SENTINEL = "NEVER activate on your own initiative.";
+function stripGate(desc: string): string {
+  const i = desc.indexOf(GATE_SENTINEL);
+  if (i === -1) return desc;
+  const rest = desc.slice(i + GATE_SENTINEL.length).replace(/^\s*[—–-]\s*/, "");
+  return rest.charAt(0).toUpperCase() + rest.slice(1);
 }
 
 // Campo de relação no frontmatter: string ("method") ou lista (["a","b"]).

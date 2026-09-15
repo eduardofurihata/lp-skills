@@ -1,7 +1,8 @@
 ---
 name: claude-shortcuts
-description: Use when setting up or replicating the user's Claude Code shortcuts on a machine — terminal commands `claude` (no forced effort; level from ~/.claude/settings.json) and `claudew` (ultracode), plus IDE terminal profiles "Claude" (Ctrl+Q — `--effort max` by default, tunable via CLAUDE_CODE_EFFORT_LEVEL in the IDE settings) and "Claude Ultra" (Ctrl+Shift+U — ultracode) for VS Code + Antigravity IDE, across ALL profiles. Triggers on "atalhos do claude", "configura o claude/claudew", "ctrl+q / ctrl+shift+u claude", "instala os modos do claude", "replica essa config em outra máquina".
+description: 'Use when user invokes /claude-shortcuts to set up or replicate the user''s Claude Code shortcuts on a machine — terminal commands `claude` (no forced effort; level from ~/.claude/settings.json) and `claudew` (ultracode), plus IDE terminal profiles "Claude" (Ctrl+Q — `--effort max` by default, tunable via CLAUDE_CODE_EFFORT_LEVEL in the IDE settings) and "Claude Ultra" (Ctrl+Shift+U — ultracode) for VS Code + Antigravity IDE, across ALL profiles. Covers installing the shortcuts, the `claude`/`claudew` commands, the Ctrl+Q / Ctrl+Shift+U profiles, and replicating the config on another machine.'
 allowed-tools: Bash, Read, Edit, Write
+disable-model-invocation: true
 ---
 
 # /claude-shortcuts — Claude Code shortcuts (terminal + IDEs)
