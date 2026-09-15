@@ -1,26 +1,26 @@
-## Step 6 — To Do
+# Step 6 — To Do
 
-### Reler antes
+## Reler antes
 
 - Steps 1-5
 
-### Artefato
+## Artefato
 
 - **Pasta:** `kanban/06-todo/`
 - **Arquivo:** `<tópico>.md`
 
-### Conteúdo
+## Conteúdo
 
 Lista de tasks com checkboxes. **Cada task = uma unidade resolvível em um prompt.**
 
-### Regras
+## Regras
 
 - Tasks atômicas (1 prompt por task)
 - Cada task rastreável (arquivos/módulos afetados identificáveis)
 - Dependências entre tasks mapeadas
 - Ordem de execução óbvia
 
-### Princípios neste step (`principles/SKILL.md`)
+## Princípios neste step (`principios.md`)
 
 A lista de tasks é a primeira forma concreta da arquitetura — o que estiver torto aqui vira código torto no 7b.
 
@@ -30,9 +30,9 @@ A lista de tasks é a primeira forma concreta da arquitetura — o que estiver t
 - **KISS** — descrição na linguagem do que muda, não do como interno.
 - **Motor** — cada task declara **qual motor** ela constrói, estende ou absorve. Task que espalha a mesma regra por N telas **não existe**: vira task de motor + tasks de chamada.
 - **Refatoração** — task que recria o existente vira task de **extensão**; e o perímetro previsto pela task já entra anotado, para o 7a planejar a elevação.
-- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e **qual componente do DS** ela constrói, estende ou **promove** (`ui/SKILL.md`).
+- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e **qual componente do DS** ela constrói, estende ou **promove** (`design.md`).
 
-### Exemplo
+## Exemplo
 
 ```markdown
 # Pagamentos — To Do
@@ -45,7 +45,7 @@ A lista de tasks é a primeira forma concreta da arquitetura — o que estiver t
 - [ ] Criar testes unitários para PaymentService
 ```
 
-### Checklist de QA dos Test Cases (status: testado ou não)
+## Checklist de QA dos Test Cases (status: testado ou não)
 
 Além das tasks de implementação, o card de to-do carrega um **checklist de QA** — um item `- [ ]` por TC de `docs/05-test-cases/<tópico>.md`. É o rastreador de "já testei ou não", a superfície VIVA atualizada ao longo do Step 9.
 
@@ -63,7 +63,7 @@ Além das tasks de implementação, o card de to-do carrega um **checklist de QA
 
 > Parou e vai retomar depois? Abra o checklist: os `- [ ]` restantes são exatamente o que falta rodar.
 
-### Ledger de Follow-ups (semear agora)
+## Ledger de Follow-ups (semear agora)
 
 O card carrega também o **Ledger de Follow-ups** — a superfície viva onde todo achado fora do escopo documentado é registrado e classificado, do Step 1 até o Step 10. É o que permite o protocolo fechar **seco** (Regra Inviolável 7).
 
@@ -80,9 +80,9 @@ O card carrega também o **Ledger de Follow-ups** — a superfície viva onde to
 - **Nos Steps 7-9:** todo achado entra aqui na hora, classificado. Item `RESOLVIDO-*` ou `DESCARTADO` não reabre.
 - **No Step 10:** o **Gate de Convergência** exige zero itens `ABERTO`; o ledger final é **copiado para `kanban/10-done/<tópico>.md`** antes do card ser deletado.
 
-Regras completas: § Follow-ups.
+Regras completas: `follow-ups.md`.
 
-### Gateway 6 → 7a
+## Gateway 6 → 7a
 
 - [ ] Tasks atômicas (1 prompt cada)
 - [ ] Cada task rastreável

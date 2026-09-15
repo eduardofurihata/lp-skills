@@ -1,10 +1,10 @@
-## Step 5 — Test Cases
+# Step 5 — Test Cases
 
 `docs/05-test-cases/<tópico>.md` · Reler 1-4
 
 TC profissional, adversarial, captura **bug único**. Contempla várias possibilidades relevantes em produção. Roda via front no Step 9.
 
-### Complexidade → Quantidade → Cobertura
+## Complexidade → Quantidade → Cobertura
 
 A lógica, **nesta ordem**:
 
@@ -14,7 +14,7 @@ A lógica, **nesta ordem**:
 
 > No Step 5 o código ainda não existe (codificar é Step 7) — a nota mede a complexidade do **problema/spec**, não da implementação.
 
-#### 1. Analisar a complexidade (dos Steps 3-4)
+### 1. Analisar a complexidade (dos Steps 3-4)
 
 A nota sai do **quanto a feature tem para cobrir** — quanto mais, maior a nota:
 
@@ -29,11 +29,11 @@ A nota sai do **quanto a feature tem para cobrir** — quanto mais, maior a nota
 
 Pouco a cobrir (1 UC, 1 fluxo, sem cross-cutting) → nota baixa (1-3). Muito a cobrir → nota perto de 10.
 
-#### 2. Nota = quantidade de TCs
+### 2. Nota = quantidade de TCs
 
 `nº de TCs == nota`, teto 10. **A nota dá o número** — não invente mais, não invente menos.
 
-#### 3. Os N TCs contemplam tudo (por isso, densos)
+### 3. Os N TCs contemplam tudo (por isso, densos)
 
 Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso** — atravessa vários de uma vez (user-journey: `login → busca → cupom → checkout` cobre 4 UCs num só TC). O objetivo dos N TCs é **contemplar 100% dos UCs (Step 3) e dos detalhes do Step 4**.
 
@@ -42,12 +42,12 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 - **Plataforma é eixo de EXECUÇÃO, não TC novo:** 1 TC = 1 cenário. Rodar em Android E iOS (Step 9) é o **mesmo TC 2×**, não 2 TCs.
 - **Os N TCs não cobrem tudo?** Ou a nota ficou baixa (re-analise a complexidade) ou a feature é grande demais para um card (**quebre em features menores**). **Nunca fure o teto de 10.**
 
-### Significância (cada TC puxa cobertura)
+## Significância (cada TC puxa cobertura)
 
 > **"Se eu deletar este TC, algum UC ou detalhe do nível 4 fica descoberto — um bug ÚNICO passaria?"**
 > **SIM** → o TC é necessário. **NÃO** → redundante; reaproveite o slot para cobrir o que ainda falta.
 
-### Formato
+## Formato
 
 ```
 ### TC-N: [nome]
@@ -61,11 +61,7 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > A linha **Cobre** é o que torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC e todo detalhe do Step 4 tem que aparecer ao menos uma vez.
 
-> **Feature com superfície de texto gerado por IA** (derivada no Step 4): ao menos um TC tem o `Resultado:` na **qualidade do texto lido** — lê **melhor que** a referência #1 do spec (completo, no tom da persona, no idioma do usuário, sem placeholder, sem robótico) — e não só "a resposta aparece". Conta como `Cobre` do detalhe "o que ler bem significa" do Step 4. Sem superfície de texto de IA, nada disso se aplica.
->
-> Esse TC é **um dos N**, não um TC extra — a nota e o teto de 10 não mudam (é lente de cobertura, como Design). E a **prova** dele não é screenshot: é a **transcrição integral da saída** (§ Step 9 → Evidência de texto).
-
-### Princípios neste step (`principles/SKILL.md`)
+## Princípios neste step (`principios.md`)
 
 - **SRP** — 1 TC = **1 bug único**. Denso (atravessa vários UCs) não é o mesmo que difuso: o TC pode cobrir 4 UCs, mas falha por **um** motivo nomeável.
 - **DRY** — o filtro de significância É o DRY dos testes: TC que não puxa cobertura nova duplica outro. Delete e reaproveite o slot.
@@ -74,9 +70,8 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 - **Motor** — o TC exercita o **comportamento do motor pelo front**, nunca a peça interna. TC que precisa espiar estado interno está testando implementação, não comportamento.
 - **Refatoração** — TC redundante → **funda**. É o próprio filtro de significância aplicado como faxina, não como corte cego.
 - **Design** (se tem UI) — a cobertura contempla **estados** (vazio, carregando, erro, sucesso, limite) e **breakpoints do projeto** e a11y. Isso é **lente de cobertura, não TC extra**: um TC denso cobre a tela em mobile e desktop; dois TCs gêmeos por breakpoint violam o teto e o filtro de significância.
-- **Texto de IA** (se tem essa superfície) — o `Resultado:` do TC é **o que se lê**, não "a resposta aparece"; e a prova é a saída inteira, não o screenshot do começo. TC cujo resultado observável é "retornou 200" não cobre texto: cobre transporte.
 
-### Gateway 5 → 6
+## Gateway 5 → 6
 
 - [ ] **Nota de complexidade (1-10) publicada** no chat, derivada dos Steps 3-4
 - [ ] **Nº de TCs == nota** e **≤ 10** — diverge → BLOQUEADO
@@ -87,4 +82,3 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 - [ ] **Princípios declarados** na linha do Gateway Check (SRP · DRY · YAGNI · KISS · Motor pela lente acima)
 - [ ] **Refatoração declarada** na linha própria do Gateway Check
 - [ ] **Design declarado** na linha própria — cobertura de estados × breakpoints e a11y (se a feature tem superfície visual)
-- [ ] **Texto de IA declarado** na linha própria — o TC de qualidade do texto lido existe e cita a referência #1 do spec; ou `❌ N/A — sem superfície de texto gerado por IA, derivado do Step 4`
