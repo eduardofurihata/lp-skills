@@ -21,6 +21,9 @@
 - **Referência:** <`/solve` (big app / boa prática / princípio) ou código existente>
 - **UC que exige:** UC-N
 - **Já existe no projeto?** <mecanismo encontrado → reusar/estender | nada → criar>
+- **Motor dono da regra:** <motor — nasce / estende / absorve lógica dispersa>
+- **Depende de:** <abstração (nunca implementação) — e em que direção>
+- **Ponto de extensão:** <por onde isso cresce sem editar o que já funciona>
 - **Descartadas:** <alternativa — por que saiu>
 ```
 
@@ -30,6 +33,8 @@ Cada decisão se resolve, nesta ordem:
 
 1. **`/solve`** — a referência #1: big pop tech apps / líderes do domínio, boas práticas consagradas (Clean Architecture, OWASP, performance, escalabilidade) e os princípios (`/principles`; `/front` se tem UI)
 2. **Código existente** — o código do projeto, CLAUDE.md, `.claude/patterns.md`, convenções já adotadas
+
+**Empate entre duas soluções que atingem o nível #1:** ganha a mais simples — complexidade só se paga com requisito, nunca com elegância. E é aqui que o que **não** se constrói sai mais barato: decisão sem UC que a exija vai para `Descartadas`, não para o código.
 
 ## Autonomous Decision Loop
 
@@ -53,7 +58,8 @@ REPETIR até zero gaps:
      **Motores** — qual capacidade esta feature exige, e quem é o dono dela?
 
   3. RESOLVER CADA GAP — no formato D-N do artefato:
-     decisão · justificativa · referência · UC que exige · já existe? · descartadas
+     decisão · justificativa · referência · UC que exige · já existe? ·
+     motor dono · depende de (direção) · ponto de extensão · descartadas
 
   4. RE-ANALISAR (do zero) — com as decisões tomadas, releia TUDO:
      - Decisões geraram NOVAS ambiguidades? Contradizem algo anterior?
@@ -77,20 +83,6 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - Projeto tem app mobile? A feature tem superfície mobile? Se tem → Android e iOS entram no escopo.
 - Projeto web-only (confirmado pela ausência de código mobile) → o spec documenta "feature não tem superfície mobile".
 - **Superfície visual = sim** quando algum UC lista estados de tela (Step 3) ou algum passo do happy path acontece numa tela do projeto.
-
-## Princípios neste step
-
-O step onde a arquitetura é decidida — **é aqui que YAGNI é mais barato**.
-
-- **YAGNI** — toda decisão declara o **UC que a exige**; sem UC → não entra (vai para "alternativas descartadas").
-- **DRY** — decisão que replica mecanismo já existente no projeto → a decisão é **reusar**.
-- **KISS** — entre duas soluções que atingem o nível #1, ganha a mais simples: complexidade só se paga com requisito, nunca com elegância.
-- **SRP** — fronteiras de módulo/camada explícitas.
-- **DIP + LoD** — cada decisão declara dependência de **abstração**, não de implementação (o motor define o contrato, a infra implementa), a **direção da dependência** e quem fala com quem. Fronteira mal desenhada aqui vira `a.b.c.d` no 8b.
-- **OCP** — onde a solução vai precisar crescer? o ponto de extensão é decisão, não improviso.
-- **Motor** — cada decisão declara **qual motor é dono da regra**; motor novo é nomeado e tem contrato desenhado aqui.
-- **Refatoração** — decisão que replica mecanismo existente vira **estender o motor que já existe**.
-- **Design** — aqui se **deriva a superfície visual** (§ Escopo derivado, nunca declarado). Decisão de arquitetura não fixa tela: o que é visual espera o 4b.
 
 ## PARE se pensar
 

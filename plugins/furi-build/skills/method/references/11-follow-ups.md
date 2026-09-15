@@ -56,6 +56,8 @@ O ledger é também o **registro de dedup**: item já `RESOLVIDO-*` ou `DESCARTA
 
 **Violação de princípio é achado como qualquer outro.** Duplicação, responsabilidade misturada, abstração especulativa, acoplamento indevido (`/principles`) entram na MESMA triagem: no código desta feature ou em arquivo que você abriu → **A**, corrige agora; exposta/agravada por este trabalho em código adjacente → **B**; pré-existente e intocada → **C** com justificativa. **YAGNI não é fundamento para C** — "não vou mexer porque não preciso" é exatamente o escape que a regra abaixo proíbe.
 
+Achado que é "a mesma regra em dois lugares" não vira ciclo genérico: vira **absorção no motor**, dentro do escopo, quando o perímetro alcança (balde A). E o balde C fecha o que este trabalho **não** tocou — o que ele tocou está no perímetro e já devia ter subido no step em que apareceu.
+
 **Na dúvida entre B e C → B.** Custo de um ciclo a mais é baixo; ponta solta em produção é cara.
 
 **Proibido usar C como escape.** "Isso já estava quebrado antes" só vale se este trabalho **não** passou por ali. Tocou no arquivo, mudou o comportamento, ou a feature depende daquilo → é B.
@@ -88,7 +90,7 @@ Sem `✅ CONVERGIU` publicado no chat, o Step 12 não começa.
 Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por um remendo:
 
 1. **Invoque o `/method`** — via **Skill tool** (`furi-build:method`; a forma curta `method` também resolve), para o item. Chamada real, não "seguir de memória": sem a invocação, o ciclo não começou. A primeira ação do `/method` é invocar o `/solve` — mesmo padrão de qualidade (referência #1 do mercado).
-2. **Steps 0 → 11 completos** para o item, com seus próprios artefatos (`docs/01-problem/<f>.md` … `kanban/11-follow-ups/<f>.md`), gateways publicados e Gate Check inicial. Tópico próprio, arquivos próprios — não enfie no `<tópico>` da feature-pai.
+2. **Steps 0 → 11 completos** para o item — o ciclo resolve **aquele** achado, não a área inteira em volta dele —, com seus próprios artefatos (`docs/01-problem/<f>.md` … `kanban/11-follow-ups/<f>.md`), gateways publicados e Gate Check inicial. Tópico próprio, arquivos próprios — não enfie no `<tópico>` da feature-pai.
 3. **Step 12 do ciclo — INTEIRO, MENOS O COMMIT.** Cria `kanban/12-done/<f>.md`, deleta `kanban/07-todo/<f>.md`, e para.
 4. **Marca no ledger da feature-pai:** `RESOLVIDO-POR-CICLO` + link do done doc.
 5. **Volta ao Gate de Convergência.**
@@ -111,13 +113,6 @@ Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por 
 
 ---
 
-## Princípios neste step
-
-- **YAGNI ao contrário** — YAGNI mata especulação, **não achado real**: "é escopo novo, então não faço" é a inversão que este step existe para impedir.
-- **Motor** — achado que é "a mesma regra em dois lugares" não vira ciclo genérico: vira absorção no motor, dentro do escopo, se o perímetro alcança (balde A).
-- **Refatoração** — o balde C fecha o que este trabalho **não** tocou; o que ele tocou está no perímetro e já devia ter subido no step em que apareceu.
-- **KISS** — o ciclo do follow-up resolve **aquele** achado, não a área inteira em volta dele.
-
 ## Gateway 11 → 12
 
 - [ ] **Gate de Convergência ✅ CONVERGIU** publicado no chat — zero itens `ABERTO`, zero itens novos no último passe
@@ -130,6 +125,7 @@ Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por 
 
 | Frase | Realidade |
 |-------|-----------|
+| "É escopo novo, então YAGNI: não faço" | Inversão. YAGNI mata especulação, **não achado real** — e é exatamente esse escape que este step existe para fechar. BLOQUEADO. |
 | "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` agora. Card de follow-up é privilégio de **quem revisa de fora**, nunca saída do dev. BLOQUEADO. |
 | "Deixo anotado no relatório e sigo" | Relatório **documenta**; ledger **obriga a resolver**. Anotar sem entrar no ledger = a ponta escapou. BLOQUEADO. |
 | "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio. BLOQUEADO. |

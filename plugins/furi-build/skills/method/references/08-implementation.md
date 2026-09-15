@@ -4,6 +4,8 @@
 
 ## 8a — Plano de Implementação (OBRIGATÓRIO antes de codar)
 
+**O portão mais barato do protocolo** — o que o plano decidir errado aqui vira código errado no 8b. As seções obrigatórias do artefato (§ 3.1 a § 3.5) são onde reúso, descarte, motor, DS e perímetro ficam decididos **por escrito**, antes da primeira linha de código.
+
 ### Artefato
 
 `kanban/08-implementation/<tópico>.md` — prompt-mestre autocontido; nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`).
@@ -14,7 +16,7 @@
 # Plano de Implementação — <feature>
 
 ## 1. Contexto Consolidado
-- Problema (de 01-problem), Stories (de 02-user-stories), Use Cases (de 03-use-cases), Spec (de 04-spec), Design (de 04-design, se tem UI)
+- Problema (de 01-problem), Stories (de 02-user-stories), Use Cases (de 03-use-cases), Spec (de 04-spec), Design (de 05-design, se tem UI)
 
 ## 2. Código Existente Relevante
 - CADA arquivo/módulo a modificar/reutilizar: o que faz, impacto, dependências, padrões
@@ -23,9 +25,10 @@
   - Se NÃO: documente no plano e prossiga com strings literais.
 
 ## 3. Estratégia de Implementação
-- Ordem de tasks (de 06-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
+- Ordem de tasks (de 07-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
 - **Referência big apps:** como as big pop tech apps / líderes do domínio resolvem este problema de UX?
 - **Responsabilidade por arquivo (SRP):** para CADA arquivo a criar/modificar, uma frase — o que ele faz. Não coube em uma frase → o arquivo está fazendo duas coisas.
+- **Pontos de extensão e direção das dependências:** por onde cada peça cresce sem editar o que já funciona, e de quem ela depende — abstração, nunca implementação.
 
 ## 3.1 Reúso antes de criar (DRY) — OBRIGATÓRIO
 Resultado do grep em `packages/shared/`, `src/lib/`, `src/components/ui/`, `src/hooks/` (e equivalentes do projeto):
@@ -59,7 +62,7 @@ Lido de `docs/05-design/<tópico>.md` (as telas decididas no Step 5) e de `docs/
 |---|---|---|
 | <token/componente> | sim / não | **reusar** / **compor** de X+Y / **promover ao DS** (nunca criar na pasta da feature) |
 
-- **Padrões existentes no app** que a feature toca: quais segue (consistência) e quais **eleva** por estarem abaixo do nível #1 (`front/SKILL.md` § *Consistência é lei; mediocridade não é*)
+- **Padrões existentes no app** que a feature toca: quais segue (consistência) e quais **eleva** por estarem abaixo do nível #1 (`/front`)
 - **Tokens novos** a promover: … (com o motivo de nenhum existente servir)
 - **Estados a implementar** por componente: vazio · carregando · erro · sucesso · limite · hover/focus/active/disabled/selected
 - **Zero valor literal planejado** — se o plano já traz `#hex` ou `13px`, o 8b nasce errado.
@@ -81,18 +84,6 @@ O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um 
 - [ ] Task 1: descrição — arquivos: [lista]
 ```
 
-### Princípios neste step (8a)
-
-**O portão mais barato do protocolo** — o que o plano decidir errado aqui vira código errado no 8b. As seções obrigatórias acima são a lente em forma de artefato:
-
-- **DRY** — § 3.1 *Reúso antes de criar*: o que já existe e será reutilizado/estendido; arquivo novo só com a justificativa de por que nada serve.
-- **YAGNI** — § 3.2 *O que NÃO vamos construir*: abstrações, camadas e flags consideradas e descartadas por não ter UC que as exija.
-- **Motor** — § 3.3: qual nasce, qual é estendido, qual lógica dispersa será absorvida.
-- **SRP** — cada arquivo do plano declara sua responsabilidade única, em uma frase.
-- **OCP/DIP** — o plano declara os **pontos de extensão** e de quem cada arquivo depende, em que direção.
-- **Refatoração** — § 3.5: o plano **lista o perímetro** (o que será aberto, lido ou atravessado) e o que sobe em cada arquivo.
-- **Design** (se tem UI) — § 3.4: inventário do DS, o que reusa, o que compõe, o que promove, tokens novos. **Zero valor literal planejado** — se o plano já traz `#hex`, o 8b nasce errado.
-
 ### Regras
 
 - Plano COMPLETO e AUTOCONTIDO — qualquer pessoa/AI implementa lendo apenas este arquivo + código
@@ -110,12 +101,11 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 - **Visual:** conforme § 3.4 do plano e `docs/05-design/design-system.md` — doutrina no `/front`
 - **i18n (se configurado):** conforme § 2 do plano — string user-facing nova/alterada é chave de tradução; literal hardcoded em projeto com i18n = bug, mesmo com o texto "correto"
 
-### Princípios neste step (8b)
+### Executar o que o plano decidiu
 
-- **Todos na íntegra, por arquivo aberto** — SOLID (os cinco), DRY, KISS, YAGNI, LoD, Motores, camadas e direção de dependências, com os limiares numéricos do `/principles`. O plano já decidiu o que reusar (§ 3.1), o que não construir (§ 3.2) e qual motor é dono de cada regra (§ 3.3): o 8b **executa** essas decisões.
-- **Motor** — a capacidade mora no motor e o chamador **só chama**; encontrou a mesma regra fora dele → **absorve** conforme § 3.3.
-- **Refatoração** — para CADA arquivo do perímetro do § 3.5, a tabela *Achou → Faça* do `/principles` § Refatoração contínua é o checklist, e a **regra do saldo** é o que o gateway cobra. Dentro do perímetro, sem timidez; fora dele, balde C (`11-follow-ups.md`).
-- **Design** (se tem UI) — os 9 na íntegra: token (zero literal) · composição > configuração · headless · **todos** os estados · a11y AA · breakpoints do projeto, 320px de piso. Padrão ruim no perímetro → **eleva**, não copia.
+- **Motor (§ 3.3)** — a capacidade mora no motor e o chamador **só chama**; encontrou a mesma regra fora dele → **absorve**.
+- **Perímetro (§ 3.5)** — para CADA arquivo listado, a tabela *Achou → Faça* (`/principles` § Refatoração contínua) é o checklist, e a **regra do saldo** é o que o gateway cobra. Dentro do perímetro, sem timidez; fora dele, balde C (`11-follow-ups.md`).
+- **DS (§ 3.4, se tem UI)** — zero valor literal, todos os estados, a11y AA, breakpoints do projeto com piso de 320px. Padrão ruim no perímetro → **eleva**, não copia.
 
 > Desvio do que o plano decidiu em § 3.1-3.4 é **decisão nova**: registre no plano (que é vivo em 8b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
 

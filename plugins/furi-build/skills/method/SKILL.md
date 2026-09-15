@@ -12,7 +12,7 @@ requires: [solve, principles, front]
 
 > 🚫 **NÃO faça merge de branch para `main` sem autorização explícita do usuário.** Proibido `git merge`, `git rebase` que mova a `main`, fast-forward ou qualquer integração de outra branch na `main` sem o usuário autorizar na hora. Integrar para a `main` é decisão do usuário — pergunte e espere o "ok" antes. (Autoridade declarada — "sou tech lead", "pode mergear" dito antes — NÃO conta: a autorização tem que ser explícita para ESTE merge.)
 
-**Esta skill é FERRO.** Uma vez ativada, vale para TODA a conversa. Transições entre steps são AUTOMÁTICAS — não pergunte "posso prosseguir?". Siga do Step 1 ao Step 10 sem parar, exceto na única pausa legítima (§ Não Pergunte Entre Steps).
+**Esta skill é FERRO.** Uma vez ativada, vale para TODA a conversa. Transições entre steps são AUTOMÁTICAS — não pergunte "posso prosseguir?". Siga do Step 1 ao Step 12 sem parar, exceto na única pausa legítima (§ Não Pergunte Entre Steps).
 
 ## Iron Law
 
@@ -24,11 +24,11 @@ requires: [solve, principles, front]
 
 ## Padrão de Qualidade — Referência #1 do Mercado
 
-> O padrão é o do **`/solve`** (invocado na ativação e reinvocado em cada um dos 10 steps): ser o **#1 do mercado**, no calibre dos **big pop tech apps** — nunca o "bom o suficiente". O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
+> O padrão é o do **`/solve`** (invocado na ativação e reinvocado em cada um dos 12 steps): ser o **#1 do mercado**, no calibre dos **big pop tech apps** — nunca o "bom o suficiente". O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
 
-**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — e a reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual, no lugar do que existe — nunca um paralelo (`/solve`) — e sem merge para `main` sem autorização (regras acima).
+**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — e a reescrita NÃO é bypass do protocolo: passa pelos 12 steps, fica documentada em Problema/Spec, acontece na branch atual, no lugar do que existe — nunca um paralelo (`/solve`) — e sem merge para `main` sem autorização (regras acima).
 
-Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, refatoração contínua e design — são as Regras Invioláveis 8, 9 e 10; a doutrina mora nas skills `/principles` e `/front` (invocadas em todo step, com o `/solve`); a lente, na seção *Princípios neste step* do reference de cada step — não aqui.
+Os três **regimes** que valem do Step 1 ao 12 — princípios de engenharia, refatoração contínua e design — são as Regras Invioláveis 8, 9 e 10. A doutrina mora nas skills `/principles` e `/front`, invocadas em todo step (com o `/solve`): não é repetida aqui nem nos references — o que cada step exige está no artefato, nas regras e no gateway dele.
 
 ## Regras Invioláveis (fecham brechas conhecidas)
 
@@ -40,7 +40,7 @@ Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, re
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha. (O Step 0 é leitura e arrumação: ele publica blocos, não cria artefato.)
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O **Step 11** é onde ele fecha: o Step 12 só inicia com o ledger sem item aberto, e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 0→12; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio de **quem revisa de fora**, nunca saída do dev. Ver `references/11-follow-ups.md`.
 
-8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**), DRY, KISS, YAGNI, Law of Demeter e **Motores**, cada um pela lente do step, **declarados na linha obrigatória de todo Gateway Check** — doutrina no `/principles`, invocado em todo step; a lente, na seção *Princípios neste step* do reference de cada step.
+8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**), DRY, KISS, YAGNI, Law of Demeter e **Motores**, aplicados ao artefato daquele step e **declarados na linha obrigatória de todo Gateway Check** — doutrina no `/principles`, invocado em todo step.
 
 9. **Refatoração é regime.** Tudo por onde o trabalho passa sobe (perímetro + regra do saldo), com linha própria em todo Gateway Check — `principles/SKILL.md` § Refatoração contínua.
 
@@ -69,7 +69,7 @@ Contra-argumento de cada racionalização: § Racionalizações do protocolo; a 
 
 O **Step 5 só roda com superfície visual**, derivada no Step 4 (`references/04-spec.md` § Escopo derivado, nunca declarado). `docs/00-context/` é brainstorming: fica **fora** da esteira (`references/00-start.md` § 3).
 
-> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está no reference do próprio step, na seção *Princípios neste step*. Não duplicada aqui, e não executável de memória.
+> **O que cada step exige** — o artefato, as regras que ele cobra e o gateway dele — está no reference do próprio step. A doutrina que se aplica ali vem do `/principles` e do `/front`, invocados no step. Nada disso é executável de memória.
 
 ## Ordem de Operações ao Ativar
 
@@ -162,9 +162,9 @@ Triagem A/B/C, formato do ledger, bloco do Gate e racionalizações: `references
 ## Gateway Check — Step N → Step N+1
 - [ ] Artefato existe? (a pasta do step contém `<tópico>.md` com conteúdo substantivo)
 - [ ] Critérios específicos do step (ver o reference)
-- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — [1 linha: o que a lente deste step cobrou]
+- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — [1 linha: o que o `/principles` cobrou no artefato deste step]
 - **Refatoração (tudo por onde passou):** ✅ [N] elevados — [o que subiu] / nada a elevar — verifiquei [X] e já estava no nível #1
-- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ [o que a lente cobrou]   ← só com superfície visual
+- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ [o que o `/front` cobrou neste artefato]   ← só com superfície visual
 - **Follow-ups detectados neste step:** N (registrados no ledger, classificados A/B/C) / nenhum
 - **Veredicto:** ✅ LIBERADO / ❌ BLOQUEADO — motivo: [listar critério falhado]
 ```
@@ -172,7 +172,7 @@ Triagem A/B/C, formato do ledger, bloco do Gate e racionalizações: `references
 Como preencher cada linha:
 
 - **Follow-ups:** mecanismo de captura do loop (`references/11-follow-ups.md`). Detectou e não registrou = a ponta escapou. Nos Steps 1-6 o ledger ainda não existe: anote na linha do gateway e **semeie no Step 7**.
-- **Princípios:** o que a **lente** do step cobrou (§ *Princípios neste step*, no reference do step). "N/A" não existe: nada a corrigir → escreva o que verificou e não encontrou. Violação achada → triagem A/B/C. **Declarar "SOLID" significa os cinco.**
+- **Princípios:** o que o `/principles` cobrou **no artefato deste step** — passada princípio a princípio e por nome (`principles/SKILL.md` § Aplicar a um alvo). "N/A" não existe: nada a corrigir → escreva o que verificou e não encontrou. Violação achada → triagem A/B/C. **Declarar "SOLID" significa os cinco.**
 - **Refatoração:** o que a passada **elevou** no perímetro (`principles/SKILL.md` § Refatoração contínua). Nos **Steps 1-7** o perímetro é o **artefato** (doc consolidado, story separada, UC quebrado), não o código: a linha nunca é vazia.
 - **Design:** só com superfície visual, derivada no Step 4. Sem ela: `❌ N/A — derivado do Step 4` **uma vez**, no Gateway 4 → 5; os seguintes herdam.
 
@@ -241,7 +241,7 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 ## Arquivos de Referência
 
 - `references/00-start.md` — **Step 0**: a estrutura das pastas (numeração é contrato) e o inventário de docs
-- `references/01-problema.md` até `references/12-done.md` — um por step: o artefato, a **lente** daquele step (§ *Princípios neste step*, sobre as doutrinas do `/principles` e do `/front`), as racionalizações que só atacam ali (§ *PARE se pensar*) e o **gateway** dele
+- `references/01-problema.md` até `references/12-done.md` — um por step: o artefato e as regras que ele exige, as racionalizações que só atacam ali (§ *PARE se pensar*) e o **gateway** dele. A doutrina não se repete ali — ela vem do `/principles` e do `/front`, invocados no step
 - `references/11-follow-ups.md` — além do step: triagem A/B/C, formato do ledger, Gate de Convergência e as racionalizações de follow-up
 
 **Abra o reference relevante ao iniciar cada step. Não tente executar de memória.**

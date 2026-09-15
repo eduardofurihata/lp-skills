@@ -20,8 +20,13 @@
 
 ## Regras
 
-- Tasks atômicas (1 prompt por task)
+- Tasks atômicas (1 prompt por task) — a que tem "e depois" são duas
+- Descrição na linguagem do **que muda**, não do como interno
 - Cada task rastreável (arquivos/módulos afetados identificáveis)
+- Task que recria o que já existe vira task de **reúso** ("estender X") — a checagem é grep, não memória
+- Cada task declara **qual motor** constrói, estende ou absorve; nenhuma espalha a mesma regra por N telas
+- **Se tem UI:** task de UI declara o **nível atômico** (átomo/molécula/organismo) e o componente do DS que constrói, estende ou promove
+- O **perímetro** que a task vai abrir já entra anotado — é o que o 8a usa para planejar a elevação
 - Dependências entre tasks mapeadas
 - Ordem de execução óbvia
 
@@ -40,16 +45,6 @@ A seção `## Test Cases (QA)` do card é o rastreador de "já testei ou não" �
 O ledger — `kanban/11-follow-ups/<tópico>.md` — é onde todo achado fora do escopo documentado é registrado e classificado, do Step 1 ao Step 10. É o que permite o protocolo fechar **seco** (Regra Inviolável 7) no Step 11.
 
 **Semeie agora (Step 7):** crie o arquivo com o cabeçalho da tabela e **transcreva o que já apareceu nos Steps 1-6** (as linhas "Follow-ups detectados neste step" dos Gateway Checks). Nada apareceu → arquivo criado e tabela vazia. Formato, baldes, status e dedup: `11-follow-ups.md`.
-
-## Princípios neste step
-
-- **SRP** — 1 task = 1 responsabilidade resolvível em 1 prompt; task com "e depois" são duas.
-- **DRY** — task que recria o que já existe vira task de **reúso** ("estender X"); a checagem é grep, não memória.
-- **KISS** — descrição na linguagem do que muda, não do como interno.
-- **YAGNI** — task sem UC/TC que a exija sai da lista.
-- **Motor** — cada task declara **qual motor** ela constrói, estende ou absorve; task que espalha a mesma regra por N telas não existe.
-- **Refatoração** — task que recria o existente vira task de **extensão**; o perímetro que ela vai abrir já entra anotado, para o 7a planejar a elevação.
-- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e qual componente do DS ela constrói, estende ou promove.
 
 ## Gateway 7 → 8
 

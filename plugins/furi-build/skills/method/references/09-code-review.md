@@ -25,7 +25,7 @@ REPETIR até 100% limpo:
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível #1?
      - **Princípios, UM A UM e POR NOME:** a tabela do `/principles` é o checklist — para cada linha, a *falha típica* aconteceu aqui? Os cinco do SOLID inclusive. E o plano foi cumprido — § 3.1 (reúso), § 3.2 (nada furado sem registro), § 3.3 (motores)?
-     - **Design, UM A UM e POR NOME** (só com superfície visual): a tabela do `/front`, mesma mecânica; § 3.4 do plano cumprido?
+     - **Design, UM A UM e POR NOME** (só com superfície visual): os guarda-chuvas do `/front` e a tabela *Análise de Design* abaixo, mesma mecânica; § 3.4 do plano cumprido?
      - **Nível referência #1** (`/solve`): está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"?
   6. Problema encontrado → triagem A/B/C (`11-follow-ups.md`):
      - **A** → corrigir IMEDIATAMENTE → voltar ao 1
