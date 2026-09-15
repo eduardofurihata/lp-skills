@@ -24,9 +24,9 @@ requires: solve
 
 ## Padrão de Qualidade — Referência #1 do Mercado
 
-> O padrão é o do **`/solve`** (invocado na ativação): ser o **#1 do mercado**, no calibre dos **big pop tech apps** — nunca o "bom o suficiente". O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
+> O padrão é o do **`/solve`** (invocado na ativação e reinvocado em cada um dos 10 steps): ser o **#1 do mercado**, no calibre dos **big pop tech apps** — nunca o "bom o suficiente". O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
 
-**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual e sem merge para `main` sem autorização (regras acima).
+**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual, **no lugar do que existe** (o arquivo que já cobre a capacidade é o reescrito — nunca um paralelo; `/solve`) e sem merge para `main` sem autorização (regras acima).
 
 ### Princípios de engenharia — regime, não fase
 
@@ -98,7 +98,7 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/method` é o protocolo que ENTREGA nesse nível. **E não é só na ativação: cada um dos 10 steps reinvoca o `/solve`** (§ Executar os Steps em Sequência) — reinvocar é idempotente e barato; o padrão longe demais no contexto, não. Depois disso, siga na ordem:
 
 ### 1. Inventário de Docs (UMA vez, antes de qualquer step)
 
@@ -147,12 +147,13 @@ A partir do Step 6 até o 9: 1 TaskCreate = 1 task. Nunca agrupe entre 6 e 9.
 ### 4. Executar os Steps em Sequência
 
 Para cada step:
-1. Abra `references/XX-<nome>.md`
-2. Releia docs anteriores conforme coluna "Reler"
-3. Execute o step (crie/atualize o .md da pasta correspondente)
-4. Publique **Gateway Check** no chat (`references/gateways.md`)
-5. Se ✅ LIBERADO → transição **automática** ao próximo step (sem perguntar)
-6. Se ❌ BLOQUEADO → volte ao step atual, corrija, re-publique gateway
+1. **Invoque o `/solve`** (Skill tool) — em TODO step, não só na ativação: o padrão de qualidade é reinjetado a cada passada, porque no Step 7b a ativação já ficou a centenas de milhares de tokens de distância
+2. Abra `references/XX-<nome>.md` — o bloco `## Chame antes de escrever` repete as três chamadas do step
+3. Releia docs anteriores conforme coluna "Reler"
+4. Execute o step (crie/atualize o .md da pasta correspondente)
+5. Publique **Gateway Check** no chat (`references/gateways.md`)
+6. Se ✅ LIBERADO → transição **automática** ao próximo step (sem perguntar)
+7. Se ❌ BLOQUEADO → volte ao step atual, corrija, re-publique gateway
 
 ## Steps 7-9 — Loop Obrigatório
 

@@ -4,6 +4,12 @@
 >
 > Terminal **não** quer dizer sem gateway: o Step 10 tem gateway de **entrada** — o **Gate de Convergência** (zero follow-ups abertos). Ele roda ANTES de escrever o done doc, ANTES do `rm` e ANTES do commit.
 
+## Chame antes de escrever
+
+- **`/solve`** (Skill tool) — o padrão desta passada: referência #1 do mercado. Invocação real, não de memória.
+- **`principios.md`** § Lente por step — o que SOLID · DRY · KISS · YAGNI · LoD · Motores cobram **neste** step (mais `design.md`, se a feature tem superfície visual).
+- **`follow-ups.md`** — achado fora do escopo documentado entra no Ledger classificado A/B/C; a linha de follow-ups é obrigatória no Gateway Check.
+
 ## Pré-requisitos (AMBOS)
 
 1. Gateway 9 → 10 **LIBERADO** (ver `gateways.md`).
