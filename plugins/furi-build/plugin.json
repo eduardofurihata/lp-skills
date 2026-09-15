@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-build",
-  "version": "0.1.0+5c66bbc4b3e6",
+  "version": "0.1.0+02b27b481ab1",
   "description": "Skills de construção do Furihata — /solve, /method e /proto: do problema ao commit local, com QA. Funciona sozinho, em qualquer repositório.",
   "author": {
     "name": "Eduardo Furihata",
