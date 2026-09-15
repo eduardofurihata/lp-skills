@@ -35,8 +35,7 @@
 Complementos de arquitetura, inseparáveis dos princípios:
 
 - **Separação de camadas:** controller = HTTP, service = lógica, componente = UI. Lógica de negócio NUNCA no controller/componente.
-- **Baixo acoplamento, alta coesão:** módulos injetáveis, independentes. Sem dependências circulares.
-- **Direção de dependências:** `shared → api/web` ok. `api → web` ou `web → api` proibido.
+- **Baixo acoplamento, alta coesão:** módulos injetáveis, independentes. Sem dependências circulares (direção: § Law of Demeter).
 
 ## Motores — a capacidade tem dono
 
@@ -107,7 +106,7 @@ Complementos de arquitetura, inseparáveis dos princípios:
 
 **Não é desculpa para:** reescrever o repositório (fora do perímetro = C), adiar a feature, nem criar abstração que nenhum UC pede (YAGNI continua valendo).
 
-Detalhe operacional por arquivo: `07-implementation.md` § Refatoração Obrigatória. No front, o equivalente é elevar o padrão visual em vez de copiá-lo: `design.md` § *Consistência é lei; mediocridade não é*.
+Nos **Steps 1-6** o perímetro é o **artefato** — doc consolidado, story separada, UC quebrado —, não o código: a linha de refatoração do gateway nunca é vazia. No front, o equivalente é elevar o padrão visual em vez de copiá-lo: `design.md` § *Consistência é lei; mediocridade não é*.
 
 ## Lente por step (o que cobrar em CADA um)
 
@@ -118,25 +117,17 @@ Detalhe operacional por arquivo: `07-implementation.md` § Refatoração Obrigat
 | **3 — Use Cases** | **SRP:** 1 UC = 1 (ator × fluxo × estado) — não agrupe. **DRY:** tabela de assinaturas **única**, sem duplicata (já é critério do gateway 3→4). **YAGNI:** UC que nenhuma story do Step 2 pede não existe. **KISS:** fluxo em passos de usuário, sem código — UC não é pseudo-implementação. **Motor:** UCs que compartilham regra são do mesmo motor; a tabela de assinaturas já é o **esboço do contrato** dele. **Refatoração:** UC agrupado → **quebre**; assinatura duplicada → **funda**. |
 | **4a — Spec** | O step onde a arquitetura é decidida — **é aqui que YAGNI é mais barato**. Toda decisão declara o **UC que a exige**; sem UC → não entra (vai para "alternativas descartadas"). **DRY:** decisão que replica mecanismo já existente no projeto → decisão é **reusar**. **KISS:** entre duas soluções que atingem o nível #1, ganha a mais simples — complexidade só se paga com requisito, nunca com elegância. **SRP:** fronteiras de módulo/camada explícitas. **DIP + LoD:** cada decisão declara dependência de **abstração**, não de implementação (o motor define o contrato, a infra implementa), a **direção da dependência** e quem fala com quem — fronteira mal desenhada aqui vira `a.b.c.d` no 7b. **OCP:** onde a solução vai precisar crescer? o ponto de extensão é decisão, não improviso. **Motor:** cada decisão declara **qual motor é dono da regra** — motor novo é nomeado e tem contrato desenhado aqui. **Refatoração:** decisão que replica mecanismo existente vira **estender o motor que já existe**. Princípios entram pelo `/solve` — nível 1 da hierarquia de decisão, acima do código existente. |
 | **4b — Design** | **YAGNI:** promove ao DS só o que um UC pede — nada de paleta inteira para uma tela. **DRY:** reusar → compor → promover, nesta ordem; componente que já existe não nasce de novo. **KISS:** a composição mais simples que atinge o nível #1. **Motor:** o DS é o dono do token e do componente — peça visual na pasta da feature é regra espalhada. **Refatoração:** padrão do DS abaixo do nível #1 no perímetro → **eleva** (ou ledger). Lente completa do design: `design.md` § Lente por step. |
-| **5 — Test Cases** | **SRP:** 1 TC = 1 bug único. **DRY:** TC que não puxa cobertura nova é redundante (filtro de significância). **KISS/YAGNI:** teto de 10, `nº TCs == nota` — não invente TC para "ficar completo". **Motor:** o TC exercita o **comportamento do motor pelo front**, nunca a peça interna. **Refatoração:** TC redundante → **funda** (é o próprio filtro de significância). |
-| **6 — To Do** | **SRP:** 1 task = 1 responsabilidade resolvível em 1 prompt. **DRY:** task que recria o que já existe vira task de **reúso** ("estender X"), não de criação. **YAGNI:** task sem UC/TC que a exija sai da lista. **Motor:** cada task declara **qual motor** ela constrói, estende ou absorve — task que espalha a mesma regra por N telas não existe. **Refatoração:** task que recria o existente vira task de **extensão**. |
+| **5 — Test Cases** | **SRP:** 1 TC = 1 bug único — denso (atravessa 4 UCs) não é difuso: falha por **um** motivo nomeável. **DRY:** TC que não puxa cobertura nova é redundante (filtro de significância). **KISS:** passos executáveis por outra pessoa sem o seu contexto, resultado observável no front. **YAGNI:** teto de 10, `nº TCs == nota` — não invente TC para "ficar completo". **Motor:** o TC exercita o **comportamento do motor pelo front**, nunca a peça interna — TC que espia estado interno testa implementação, não comportamento. **Refatoração:** TC redundante → **funda** (é o próprio filtro de significância). |
+| **6 — To Do** | **SRP:** 1 task = 1 responsabilidade resolvível em 1 prompt — task com "e depois" são duas. **DRY:** task que recria o que já existe vira task de **reúso** ("estender X"), não de criação; a checagem é grep, não memória. **KISS:** descrição na linguagem do que muda, não do como interno. **YAGNI:** task sem UC/TC que a exija sai da lista. **Motor:** cada task declara **qual motor** ela constrói, estende ou absorve — task que espalha a mesma regra por N telas não existe. **Refatoração:** task que recria o existente vira task de **extensão**; o perímetro que a task vai abrir já entra anotado, para o 7a planejar a elevação. |
 | **7a — Plano** | **O portão mais barato do protocolo.** Seções obrigatórias: **Reúso antes de criar (DRY)** — o que já existe e será reutilizado/estendido; arquivo novo só com justificativa de por que nada serve. **O que NÃO vamos construir (YAGNI)** — abstrações/camadas/flags consideradas e descartadas por não ter UC que as exija. **Motores (§ 3.3)** — qual nasce, qual é estendido, qual lógica dispersa será absorvida. **SRP:** cada arquivo do plano declara sua responsabilidade única. **OCP/DIP:** o plano declara os **pontos de extensão** e de quem cada arquivo depende, em que direção. **Refatoração:** o plano **lista o perímetro** (o que será aberto/atravessado) e o que será elevado em cada arquivo. |
 | **7b — Codificar** | Todos na íntegra (SOLID · DRY · KISS · YAGNI · LoD · Motores) + limiares numéricos + **refatoração do perímetro**. A capacidade mora no motor; a mesma regra encontrada fora → **absorve**. Detalhe: `07-implementation.md` § Práticas Obrigatórias. |
 | **8 — Code Review** | Revisar **contra esta mesma lista, princípio a princípio e por nome** — não por proxy, e **os cinco do SOLID**, não só o SRP. **Motor:** a capacidade vazou? existe segunda fonte da mesma regra? o contrato virou tripa exposta? **Refatoração:** confira o **saldo** — todo arquivo do perímetro subiu ou já estava no nível #1. Violação encontrada → triagem A/B/C (`follow-ups.md`): dentro do escopo = corrige agora; escopo novo = ledger. |
-| **9 — Run Test** | Todo fix feito para um TC passar obedece os princípios — **workaround que faz o TC passar violando SRP/DRY é FAILED disfarçado**. **Motor:** o fix vai **para o motor**, nunca de remendo no chamador. **Refatoração:** fix novo reabre o perímetro do fix. Qualquer fix invalida o review → volta ao Step 8. |
+| **9 — Run Test** | Todo fix feito para um TC passar obedece os princípios — **workaround que faz o TC passar violando SRP/DRY é FAILED disfarçado**. **KISS:** o fix mais simples que resolve a causa — não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger). **Motor:** o fix vai **para o motor**, nunca de remendo no chamador. **Refatoração:** fix novo reabre o perímetro do fix. Qualquer fix invalida o review → volta ao Step 8. |
 | **10 — Done** | O done doc registra o que os princípios produziram: **o que foi reutilizado** (DRY), **o que foi descartado** (YAGNI), **quais motores nasceram, cresceram ou absorveram** e **o que a refatoração do perímetro elevou**. Sem isso, o registro mente sobre como a feature ficou. |
 
 ## Linha obrigatória no Gateway Check
 
-Todo Gateway Check publicado no chat carrega estas linhas — igual à de follow-ups, pelo mesmo motivo (o que não é declarado, escapa):
-
-```markdown
-- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — <1 linha: o que a lente deste step cobrou>
-- **Refatoração (tudo por onde passou):** ✅ <N> elevados — <o que subiu> / nada a elevar — verifiquei <X> e já estava no nível #1
-- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ <o que a lente cobrou>   ← só em feature com superfície visual (`design.md`)
-```
-
-Sem elas, o gateway **não foi publicado**. "N/A" não existe: se a lente do step não teve nada a cobrar, escreva o que você verificou e não encontrou. A linha de **Design** é a única condicional — feature sem superfície visual declara isso **uma vez** no Gateway 4a→4b e as seguintes herdam (`design.md` § Linha obrigatória).
+Todo Gateway Check publicado no chat carrega a linha de **princípios** e a de **refatoração** — igual à de follow-ups, pelo mesmo motivo (o que não é declarado, escapa). Texto das linhas e regras de preenchimento: `gateways.md` § Formato Padrão. Sem elas, o gateway **não foi publicado**.
 
 ## Racionalizações proibidas
 
@@ -159,3 +150,5 @@ Sem elas, o gateway **não foi publicado**. "N/A" não existe: se a lente do ste
 | "Cada tela trata do seu jeito, fica mais simples" | KISS local, caos global. A regra tem **um** dono. BLOQUEADO. |
 | "Só puxei o campo lá de dentro, é mais rápido" | LoD. O vizinho **expõe**; você não atravessa. Cada ponto na cadeia é um acoplamento. BLOQUEADO. |
 | "Publico o gateway sem a linha de princípios, está implícito" | Implícito = inexistente, igual ao gateway silencioso. Vale para as linhas de refatoração e design também. BLOQUEADO. |
+| "Dupliquei a lógica pro TC passar, limpo depois" | Workaround que viola princípio é **FAILED disfarçado** (Step 9). BLOQUEADO. |
+| "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` do Step 8 tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |

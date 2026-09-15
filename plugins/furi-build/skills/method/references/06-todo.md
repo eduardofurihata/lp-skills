@@ -1,19 +1,27 @@
 # Step 6 — To Do
 
+**Cada task = uma unidade resolvível em um prompt — e o card é a superfície viva da feature até o Done.** Ele carrega as tasks, o checklist de QA e o ledger de follow-ups: é o que permite parar e retomar de onde parou.
+
 **Chame e use:** `/solve` (Skill tool) · `principios.md` § Lente por step · `design.md` § Lente por step (se tem UI) · `follow-ups.md`
-
-## Reler antes
-
-- Steps 1-5
 
 ## Artefato
 
-- **Pasta:** `kanban/06-todo/`
-- **Arquivo:** `<tópico>.md`
+`kanban/06-todo/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`). Toda task rastreia a um UC (Step 3) ou TC (Step 5); task sem origem não entra.
 
-## Conteúdo
+```markdown
+# <Tópico> — To Do
 
-Lista de tasks com checkboxes. **Cada task = uma unidade resolvível em um prompt.**
+- [ ] <task — o que muda> · motor: <X> (nasce / estende / absorve) · UC-N / TC-N · arquivos: <lista>
+
+## Test Cases (QA)
+- [ ] TC-1: <nome>
+- [ ] TC-2: <nome>
+
+## Follow-ups
+
+| # | Achado | Detectado em | Balde | Status | Resolução |
+|---|--------|--------------|-------|--------|-----------|
+```
 
 ## Regras
 
@@ -22,79 +30,22 @@ Lista de tasks com checkboxes. **Cada task = uma unidade resolvível em um promp
 - Dependências entre tasks mapeadas
 - Ordem de execução óbvia
 
-## Princípios neste step (`principios.md`)
+## Checklist de QA (status: testado ou não)
 
-A lista de tasks é a primeira forma concreta da arquitetura — o que estiver torto aqui vira código torto no 7b.
+A seção `## Test Cases (QA)` do card é o rastreador de "já testei ou não" — a superfície VIVA atualizada ao longo do Step 9:
 
-- **SRP** — 1 task = 1 responsabilidade resolvível em 1 prompt. Task que precisa de "e depois" é duas tasks.
-- **DRY** — task que recria algo que o projeto já tem deve nascer como task de **reúso**: "estender `X` para cobrir Y" > "criar novo Y". A checagem é grep, não memória.
-- **YAGNI** — toda task rastreia a um UC (Step 3) ou TC (Step 5). Task sem origem = escopo inventado → fora (ou vira achado no ledger, se for real).
-- **KISS** — descrição na linguagem do que muda, não do como interno.
-- **Motor** — cada task declara **qual motor** ela constrói, estende ou absorve. Task que espalha a mesma regra por N telas **não existe**: vira task de motor + tasks de chamada.
-- **Refatoração** — task que recria o existente vira task de **extensão**; e o perímetro previsto pela task já entra anotado, para o 7a planejar a elevação.
-- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e **qual componente do DS** ela constrói, estende ou **promove** (`design.md`).
-
-## Exemplo
-
-```markdown
-# Pagamentos — To Do
-
-- [ ] Criar schema `Payment` no Prisma com status enum (pendente|pago|falhado|cancelado)
-- [ ] Criar service `PaymentService` com métodos create, confirm, cancel
-- [ ] Criar controller `PaymentController` com endpoints REST
-- [ ] Criar componente `PaymentForm` no frontend
-- [ ] Integrar webhook do gateway de pagamento
-- [ ] Criar testes unitários para PaymentService
-```
-
-## Checklist de QA dos Test Cases (status: testado ou não)
-
-Além das tasks de implementação, o card de to-do carrega um **checklist de QA** — um item `- [ ]` por TC de `docs/05-test-cases/<tópico>.md`. É o rastreador de "já testei ou não", a superfície VIVA atualizada ao longo do Step 9.
-
-**Semeie agora (Step 6):** copie a lista de TCs do `docs/05-test-cases/` para uma seção `## Test Cases (QA)` no card, todos `- [ ]` (nada rodou ainda):
-
-```markdown
-## Test Cases (QA)
-- [ ] TC-1: <nome>
-- [ ] TC-2: <nome>
-- [ ] TC-3: <nome>
-```
-
+- **Semeie agora (Step 6):** um `- [ ]` por TC de `docs/05-test-cases/<tópico>.md`, todos abertos (nada rodou ainda).
 - **No Step 9:** cada TC que PASSAR via front vira `- [x] TC-N: <nome> — ✅ (path do screenshot)`. FAILED continua `- [ ]` com nota `❌ motivo`. **Qualquer fix de código RESETA todos para `- [ ]`** (o ciclo retesta tudo).
-- **No Step 10 (Done):** este checklist final (tudo `- [x]`) é **copiado para `kanban/10-done/<tópico>.md`** ANTES de apagar o card de to-do — registro permanente do que foi testado. O card some, o status sobrevive no done.
+- **No Step 10 (Done):** o checklist final (tudo `- [x]`) é **copiado para `kanban/10-done/<tópico>.md`** ANTES de apagar o card — registro permanente do que foi testado. O card some, o status sobrevive no done.
 
 > Parou e vai retomar depois? Abra o checklist: os `- [ ]` restantes são exatamente o que falta rodar.
 
 ## Ledger de Follow-ups (semear agora)
 
-O card carrega também o **Ledger de Follow-ups** — a superfície viva onde todo achado fora do escopo documentado é registrado e classificado, do Step 1 até o Step 10. É o que permite o protocolo fechar **seco** (Regra Inviolável 7).
+A seção `## Follow-ups` do card é onde todo achado fora do escopo documentado é registrado e classificado, do Step 1 ao Step 10 — é o que permite o protocolo fechar **seco** (Regra Inviolável 7).
 
-**Semeie agora (Step 6):** crie a seção `## Follow-ups` com o cabeçalho da tabela e **transcreva o que já apareceu nos Steps 1-5** (as linhas "Follow-ups detectados neste step" dos Gateway Checks). Nada apareceu → seção presente e vazia.
-
-```markdown
-## Follow-ups
-
-| # | Achado | Detectado em | Balde | Status | Resolução |
-|---|--------|--------------|-------|--------|-----------|
-```
-
-- **Baldes:** **A** = defeito dentro do escopo documentado → corrige no step; **B** = escopo novo que este trabalho criou/tocou/expôs → ciclo `/method` próprio; **C** = pré-existente e não tocado → `DESCARTADO` com justificativa. Na dúvida entre B e C → **B**.
-- **Nos Steps 7-9:** todo achado entra aqui na hora, classificado. Item `RESOLVIDO-*` ou `DESCARTADO` não reabre.
-- **No Step 10:** o **Gate de Convergência** exige zero itens `ABERTO`; o ledger final é **copiado para `kanban/10-done/<tópico>.md`** antes do card ser deletado.
-
-Regras completas: `follow-ups.md`.
+**Semeie agora (Step 6):** cabeçalho da tabela + **transcreva o que já apareceu nos Steps 1-5** (as linhas "Follow-ups detectados neste step" dos Gateway Checks). Nada apareceu → seção presente e vazia. Baldes, status, dedup e o que acontece com o ledger nos Steps 7-10: `follow-ups.md`.
 
 ## Gateway 6 → 7a
 
-- [ ] Tasks atômicas (1 prompt cada)
-- [ ] Cada task rastreável
-- [ ] Dependências mapeadas
-- [ ] Artefato `kanban/06-todo/<tópico>.md` existe com conteúdo substantivo
-- [ ] Seção `## Test Cases (QA)` presente com 1 `- [ ]` por TC do step 5
-- [ ] Seção `## Follow-ups` presente (semeada com os achados dos Steps 1-5, ou vazia)
-- [ ] Toda task rastreia a UC/TC (YAGNI) e task que recria o existente virou task de **reúso** (DRY)
-- [ ] Cada task declara **qual motor** constrói/estende/absorve — nenhuma task espalha a mesma regra por N telas
-- [ ] **Se tem UI:** task de UI declara o **nível atômico** e o componente do DS que constrói/estende/promove
-- [ ] **Princípios declarados** na linha do Gateway Check
-- [ ] **Refatoração declarada** na linha própria do Gateway Check
-- [ ] **Design declarado** na linha própria (se a feature tem superfície visual)
+Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.

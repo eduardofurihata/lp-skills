@@ -1,6 +1,6 @@
-# Rationalizations — Tabela Única Consolidada
+# Rationalizations — Racionalizações do Protocolo
 
-**Fonte única de verdade.** Qualquer racionalização para pular, reduzir, adiar ou disfarçar qualquer etapa do `/method` está aqui. Se você se pegar pensando uma dessas → PARE. **Esse pensamento É a violação.** Volte ao step atual e execute do jeito certo.
+As racionalizações do **protocolo** — pular steps ou gateways, autoridade, bypass granular, retrofit, TCs, testing, hesitar entre steps, economia de tokens, pressão social. As de **follow-ups**, **princípios** e **design** vivem com a doutrina: `follow-ups.md`, `principios.md` e `design.md` § Racionalizações proibidas. As frases-gatilho (Red Flags) estão no `SKILL.md`. Se você se pegar pensando uma dessas → PARE. **Esse pensamento É a violação.** Volte ao step atual e execute do jeito certo.
 
 > **Violar a letra das regras = violar o espírito das regras.** Cumprir "tecnicamente" (1 parágrafo por step, docs após código, etc.) é violação disfarçada de conformidade.
 
@@ -105,118 +105,12 @@
 
 ## Categoria 10 — Adiar achados (follow-ups)
 
-> Regra Inviolável 7: **o protocolo fecha SECO.** Detalhes em `follow-ups.md`.
-
-| Frase | Realidade |
-|-------|-----------|
-| "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` completo AGORA, no Gate de Convergência. Card de follow-up é privilégio de **quem revisa de fora**, nunca saída do dev. BLOQUEADO. |
-| "Deixo anotado no relatório e sigo" | Relatório **documenta**; ledger **obriga a resolver**. Anotar sem entrar no ledger = a ponta escapou. BLOQUEADO. |
-| "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio 1→10. BLOQUEADO. |
-| "É escopo novo, YAGNI manda não fazer" | YAGNI mata complexidade **especulativa**, não achado **real** que este trabalho expôs. Isso é B. BLOQUEADO. |
-| "O ciclo de follow-up achou outro follow-up, isso não acaba nunca" | Acaba: balde C fecha o pré-existente/não relacionado e o ledger impede reabertura. O que não fecha é porque é real. BLOQUEADO. |
-| "Marco como C (descartado) pra não travar o Gate" | Classificação errada de propósito = fraude documental. Tocou no arquivo / mudou o comportamento / a feature depende disso → é **B**. Na dúvida → B. BLOQUEADO. |
-| "Documento a pendência no done doc, fica rastreado" | Documentar ≠ resolver. Done doc com pendência = protocolo não encerrou. BLOQUEADO. |
-| "Sobrou 1 item no ledger, é pequeno, fecho assim mesmo" | Gate é binário. 1 `ABERTO` = BLOQUEADO. |
-| "Commito a feature e resolvo os follow-ups num commit depois" | Convergência vem ANTES do commit. Dois commits é exatamente o que o Step 10 elimina. BLOQUEADO. |
-| "O ciclo de follow-up é pequeno, rodo uma versão light do /method" | Não existe versão light (Categoria 9). O ciclo roda 1→10 completo, com `/solve`. BLOQUEADO. |
-| "Bug conhecido, seguimos e o usuário decide depois" | Achado real de balde B não vira "bug conhecido". Vira ciclo. BLOQUEADO. |
-
----
+> Regra Inviolável 7: **o protocolo fecha SECO.** As racionalizações vivem com o mecanismo: `follow-ups.md` § Racionalizações proibidas.
 
 ## Categoria 11 — Princípios de engenharia (SOLID · DRY · KISS · YAGNI · LoD · Motores)
 
-> Fonte única dos princípios e da lente de cada step: `principios.md`. Eles valem do Step 1 ao 10 e são declarados na linha obrigatória de TODO Gateway Check. **SOLID são cinco** — SRP, OCP, LSP, ISP, DIP.
+> Fonte única dos princípios, da lente de cada step e das racionalizações: `principios.md` § Racionalizações proibidas.
 
-| Frase | Realidade |
-|-------|-----------|
-| "Princípio é coisa de código, aqui é doc" | Doc duplicado, story empilhada e UC agrupado são a MESMA falha — só que mais barata de corrigir. BLOQUEADO. |
-| "Aplico tudo no 7b, lá é o lugar" | No 7b a complexidade especulativa já foi decidida no Spec (4) e no Plano (7a); você só implementa o erro. BLOQUEADO. |
-| "Deixo a abstração pronta, é só um arquivinho a mais" | YAGNI: sem UC (Step 3) que exija, não entra. Vai para "o que NÃO vamos construir" (§ 3.2 do plano). BLOQUEADO. |
-| "Duplicar é mais rápido que entender o que já existe" | DRY: procure primeiro (grep em shared/lib/components/hooks). Duplicata é dívida com juros — e o § 3.1 do plano existe pra isso. BLOQUEADO. |
-| "Ficou genérico demais, mas é elegante" | KISS: elegância que nenhum UC pediu é complexidade. BLOQUEADO. |
-| "YAGNI, então não faço o que o UC pede" | Inversão. YAGNI mata **especulação**, não requisito nem achado real (balde B). BLOQUEADO. |
-| "Simplifiquei, ficou bom o suficiente" | KISS ≠ mediocridade. O piso é o nível #1 do `/solve`. BLOQUEADO. |
-| "O arquivo já estava ruim, não fui eu" | Passou por ali, é seu. Está no perímetro → sobe. BLOQUEADO. |
-| "Já que estou aqui, refatoro o projeto inteiro" | O limite é o **perímetro** (editado, aberto para entender, dependente do grep, caminho do fluxo), não o repositório. Fora dele é balde C. BLOQUEADO. |
-| "Só mexi numa linha, não precisa elevar o arquivo" | Regra do saldo: nenhum arquivo do perímetro sai como entrou — ou subiu, ou você declara que já estava no nível #1. BLOQUEADO. |
-| "Abri o arquivo só pra ler, não conta" | Ler é passar. Enxergou o problema, ele está no seu perímetro. BLOQUEADO. |
-| "SOLID eu cubro com o SRP" | SOLID são **cinco**. OCP, LSP, ISP e DIP não são opcionais — e o que não é nomeado nunca é revisado. BLOQUEADO. |
-| "É só mais um `if`, não precisa de motor" | O `if` é a **segunda fonte** da mesma regra. Absorve no motor (§ 3.3 do plano). BLOQUEADO. |
-| "Crio o motor genérico agora e ligo depois" | Motor sem UC é especulação (YAGNI). Motor nasce da capacidade que **já existe**. BLOQUEADO. |
-| "Cada tela trata do seu jeito, fica mais simples" | KISS local, caos global. A regra tem **um** dono. BLOQUEADO. |
-| "Só puxei o campo lá de dentro, é mais rápido" | LoD: o vizinho **expõe**, você não atravessa. Cada ponto na cadeia é um acoplamento a mais. BLOQUEADO. |
-| "Publico o gateway sem a linha de princípios, está implícito" | Implícito = inexistente, igual ao gateway silencioso. Vale para as linhas de **refatoração** e **design** também. BLOQUEADO. |
-| "Dupliquei a lógica pro TC passar, limpo depois" | Workaround que viola princípio é **FAILED disfarçado** (Step 9). BLOQUEADO. |
-| "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |
+## Categoria 12 — Design e UI
 
-## Categoria 12 — Design e UI (`design.md`)
-
-> Fonte única do design: `design.md`. Vale para feature com **superfície visual**, derivada no Step 4a — e é declarada na linha própria do Gateway Check.
-
-| Frase | Realidade |
-|-------|-----------|
-| "O DS não tem esse componente, crio na pasta da feature" | Ordem é **reusar → compor → promover**. Componente visual na pasta da feature é dívida de DS. BLOQUEADO. |
-| "É só uma cor / um espaçamento, hardcode não faz mal" | Token é SSOT. Literal é hardcode visual e some do radar na próxima mudança de tema. BLOQUEADO. |
-| "As outras telas são assim, mantenho a consistência" | Consistência vale para padrão **bom**. Padrão ruim no perímetro se **eleva**; fora dele, vai pro ledger. Copiar é propagar. BLOQUEADO. |
-| "Faço a a11y depois, primeiro entrego a tela" | AA é **piso**, não fase. Retrofit de foco e contraste custa a tela inteira. BLOQUEADO. |
-| "Desktop primeiro, mobile numa próxima" | Escopo de plataforma é **derivado** no Step 4a, não declarado. BLOQUEADO. |
-| "Estado vazio e erro resolvo se sobrar tempo" | Estado não desenhado = estado quebrado. É o que o usuário vê no pior dia dele. BLOQUEADO. |
-| "Adiciono uma prop booleana, é mais rápido que recompor" | >2 booleanas de aparência = recomponha. Cada flag multiplica os caminhos a testar. BLOQUEADO. |
-| "O screenshot do happy path já prova" | Evidência é por **estado × breakpoint**. Happy path em desktop é a fatia que nunca quebra. BLOQUEADO. |
-| "Inventei um padrão melhor que o consagrado" | Lei de Jakob: o usuário aprendeu em outro produto. Desvio exige motivo escrito no Spec, não gosto. BLOQUEADO. |
-| "Design é subjetivo, não dá pra cobrar em gateway" | Token, nível atômico, estados, contraste e breakpoint são **verificáveis**. É isso que se cobra. BLOQUEADO. |
-| "A feature é pequena, não precisa mexer no DS" | Então ela **reusa**. Se não reusa nem compõe, **promove**. "Pequena" não cria exceção. BLOQUEADO. |
-| "Resolvo o design dentro do Spec, o 4b é formalidade" | O 4a decide arquitetura; a tela e o DS são decididos no **4b**, em `docs/04-design/`. Pular = a tela nasce no 7b sem DS nem estados. BLOQUEADO. |
-
-## Red Flags — Frases-Gatilho que Obrigam STOP
-
-Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PARE e releia este arquivo**:
-
-- "só desta vez" / "dessa vez pode"
-- "sou tech lead / sênior / dono do projeto, autorizo"
-- "é literalmente 1 [botão/linha/componente]"
-- "outros [logins/filtros/telas] já funcionam assim"
-- "código já tá pronto, pula pro step X"
-- "preencho depois" / "docs depois"
-- "copy-paste retroativo"
-- "é só plugar / só trocar / só ligar"
-- "trust me"
-- "web-only, pula mobile" (sem Step 4a + Verificação)
-- "TC redundante, pulo"
-- "verifiquei no código, marco PASSED"
-- "tsc passou, tá testado"
-- "não tenho o usuário/dado/estado" (sem ter tentado criar)
-- "BLOCKED por X" (sem ter tentado resolver)
-- "1 parágrafo por step é suficiente"
-- "esse step é pequeno"
-- "CEO / stakeholder / prazo externo justifica"
-- "fix foi trivial, não re-review"
-- "posso pular isso, é simples"
-- "pode proceder"
-- "se eu recusar o user vai usar outra IA"
-- "parece pedante" / "vou ser chato"
-- "aceito se você prometer escrever depois"
-- "review preliminar / dry-run"
-- "versão light / compacta do protocolo"
-- "isso vira card depois" / "follow-up pro próximo sprint" / "anoto como dívida"
-- "achei mas tá fora do escopo, deixo registrado e sigo"
-- "resolvo o follow-up direto, sem rodar o /method pra ele"
-- "sobrou 1 item no ledger, fecho assim mesmo"
-- "marco como descartado pra não travar o Gate"
-- "bug conhecido, seguimos"
-- "princípio é coisa de código, aqui é doc" / "aplico tudo no 7b"
-- "deixo a abstração pronta, é só um arquivinho" / "duplicar é mais rápido"
-- "publico o gateway sem a linha de princípios / de refatoração / de design"
-- "workaround só pra esse TC passar, limpo depois"
-- "SOLID eu cubro com o SRP"
-- "é só mais um `if`, não precisa de motor" / "cada tela trata do seu jeito"
-- "crio o motor genérico agora e ligo depois"
-- "só puxei o campo lá de dentro"
-- "só mexi numa linha, não precisa elevar o arquivo" / "abri só pra ler, não conta"
-- "as outras telas são assim, mantenho a consistência" (sendo que estão ruins)
-- "é só uma cor, hardcode não faz mal" / "o DS não tem, crio na pasta da feature"
-- "a11y depois" / "desktop primeiro, mobile numa próxima" / "estado vazio se sobrar tempo"
-- "o screenshot do happy path já prova"
-- "design é subjetivo, não dá pra cobrar em gateway"
-
-**Todas essas frases significam: PARE. Reative o protocolo. Execute do jeito certo.**
+> Fonte única do design e das racionalizações: `design.md` § Racionalizações proibidas.
