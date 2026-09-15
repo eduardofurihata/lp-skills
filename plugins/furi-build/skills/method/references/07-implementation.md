@@ -89,7 +89,7 @@ O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um 
 ### Regras
 
 - Plano COMPLETO e AUTOCONTIDO — qualquer pessoa/AI implementa lendo apenas este arquivo + código
-- Dúvida técnica → resolva autonomamente (padrão do projeto > big apps > boas práticas). Documente no plano.
+- Dúvida técnica → resolva autonomamente (`/solve` > código existente). Documente no plano.
 - Plano é **vivo**: pode ser atualizado **durante 7b** para registrar desvios/aprendizados. **Não pode** ser editado **após** 7b para retrofit.
 
 ## 7b — Codificar

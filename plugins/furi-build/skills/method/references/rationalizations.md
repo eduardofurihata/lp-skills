@@ -83,7 +83,7 @@
 |-------|-----------|
 | "Step 3 completo. Posso prosseguir?" | NÃO pergunte. Releia docs → inicia Step 4 automaticamente. |
 | "Antes de prosseguir, gostaria de confirmar..." | Transição é AUTOMÁTICA. O método é esteira. |
-| "Não tenho certeza do melhor approach, pergunto?" | Resolva usando a hierarquia (padrão do projeto > big apps > boas práticas). Documente no spec. Só pare para perguntar se decisão é IRREVERSÍVEL + 2 caminhos radicalmente opostos + só usuário pode julgar. |
+| "Não tenho certeza do melhor approach, pergunto?" | Resolva usando a hierarquia (`/solve` > código existente). Documente no spec. Só pare para perguntar se decisão é IRREVERSÍVEL + 2 caminhos radicalmente opostos + só usuário pode julgar. |
 
 ## Categoria 8 — Tokens / velocidade / economia
 
