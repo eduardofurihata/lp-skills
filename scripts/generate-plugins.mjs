@@ -23,12 +23,12 @@
 // 1-plugin-por-skill, bundles/), já que este script é a autoridade dos gerados.
 //
 // Modelo: 1 pacote por categoria — 3, não 25. A categoria de cada skill é
-// derivada do pacote em que ela mora. `toolbox` é a das avulsas — sem
-// `requires` e sem ninguém que dependa delas — por isso o pacote nasce sem
-// `dependencies`; `ship` é quem toca board/GitHub/ambiente
-// (`jira-board` e quem o lista em `requires`) e depende de `build` (o método),
-// nunca o inverso. Skill empacotada segue sendo chamada por `/method` (forma
-// curta resolve sem ambiguidade); a namespaced `/furi-build:method` também.
+// derivada do pacote em que ela mora, e os três são INDEPENDENTES: nenhuma
+// skill menciona, invoca ou lista em `requires` uma skill de outro pacote, e
+// por isso nenhum manifesto nasce com `dependencies`. `build` é o método (do
+// problema ao commit local), `ship` é o processo de entrega e o Jira, `toolbox`
+// são as avulsas. Skill empacotada segue sendo chamada pelo nome curto
+// (`/method` resolve sem ambiguidade); a namespaced `/furi-build:method` também.
 import fs from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
@@ -68,7 +68,7 @@ const PACKAGES = [
     name: "furi-build",
     category: "build",
     description:
-      "Skills de construção do Furihata — /solve, /method e /proto: do problema ao commit local, com QA. É a base que o furi-ship puxa.",
+      "Skills de construção do Furihata — /solve, /method e /proto: do problema ao commit local, com QA. Funciona sozinho, em qualquer repositório.",
     keywords: ["development", "planning", "quality", "workflow"],
     codex: {
       displayName: "Furi Build",
@@ -84,7 +84,7 @@ const PACKAGES = [
     name: "furi-ship",
     category: "ship",
     description:
-      "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores. Puxa junto o furi-build (os motores work-cycle e pr-cycle rodam o /method; /work, /repro e /card carregam o /solve).",
+      "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores e a régua de nível. Funciona sozinho: o estágio do commit é declarado como estado exigido, não como chamada a outro pacote.",
     keywords: ["jira", "pull-request", "deployment", "delivery"],
     codex: {
       displayName: "Furi Ship",
@@ -250,10 +250,12 @@ pruneLegacy(slugsByPackage);
 const packageOfName = new Map(skills.map((s) => [s.name, s.pkg]));
 
 // Deps cruzadas entre pacotes: se uma skill do pacote X `requires` uma skill do
-// pacote Y (Y≠X), X depende de Y. Ex.: /work (ship) requer /method (build) →
-// furi-ship depende de furi-build. Dentro do mesmo pacote não há dep: ele já
-// traz todas as skills. Só o manifesto do Claude Code tem esse campo — o schema
-// do Agent Plugins v1 é `additionalProperties: false` e não define dependências.
+// pacote Y (Y≠X), X depende de Y. HOJE NÃO HÁ NENHUMA — os três pacotes são
+// independentes por decisão, e um `dependencies` aparecendo num manifesto é
+// sinal de que um `requires` atravessou pacote por engano. Dentro do mesmo
+// pacote não há dep: ele já traz todas as skills. Só o manifesto do Claude Code
+// tem esse campo — o schema do Agent Plugins v1 é `additionalProperties: false`
+// e não define dependências.
 //
 // SÓ `requires` conta aqui, nunca `handoff` nem `boundary`. Instalar um pacote
 // tem que trazer o que as skills dele INVOCAM; para onde elas encaminham é

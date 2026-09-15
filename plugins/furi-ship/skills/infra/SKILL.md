@@ -29,7 +29,7 @@ Dono **único** de `.claude/ship-setup/infra.md`. Responde *"o que este projeto 
 
 ## Onde mora
 
-`.claude/ship-setup/infra.md`, na pasta do processo de entrega, ao lado de `.claude/ship-setup/setup.md` (convenções — `/setup`) e `.claude/ship-setup/deploy.md` (processo); o `.claude/patterns.md` (padrões, `/method`) fica na raiz de `.claude/`. O `/setup` § Infra aponta pra cá. `mkdir -p .claude/ship-setup` antes de gravar. Não é auto-carregado: só entra quando alguém o lê por caminho — e é isso que se quer.
+`.claude/ship-setup/infra.md`, na pasta do processo de entrega, ao lado de `.claude/ship-setup/setup.md` (convenções — `/setup`) e `.claude/ship-setup/deploy.md` (processo); o `.claude/patterns.md` (padrões de código do projeto) fica na raiz de `.claude/`. O `/setup` § Infra aponta pra cá. `mkdir -p .claude/ship-setup` antes de gravar. Não é auto-carregado: só entra quando alguém o lê por caminho — e é isso que se quer.
 
 ## Fluxo
 

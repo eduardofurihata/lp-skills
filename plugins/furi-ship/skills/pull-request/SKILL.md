@@ -1,6 +1,6 @@
 ---
 name: pull-request
-description: 'Use when user invokes /pull-request to get the work published — pushed to origin and, when the repository uses PRs, with the pull request open or updated against the integration branch — whatever stage it is at now. The second target of the ship pipeline: declares "up to the `pr` stage" (or `push`, when `.claude/ship-setup/setup.md` says `Abre PR: não`) and hands it to the reconcile engine, which diagnoses where the work is and closes what is open in order — a missing branch or commit is closed by the branch and work-cycle engines (running /method), never by telling the user to run /work first; then the pr-publish engine pushes, creates or UPDATES the PR (never a second create for the same branch) with the 3-layer body (plain-language "O que foi feito" + technical Summary/Solução + DevOps + Como testar), with the card names clear in title, `## Cards` and comments, mirrors the plain-language summary to EVERY Jira card in the branch (comment + status transition, per the project jira.md), and promotes the kanban card 10-done → 11-ship. Base branch is DETECTED (`dev`, `develop`, `main`… — never assumed). Works without Jira. Composes with /repro and /card in any order. Never merges: /homolog and /prod are the farther targets.'
+description: 'Use when user invokes /pull-request to get the work published — pushed to origin and, when the repository uses PRs, with the pull request open or updated against the integration branch — whatever stage it is at now. The second target of the ship pipeline: declares "up to the `pr` stage" (or `push`, when `.claude/ship-setup/setup.md` says `Abre PR: não`) and hands it to the reconcile engine, which diagnoses where the work is and closes what is open in order — a missing branch or commit is closed by the branch and work-cycle engines (which close the `commit` stage to the state it requires), never by telling the user to run /work first; then the pr-publish engine pushes, creates or UPDATES the PR (never a second create for the same branch) with the 3-layer body (plain-language "O que foi feito" + technical Summary/Solução + DevOps + Como testar), with the card names clear in title, `## Cards` and comments, mirrors the plain-language summary to EVERY Jira card in the branch (comment + status transition, per the project jira.md), and promotes the kanban card 10-done → 11-ship. Base branch is DETECTED (`dev`, `develop`, `main`… — never assumed). Works without Jira. Composes with /repro and /card in any order. Never merges: /homolog and /prod are the farther targets.'
 effort: max
 requires: [jira, setup, pipeline]
 handoff: homolog
@@ -40,7 +40,7 @@ O segundo **alvo** do pipeline: o estado pedido é **a branch em `origin`, com o
 
 <HARD-GATE>
 1. **Diagnóstico publicado antes de qualquer ação** — a faixa `card?` → `branch` → `reprodução?` → `commit` → `push` → `pr?`, com a evidência de cada estágio.
-2. NÃO publique o que não está commitado pelo `/method` — estágio `commit` aberto é fechado pelo `work-cycle`, não por commit avulso.
+2. NÃO publique o que não está commitado — estágio `commit` aberto é fechado pelo `work-cycle` (pelo estado que ele exige), não por commit avulso.
 3. NÃO resolva conflito com a integração aqui — é o estágio `branch` reaberto (`pipeline/SKILL.md` § branch, passo 5) e o `work-cycle` re-testa; publica-se só o que passou.
 4. NÃO crie um segundo PR para a mesma branch. Aberto → `gh pr edit`.
 5. NÃO mire `main` quando existe `<integração>`. Produção é `/prod`.
@@ -91,7 +91,7 @@ Entregue ao **`pipeline/SKILL.md` § reconcile**: diagnóstico da faixa publicad
 
 ## Red Flags — STOP
 
-- "Working tree sujo, mando rodar o `/work` antes" → NÃO. **É esta a mudança.** Estágio `commit` aberto é gap que o loop fecha com o `work-cycle` (→ `/method`). Este alvo não devolve trabalho ao usuário.
+- "Working tree sujo, mando rodar o `/work` antes" → NÃO. **É esta a mudança.** Estágio `commit` aberto é gap que o loop fecha com o `work-cycle`. Este alvo não devolve trabalho ao usuário.
 - "A integração andou, resolvo o conflito e pusho" → NÃO. Conflito é código novo sem teste: estágio `branch` reaberto, `work-cycle` re-testa.
 - "Assumi o board de sempre / o do outro repositório" → NÃO. O board é o da **memória deste repositório**, via `/jira`.
 - "Já conheço o `/jira` / o `/setup`, sigo sem invocar" → NÃO. Skill entra pelo Skill tool, **toda** vez.
