@@ -81,12 +81,7 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - "Preciso gravar o SHA no done doc → commito de novo" → NÃO. O SHA vive no `git log`; não vale um segundo commit.
 - "O código já estava pronto, então commitei lá atrás" → NÃO. Código de steps anteriores espera o Step 12 e entra no commit único, junto com o card.
 - "O ciclo de follow-up terminou, commito ele antes de voltar pra feature" → NÃO. Ciclo aninhado não commita. Um commit, no fim, no ciclo raiz.
-
-## Princípios neste step
-
-Aqui a lente é **registro, não cobrança**: o que os princípios produziram sai nas cinco linhas do § *Conteúdo — Resumo Final*, copiadas do plano (§ 3.1, § 3.2, § 3.3, § 3.5) e do que o Step 5 promoveu ao DS.
-
-**Nenhuma decisão nova de arquitetura ou de design se toma no Step 12.** O que aparecer aqui é **achado** — e achado depois do Step 11 reabre o Gate de Convergência (`11-follow-ups.md`), não vira correção de última hora antes do commit.
+- "Achei uma última melhoria, ajusto antes de commitar" → NÃO. **Nenhuma decisão nova de arquitetura ou de design se toma no Step 12.** O que aparecer aqui é achado: reabre o Gate de Convergência (`11-follow-ups.md`), não vira correção de última hora.
 
 ## Checklist Final (step terminal — sem gateway de saída)
 

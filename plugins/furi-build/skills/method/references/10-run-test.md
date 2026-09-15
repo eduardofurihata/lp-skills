@@ -223,6 +223,13 @@ PROCEDIMENTO (ao iniciar testes via front):
 
 Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" entre TCs.
 
+**Workaround que faz o TC passar é FAILED disfarçado.** O Step 10 não escreve feature — escreve **fix** —, e é sob a pressão de fazer passar que nasce o remendo:
+
+- O fix vai **para o motor**, nunca de remendo no chamador: corrigir na tela o que o motor calcula errado cria a segunda fonte da regra.
+- O fix mais simples que resolve a **causa** — não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
+- Fix novo **reabre o perímetro**: os arquivos que ele tocou entram na regra do saldo.
+- **Se tem UI:** remendo de CSS que acerta só aquele screenshot é FAILED disfarçado, e a evidência é por **estado × breakpoint**, não o happy path em desktop.
+
 ## Audit Pós-Execução — BLOQUEANTE (publicar no chat ANTES do Gateway 10 → 11)
 
 **Quando achar que o Loop terminou e ANTES de publicar o Gateway 10 → 11, publique este bloco. Audit ausente = step 9 não terminou.**
@@ -261,16 +268,6 @@ Um screenshot do happy path em desktop é a fatia que nunca quebra. Para TC que 
 - **Interação:** foco visível por teclado nos controles do fluxo.
 
 Documente os paths em `kanban/10-run-test/<tópico>.md` identificando **qual estado e qual breakpoint** cada arquivo prova. Estado que o UC listou e que não tem evidência = TC incompleto, não PASSED.
-
-## Princípios neste step
-
-O Step 10 não escreve feature — escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de fazer o TC passar, nasce o remendo.
-
-- **Todos os princípios** — fix é código; **workaround que faz o TC passar violando SRP/DRY é FAILED disfarçado**.
-- **KISS** — o fix mais simples que resolve a causa; não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
-- **Motor** — o fix vai **para o motor**, nunca de remendo no chamador: corrigir na tela o que o motor calcula errado cria a segunda fonte da regra.
-- **Refatoração** — fix novo reabre o perímetro do fix; os arquivos que ele tocou entram na regra do saldo.
-- **Design** (se tem UI) — evidência por **estado × breakpoint**, não só o happy path em desktop. Remendo de CSS que faz o TC passar é FAILED disfarçado.
 
 ## PARE se pensar
 

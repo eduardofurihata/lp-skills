@@ -59,7 +59,7 @@ Complementos de arquitetura, inseparáveis dos princípios:
 
 **A tensão com YAGNI — resolvida aqui, para não virar desculpa dos dois lados:** motor nasce da capacidade que o requisito **já exige**. "Motor genérico pro dia que precisar" é abstração especulativa: **BLOQUEADO**. YAGNI proíbe o motor **sem requisito**; a doutrina do motor proíbe a capacidade **que já existe** ficar espalhada. E motor **não é framework**: nada de registry, plugin ou DSL interna para atender um requisito.
 
-> No front, o equivalente do motor é o **componente do design system**: a capacidade visual tem um dono e se promove para lá em vez de espalhar. Ver `front/SKILL.md` § *O design system evolui com o produto*.
+> No front, o equivalente do motor é o **componente do design system**: a capacidade visual tem um dono e se promove para lá em vez de espalhar. Ver `front/SKILL.md`.
 
 ## Law of Demeter — fale só com o vizinho
 
@@ -113,7 +113,7 @@ Complementos de arquitetura, inseparáveis dos princípios:
 
 **Não é desculpa para:** reescrever o repositório (fora do perímetro se lista), adiar a entrega, nem criar abstração que nenhum requisito pede (YAGNI continua valendo).
 
-Quando o trabalho é **texto** — doc, spec, plano, task —, o perímetro é o artefato: doc consolidado em vez de paralelo, decisão fundida, task separada. No front, o equivalente é elevar o padrão visual em vez de copiá-lo: `front/SKILL.md` § *Consistência é lei; mediocridade não é*.
+Quando o trabalho é **texto** — doc, spec, plano, task —, o perímetro é o artefato: doc consolidado em vez de paralelo, decisão fundida, task separada. No front, o equivalente é elevar o padrão visual em vez de copiá-lo: `front/SKILL.md`.
 
 ## Aplicar a um alvo
 
@@ -125,7 +125,7 @@ Sem argumento, a doutrina acima passa a valer para o trabalho em curso — é is
 4. **Corrigir** o que está abaixo do nível, dentro do perímetro — tabela *Achou → Faça*, regra do saldo. **Sem mudar comportamento:** refatoração preserva o que o código faz; se corrigir exige mudar comportamento, isso é achado, não correção. Fora do perímetro: **lista**, não mexe.
 5. **Relatório**, por arquivo: o que subiu · o que já estava no nível #1 (declarado) · achados fora do perímetro · o que exigiria mudança de comportamento (não feito). **Nunca commita, nunca cria branch** — quem decide o que fazer com a passada é quem a pediu.
 
-> Dentro do `/method`: cada step traz a **lente** desta doutrina na seção *Princípios neste step* do próprio reference (`method/references/`), e a declara na linha obrigatória do Gateway Check (`method/SKILL.md` § Gateway Check) — mesma doutrina, cobrada step a step.
+> Dentro do `/method`: esta skill é invocada em **todo** step, e a passada acima se aplica ao **artefato daquele step** — o doc, o plano, o código. O resultado é declarado na linha obrigatória do Gateway Check (`method/SKILL.md` § Gateway Check). Os references não repetem a doutrina: cada um traz só o que o seu artefato exige.
 
 ## Racionalizações proibidas
 

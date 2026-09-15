@@ -22,6 +22,8 @@
 
 A linha **Cobre** é o que torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC e todo detalhe do Step 4 tem que aparecer ao menos uma vez.
 
+Os passos são executáveis por outra pessoa sem o seu contexto, e o resultado é observável **no front**: TC que espia estado interno testa implementação, não comportamento — o que se exercita é o motor pela tela.
+
 ## Complexidade → Quantidade → Cobertura
 
 A lógica, **nesta ordem**:
@@ -50,27 +52,18 @@ Pouco a cobrir (1 UC, 1 fluxo, sem cross-cutting) → nota baixa (1-3). Muito a 
 
 ### Os N TCs contemplam tudo (por isso, densos)
 
-Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso** — atravessa vários de uma vez (user-journey: `login → busca → cupom → checkout` cobre 4 UCs num só TC). O objetivo dos N TCs é **contemplar 100% dos UCs (Step 3) e dos detalhes do Step 4**.
+Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso** — atravessa vários de uma vez (user-journey: `login → busca → cupom → checkout` cobre 4 UCs num só TC). O objetivo dos N TCs é **contemplar 100% dos UCs (Step 3) e dos detalhes do Step 4**. Denso não é difuso: o TC continua falhando por **um** motivo nomeável — é o bug único.
 
 - **As técnicas de QA (pairwise, user-journey, BVA, negativos, segurança, a11y…) são LENTES** para empacotar cobertura, não geradores: pairwise e user-journey comprimem muitos UCs/detalhes em poucos TCs; BVA/negativos/segurança/a11y garantem que os detalhes do Step 4 entrem. **Nunca "1 TC por técnica".**
 - **Não desperdice slot** — filtro de significância (ver abaixo): todo TC tem que puxar cobertura.
 - **Plataforma é eixo de EXECUÇÃO, não TC novo:** 1 TC = 1 cenário. Rodar em Android E iOS (Step 10) é o **mesmo TC 2×**, não 2 TCs.
+- **Estados × breakpoints e a11y são lente, não TC extra** (se tem UI): um TC denso cobre a tela em mobile e desktop; dois TCs gêmeos por breakpoint furam o teto.
 - **Os N TCs não cobrem tudo?** Ou a nota ficou baixa (re-analise a complexidade) ou a feature é grande demais para um card (**quebre em features menores**). **Nunca fure o teto de 10.**
 
 ## Significância (cada TC puxa cobertura)
 
 > **"Se eu deletar este TC, algum UC ou detalhe do Step 4 fica descoberto — um bug ÚNICO passaria?"**
 > **SIM** → o TC é necessário. **NÃO** → redundante; reaproveite o slot para cobrir o que ainda falta.
-
-## Princípios neste step
-
-- **SRP** — 1 TC = 1 bug único. Denso (atravessa 4 UCs) não é difuso: falha por **um** motivo nomeável.
-- **DRY** — TC que não puxa cobertura nova é redundante; o filtro de significância é o DRY dos testes.
-- **KISS** — passos executáveis por outra pessoa sem o seu contexto, resultado observável no front.
-- **YAGNI** — teto de 10 e `nº TCs == nota`; não invente TC para "ficar completo".
-- **Motor** — o TC exercita o **comportamento do motor pelo front**, nunca a peça interna: TC que espia estado interno testa implementação, não comportamento.
-- **Refatoração** — TC redundante → **funda** (é o próprio filtro de significância).
-- **Design** (se tem UI) — a cobertura contempla **estados × breakpoints** e a11y como **lente, não como TC extra**: um TC denso cobre a tela em mobile e desktop; dois TCs gêmeos por breakpoint furam o teto.
 
 ## PARE se pensar
 

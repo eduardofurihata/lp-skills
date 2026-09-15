@@ -1,12 +1,12 @@
 # Step 3 — Use Cases
 
+**Para cada user story do Step 2, derive os Use Cases que cobrem TODAS as possibilidades.** Completude é obrigatória.
+
 **Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Regra
 
-**Para cada user story do Step 2, derive os Use Cases que cobrem TODAS as possibilidades.**
-
-Completude é obrigatória. Para cada story, enumere sem omitir:
+Para cada story, enumere sem omitir:
 
 - **Todos os atores/personas** envolvidos (não só o principal)
 - **Happy path** (fluxo feliz)
@@ -15,6 +15,8 @@ Completude é obrigatória. Para cada story, enumere sem omitir:
 - **Transições de estado** relevantes (vazio, parcial, completo, expirado, bloqueado)
 
 Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Não agrupe.
+
+O fluxo é escrito em passos de usuário: UC que cita função, tabela ou endpoint desceu de nível — virou pseudo-implementação.
 
 ## Artefato
 
@@ -41,17 +43,11 @@ Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Nã
 | <passo> | `arquivo:linha` ou 🔨 gap |
 ```
 
-Tabela de assinaturas **única** — assinatura repetida em dois UCs é uma linha só. Ela é o esboço do contrato do motor que o Step 4 nomeia.
+Tabela de assinaturas **única** — assinatura repetida em dois UCs é uma linha só, e é o esboço do contrato do motor que o Step 4 nomeia: assinatura igual em UCs diferentes é o sinal de que a regra tem um dono só.
 
-## Princípios neste step
+A duplicata a caçar é **na tabela**, nunca nos UCs: o mesmo fluxo com outro ator continua sendo dois.
 
-- **SRP** — a combinação do § Regra é a unidade: um UC não carrega dois fluxos nem dois atores "para economizar".
-- **DRY** — tabela de assinaturas **única**, sem duplicata.
-- **YAGNI** — UC que nenhuma story do Step 2 pede não existe.
-- **KISS** — fluxo em passos de usuário, sem código: UC não é pseudo-implementação.
-- **Motor** — UCs que compartilham regra são do mesmo motor; a tabela de assinaturas já é o **esboço do contrato** dele.
-- **Refatoração** — UC agrupado → **quebre**; assinatura duplicada → **funda**.
-- **Design** (se tem UI) — cada UC lista seus **estados de tela** (vazio, carregando, erro, sucesso, limite). Estado não listado aqui é estado que não vai ser desenhado — e vira bug no Step 9.
+**Se tem UI:** estado que não for listado no UC não vai ser desenhado no Step 5 — e vira bug no Step 10.
 
 ## Gateway 3 → 4
 
