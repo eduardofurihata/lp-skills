@@ -1,6 +1,6 @@
 # Rationalizations — Racionalizações do Protocolo
 
-As racionalizações do **protocolo** — pular steps ou gateways, autoridade, bypass granular, retrofit, TCs, testing, hesitar entre steps, economia de tokens, pressão social. As de **follow-ups**, **princípios** e **design** vivem com a doutrina: `follow-ups.md`, `principios.md` e `design.md` § Racionalizações proibidas. As frases-gatilho (Red Flags) estão no `SKILL.md`. Se você se pegar pensando uma dessas → PARE. **Esse pensamento É a violação.** Volte ao step atual e execute do jeito certo.
+As racionalizações do **protocolo** — pular steps ou gateways, autoridade, bypass granular, retrofit, TCs, testing, hesitar entre steps, economia de tokens, pressão social. As de **follow-ups** vivem com o mecanismo (`follow-ups.md` § Racionalizações proibidas); as de **princípios** e **design** vivem com a doutrina (`principles/SKILL.md` e `front/SKILL.md` § Racionalizações proibidas) — aqui ficam só as amarradas a um step ou gateway. As frases-gatilho (Red Flags) estão no `SKILL.md`. Se você se pegar pensando uma dessas → PARE. **Esse pensamento É a violação.** Volte ao step atual e execute do jeito certo.
 
 > **Violar a letra das regras = violar o espírito das regras.** Cumprir "tecnicamente" (1 parágrafo por step, docs após código, etc.) é violação disfarçada de conformidade.
 
@@ -107,10 +107,21 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 
 > Regra Inviolável 7: **o protocolo fecha SECO.** As racionalizações vivem com o mecanismo: `follow-ups.md` § Racionalizações proibidas.
 
-## Categoria 11 — Princípios de engenharia (SOLID · DRY · KISS · YAGNI · LoD · Motores)
+## Categoria 11 — Princípios de engenharia nos steps
 
-> Fonte única dos princípios, da lente de cada step e das racionalizações: `principios.md` § Racionalizações proibidas.
+> A doutrina e as racionalizações genéricas: `principles/SKILL.md`. A lente de cada step: `lentes.md`. Aqui, só o que é do protocolo:
 
-## Categoria 12 — Design e UI
+| Frase | Realidade |
+|-------|-----------|
+| "Publico o gateway sem a linha de princípios, está implícito" | Implícito = inexistente, igual ao gateway silencioso. Vale para as linhas de refatoração e design também. BLOQUEADO. |
+| "O review já viu isso no geral, não preciso ir princípio a princípio" | A `## Análise de Qualidade` do Step 8 tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO. |
+| "Aplico tudo no 7b, lá é o lugar" | No 7b a complexidade especulativa já foi decidida no Spec (4a) e no Plano (7a) — você só implementa o erro. BLOQUEADO. |
 
-> Fonte única do design e das racionalizações: `design.md` § Racionalizações proibidas.
+## Categoria 12 — Design nos steps
+
+> A doutrina e as racionalizações genéricas: `front/SKILL.md`. A lente de cada step e quando a linha de design entra: `lentes.md`. Aqui, só o que é do protocolo:
+
+| Frase | Realidade |
+|-------|-----------|
+| "Resolvo o design dentro do Spec, o 4b é formalidade" | O 4a decide arquitetura; a tela e o DS são decididos no **4b**, em `docs/04-design/`. Pular = a tela nasce no 7b sem DS nem estados. BLOQUEADO. |
+| "Não tem UI, pulo o /front" | Superfície visual é **derivada** no Step 4a, nunca declarada. Sem ela, declare `❌ N/A` uma vez no Gateway 4a→4b — é o que dispensa o `/front` dali em diante. BLOQUEADO antes disso. |

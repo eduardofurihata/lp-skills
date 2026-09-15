@@ -1,9 +1,9 @@
 ---
 name: method
-description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — the rigorous engineering protocol: 10 steps from problem to committed code, each one reinvoking /solve for the quality bar, with a written artifact in `docs/01-problem/` through `docs/04-spec/` and the follow-up ledger closed dry. Covers feature work, behaviour change and non-trivial fixes; not for typos, config tweaks or read-only questions.'
+description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — the rigorous engineering protocol: 10 steps from problem to committed code, each one reinvoking /solve (the quality bar), /principles (the engineering doctrine) and — with a visual surface — /front (the design doctrine), with a written artifact in `docs/01-problem/` through `docs/04-spec/` and the follow-up ledger closed dry. Covers feature work, behaviour change and non-trivial fixes; not for typos, config tweaks or read-only questions.'
 effort: max
 argument-hint: "[feature-name]"
-requires: solve
+requires: [solve, principles, front]
 ---
 
 # /method — Protocolo de Engenharia Rigorosa
@@ -28,7 +28,7 @@ requires: solve
 
 **Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — e a reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual, no lugar do que existe — nunca um paralelo (`/solve`) — e sem merge para `main` sem autorização (regras acima).
 
-Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, refatoração contínua e design — são as Regras Invioláveis 8, 9 e 10; a doutrina, a lente de cada step e as racionalizações estão em `references/principios.md` e `references/design.md`, não aqui.
+Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, refatoração contínua e design — são as Regras Invioláveis 8, 9 e 10; a doutrina mora nas skills `/principles` e `/front` (invocadas em todo step, com o `/solve`); a lente de cada step, em `references/lentes.md` — não aqui.
 
 ## Regras Invioláveis (fecham brechas conhecidas)
 
@@ -40,13 +40,13 @@ Os três **regimes** que valem do Step 1 ao 10 — princípios de engenharia, re
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 1→10; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio de **quem revisa de fora**, nunca saída do dev. Ver `references/follow-ups.md`.
 
-8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**), DRY, KISS, YAGNI, Law of Demeter e **Motores**, cada um pela lente do step, **declarados na linha obrigatória de todo Gateway Check** — `references/principios.md`.
+8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**), DRY, KISS, YAGNI, Law of Demeter e **Motores**, cada um pela lente do step, **declarados na linha obrigatória de todo Gateway Check** — doutrina no `/principles`, invocado em todo step; lente em `references/lentes.md`.
 
-9. **Refatoração é regime.** Tudo por onde o trabalho passa sobe (perímetro + regra do saldo), com linha própria em todo Gateway Check — `references/principios.md` § Refatoração contínua.
+9. **Refatoração é regime.** Tudo por onde o trabalho passa sobe (perímetro + regra do saldo), com linha própria em todo Gateway Check — `principles/SKILL.md` § Refatoração contínua.
 
-10. **Design é regime.** Feature com superfície visual obedece a `references/design.md` e declara a linha de design em todo Gateway Check.
+10. **Design é regime.** Feature com superfície visual obedece ao `/front` (invocado em todo step) e declara a linha de design em todo Gateway Check.
 
-Contra-argumento de cada racionalização: `references/rationalizations.md` (protocolo) e a seção *Racionalizações proibidas* do arquivo de cada regime.
+Contra-argumento de cada racionalização: `references/rationalizations.md` (protocolo) e a seção *Racionalizações proibidas* do `/principles`, do `/front` e de `references/follow-ups.md`.
 
 ## Os 10 Steps (nomes, pastas e arquivos são contrato — NÃO alterar)
 
@@ -65,13 +65,13 @@ Contra-argumento de cada racionalização: `references/rationalizations.md` (pro
 | 9 | Run Test | `kanban/09-run-test/` | `<tópico>.md` | TCs (5) + Review (8b) | `references/09-testing.md` |
 | 10 | Done | `kanban/10-done/` | `<tópico>.md` | — | `references/10-done.md` |
 
-O **Step 4b só roda com superfície visual**, derivada no 4a (`references/design.md` § A quem se aplica).
+O **Step 4b só roda com superfície visual**, derivada no 4a (`references/lentes.md` § Design — a quem se aplica).
 
-> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `references/principios.md` § Lente por step e `references/design.md` § Lente por step. Não duplicada aqui, e não executável de memória.
+> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `references/lentes.md`. Não duplicada aqui, e não executável de memória.
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/method` é o protocolo que ENTREGA nesse nível — e cada step o reinvoca (§ Executar os Steps em Sequência). Depois disso, siga na ordem:
+**ANTES de tudo — invoque os três.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar via Skill tool** o `/solve` (`furi-build:solve` — o padrão de qualidade: ser a **referência #1 do mercado**), o `/principles` (`furi-build:principles` — a doutrina de engenharia) e o `/front` (`furi-build:front` — a doutrina de design; em todo step até o Gateway 4a→4b e, dali em diante, só se a superfície visual foi derivada). As formas curtas `solve`, `principles` e `front` também resolvem. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível, o `/principles` e o `/front` definem a forma; o `/method` é o protocolo que ENTREGA — e cada step os reinvoca (§ Executar os Steps em Sequência). Depois disso, siga na ordem:
 
 ### 1. Inventário de Docs (UMA vez, antes de qualquer step)
 
@@ -121,7 +121,7 @@ A partir do Step 6 até o 9: 1 TaskCreate = 1 task. Nunca agrupe entre 6 e 9.
 ### 4. Executar os Steps em Sequência
 
 Para cada step:
-1. **Invoque o `/solve`** (Skill tool) — em TODO step, não só na ativação: o padrão de qualidade é reinjetado a cada passada, porque no Step 7b a ativação já ficou a centenas de milhares de tokens de distância
+1. **Invoque `/solve`, `/principles` e `/front`** (Skill tool; o `/front` até o Gateway 4a→4b e, depois, só com superfície visual) — em TODO step, não só na ativação: padrão e doutrina são reinjetados a cada passada, porque no Step 7b a ativação já ficou a centenas de milhares de tokens de distância
 2. Abra `references/XX-<nome>.md` — a linha **Chame e use** repete as chamadas do step
 3. Releia docs anteriores conforme coluna "Reler"
 4. Execute o step (crie/atualize o .md da pasta correspondente)
@@ -169,7 +169,7 @@ Triagem A/B/C, formato do ledger, bloco do Gate e racionalizações: `references
 - "isso vira card depois" / "follow-up pro próximo sprint" / "anoto como dívida"
 - "achei mas tá fora do escopo, deixo registrado e sigo" / "bug conhecido, seguimos"
 - "resolvo o follow-up direto no código, sem rodar o `/method` pra ele"
-- "rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" / "já conheço o `/solve`, sigo sem invocar"
+- "rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" / "já conheço o `/solve` / o `/principles` / o `/front`, sigo sem invocar"
 - "sobrou 1 item no ledger, é pequeno, fecho assim mesmo"
 - "marco como C (descartado) pra não travar o Gate"
 - "princípio (SOLID/DRY/KISS/YAGNI) é coisa de código, aqui é doc" / "aplico tudo no 7b, lá é o lugar"
@@ -186,7 +186,7 @@ Triagem A/B/C, formato do ledger, bloco do Gate e racionalizações: `references
 - "a11y / mobile / estado vazio depois" / "desktop primeiro, mobile numa próxima"
 - "o screenshot do happy path já prova" / "design é subjetivo, não dá pra cobrar em gateway"
 
-**Todas significam: PARE. Releia `references/rationalizations.md` — ou a seção de racionalizações de `references/principios.md`, `references/design.md` e `references/follow-ups.md`. Execute do jeito certo.**
+**Todas significam: PARE. Releia `references/rationalizations.md` — ou a seção de racionalizações do `/principles`, do `/front` e de `references/follow-ups.md`. Execute do jeito certo.**
 
 ## Não Pergunte Entre Steps
 
@@ -197,8 +197,7 @@ O protocolo é esteira de produção. Dúvidas de implementação → resolva pe
 
 ## Arquivos de Referência
 
-- `references/principios.md` — **fonte única** dos princípios (SOLID completo, DRY, KISS, YAGNI, LoD, **Motores**), **refatoração contínua**, lente por step e as racionalizações de princípios
-- `references/design.md` — **fonte única** do design (tokens SSOT, atomicidade, composição, headless, estados, Jakob, a11y), **evolução do design system**, lente por step e as racionalizações de design
+- `references/lentes.md` — a **lente** do `/method` sobre as doutrinas do `/principles` e do `/front`: o que cada step cobra e quando a linha de design entra (a doutrina em si mora nas duas skills, invocadas em todo step)
 - `references/gateways.md` — formato do Gateway Check (as quatro linhas obrigatórias), critérios de todos os gateways, Gateway 9→10 detalhado e exceções
 - `references/follow-ups.md` — Ledger de Follow-ups, triagem A/B/C, Gate de Convergência, o loop até o passe seco e as racionalizações de follow-up
 - `references/rationalizations.md` — racionalizações do protocolo (steps, gateways, autoridade, retrofit, testing, pressão); as Red Flags são a lista acima

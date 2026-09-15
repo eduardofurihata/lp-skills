@@ -2,7 +2,7 @@
 
 **Como cada tela deveria ser — decidida antes de qualquer código, a partir do design system.** Só roda com superfície visual (derivada no Step 4a); sem ela, o Gateway 4a → 4b já declarou N/A e o próximo step é o 5.
 
-**Chame e use:** `/solve` (Skill tool) · `design.md` (fonte única — princípios, evolução do DS, § Lente por step) · `principios.md` § Lente por step · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
 
 ## Artefato
 

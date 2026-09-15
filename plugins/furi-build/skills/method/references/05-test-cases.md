@@ -2,7 +2,7 @@
 
 **TC profissional, adversarial, captura um bug único — e roda via front no Step 9.** Contempla as possibilidades relevantes em produção: a nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
 
-**Chame e use:** `/solve` (Skill tool) · `principios.md` § Lente por step · `design.md` § Lente por step (se tem UI) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
 
 ## Artefato
 

@@ -1,6 +1,6 @@
 # Step 7 — Implementação (7a: Plano + 7b: Codificar)
 
-**Chame e use:** `/solve` (Skill tool) · `principios.md` § Lente por step · `design.md` § Lente por step (se tem UI) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
 
 ## 7a — Plano de Implementação (OBRIGATÓRIO antes de codar)
 
@@ -44,7 +44,7 @@ Abstrações, camadas, flags, configs e generalizações que foram **considerada
 Seção vazia é suspeita: significa que nada foi cogitado, ou que tudo que foi cogitado entrou.
 
 ## 3.3 Motores — OBRIGATÓRIO
-Toda capacidade tem **um** dono (`principios.md` § Motores):
+Toda capacidade tem **um** dono (`principles/SKILL.md` § Motores):
 
 | Capacidade | Motor | Ação |
 |---|---|---|
@@ -53,19 +53,19 @@ Toda capacidade tem **um** dono (`principios.md` § Motores):
 **Absorver é planejado, não improvisado:** liste onde a mesma regra está espalhada hoje e que passa a só chamar o motor.
 
 ## 3.4 Design System — OBRIGATÓRIO se a feature tem superfície visual
-Lido de `docs/04-design/<tópico>.md` (as telas decididas no Step 4b) e de `docs/04-design/design-system.md` (`design.md`):
+Lido de `docs/04-design/<tópico>.md` (as telas decididas no Step 4b) e de `docs/04-design/design-system.md` (doutrina: `/front`):
 
 | Preciso de | DS tem? | Decisão |
 |---|---|---|
 | <token/componente> | sim / não | **reusar** / **compor** de X+Y / **promover ao DS** (nunca criar na pasta da feature) |
 
-- **Padrões existentes no app** que a feature toca: quais segue (consistência) e quais **eleva** por estarem abaixo do nível #1 (`design.md` § *Consistência é lei; mediocridade não é*)
+- **Padrões existentes no app** que a feature toca: quais segue (consistência) e quais **eleva** por estarem abaixo do nível #1 (`front/SKILL.md` § *Consistência é lei; mediocridade não é*)
 - **Tokens novos** a promover: … (com o motivo de nenhum existente servir)
 - **Estados a implementar** por componente: vazio · carregando · erro · sucesso · limite · hover/focus/active/disabled/selected
 - **Zero valor literal planejado** — se o plano já traz `#hex` ou `13px`, o 7b nasce errado.
 
 ## 3.5 Perímetro da refatoração — OBRIGATÓRIO
-O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um (`principios.md` § Refatoração contínua):
+O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um (`principles/SKILL.md` § Refatoração contínua):
 
 | Arquivo do perímetro | Por que entra | O que será elevado |
 |---|---|---|
@@ -95,16 +95,16 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 
 - **Reler** `kanban/07-implementation/<feature>.md` — o plano já decidiu reúso (§ 3.1), o que não entra (§ 3.2), motores (§ 3.3), DS (§ 3.4) e perímetro (§ 3.5)
 - **Identificar a camada:** controller/service/component/hook/schema/shared — respeite responsabilidades
-- **Visual:** conforme § 3.4 do plano e `docs/04-design/design-system.md` — doutrina em `design.md`
+- **Visual:** conforme § 3.4 do plano e `docs/04-design/design-system.md` — doutrina no `/front`
 - **i18n (se configurado):** conforme § 2 do plano — string user-facing nova/alterada é chave de tradução; literal hardcoded em projeto com i18n = bug, mesmo com o texto "correto"
 
 ### Práticas Obrigatórias
 
-**Arquitetura — os princípios de `principios.md` na íntegra, por arquivo aberto:** SOLID (os cinco), DRY, KISS, YAGNI, Law of Demeter, Motores, camadas e direção de dependências, com os limiares numéricos de lá. O plano já decidiu o que reusar (§ 3.1), o que não construir (§ 3.2) e qual motor é dono de cada regra (§ 3.3): o 7b **executa** essas decisões. Encontrou a mesma regra fora do motor → **absorve** conforme § 3.3, e o chamador passa a só chamar.
+**Arquitetura — o `/principles` na íntegra (invocado neste step), por arquivo aberto:** SOLID (os cinco), DRY, KISS, YAGNI, Law of Demeter, Motores, camadas e direção de dependências, com os limiares numéricos de lá. O plano já decidiu o que reusar (§ 3.1), o que não construir (§ 3.2) e qual motor é dono de cada regra (§ 3.3): o 7b **executa** essas decisões. Encontrou a mesma regra fora do motor → **absorve** conforme § 3.3, e o chamador passa a só chamar.
 
 > Desvio do que o plano decidiu em § 3.1-3.4 é **decisão nova**: registre no plano (que é vivo em 7b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
 
-**Refatoração Obrigatória — a cada passada o código sobe** (`principios.md` § Refatoração contínua): para CADA arquivo do perímetro do § 3.5, a tabela *Achou → Faça* de lá é o checklist, e a **regra do saldo** é o que o gateway cobra — o arquivo subiu, ou está declarado como já no nível #1. Dentro do perímetro, sem timidez; fora dele, balde C (`follow-ups.md`).
+**Refatoração Obrigatória — a cada passada o código sobe** (`principles/SKILL.md` § Refatoração contínua): para CADA arquivo do perímetro do § 3.5, a tabela *Achou → Faça* de lá é o checklist, e a **regra do saldo** é o que o gateway cobra — o arquivo subiu, ou está declarado como já no nível #1. Dentro do perímetro, sem timidez; fora dele, balde C (`follow-ups.md`).
 
 **Banco de Dados (quando aplicável):**
 - Migrações versionadas (`npx prisma migrate dev --name descritivo`)
