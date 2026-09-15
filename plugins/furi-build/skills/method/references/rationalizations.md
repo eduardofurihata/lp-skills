@@ -109,7 +109,7 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 
 ## Categoria 11 — Princípios de engenharia nos steps
 
-> A doutrina e as racionalizações genéricas: `principles/SKILL.md`. A lente de cada step: `lentes.md`. Aqui, só o que é do protocolo:
+> A doutrina e as racionalizações genéricas: `principles/SKILL.md`. A lente de cada step: seção *Princípios neste step* no reference do próprio step. Aqui, só o que é do protocolo:
 
 | Frase | Realidade |
 |-------|-----------|
@@ -119,7 +119,7 @@ As racionalizações do **protocolo** — pular steps ou gateways, autoridade, b
 
 ## Categoria 12 — Design nos steps
 
-> A doutrina e as racionalizações genéricas: `front/SKILL.md`. A lente de cada step e quando a linha de design entra: `lentes.md`. Aqui, só o que é do protocolo:
+> A doutrina e as racionalizações genéricas: `front/SKILL.md`. A lente de cada step: seção *Princípios neste step* no reference do próprio step. Aqui, só o que é do protocolo:
 
 | Frase | Realidade |
 |-------|-----------|

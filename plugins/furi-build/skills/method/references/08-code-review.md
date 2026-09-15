@@ -1,6 +1,8 @@
 # Step 8 — Code Review Crítico
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
+
+**A lente deste step é o próprio step:** o loop 8a revisa princípio a princípio e por nome, e o relatório 8b registra um veredicto por princípio. Motor (a capacidade vazou? há segunda fonte da mesma regra?) e saldo do perímetro são linhas do checklist, não observações.
 
 ## 8a — Revisão em Loop
 

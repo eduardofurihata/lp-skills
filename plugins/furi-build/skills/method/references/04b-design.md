@@ -2,7 +2,7 @@
 
 **Como cada tela deveria ser — decidida antes de qualquer código, a partir do design system.** Só roda com superfície visual (derivada no Step 4a); sem ela, o Gateway 4a → 4b já declarou N/A e o próximo step é o 5.
 
-**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `follow-ups.md`
 
 ## Artefato
 
@@ -51,6 +51,15 @@
 ```
 
 **Ordem obrigatória ao precisar de algo:** **reusar** → **compor** → **promover** (criar no DS, nunca na pasta da feature). O que este step promove entra nas tabelas do DS **agora** — o 7b só usa.
+
+## Princípios neste step
+
+- **YAGNI** — promove ao DS só o que um UC pede; nada de paleta inteira para uma tela.
+- **DRY** — reusar → compor → promover, nesta ordem; componente que já existe não nasce de novo.
+- **KISS** — a composição mais simples que atinge o nível #1.
+- **Motor** — o DS é o dono do token e do componente; peça visual na pasta da feature é regra espalhada.
+- **Refatoração** — padrão do DS abaixo do nível #1 no perímetro → **eleva** (ou ledger).
+- **Design** — é o corpo deste step (o artefato acima é a lente em forma de template). O que se cobra por princípio: **reusar → compor → promover** nesta ordem, promoção **registrada no DS agora** (o 7b só usa), desvio de padrão consagrado só com motivo escrito, e a11y AA como piso — não como meta.
 
 ## Gateway 4b → 5
 

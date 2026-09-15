@@ -4,7 +4,7 @@
 >
 > Terminal **não** quer dizer sem gateway: o Step 10 tem gateway de **entrada** — o **Gate de Convergência** (zero follow-ups abertos). Ele roda ANTES de escrever o done doc, ANTES do `rm` e ANTES do commit.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## Pré-requisitos (AMBOS)
 
@@ -89,6 +89,12 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - "Preciso gravar o SHA no done doc → commito de novo" → NÃO. O SHA vive no `git log`; não vale um segundo commit.
 - "O código já estava pronto, então commitei lá atrás" → NÃO. Código de steps anteriores espera o step 10 e entra no commit único, junto com o card.
 - "O ciclo de follow-up terminou, commito ele antes de voltar pra feature" → NÃO. Ciclo aninhado não commita. Um commit, no fim, no ciclo raiz.
+
+## Princípios neste step
+
+Aqui a lente é **registro, não cobrança**: o que os princípios produziram sai nas cinco linhas do § *Conteúdo — Resumo Final*, copiadas do plano (§ 3.1, § 3.2, § 3.3, § 3.5) e do que o Step 4b promoveu ao DS.
+
+**Nenhuma decisão nova de arquitetura ou de design se toma no Step 10.** O que aparecer aqui é **achado** — e achado na entrada do Step 10 é o Gate de Convergência (`follow-ups.md`), não uma correção de última hora antes do commit.
 
 ## Checklist Final (step terminal — sem gateway de saída)
 

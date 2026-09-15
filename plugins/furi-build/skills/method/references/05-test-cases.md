@@ -2,7 +2,7 @@
 
 **TC profissional, adversarial, captura um bug único — e roda via front no Step 9.** Contempla as possibilidades relevantes em produção: a nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## Artefato
 
@@ -61,6 +61,16 @@ Como N costuma ser **menor** que o total de UCs + detalhes, cada TC é **denso**
 
 > **"Se eu deletar este TC, algum UC ou detalhe do Step 4 fica descoberto — um bug ÚNICO passaria?"**
 > **SIM** → o TC é necessário. **NÃO** → redundante; reaproveite o slot para cobrir o que ainda falta.
+
+## Princípios neste step
+
+- **SRP** — 1 TC = 1 bug único. Denso (atravessa 4 UCs) não é difuso: falha por **um** motivo nomeável.
+- **DRY** — TC que não puxa cobertura nova é redundante; o filtro de significância é o DRY dos testes.
+- **KISS** — passos executáveis por outra pessoa sem o seu contexto, resultado observável no front.
+- **YAGNI** — teto de 10 e `nº TCs == nota`; não invente TC para "ficar completo".
+- **Motor** — o TC exercita o **comportamento do motor pelo front**, nunca a peça interna: TC que espia estado interno testa implementação, não comportamento.
+- **Refatoração** — TC redundante → **funda** (é o próprio filtro de significância).
+- **Design** (se tem UI) — a cobertura contempla **estados × breakpoints** e a11y como **lente, não como TC extra**: um TC denso cobre a tela em mobile e desktop; dois TCs gêmeos por breakpoint furam o teto.
 
 ## Gateway 5 → 6
 

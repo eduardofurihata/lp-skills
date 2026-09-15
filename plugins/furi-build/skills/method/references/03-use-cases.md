@@ -1,6 +1,6 @@
 # Step 3 — Use Cases
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## Regra
 
@@ -42,6 +42,16 @@ Cada combinação distinta de (ator × fluxo × estado) = **1 UC separado**. Nã
 ```
 
 Tabela de assinaturas **única** — assinatura repetida em dois UCs é uma linha só. Ela é o esboço do contrato do motor que o Step 4 nomeia.
+
+## Princípios neste step
+
+- **SRP** — a combinação do § Regra é a unidade: um UC não carrega dois fluxos nem dois atores "para economizar".
+- **DRY** — tabela de assinaturas **única**, sem duplicata.
+- **YAGNI** — UC que nenhuma story do Step 2 pede não existe.
+- **KISS** — fluxo em passos de usuário, sem código: UC não é pseudo-implementação.
+- **Motor** — UCs que compartilham regra são do mesmo motor; a tabela de assinaturas já é o **esboço do contrato** dele.
+- **Refatoração** — UC agrupado → **quebre**; assinatura duplicada → **funda**.
+- **Design** (se tem UI) — cada UC lista seus **estados de tela** (vazio, carregando, erro, sucesso, limite). Estado não listado aqui é estado que não vai ser desenhado — e vira bug no Step 9.
 
 ## Gateway 3 → 4
 

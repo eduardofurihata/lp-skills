@@ -2,7 +2,7 @@
 
 **Toda decisão em aberto, resolvida aqui — sem perguntar.** Zero ambiguidade sobra para o Step 5.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## Artefato
 
@@ -77,6 +77,20 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - Projeto tem app mobile? A feature tem superfície mobile? Se tem → Android e iOS entram no escopo.
 - Projeto web-only (confirmado pela ausência de código mobile) → o spec documenta "feature não tem superfície mobile".
 - **Superfície visual = sim** quando algum UC lista estados de tela (Step 3) ou algum passo do happy path acontece numa tela do projeto.
+
+## Princípios neste step
+
+O step onde a arquitetura é decidida — **é aqui que YAGNI é mais barato**.
+
+- **YAGNI** — toda decisão declara o **UC que a exige**; sem UC → não entra (vai para "alternativas descartadas").
+- **DRY** — decisão que replica mecanismo já existente no projeto → a decisão é **reusar**.
+- **KISS** — entre duas soluções que atingem o nível #1, ganha a mais simples: complexidade só se paga com requisito, nunca com elegância.
+- **SRP** — fronteiras de módulo/camada explícitas.
+- **DIP + LoD** — cada decisão declara dependência de **abstração**, não de implementação (o motor define o contrato, a infra implementa), a **direção da dependência** e quem fala com quem. Fronteira mal desenhada aqui vira `a.b.c.d` no 7b.
+- **OCP** — onde a solução vai precisar crescer? o ponto de extensão é decisão, não improviso.
+- **Motor** — cada decisão declara **qual motor é dono da regra**; motor novo é nomeado e tem contrato desenhado aqui.
+- **Refatoração** — decisão que replica mecanismo existente vira **estender o motor que já existe**.
+- **Design** — aqui se **deriva a superfície visual** (§ Escopo derivado, nunca declarado). Decisão de arquitetura não fixa tela: o que é visual espera o 4b.
 
 ## Gateway 4a → 4b
 

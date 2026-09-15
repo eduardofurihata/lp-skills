@@ -85,7 +85,7 @@ Sem argumento, a doutrina acima passa a valer para o trabalho em curso — é is
 4. **Corrigir** o que está abaixo do nível, dentro do perímetro: **reusar → compor → promover**, nunca peça visual solta na pasta da feature; padrão ruim no perímetro se **eleva**; zero literal onde cabe token. **Sem mudar comportamento:** o que a tela faz continua igual; se corrigir exige mudar fluxo ou regra, isso é achado, não correção. Fora do perímetro: **lista**, não mexe.
 5. **Relatório**: por tela/componente, o que subiu · o que já estava no nível #1 (declarado) · **o que o DS ganhou** (tokens e componentes promovidos) · achados fora do perímetro · o que exigiria mudança de comportamento (não feito). **Nunca commita, nunca cria branch** — quem decide o que fazer com a passada é quem a pediu.
 
-> Dentro do `/method`: quando a superfície visual é derivada, a lente de cada step e a linha de design do Gateway Check estão em `method/references/lentes.md` — mesma doutrina, cobrada step a step.
+> Dentro do `/method`: quando a superfície visual é derivada (Step 4a), cada step traz a **lente** desta doutrina no bullet *Design* da seção *Princípios neste step* do próprio reference (`method/references/`), e a declara na linha de design do Gateway Check (`method/references/gateways.md`) — mesma doutrina, cobrada step a step.
 
 ## Racionalizações proibidas
 

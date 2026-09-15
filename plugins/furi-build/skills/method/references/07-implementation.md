@@ -1,6 +1,6 @@
 # Step 7 — Implementação (7a: Plano + 7b: Codificar)
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## 7a — Plano de Implementação (OBRIGATÓRIO antes de codar)
 
@@ -81,6 +81,18 @@ O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um 
 - [ ] Task 1: descrição — arquivos: [lista]
 ```
 
+### Princípios neste step (7a)
+
+**O portão mais barato do protocolo** — o que o plano decidir errado aqui vira código errado no 7b. As seções obrigatórias acima são a lente em forma de artefato:
+
+- **DRY** — § 3.1 *Reúso antes de criar*: o que já existe e será reutilizado/estendido; arquivo novo só com a justificativa de por que nada serve.
+- **YAGNI** — § 3.2 *O que NÃO vamos construir*: abstrações, camadas e flags consideradas e descartadas por não ter UC que as exija.
+- **Motor** — § 3.3: qual nasce, qual é estendido, qual lógica dispersa será absorvida.
+- **SRP** — cada arquivo do plano declara sua responsabilidade única, em uma frase.
+- **OCP/DIP** — o plano declara os **pontos de extensão** e de quem cada arquivo depende, em que direção.
+- **Refatoração** — § 3.5: o plano **lista o perímetro** (o que será aberto, lido ou atravessado) e o que sobe em cada arquivo.
+- **Design** (se tem UI) — § 3.4: inventário do DS, o que reusa, o que compõe, o que promove, tokens novos. **Zero valor literal planejado** — se o plano já traz `#hex`, o 7b nasce errado.
+
 ### Regras
 
 - Plano COMPLETO e AUTOCONTIDO — qualquer pessoa/AI implementa lendo apenas este arquivo + código
@@ -98,13 +110,16 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 - **Visual:** conforme § 3.4 do plano e `docs/04-design/design-system.md` — doutrina no `/front`
 - **i18n (se configurado):** conforme § 2 do plano — string user-facing nova/alterada é chave de tradução; literal hardcoded em projeto com i18n = bug, mesmo com o texto "correto"
 
-### Práticas Obrigatórias
+### Princípios neste step (7b)
 
-**Arquitetura — o `/principles` na íntegra (invocado neste step), por arquivo aberto:** SOLID (os cinco), DRY, KISS, YAGNI, Law of Demeter, Motores, camadas e direção de dependências, com os limiares numéricos de lá. O plano já decidiu o que reusar (§ 3.1), o que não construir (§ 3.2) e qual motor é dono de cada regra (§ 3.3): o 7b **executa** essas decisões. Encontrou a mesma regra fora do motor → **absorve** conforme § 3.3, e o chamador passa a só chamar.
+- **Todos na íntegra, por arquivo aberto** — SOLID (os cinco), DRY, KISS, YAGNI, LoD, Motores, camadas e direção de dependências, com os limiares numéricos do `/principles`. O plano já decidiu o que reusar (§ 3.1), o que não construir (§ 3.2) e qual motor é dono de cada regra (§ 3.3): o 7b **executa** essas decisões.
+- **Motor** — a capacidade mora no motor e o chamador **só chama**; encontrou a mesma regra fora dele → **absorve** conforme § 3.3.
+- **Refatoração** — para CADA arquivo do perímetro do § 3.5, a tabela *Achou → Faça* do `/principles` § Refatoração contínua é o checklist, e a **regra do saldo** é o que o gateway cobra. Dentro do perímetro, sem timidez; fora dele, balde C (`follow-ups.md`).
+- **Design** (se tem UI) — os 9 na íntegra: token (zero literal) · composição > configuração · headless · **todos** os estados · a11y AA · breakpoints do projeto, 320px de piso. Padrão ruim no perímetro → **eleva**, não copia.
 
 > Desvio do que o plano decidiu em § 3.1-3.4 é **decisão nova**: registre no plano (que é vivo em 7b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
 
-**Refatoração Obrigatória — a cada passada o código sobe** (`principles/SKILL.md` § Refatoração contínua): para CADA arquivo do perímetro do § 3.5, a tabela *Achou → Faça* de lá é o checklist, e a **regra do saldo** é o que o gateway cobra — o arquivo subiu, ou está declarado como já no nível #1. Dentro do perímetro, sem timidez; fora dele, balde C (`follow-ups.md`).
+### Práticas Obrigatórias
 
 **Banco de Dados (quando aplicável):**
 - Migrações versionadas (`npx prisma migrate dev --name descritivo`)

@@ -2,7 +2,7 @@
 
 **Executar TODOS os TCs e verificar se o código funciona como esperado.**
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## Artefato
 
@@ -261,6 +261,16 @@ Um screenshot do happy path em desktop é a fatia que nunca quebra. Para TC que 
 - **Interação:** foco visível por teclado nos controles do fluxo.
 
 Documente os paths em `kanban/09-run-test/<tópico>.md` identificando **qual estado e qual breakpoint** cada arquivo prova. Estado que o UC listou e que não tem evidência = TC incompleto, não PASSED.
+
+## Princípios neste step
+
+O Step 9 não escreve feature — escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de fazer o TC passar, nasce o remendo.
+
+- **Todos os princípios** — fix é código; **workaround que faz o TC passar violando SRP/DRY é FAILED disfarçado**.
+- **KISS** — o fix mais simples que resolve a causa; não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
+- **Motor** — o fix vai **para o motor**, nunca de remendo no chamador: corrigir na tela o que o motor calcula errado cria a segunda fonte da regra.
+- **Refatoração** — fix novo reabre o perímetro do fix; os arquivos que ele tocou entram na regra do saldo.
+- **Design** (se tem UI) — evidência por **estado × breakpoint**, não só o happy path em desktop. Remendo de CSS que faz o TC passar é FAILED disfarçado.
 
 ## Gateway 9 → 10
 

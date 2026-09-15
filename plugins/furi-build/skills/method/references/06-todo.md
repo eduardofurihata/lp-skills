@@ -2,7 +2,7 @@
 
 **Cada task = uma unidade resolvível em um prompt — e o card é a superfície viva da feature até o Done.** Ele carrega as tasks, o checklist de QA e o ledger de follow-ups: é o que permite parar e retomar de onde parou.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `follow-ups.md`
 
 ## Artefato
 
@@ -45,6 +45,16 @@ A seção `## Test Cases (QA)` do card é o rastreador de "já testei ou não" �
 A seção `## Follow-ups` do card é onde todo achado fora do escopo documentado é registrado e classificado, do Step 1 ao Step 10 — é o que permite o protocolo fechar **seco** (Regra Inviolável 7).
 
 **Semeie agora (Step 6):** cabeçalho da tabela + **transcreva o que já apareceu nos Steps 1-5** (as linhas "Follow-ups detectados neste step" dos Gateway Checks). Nada apareceu → seção presente e vazia. Baldes, status, dedup e o que acontece com o ledger nos Steps 7-10: `follow-ups.md`.
+
+## Princípios neste step
+
+- **SRP** — 1 task = 1 responsabilidade resolvível em 1 prompt; task com "e depois" são duas.
+- **DRY** — task que recria o que já existe vira task de **reúso** ("estender X"); a checagem é grep, não memória.
+- **KISS** — descrição na linguagem do que muda, não do como interno.
+- **YAGNI** — task sem UC/TC que a exija sai da lista.
+- **Motor** — cada task declara **qual motor** ela constrói, estende ou absorve; task que espalha a mesma regra por N telas não existe.
+- **Refatoração** — task que recria o existente vira task de **extensão**; o perímetro que ela vai abrir já entra anotado, para o 7a planejar a elevação.
+- **Design** (se tem UI) — task de UI declara o **nível atômico** (átomo/molécula/organismo) e qual componente do DS ela constrói, estende ou promove.
 
 ## Gateway 6 → 7a
 
