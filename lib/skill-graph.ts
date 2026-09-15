@@ -118,7 +118,7 @@ export function buildSkillGraph(skills: Skill[]): SkillGraphLayout {
     edge.mutual = merged.has(edgeKey(edge.to, edge.from));
   const edges = [...merged.values()];
 
-  // 2. Ranks. `solve ↔ ui` e `homolog ↔ prod` são ciclos mútuos e intencionais
+  // 2. Ranks. `homolog ↔ prod` é ciclo mútuo e intencional
   //    no requires: em vez de escolher uma back-edge para quebrar (a escolha
   //    inverteria o fluxo — prod acabaria abaixo de homolog), condensa os
   //    componentes fortemente conexos e ranqueia o DAG resultante. Os nós de um

@@ -20,7 +20,7 @@ O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o
 ## Iron Law
 
 > **Precisão > tokens > velocidade.** Mire **10x acima da referência #1 do mercado** (padrão do `/solve`). "É simples, pulo" = a violação.
-> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** e o **design** (quando tem tela) valem em **todos** os steps — doutrina em `plugins/furi-build/skills/principles/SKILL.md`, lente por step nas seções § Step N → Princípios neste step do `/method` (pacote `furi-build`, carregados pelo `/method` que o `work-cycle` invoca). Card "pequeno" não relaxa nenhum deles.
+> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração contínua** e o **design** (quando tem tela) valem em **todos** os steps — doutrina em `plugins/furi-build/skills/method/references/principios.md`, lente por step nas seções § Step N → Princípios neste step do `/method` (pacote `furi-build`, carregados pelo `/method` que o `work-cycle` invoca). Card "pequeno" não relaxa nenhum deles.
 >
 > **O alvo é estado, não etapa.** `/work` num card já commitado é gap zero, dito com a evidência. `/work` num card sem branch cria a branch, entende, implementa e commita — sem mandar ninguém "rodar outra coisa antes".
 
