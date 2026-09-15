@@ -19,7 +19,7 @@
 # Plano de Implementação — <feature>
 
 ## 1. Contexto Consolidado
-- Problema (de 01-problem), Stories (de 02-user-stories), Use Cases (de 03-use-cases), Spec (de 04-spec)
+- Problema (de 01-problem), Stories (de 02-user-stories), Use Cases (de 03-use-cases), Spec (de 04-spec), Design (de 04-design, se tem UI)
 
 ## 2. Código Existente Relevante
 - CADA arquivo/módulo a modificar/reutilizar: o que faz, impacto, dependências, padrões
@@ -59,7 +59,7 @@ Toda capacidade tem **um** dono (`principios.md` § Motores):
 **Absorver é planejado, não improvisado:** liste onde a mesma regra está espalhada hoje e que passa a só chamar o motor.
 
 ## 3.4 Design System — OBRIGATÓRIO se a feature tem superfície visual
-Lido de `docs/04-spec/design-system.md` (`design.md`):
+Lido de `docs/04-design/<tópico>.md` (as telas decididas no Step 4b) e de `docs/04-design/design-system.md` (`design.md`):
 
 | Preciso de | DS tem? | Decisão |
 |---|---|---|
@@ -102,7 +102,7 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 - **Identificar a camada:** controller/service/component/hook/schema/shared — respeite responsabilidades
 - **Buscar código reutilizável ANTES de criar:** Grep/Glob em `packages/shared/`, `src/lib/`, `src/components/ui/`, `src/hooks/`. Se existe parecido, reutilize — NÃO duplique.
 - **Verificar direção de dependências:** shared → api/web ok. api → web ou web → api proibido.
-- **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-spec/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `design.md`.
+- **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-design/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `design.md`.
 - **Ordem ao precisar de algo visual:** **reusar** o que o DS tem → **compor** do que ele tem → **promover** (criar no DS, nunca na pasta da feature).
 - **i18n (se configurado):** TODA string user-facing nova/alterada DEVE ser chave de tradução, nunca literal. Strings literais hardcoded em projeto com i18n = bug, mesmo se texto estiver "correto".
 

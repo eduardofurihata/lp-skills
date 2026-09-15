@@ -23,6 +23,7 @@
   - User Stories: `docs/02-user-stories/<tópico>.md`
   - Use Cases: `docs/03-use-cases/<tópico>.md`
   - Spec: `docs/04-spec/<tópico>.md`
+  - Design: `docs/04-design/<tópico>.md` (se tem UI)
   - To Do: (deletado — ver abaixo)
   - Test Cases: `docs/05-test-cases/<tópico>.md`
   - Plano: `kanban/07-implementation/<tópico>.md`

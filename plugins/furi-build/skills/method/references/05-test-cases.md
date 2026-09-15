@@ -27,6 +27,7 @@ A nota sai do **quanto a feature tem para cobrir** — quanto mais, maior a nota
 | Estados de dado/sistema (vazio, parcial, expirado, bloqueado) | Step 3 |
 | Plataformas no escopo (web/Android/iOS) | Step 4 |
 | Cross-cutting (auth, permissões, a11y, analytics, segurança) | Step 4 |
+| Telas × estados × breakpoints (se tem UI) | Step 4b |
 | Raio de impacto / edge cases do questioning loop | Step 4 |
 
 Pouco a cobrir (1 UC, 1 fluxo, sem cross-cutting) → nota baixa (1-3). Muito a cobrir → nota perto de 10.
