@@ -3,7 +3,6 @@ name: proto
 description: 'Use when user invokes /proto to recreate a screen in 3 versions, each on a temporary parallel route in the same app ({rota-original}-v1/-v2/-v3), respecting the app design system, covering mobile and desktop at the project breakpoints, at /solve quality — designed as the screen SHOULD be, not as it is. Triggers on "recria essa tela em 3 versões", "redesenha essa tela", "prototipa variações dessa tela", "quero comparar opções de UI". Ends with the 3 URLs and a recommendation so the user picks one; the chosen version is implemented later by /method.'
 effort: max
 requires: solve
-handoff: method
 argument-hint: "[rota, tela ou print]"
 ---
 
@@ -17,7 +16,7 @@ O entregável não é uma tela. É uma **escolha**.
 
 - **3 versões que competem de verdade.** Três propostas para a mesma tela, cada uma apostando em algo diferente — e cada uma defensável como a melhor. Se as 3 pudessem coexistir como ajuste de espaçamento da mesma tela, não são 3 versões.
 
-- **O design system do app.** Tokens, componentes, tipografia, ícones e escalas são os do projeto, lidos do projeto (e de `docs/04-spec/design-system.md`, se existir). Nada inventado fora deles; o que o DS não tem, sai da **composição** do que ele tem. Doutrina completa — tokens como fonte única, atomicidade, composição > configuração, headless, estados, Jakob, a11y AA: **`ui/SKILL.md`**. Aqui não se **promove** ao DS: protótipo é descartável; a promoção acontece no `/method`, quando a versão escolhida for implementada.
+- **O design system do app.** Tokens, componentes, tipografia, ícones e escalas são os do projeto, lidos do projeto (e de `docs/04-spec/design-system.md`, se existir). Nada inventado fora deles; o que o DS não tem, sai da **composição** do que ele tem. Doutrina completa — tokens como fonte única, atomicidade, composição > configuração, headless, estados, Jakob, a11y AA: **`method/references/design.md`**. Aqui não se **promove** ao DS: protótipo é descartável; a promoção acontece no `/method`, quando a versão escolhida for implementada.
 
 - **Rotas paralelas temporárias.** `{rota-original}-v1`, `-v2`, `-v3` no mesmo app. A rota original e o código compartilhado ficam intocados — o que é novo nasce dentro da pasta da própria versão. São descartáveis por contrato: a versão escolhida é implementada na rota real (`/method`) e as `-v*` somem.
 
@@ -40,7 +39,7 @@ Protótipo descartável não é desculpa para código torto: a versão escolhida
 - **YAGNI** — 3 versões da tela pedida. Não invente feature nova, config, flag ou "modo" que ninguém pediu para diferenciá-las.
 - **KISS** — a diferença entre as versões é de **proposta** (hierarquia, fluxo, densidade), não de complexidade técnica.
 - **Tokens** — mesmo em protótipo, cor/espaçamento/tipografia vêm do token. Literal cravado é o que faz a versão escolhida nascer torta no `/method`.
-- Detalhe: `principles/SKILL.md` (engenharia) e `ui/SKILL.md` (design).
+- Detalhe: `method/references/principios.md` (engenharia) e `method/references/design.md` (design).
 
 ## PARE se pensar
 
