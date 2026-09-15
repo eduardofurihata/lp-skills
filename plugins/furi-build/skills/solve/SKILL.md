@@ -3,6 +3,7 @@ name: solve
 description: 'Use ONLY when the user explicitly invokes /solve (bare /solve = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:solve` via the Skill tool. NEVER activate on your own initiative. — resolve the requested task at world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality baseline, aiming to make us the #1 reference in the market.'
 effort: max
 argument-hint: "[o que resolver]"
+boundary: [principles, front]
 ---
 
 # /solve — Resolver no nível da referência #1
@@ -21,14 +22,7 @@ Resolva mirando ser a **referência #1 do mercado** — no calibre dos **big pop
 
 Qualidade vem antes de esforço, tempo ou tokens. A complexidade necessária para chegar nesse nível é requisito, não obstáculo. Genérico ou mediano = falha.
 
-## Princípios e design — a doutrina, não duplicada aqui
-
-Nível #1 é também no código, não só no resultado visível — e, com tela, é visual também. A doutrina tem fonte única, a mesma que o `/method` cobra step a step:
-
-- **`method/references/principios.md`** — os princípios de engenharia (**SOLID**, os cinco · **DRY** · **KISS** · **YAGNI** · **Law of Demeter** · **Motores**) e a **refatoração contínua**: tudo por onde o trabalho passa sobe, regra do saldo.
-- **`method/references/design.md`** — o design (tokens como fonte única, atomicidade, composição, headless, todos os estados, Jakob, preservação de contexto, a11y AA) e como o design system evolui com o produto.
-
-Leia-os: valem em cada decisão, cada arquivo, cada artefato — do primeiro rascunho ao último review. Lente por step, linhas do Gateway Check e racionalizações estão lá.
+Nível #1 é também no código e, com tela, no visual — mas a **forma** é doutrina de outras duas skills, não desta: `/principles` (engenharia) e `/front` (design). Esta skill define o **nível**; quem constrói invoca as três.
 
 ## PARE se pensar
 "tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "o existente tá longe demais do nível, começo outro do lado" · "crio o novo agora, o antigo eu apago depois"

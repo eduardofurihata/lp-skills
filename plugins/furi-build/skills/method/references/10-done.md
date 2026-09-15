@@ -4,7 +4,7 @@
 >
 > Terminal **não** quer dizer sem gateway: o Step 10 tem gateway de **entrada** — o **Gate de Convergência** (zero follow-ups abertos). Ele roda ANTES de escrever o done doc, ANTES do `rm` e ANTES do commit.
 
-**Chame e use:** `/solve` (Skill tool) · `principios.md` § Lente por step · `design.md` § Lente por step (se tem UI) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
 
 ## Pré-requisitos (AMBOS)
 
@@ -32,12 +32,12 @@
 - **Status final dos TCs** — **checklist completo por TC** (`- [x] TC-N`), copiado da seção `## Test Cases (QA)` do card de to-do, + contagem total (todos PASSED)
 - **Ledger de Follow-ups final** — tabela completa copiada da seção `## Follow-ups` do card de to-do (todos `RESOLVIDO-NO-STEP` / `RESOLVIDO-POR-CICLO` / `DESCARTADO`, **zero `ABERTO`**), com link do done doc de cada ciclo
 - **Conteúdo do todo incorporado** — tasks completadas do `kanban/06-todo/`
-- **Princípios — o que produziram** (`principios.md`), 5 linhas, sem prosa:
+- **Princípios — o que produziram** (`/principles`), 5 linhas, sem prosa:
   - **Reutilizado (DRY):** o que existia e foi estendido em vez de recriado (do § 3.1 do plano)
   - **Descartado (YAGNI):** o que foi considerado e não construído (do § 3.2 do plano)
   - **Motores (§ 3.3):** quais nasceram, quais cresceram, que lógica dispersa foi absorvida
   - **Elevado (refatoração do perímetro, § 3.5):** o que estava abaixo do nível #1 no caminho percorrido e subiu — e o que já estava no nível #1
-  - **DS ganhou** (`design.md`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
+  - **DS ganhou** (`/front`, se tem UI): tokens e componentes **promovidos**, padrões visuais elevados. Nada promovido → escreva que a feature coube no DS existente.
 - **Commit SHA** — hash do commit criado neste step (ver abaixo)
 
 > Sem essas 5 linhas o done doc mente por omissão: registra o que a feature faz e esconde **como ela ficou** — que é justamente o que o próximo ciclo (e quem for revisar a mudança) precisa saber. A linha do DS é o que impede a próxima feature de reinventar o que esta acabou de promover.

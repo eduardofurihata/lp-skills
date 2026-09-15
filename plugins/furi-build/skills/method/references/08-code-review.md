@@ -1,6 +1,6 @@
 # Step 8 — Code Review Crítico
 
-**Chame e use:** `/solve` (Skill tool) · `principios.md` § Lente por step · `design.md` § Lente por step (se tem UI) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
 
 ## 8a — Revisão em Loop
 
@@ -22,8 +22,8 @@ REPETIR até 100% limpo:
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível #1?
-     - **Princípios, UM A UM e POR NOME:** a tabela de `principios.md` é o checklist — para cada linha, a *falha típica* aconteceu aqui? Os cinco do SOLID inclusive. E o plano foi cumprido — § 3.1 (reúso), § 3.2 (nada furado sem registro), § 3.3 (motores)?
-     - **Design, UM A UM e POR NOME** (só com superfície visual): a tabela de `design.md`, mesma mecânica; § 3.4 do plano cumprido?
+     - **Princípios, UM A UM e POR NOME:** a tabela do `/principles` é o checklist — para cada linha, a *falha típica* aconteceu aqui? Os cinco do SOLID inclusive. E o plano foi cumprido — § 3.1 (reúso), § 3.2 (nada furado sem registro), § 3.3 (motores)?
+     - **Design, UM A UM e POR NOME** (só com superfície visual): a tabela do `/front`, mesma mecânica; § 3.4 do plano cumprido?
      - **Nível referência #1** (`/solve`): está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"?
   6. Problema encontrado → triagem A/B/C (`follow-ups.md`):
      - **A** → corrigir IMEDIATAMENTE → voltar ao 1
@@ -58,7 +58,7 @@ O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer a
 ## Análise de Segurança
 Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 
-## Análise de Qualidade (por princípio — `principios.md`)
+## Análise de Qualidade (por princípio — `/principles`)
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|
 | SRP (responsabilidade única, camadas) | ✅/⚠️ | |
@@ -77,7 +77,7 @@ Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 
 Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio não revisado.
 
-## Análise de Design (por princípio — `design.md`) — só com superfície visual
+## Análise de Design (por princípio — `/front`) — só com superfície visual
 
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|

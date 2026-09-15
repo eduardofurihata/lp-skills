@@ -2,7 +2,7 @@
 
 **Toda decisão em aberto, resolvida aqui — sem perguntar.** Zero ambiguidade sobra para o Step 5.
 
-**Chame e use:** `/solve` (Skill tool) · `principios.md` § Lente por step · `design.md` § Lente por step (se tem UI) · `follow-ups.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `lentes.md` (linha deste step) · `follow-ups.md`
 
 ## Artefato
 
@@ -28,7 +28,7 @@
 
 Cada decisão se resolve, nesta ordem:
 
-1. **`/solve`** — a referência #1: big pop tech apps / líderes do domínio, boas práticas consagradas (Clean Architecture, OWASP, performance, escalabilidade) e os princípios (`principios.md`; `design.md` se tem UI)
+1. **`/solve`** — a referência #1: big pop tech apps / líderes do domínio, boas práticas consagradas (Clean Architecture, OWASP, performance, escalabilidade) e os princípios (`/principles`; `/front` se tem UI)
 2. **Código existente** — o código do projeto, CLAUDE.md, `.claude/patterns.md`, convenções já adotadas
 
 ## Autonomous Decision Loop
