@@ -148,7 +148,7 @@ A partir do Step 6 até o 9: 1 TaskCreate = 1 task. Nunca agrupe entre 6 e 9.
 
 Para cada step:
 1. **Invoque o `/solve`** (Skill tool) — em TODO step, não só na ativação: o padrão de qualidade é reinjetado a cada passada, porque no Step 7b a ativação já ficou a centenas de milhares de tokens de distância
-2. Abra `references/XX-<nome>.md` — o bloco `## Chame antes de escrever` repete as três chamadas do step
+2. Abra `references/XX-<nome>.md` — a linha **Chame e use** repete as chamadas do step
 3. Releia docs anteriores conforme coluna "Reler"
 4. Execute o step (crie/atualize o .md da pasta correspondente)
 5. Publique **Gateway Check** no chat (`references/gateways.md`)

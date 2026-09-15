@@ -4,11 +4,7 @@
 
 TC profissional, adversarial, captura **bug único**. Contempla várias possibilidades relevantes em produção. Roda via front no Step 9.
 
-## Chame antes de escrever
-
-- **`/solve`** (Skill tool) — o padrão desta passada: referência #1 do mercado. Invocação real, não de memória.
-- **`principios.md`** § Lente por step — o que SOLID · DRY · KISS · YAGNI · LoD · Motores cobram **neste** step (mais `design.md`, se a feature tem superfície visual).
-- **`follow-ups.md`** — achado fora do escopo documentado entra no Ledger classificado A/B/C; a linha de follow-ups é obrigatória no Gateway Check.
+**Chame e use:** `/solve` (Skill tool) · `principios.md` § Lente por step · `design.md` § Lente por step (se tem UI) · `follow-ups.md`
 
 ## Complexidade → Quantidade → Cobertura
 
