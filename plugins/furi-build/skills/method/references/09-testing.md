@@ -1,13 +1,13 @@
-## Step 9 — Testing
+# Step 9 — Testing (Run Test)
 
 **Executar TODOS os TCs e verificar se o código funciona como esperado.**
 
-### Artefato
+## Artefato
 
 - **Pasta:** `kanban/09-run-test/`
 - **Arquivo:** `<tópico>.md`
 
-### FRONT É FRONT — Regra Absoluta
+## FRONT É FRONT — Regra Absoluta
 
 **Se o protocolo diz "executar via front", você EXECUTA via front.** Sem exceções, sem atalhos, sem "deduzo do código".
 
@@ -20,7 +20,7 @@
 
 Análise de código captura: lógica isolada. **Análise de código NÃO substitui teste front. Nunca.**
 
-### Pre-Flight Blocker Contract (OBRIGATÓRIO — ANTES de tudo)
+## Pre-Flight Blocker Contract (OBRIGATÓRIO — ANTES de tudo)
 
 ```
 PRE-FLIGHT (executar PRIMEIRO):
@@ -44,7 +44,7 @@ PRE-FLIGHT (executar PRIMEIRO):
 
 **Por que:** impede racionalização retroativa. Setup identificado ANTES, não depois de já ter rodado os "fáceis".
 
-### CRIE AS CONDIÇÕES (a regra mais importante do testing)
+## CRIE AS CONDIÇÕES (a regra mais importante do testing)
 
 **Um TC precisa de condições específicas? CRIE-AS. Você está em ambiente LOCAL DEV com PODER TOTAL.**
 
@@ -60,9 +60,9 @@ PRE-FLIGHT (executar PRIMEIRO):
 
 "Não tenho as condições certas" NUNCA é desculpa — crie-as.
 
-### Prediction-Execution-Reconciliation (OBRIGATÓRIO)
+## Prediction-Execution-Reconciliation (OBRIGATÓRIO)
 
-#### Ao iniciar execução, declarar:
+### Ao iniciar execução, declarar:
 
 ```markdown
 ## Predição
@@ -70,19 +70,19 @@ Vou executar N TCs. Vou produzir N evidências (screenshots com path).
 TCs a executar: [lista nominal completa]
 ```
 
-#### Ao finalizar, ANTES de qualquer report:
+### Ao finalizar, ANTES de qualquer report:
 
 ```markdown
 ## Reconciliação
 - Predicted: N TCs
-- Evidence collected: M evidências com path (TC de texto de IA: screenshot **+** transcrição integral)
+- Evidence collected: M screenshots com path
 - Delta: N - M
 - TCs sem evidência: [lista] → status = NOT_RUN (não "coberto por", não "equivalente a")
 ```
 
 **Se delta > 0: TCs sem evidência são automaticamente NOT_RUN. Não existe "covered by other means".**
 
-### Regra de Report: Resposta Binária
+## Regra de Report: Resposta Binária
 
 Quando o user perguntar "tudo ok? all tc passed?", a **primeira frase** é obrigatoriamente:
 
@@ -92,7 +92,7 @@ Quando o user perguntar "tudo ok? all tc passed?", a **primeira frase** é obrig
 
 **Proibido como primeira frase:** "Mostly yes", "Honest answer:", "With caveats", "Sim, mas...", "Quase tudo", "It depends". Detalhes vêm DEPOIS da frase numérica.
 
-### Três Regras de Integridade
+## Três Regras de Integridade
 
 **1. Disclosure ≠ compliance.**
 Dizer "eu não rodei X" NÃO torna OK marcar X como PASSED. Disclosure honesta de uma violação AINDA É uma violação. Disclosure só conserta mentir; não conserta cheating.
@@ -111,7 +111,7 @@ Qualquer sentença que aplique os seguintes conceitos a um status de TC = viola�
 
 Se o TC é "N/A neste build" → deveria ter sido BLOCKED no pre-flight, não pulado silenciosamente.
 
-### TCs em Tasks — Duas Camadas de TaskCreate (OBRIGATÓRIO)
+## TCs em Tasks — Duas Camadas de TaskCreate (OBRIGATÓRIO)
 
 **SEMPRE crie tasks em DUAS camadas: uma por GRUPO temático E uma por cada TC INDIVIDUAL dentro do grupo.**
 
@@ -134,7 +134,7 @@ PROCEDIMENTO (antes de qualquer TC):
 
 **Sem TaskCreate em AMBAS as camadas = step 9 NÃO iniciou.**
 
-### Audit Pré-Execução — BLOQUEANTE (publicar no chat ANTES do primeiro TC rodar)
+## Audit Pré-Execução — BLOQUEANTE (publicar no chat ANTES do primeiro TC rodar)
 
 **Depois de criar os TaskCreate das duas camadas e ANTES de tocar em qualquer ferramenta de teste (Playwright, emulator, curl), publique este bloco visualmente no chat. Audit ausente do chat = execução não iniciou.**
 
@@ -157,7 +157,7 @@ PROCEDIMENTO (antes de qualquer TC):
 | "Vou começar a rodar enquanto crio as tasks que faltam" | NÃO. Audit ✅ antes de TUDO. BLOQUEADO. |
 | "Faltam 2 de 30, começo pelos 28 que têm task" | NÃO. Atomicidade. 100% ou BLOQUEADO. |
 
-### Loop de Execução
+## Loop de Execução
 
 ```
 REPETIR até todos passarem SEM NENHUMA MUDANÇA:
@@ -168,10 +168,7 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
      b. CADA TC do batch: executar DO ZERO via ferramenta apropriada
      c. PASSED (com screenshot/evidência) ou FAILED (motivo)
         → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota do motivo.
-        → TC de **texto gerado por IA** (Step 5): a evidência é a saída REAL — **transcrição integral** colada
-          em `kanban/09-run-test/<tópico>.md`, com o screenshot junto (§ Evidência de texto);
-          texto que lê **igual ou pior** que a referência #1 do spec = FAILED. "O código rodou e o texto apareceu" NÃO é PASSED.
-     d. Bug → CLASSIFICAR (ver § Follow-ups):
+     d. Bug → CLASSIFICAR (ver `follow-ups.md`):
         - dentro do escopo documentado → **balde A**: corrigir AGORA. ATENÇÃO: qualquer fix invalida
           o ciclo → RESETE todos os `- [x]` do checklist de QA para `- [ ]` (vai retestar TUDO do zero)
         - escopo novo que este trabalho expôs → **balde B**: registrar ABERTO no ledger
@@ -184,11 +181,11 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
   6. Todos PASSED sem nenhuma mudança de código → Step 10
 ```
 
-#### Checklist de QA no card de to-do — atualizar ao vivo (retomada)
+### Checklist de QA no card de to-do — atualizar ao vivo (retomada)
 
 O card `kanban/06-todo/<tópico>.md` tem a seção `## Test Cases (QA)` com um `- [ ]` por TC (semeada no Step 6). **Atualize-a em tempo real:** TC PASSED → `- [x]`; fix de código → reset tudo para `- [ ]`. É o que permite **parar e retomar** — ao voltar, abra o card e os `- [ ]` restantes são exatamente o que falta rodar. O `kanban/09-run-test/` guarda a evidência (screenshot/motivo); o checklist guarda o status de bate-pronto. No Step 10 este checklist final é copiado para o done.
 
-### Ferramenta por Contexto
+## Ferramenta por Contexto
 
 | Contexto | Ferramenta | Como |
 |----------|-----------|------|
@@ -199,7 +196,7 @@ O card `kanban/06-todo/<tópico>.md` tem a seção `## Test Cases (QA)` com um `
 
 **OBRIGATÓRIO: Mobile = Android E iOS, sempre.** Toda feature mobile gera execução nas duas. Se iOS indisponível na máquina, peça ao usuário antes de marcar PASSED.
 
-#### Pool Playwright — Fallback Automático (`pw#`)
+### Pool Playwright — Fallback Automático (`pw#`)
 
 Existem **múltiplas instâncias** do MCP Playwright disponíveis: `mcp__playwright-0__*`, `mcp__playwright-1__*`, … até `mcp__playwright-5__*`. Cada uma controla um browser próprio e **só atende uma instância do Claude por vez** (outra sessão rodando em paralelo pode estar usando a mesma).
 
@@ -218,7 +215,7 @@ PROCEDIMENTO (ao iniciar testes via front):
 
 "Playwright ocupado" **NUNCA** vira SKIP/BLOCKED enquanto houver outro índice livre no pool — buscar a instância livre é fallback automático, parte do "CRIE AS CONDIÇÕES".
 
-### Regras Rígidas
+## Regras Rígidas
 
 - **NUNCA SKIP ou BLOCKED** — resolva o impedimento: crie o usuário, insira dado no DB, configure flag, suba o serviço, instale dep. Pergunte ao usuário somente após esgotar tentativas.
 - **FORCE via FRONT** — cada TC como usuário real: abrir app/browser, navegar, clicar, preencher, validar com screenshot. Sem atalhos de API, sem "verificar no código".
@@ -226,7 +223,7 @@ PROCEDIMENTO (ao iniciar testes via front):
 - **NUNCA marque PASSED apenas com tsc** — tsc verifica tipos, não comportamento.
 - **Qualquer fix de código** → fix invalida review → volta ao Step 8 → depois retesta TUDO no Step 9.
 
-### Princípios neste step (`principles/SKILL.md`)
+## Princípios neste step (`principios.md`)
 
 O Step 9 não escreve feature — mas escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de "fazer o TC passar", nasce o remendo.
 
@@ -234,19 +231,18 @@ O Step 9 não escreve feature — mas escreve **fixes**, e é aí que o protocol
 - **Workaround que faz o TC passar violando os princípios é FAILED disfarçado.** Duplicar lógica pra contornar, enfiar regra de negócio no componente, `if` especial pro cenário do teste — o TC até fica verde, a feature fica pior. Marque FAILED e conserte de verdade.
 - **Motor** — o fix vai **para o motor**, onde a regra mora; nunca de remendo no chamador. Corrigir na tela o que o motor calcula errado cria a segunda fonte da regra, que é exatamente o defeito.
 - **Refatoração** — fix novo **reabre o perímetro do fix**: os arquivos que ele tocou entram na regra do saldo como qualquer outro.
-- **Design** (se tem UI) — a evidência é por **estado × breakpoint**, não só o happy path em desktop: screenshot prova que a tela existe, a comparação com o DS e com o benchmark prova que está certa. **Remendo de CSS que faz o TC passar é FAILED disfarçado** (`ui/SKILL.md`).
-- **Texto de IA** (se tem essa superfície) — a evidência é a **saída inteira transcrita**, não o screenshot do começo. **Instrução nova no prompt só para aquele caso passar é FAILED disfarçado** — é o remendo de CSS da saída de IA. O fix vai para onde o texto nasce (prompt de sistema, template, dado do RAG, modelo), nunca de emenda no chamador.
+- **Design** (se tem UI) — a evidência é por **estado × breakpoint**, não só o happy path em desktop: screenshot prova que a tela existe, a comparação com o DS e com o benchmark prova que está certa. **Remendo de CSS que faz o TC passar é FAILED disfarçado** (`design.md`).
 - **Fix → volta ao Step 8**, que revisa esse fix contra a lista de princípios como qualquer outro código. Sem atalho.
 - **KISS na investigação:** o fix mais simples que resolve a causa — não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
 
-### Resultado de TC — Binário
+## Resultado de TC — Binário
 
 - **PASSED** = resultado esperado atingido + evidência (screenshot/dump)
 - **FAILED** = qualquer outra situação, incluindo "não consegui completar o fluxo"
 
 Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" entre TCs.
 
-### Audit Pós-Execução — BLOQUEANTE (publicar no chat ANTES do Gateway 9 → 10)
+## Audit Pós-Execução — BLOQUEANTE (publicar no chat ANTES do Gateway 9 → 10)
 
 **Quando achar que o Loop terminou e ANTES de publicar o Gateway 9 → 10, publique este bloco. Audit ausente = step 9 não terminou.**
 
@@ -255,10 +251,8 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 - Tasks individuais esperadas (do Audit Pré): **N**
 - Tasks individuais com status `completed`: **C** — listar (TaskID → TC-ID)
 - TCs com evidência (screenshot path em `kanban/09-run-test/<tópico>.md`): **E** — listar (TC-ID → path)
-- TCs de **texto gerado por IA** com **transcrição integral** colada em `kanban/09-run-test/<tópico>.md`: **T** — listar (TC-ID → bloco) · `N/A` sem essa superfície
 - Ratio C == N? ✅ / ❌ — tasks pendentes: [listar TaskIDs]
 - Ratio E == N? ✅ / ❌ — TCs sem screenshot: [listar TC-IDs]
-- Ratio T == TCs de texto de IA? ✅ / ❌ / N/A — TCs só com screenshot: [listar TC-IDs]
 - Status agregado: **N PASSED**, **0 FAILED**, **0 NOT_RUN**, **0 SKIPPED**, **0 BLOCKED** ✅ / ❌
 - Último ciclo sem mudanças de código? ✅ / ❌
 - Follow-ups detectados no Step 9: **F** — todos classificados no ledger (A/B/C)? ✅ / ❌
@@ -276,11 +270,9 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 | "Marco os 2 faltantes como PASSED e documento depois" | NÃO. Sem evidência = NOT_RUN. BLOQUEADO. |
 | "Reporto parcial enquanto os últimos rodam" | NÃO. Audit ✅ antes de QUALQUER report. BLOQUEADO. |
 | "Publico Gateway sem Audit, audit é só formalidade" | NÃO. Audit é pré-requisito formal do Gateway. BLOQUEADO. |
-| "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principles/SKILL.md`). BLOQUEADO. |
-| "O screenshot do chat já mostra a resposta" | NÃO. Screenshot recorta: truncamento, repetição e fecho ficam fora do quadro. Sem transcrição integral, o TC de texto é NOT_RUN. BLOQUEADO. |
-| "Colei o começo e pus '[…]' no resto" | NÃO. Cortar a evidência é escolher o que o auditor pode ver. Integral ou nada. BLOQUEADO. |
+| "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principios.md`). BLOQUEADO. |
 
-### Evidência visual — estado × breakpoint (feature com superfície visual)
+## Evidência visual — estado × breakpoint (feature com superfície visual)
 
 Um screenshot do happy path em desktop é a fatia que nunca quebra. Para TC que atravessa tela, a evidência cobre:
 
@@ -290,28 +282,7 @@ Um screenshot do happy path em desktop é a fatia que nunca quebra. Para TC que 
 
 Documente os paths em `kanban/09-run-test/<tópico>.md` identificando **qual estado e qual breakpoint** cada arquivo prova. Estado que o UC listou e que não tem evidência = TC incompleto, não PASSED.
 
-### Evidência de texto — a saída inteira, colada (feature com superfície de texto gerado por IA)
+## Gateway 9 → 10
 
-Screenshot de chat prova que a resposta **apareceu**; não prova que ela **lê bem**. Screenshot recorta: o resto da resposta está abaixo da dobra, o truncamento fica fora do quadro, a repetição do terceiro parágrafo não cabe na imagem. Para o TC de qualidade do texto (Step 5), a evidência é a **saída inteira, transcrita**, colada em `kanban/09-run-test/<tópico>.md` — o screenshot fica junto, como prova de que ela saiu do produto, e não do seu resumo.
-
-```markdown
-### TC-N — saída real (transcrição integral)
-**Entrada:** <o que o usuário digitou / o estado que disparou>
-**Saída:**
-> <a resposta COMPLETA, do primeiro ao último caractere — sem cortar, sem "[…]", sem parafrasear>
-**Screenshot:** <path>
-**Vs. referência #1 (<nome do spec>):** <como ela responderia isto, e onde a nossa perde ou ganha>
-```
-
-**Julgue contra o que o Step 4 escreveu** (`docs/04-spec/<tópico>.md` § Texto gerado por IA — tom e persona, concisão, formatação, idioma do usuário, sem truncamento, sem placeholder, sem alucinação, sem robótico), critério a critério. A lista que vale é a do spec: critério que ele acrescentou entra, critério que ele não pediu sai — **a fonte é uma só**, aqui não nasce segunda lista.
-
-**Texto que lê igual ou pior que a referência #1 é FAILED**, nunca "PASSED com ressalva": o teste é falho mesmo com o código certo. Os demais defeitos entram na triagem A/B/C como qualquer achado.
-
-**Fix de texto vai para onde o texto nasce.** Enfiar instrução no prompt até aquele caso passar é o **remendo de CSS da saída de IA**: o TC fica verde e a próxima pergunta volta a ler mal. O fix trata a causa — prompt de sistema, template, o dado que o RAG entregou, o modelo escolhido — e reabre o perímetro como qualquer outro fix.
-
-Feature sem essa superfície: escreva `N/A — sem superfície de texto gerado por IA (derivado do Step 4)` **uma vez**, no lugar da seção.
-
-### Gateway 9 → 10
-
-Ver § Gateways seção "Gateway 9 → 10" (detalhado).
-Inclui as linhas de **princípios**, **refatoração** e **design**, o critério de evidência por estado × breakpoint e o de **transcrição integral da saída de texto de IA**.
+Ver `gateways.md` seção "Gateway 9 → 10" (detalhado).
+Inclui as linhas de **princípios**, **refatoração** e **design**, e o critério de evidência por estado × breakpoint.

@@ -2,14 +2,11 @@
 name: method
 description: Use when user invokes /method, when starting feature work, or before any code change and `docs/01-problem/` through `docs/04-spec/` lacks artifact for the feature. Triggers on phrases like "implementa X", "novo feature", "fix não trivial". Not for typos, config tweaks, or read-only questions.
 effort: max
-argument-hint: "[KEY-N] [feature-name]"
+argument-hint: "[feature-name]"
 requires: solve
-boundary: [homolog, prod, setup]
 ---
 
 # /method — Protocolo de Engenharia Rigorosa
-
-> **Argumento:** `[KEY-N]` é o **card ativo** — a key que o Step 10 põe no commit (é assim que o `/work` a entrega; numa branch que acumula cards, o nome da branch é só o do 1º card, e a key certa é esta). `[feature-name]` é o `<tópico>` dos artefatos (`docs/…/<tópico>.md`, `kanban/…/<tópico>.md`); sem ele, derive um slug curto do card ou do pedido. Sem `KEY-N`, a key vem do nome da branch (§ Step 10, passo 2).
 
 > 🚫 **NÃO crie branch nem worktree paralelo.** Trabalhe SEMPRE na branch e no worktree atual. Proibido `git checkout -b`, `git switch -c`, `git branch <nome>`, `git worktree add`, a opção `isolation: "worktree"` em subagents, ou qualquer criação/troca de branch / abertura de worktree. Toda a implementação acontece na branch e no diretório em que a conversa começou.
 
@@ -25,40 +22,41 @@ boundary: [homolog, prod, setup]
 
 **Tokens são baratos.** Bug em produção, retrabalho, bronca do usuário, perda de confiança — caros. Trade-off explícito: prefira gastar 10× mais tokens e acertar do que 1× token e errar.
 
-## Padrão de Qualidade — 10x a Referência #1 do Mercado
+## Padrão de Qualidade — Referência #1 do Mercado
 
-> O padrão é o do **`/solve`** (invocado na ativação): **10x acima do #1 do mercado** — o calibre dos **big pop tech apps** é o piso, nunca o "bom o suficiente" e nunca o empate. O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
+> O padrão é o do **`/solve`** (invocado na ativação): ser o **#1 do mercado**, no calibre dos **big pop tech apps** — nunca o "bom o suficiente". O `/method` é o protocolo que entrega nesse nível. Específico do `/method`:
 
-**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto — o alvo é 10x acima dele. Se a base atual não chega lá, **refaça do zero** — reescrever para chegar ao nível 10x é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual e sem merge para `main` sem autorização (regras acima).
+**Isto NÃO é mais um MVP.** O nível dos líderes é o piso, não o teto. Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício. A reescrita NÃO é bypass do protocolo: passa pelos 10 steps, fica documentada em Problema/Spec, acontece na branch atual e sem merge para `main` sem autorização (regras acima).
 
 ### Princípios de engenharia — regime, não fase
 
-Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter** e **Motores**) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única da doutrina e das racionalizações proibidas: **`principles/SKILL.md`** (não duplicada aqui — DRY vale para o protocolo também); a **lente de cada step** — o que ela cobra *naquele* step — mora na seção do próprio step, em § Step N → Princípios neste step.
+Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter** e **Motores**) são **inegociáveis e valem do Step 1 ao Step 10** — não só no código. Fonte única, com a **lente de cada step** e as racionalizações proibidas: **`references/principios.md`** (não duplicados aqui — DRY vale para o protocolo também).
 
+- **SOLID são cinco, não um.** Declarar só o SRP deixa OCP, LSP, ISP e DIP fora — e o que não é nomeado nunca é revisado.
+- **Motores:** toda capacidade tem **um** dono. Regra espalhada por telas é defeito, não estilo; achou pedaço solto → **absorve**.
 - **Todo Gateway Check publica a linha de princípios** (`- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — <o que a lente deste step cobrou>`). Sem a linha, o gateway não foi publicado — mesma régua da linha de follow-ups.
-- **YAGNI não é desculpa para entregar menos que o UC pede**, nem para descartar achado real — vira balde B em § Follow-ups.
+- **KISS/YAGNI matam a complexidade *desnecessária*; a *necessária* para o nível #1 continua sendo requisito.** YAGNI nunca é desculpa para entregar menos que o UC pede nem para descartar achado real (isso é balde B).
 - Cobrar só no 7b é tarde: a complexidade especulativa nasce no **Spec (4)** e no **Plano (7a)** e chega no código como fato consumado.
 
 ### Refatoração contínua — a cada passada o código sobe
 
-Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho passa** — o **perímetro** definido em `principles/SKILL.md` § Refatoração contínua. **Dentro dele, refatore bastante**; fora, vale a triagem de § Follow-ups: **B** se este trabalho o expôs, **C** se não tem relação.
+Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho passa**. O **perímetro** é o arquivo editado, o aberto só para entender, o dependente que o grep revelou e o caminho que o fluxo atravessa. **Dentro dele, refatore bastante**; fora, é balde C.
 
-- **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você **declara** que já estava no nível 10x.
+- **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você **declara** que já estava no nível #1.
 - **Todo Gateway Check publica a linha de refatoração** (`- **Refatoração (tudo por onde passou):** ✅ <N> elevados — <o que subiu>`). Nos Steps 1-6 ela é sobre o **artefato** (doc consolidado, story separada, UC quebrado), e nunca é vazia.
-- Detalhe: `principles/SKILL.md` § Refatoração contínua e § Step 7.
+- Detalhe: `references/principios.md` § Refatoração contínua e `references/07-implementation.md`.
 
 ### Design — regime, não fase
 
-Feature com **superfície visual** (derivada no Step 4, nunca declarada pelo usuário) obedece a **`ui/SKILL.md`**: tokens como fonte única, atomicidade, composição > configuração, headless, todos os estados, Lei de Jakob, consistência semântica, preservação de contexto, fluxos modulares — e **WCAG AA como piso**.
+Feature com **superfície visual** (derivada no Step 4, nunca declarada pelo usuário) obedece a **`references/design.md`**: tokens como fonte única, atomicidade, composição > configuração, headless, todos os estados, Lei de Jakob, consistência semântica, preservação de contexto, fluxos modulares — e **WCAG AA como piso**.
 
 - **O design system evolui com o produto:** precisou de algo que ele não tem → **reusar → compor → promover** (criar no DS, nunca na pasta da feature), registrando em `docs/04-spec/design-system.md`.
-- **Texto gerado por IA é a outra superfície derivada** no Step 4 (resposta de chat, resumo, persona, RAG, notificação gerada): se a feature tem, o spec nomeia a **referência #1** e o que "ler bem" significa, o Step 5 tem um TC com resultado na **qualidade do texto lido**, e no Step 9 texto que **não ganha** da referência é **FAILED** — mesmo com o código certo. A evidência do Step 9 é a **saída inteira transcrita**, não o screenshot do começo. Sem essa superfície, a linha é `N/A`, como Design sem tela — mas **derivar `não` custa justificativa nomeada**: qual saída a feature produz e por que o usuário final não a lê ("não tem tela" não é resposta). A derivação começa pelo **produto**: core de IA ⇒ a superfície nasce `sim`. Detalhe: § Step 4 → Texto gerado por IA.
-- **Consistência é lei; mediocridade não é.** Padrão existente abaixo do nível 10x **não se copia** — eleva-se ou vira achado no ledger. É essa a diferença entre UI consistente e UI que nunca melhora.
+- **Consistência é lei; mediocridade não é.** Padrão existente abaixo do nível #1 **não se copia** — eleva-se ou vira achado no ledger. É essa a diferença entre UI consistente e UI que nunca melhora.
 - **Gateway de feature com UI publica a linha de design** (`- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ …`). Sem superfície visual: declare `❌ N/A` **uma vez**, no Gateway 4→5.
 
-Auto-check em cada gateway: *"O líder do domínio trocaria o dele por isto — e a tela dele por esta?"* Se não → não está pronto.
+Auto-check em cada gateway: *"Um líder do domínio assinaria isto — e assinaria esta tela?"* Se não → não está pronto.
 
-**PARE se pensar:** "é só um MVP" · "igualei o líder, tá ótimo" · "10x é força de expressão" · "depois a gente melhora" · "tá bom o suficiente" · "deixa o legado como está pra não refazer".
+**PARE se pensar:** "é só um MVP" · "depois a gente melhora" · "tá bom o suficiente" · "deixa o legado como está pra não refazer".
 
 ## Regras Invioláveis (fecham brechas conhecidas)
 
@@ -66,45 +64,45 @@ Auto-check em cada gateway: *"O líder do domínio trocaria o dele por isto — 
 2. **Retrofit puro é PROIBIDO.** Código escrito fora do `/method` → você volta ao Step 1. O código vira *insumo* de Step 3 (Verificação de Realidade), nunca substituto.
 3. **Bypass granular = bypass igual.** "Pula Gate + mobile, roda 7+9" = violação completa. Ou roda 100% ou não iniciou.
 4. **"Trivial / 1 botão / outros já funcionam assim" NÃO é exceção.** Gate Check vale para TODAS as features — "não existe tarefa pequena demais".
-5. **Escopo de plataforma e superfícies são DERIVADOS** (Step 4 + Verificação de Realidade), nunca declarados pelo usuário — plataforma, superfície **visual** e superfície de **texto gerado por IA**. Derivação de produto já registrada no `.claude/patterns.md` é ponto de partida, nunca veredicto; e derivar que **não** existe superfície de texto exige nomear a saída que a feature produz e dizer por que o usuário final não a lê.
+5. **Escopo de plataforma é DERIVADO** (Step 4 + Verificação de Realidade), nunca declarado pelo usuário.
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
-7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 1→10; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `plugins/furi-ship/skills/pipeline/SKILL.md` § findings), nunca saída do dev. Ver § Follow-ups.
+7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 1→10; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio do **reviewer** (`/homolog` e `/prod`, via `plugins/furi-ship/skills/pipeline/SKILL.md` § findings), nunca saída do dev. Ver `references/follow-ups.md`.
 
-8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**: SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e **Motores** são cobrados do Step 1 ao 10, cada um pela lente do step (§ Step N → Princípios neste step, aplicando a doutrina de `principles/SKILL.md`), e **declarados na linha obrigatória de todo Gateway Check** (§ Gateways). "Princípio é coisa de código", "aplico tudo no 7b", "SOLID eu cubro com o SRP", "está implícito" = BLOQUEADO.
+8. **Princípios valem em TODO step — não só no código.** SOLID (os **cinco**: SRP, OCP, LSP, ISP, DIP), DRY, KISS, YAGNI, Law of Demeter e **Motores** são cobrados do Step 1 ao 10, cada um pela lente do step (`references/principios.md`), e **declarados na linha obrigatória de todo Gateway Check**. "Princípio é coisa de código", "aplico tudo no 7b", "SOLID eu cubro com o SRP", "está implícito" = BLOQUEADO.
 
 9. **Refatoração é regime.** A cada passada, o código do **perímetro** sobe (regra do saldo). Linha própria em todo Gateway Check; sem ela, o gateway não foi publicado. "Só mexi numa linha", "abri só pra ler", "refatoro numa PR separada depois" = BLOQUEADO.
 
-10. **Design é regime, e o DS evolui com o produto.** Feature com superfície visual obedece a `ui/SKILL.md`, declara a linha de design em todo gateway e **promove ao DS** o que não couber em reúso ou composição. "Copio a tela existente por consistência" (estando ruim), "a11y/mobile/estado vazio depois", "hardcodei a cor, é só uma" = BLOQUEADO.
+10. **Design é regime, e o DS evolui com o produto.** Feature com superfície visual obedece a `references/design.md`, declara a linha de design em todo gateway e **promove ao DS** o que não couber em reúso ou composição. "Copio a tela existente por consistência" (estando ruim), "a11y/mobile/estado vazio depois", "hardcodei a cor, é só uma" = BLOQUEADO.
 
-Lista completa de racionalizações + contra-argumentos: ver § Rationalizations.
+Lista completa de racionalizações + contra-argumentos: ver `references/rationalizations.md`.
 
 ## Os 10 Steps (nomes, pastas e arquivos são contrato — NÃO alterar)
 
-| # | Step | Pasta | Arquivo | Reler | Seção |
+| # | Step | Pasta | Arquivo | Reler | Detalhe |
 |---|------|-------|---------|-------|---------|
-| 1 | Problema | `docs/01-problem/` | `<tópico>.md` | — | § Step 1 — Problema |
-| 2 | User Stories | `docs/02-user-stories/` | `<tópico>.md` | 1 | § Step 2 — User Stories |
-| 3 | Use Cases | `docs/03-use-cases/` | `<tópico>.md` | 1-2 | § Step 3 — Use Cases |
-| 4 | Spec | `docs/04-spec/` | `<tópico>.md` | 1-3 | § Step 4 — Spec |
-| 5 | Test Cases | `docs/05-test-cases/` | `<tópico>.md` | 1-4 | § Step 5 — Test Cases |
-| 6 | To Do | `kanban/06-todo/` | `<tópico>.md` | 1-5 | § Step 6 — To Do |
-| 7a | Plano | `kanban/07-implementation/` | `<tópico>.md` | 1-6 + código | § Step 7 — Implementação |
-| 7b | Codificar | Código no projeto | .tsx/.ts etc. | Plano (7a) | § Step 7 — Implementação |
-| 8 | Code Review | `kanban/08-code-review/` | `<tópico>.md` | Plano + TCs + Use Cases | § Step 8 — Code Review |
-| 9 | Run Test | `kanban/09-run-test/` | `<tópico>.md` | TCs (5) + Review (8b) | § Step 9 — Testing |
-| 10 | Done | `kanban/10-done/` | `<tópico>.md` | — | § Step 10 — Done |
+| 1 | Problema | `docs/01-problem/` | `<tópico>.md` | — | `references/01-problema.md` |
+| 2 | User Stories | `docs/02-user-stories/` | `<tópico>.md` | 1 | `references/02-user-stories.md` |
+| 3 | Use Cases | `docs/03-use-cases/` | `<tópico>.md` | 1-2 | `references/03-use-cases.md` |
+| 4 | Spec | `docs/04-spec/` | `<tópico>.md` | 1-3 | `references/04-spec.md` |
+| 5 | Test Cases | `docs/05-test-cases/` | `<tópico>.md` | 1-4 | `references/05-test-cases.md` |
+| 6 | To Do | `kanban/06-todo/` | `<tópico>.md` | 1-5 | `references/06-todo.md` |
+| 7a | Plano | `kanban/07-implementation/` | `<tópico>.md` | 1-6 + código | `references/07-implementation.md` |
+| 7b | Codificar | Código no projeto | .tsx/.ts etc. | Plano (7a) | `references/07-implementation.md` |
+| 8 | Code Review | `kanban/08-code-review/` | `<tópico>.md` | Plano + TCs + Use Cases | `references/08-code-review.md` |
+| 9 | Run Test | `kanban/09-run-test/` | `<tópico>.md` | TCs (5) + Review (8b) | `references/09-testing.md` |
+| 10 | Done | `kanban/10-done/` | `<tópico>.md` | — | `references/10-done.md` |
 
-**Leia a seção § Step N deste arquivo ANTES de executar** (`grep -n '^## Step N' SKILL.md` localiza a linha). Releia docs anteriores do step atual antes de começar.
+**Abra o reference do step ANTES de executar.** Releia docs anteriores do step atual antes de começar.
 
-> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em § Step N → Princípios neste step — a linha de **Design** inclusive; as doutrinas que elas aplicam são as das skills `/principles` (engenharia) e `/ui` (design). Não duplicada aqui, e não executável de memória.
+> **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `references/principios.md` § Lente por step e `references/design.md` § Lente por step. Não duplicada aqui, e não executável de memória.
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — **10x acima da referência #1 do mercado**. O `/solve`, por sua vez, invoca o **`/principles`** — a doutrina (princípios de engenharia + provas de clareza), válida do Step 1 ao 10; a lente de cada step está na seção do step (§ Step N → Princípios neste step). Chamada real, não "seguir de memória": **sem as duas chamadas visíveis (`solve` → `principles`), a ativação não aconteceu.** O `/solve` define o nível; o `/principles` define a régua; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
+**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/method` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão de qualidade — ser a **referência #1 do mercado**. Chamada real, não "seguir de memória": sem a invocação, o passo não aconteceu. O `/solve` define o nível; o `/method` é o protocolo que ENTREGA nesse nível. Depois disso, siga na ordem:
 
 ### 1. Inventário de Docs (UMA vez, antes de qualquer step)
 
-Scan único de `docs/**/*.md` para mapear o que existe antes de criar/editar. Protocolo completo: § Inventário de Docs.
+Scan único de `docs/**/*.md` para mapear o que existe antes de criar/editar. Protocolo completo: `references/inventario-docs.md`.
 
 ### 2. Gate Check (OBRIGATÓRIO — exibir visualmente)
 
@@ -123,7 +121,7 @@ Antes de qualquer código:
 - Faltando .md → NÃO escreva código. Execute steps faltantes primeiro.
 - Exiba o Gate Check VISUALMENTE no início de cada resposta que envolva código.
 - "Pula o gate" → recuse, peça confirmação explícita.
-- Exceções: typo, refactor puro, config, pergunta sobre código. "Demo", "feature trivial", "componente já existe" **NÃO** são exceções. Ver § Gateways.
+- Exceções: typo, refactor puro, config, pergunta sobre código. "Demo", "feature trivial", "componente já existe" **NÃO** são exceções. Ver `references/gateways.md`.
 
 ### 3. TaskCreate
 
@@ -142,17 +140,17 @@ Antes de qualquer código:
 
 A partir do Step 6 até o 9: 1 TaskCreate = 1 task. Nunca agrupe entre 6 e 9.
 
-**Step 9 exige DUAS camadas:** 1 task por grupo + 1 task por TC individual. Ver § Step 9.
+**Step 9 exige DUAS camadas:** 1 task por grupo + 1 task por TC individual. Ver `references/09-testing.md`.
 
-**Step 9 exige DOIS audits bloqueantes publicados no chat:** (a) **Audit Pré-Execução** antes de rodar qualquer TC (verifica ratio 1:1 de TaskCreate individual == TCs); (b) **Audit Pós-Execução** antes do Gateway 9→10 (verifica completed + evidência == TCs). Sem os dois audits ✅ no chat, step 9 não pode avançar. Ver § Step 9 e § Gateways.
+**Step 9 exige DOIS audits bloqueantes publicados no chat:** (a) **Audit Pré-Execução** antes de rodar qualquer TC (verifica ratio 1:1 de TaskCreate individual == TCs); (b) **Audit Pós-Execução** antes do Gateway 9→10 (verifica completed + evidência == TCs). Sem os dois audits ✅ no chat, step 9 não pode avançar. Ver `references/09-testing.md` e `references/gateways.md`.
 
 ### 4. Executar os Steps em Sequência
 
 Para cada step:
-1. Leia a seção § Step N deste arquivo (`grep -n '^## Step N'`)
+1. Abra `references/XX-<nome>.md`
 2. Releia docs anteriores conforme coluna "Reler"
 3. Execute o step (crie/atualize o .md da pasta correspondente)
-4. Publique **Gateway Check** no chat (§ Gateways)
+4. Publique **Gateway Check** no chat (`references/gateways.md`)
 5. Se ✅ LIBERADO → transição **automática** ao próximo step (sem perguntar)
 6. Se ❌ BLOQUEADO → volte ao step atual, corrija, re-publique gateway
 
@@ -183,7 +181,7 @@ Step 9 ✅ → GATE DE CONVERGÊNCIA (entrada do Step 10)
 
 **Só o ciclo raiz commita** — um único commit no fim, cobrindo a feature + todos os ciclos de follow-up.
 
-Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações: § Follow-ups.
+Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações: `references/follow-ups.md`.
 
 ## Red Flags — Pare Imediatamente Se Pensar/Ouvir
 
@@ -208,7 +206,7 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "isso vira card depois" / "follow-up pro próximo sprint" / "anoto como dívida"
 - "achei mas tá fora do escopo, deixo registrado e sigo"
 - "resolvo o follow-up direto no código, sem rodar o `/method` pra ele"
-- "rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" / "já conheço o `/solve`, sigo sem invocar" / "já conheço o `/principles`, sigo sem invocar"
+- "rodo o ciclo do follow-up de cabeça, sem invocar o `/method`" / "já conheço o `/solve`, sigo sem invocar"
 - "sobrou 1 item no ledger, é pequeno, fecho assim mesmo"
 - "marco como C (descartado) pra não travar o Gate"
 - "princípio (SOLID/DRY/KISS/YAGNI) é coisa de código, aqui é doc" / "aplico tudo no 7b, lá é o lugar"
@@ -224,10 +222,8 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "é só uma cor, hardcode não faz mal" / "o DS não tem, crio na pasta da feature"
 - "a11y / mobile / estado vazio depois"
 - "o screenshot do happy path já prova" / "design é subjetivo, não dá pra cobrar em gateway"
-- "não tem tela, então não tem texto de IA a testar" / "é só troca de modelo / prompt / RAG, isso é infra"
-- "o texto apareceu, marco PASSED" / "boto mais uma linha no prompt e o TC passa"
 
-**Todas significam: PARE. Releia § Rationalizations. Execute do jeito certo.**
+**Todas significam: PARE. Releia `references/rationalizations.md`. Execute do jeito certo.**
 
 ## Não Pergunte Entre Steps
 
@@ -236,33 +232,15 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 
 O protocolo é esteira de produção. Dúvidas de implementação → resolva pela hierarquia (padrão do projeto > big apps > boas práticas) e documente no spec. Única pausa legítima: decisão IRREVERSÍVEL + 2 caminhos radicalmente opostos + impacto que só usuário pode julgar.
 
-## Índice das Seções
+## Arquivos de Referência
 
-Este arquivo é o **núcleo** (leis, steps, ordem, gateways de ferro, red flags). O detalhe de cada seção mora em `references/` — **um arquivo por seção, lido sob demanda**: só entra no contexto quando o step chega. Uma referência `§ X` neste protocolo aponta para o arquivo abaixo.
+- `references/principios.md` — **fonte única** dos princípios (SOLID completo, DRY, KISS, YAGNI, LoD, **Motores**), **refatoração contínua**, lente por step, linhas obrigatórias do gateway e racionalizações
+- `references/design.md` — **fonte única** do design (tokens SSOT, atomicidade, composição, headless, estados, Jakob, a11y), **evolução do design system**, lente por step e racionalizações
+- `references/rationalizations.md` — tabela única consolidada de todas as racionalizações proibidas + Red Flags completo
+- `references/gateways.md` — todos os critérios de gateway + Gateway 9→10 detalhado
+- `references/follow-ups.md` — Ledger de Follow-ups, triagem A/B/C, Gate de Convergência e o loop até o passe seco
+- `references/inventario-docs.md` — protocolo do inventário inicial
+- `references/01-problema.md` até `references/10-done.md` — detalhamento por step
 
-| § | Arquivo |
-|---|---|
-| Step 1 — Problema | `references/step-01-problema.md` |
-| Step 2 — User Stories | `references/step-02-user-stories.md` |
-| Step 3 — Use Cases | `references/step-03-use-cases.md` |
-| Step 4 — Spec (+ Design System, texto gerado por IA, `.claude/patterns.md`, Autonomous Decision Loop) | `references/step-04-spec.md` |
-| Step 5 — Test Cases | `references/step-05-test-cases.md` |
-| Step 6 — To Do | `references/step-06-todo.md` |
-| Step 7 — Implementação (7a Plano, 7b Codificar) | `references/step-07-implementacao.md` |
-| Step 8 — Code Review | `references/step-08-code-review.md` |
-| Step 9 — Testing | `references/step-09-testing.md` |
-| Step 10 — Done | `references/step-10-done.md` |
-| Gateways — critérios de todos + Gateway 9→10 detalhado | `references/gateways.md` |
-| Follow-ups — Ledger, triagem A/B/C, Gate de Convergência | `references/follow-ups.md` |
-| Inventário de Docs — protocolo do inventário inicial | `references/inventario-docs.md` |
-| Rationalizations — tabela única das racionalizações proibidas + Red Flags completo | `references/rationalizations.md` |
+**Abra o reference relevante ao iniciar cada step. Não tente executar de memória.**
 
-Fora deste pacote:
-- `principles/SKILL.md` — **fonte única** dos princípios (SOLID completo, DRY, KISS, YAGNI, LoD, **Motores**), da **refatoração contínua** e das racionalizações — mora na skill `/principles` (dona da doutrina), mesmo pacote. Independente deste protocolo: não cita step nem gateway. A lente por step é das seções daqui; as linhas obrigatórias são do § Gateways
-- `ui/SKILL.md` — **fonte única** do design (tokens SSOT, atomicidade, composição, headless, estados, Jakob, a11y), **evolução do design system**, lente por step e racionalizações
-
-**Arquivos do projeto que o protocolo lê por caminho** (sem depender de quem os cria — como já lê o `CLAUDE.md`):
-- `.claude/patterns.md` — padrões de código do projeto; lido no Step 4 e **feito crescer** por ele (dono: este protocolo). Caminhos antigos migram no Step 4.
-- `.claude/ship-setup/setup.md` § Commit — convenção de commit e posição da key do card; lido no Step 10, **se existir**. Dono: `/setup` (pacote `furi-ship`) — este protocolo aplica o que está escrito e **não cria** o arquivo; sem ele, Conventional Commits. O resto do setup (branch, PR, Jira) não é assunto daqui.
-
-**Ao iniciar um step, leia o arquivo dele em `references/` (inteiro, `Read`). Ao chegar num gateway, leia `references/gateways.md`; ao capturar um achado, `references/follow-ups.md`. Não tente executar de memória.**

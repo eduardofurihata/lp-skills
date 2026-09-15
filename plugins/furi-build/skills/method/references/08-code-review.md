@@ -1,10 +1,6 @@
-## Step 8 — Code Review
+# Step 8 — Code Review Crítico
 
-### Princípios neste step (`principles/SKILL.md`)
-
-Revisar **contra a lista, princípio a princípio e por nome** — não por proxy, e **os cinco do SOLID**, não só o SRP. É o que a tabela `## Análise de Qualidade` do 8b cobra linha a linha (e a `## Análise de Design`, com superfície visual): a capacidade vazou do motor? existe segunda fonte da mesma regra? o contrato virou tripa exposta? o **saldo do perímetro** fecha — todo arquivo que a passada tocou subiu ou já estava no nível 10x? Violação encontrada entra na triagem A/B/C (§ Follow-ups): dentro do escopo, corrige agora; escopo novo, ledger.
-
-### 8a — Revisão em Loop
+## 8a — Revisão em Loop
 
 ```
 REPETIR até 100% limpo:
@@ -23,8 +19,8 @@ REPETIR até 100% limpo:
      - Acessibilidade (se frontend)?
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
-     - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível 10x?
-     - **Princípios, UM A UM e POR NOME** (`principles/SKILL.md` — a MESMA lista contra a qual o 7b escreveu):
+     - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível #1?
+     - **Princípios, UM A UM e POR NOME** (`principios.md` — a MESMA lista contra a qual o 7b escreveu):
        · **SRP** — arquivo/função/componente faz uma coisa? >40 linhas sem extrair? lógica+UI juntos?
        · **OCP** — comportamento novo entrou como `if`/`case` no meio do que já existia, em vez de composição?
        · **LSP** — alguma implementação lança onde o contrato não prevê, ou exige mais do que ele exige?
@@ -36,7 +32,7 @@ REPETIR até 100% limpo:
        · **LoD / acoplamento** — `a.b.c.d`? dependência circular? direção `api ↔ web` violada?
        · **Motores** — a capacidade vazou do motor? existe **segunda fonte** da mesma regra? o contrato virou tripa exposta? o § 3.3 foi cumprido?
        · **Camadas** — lógica de negócio em controller/componente?
-     - **Design, UM A UM e POR NOME** (`ui/SKILL.md` — só se a feature tem superfície visual):
+     - **Design, UM A UM e POR NOME** (`design.md` — só se a feature tem superfície visual):
        · **Tokens** — sobrou valor literal (`#hex`, `13px`) onde devia ser token?
        · **Atomicidade** — átomo conhecendo regra de negócio ou fazendo fetch?
        · **Composição > configuração** — >2 props booleanas de aparência?
@@ -46,20 +42,20 @@ REPETIR até 100% limpo:
        · **Preservação de contexto** — voltar apaga? filtro/rascunho/scroll sobrevivem?
        · **A11y (AA)** — contraste, foco visível, teclado, nome acessível, alvo ≥24px?
        · **DS** — componente visual novo nasceu na pasta da feature em vez de ser **promovido**?
-     - **Nível 10x:** o calibre dos big pop tech apps / líderes do domínio é o **piso** — isto está 10x acima dele, ou só "funciona"? ("O líder do domínio trocaria o dele por isto — e a tela dele por esta?")
+     - **Nível referência #1:** está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"? ("Um líder do domínio assinaria isto — e assinaria esta tela?")
   6. Problema encontrado → CLASSIFICAR e agir:
      - dentro do escopo documentado (docs 01-04) → **balde A**: corrigir IMEDIATAMENTE → voltar ao 1
      - escopo novo que este trabalho criou/tocou/expôs → **balde B**: registrar ABERTO no ledger
        (`## Follow-ups` do card de to-do) → vira ciclo /method próprio no Gate de Convergência
      - pré-existente e não tocado por este trabalho → **balde C**: registrar DESCARTADO + justificativa
-     Na dúvida entre B e C → B. Ver § Follow-ups.
+     Na dúvida entre B e C → B. Ver `follow-ups.md`.
   7. PR existente → atualizar comentários/descrição
   8. Loop até ZERO issues de balde A — NÃO aceitar "bom o suficiente"
 ```
 
 O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer aqui pode ficar só na cabeça ou só no relatório:** ou é corrigido agora (A), ou está `ABERTO` no ledger (B), ou está `DESCARTADO` com justificativa (C).
 
-### 8b — Relatório
+## 8b — Relatório
 
 **Organizar** `kanban/08-code-review/` → criar/atualizar `<tópico>.md`:
 
@@ -83,7 +79,7 @@ O Step 8 é o maior detector de follow-up do protocolo. **Nada do que aparecer a
 ## Análise de Segurança
 Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 
-## Análise de Qualidade (por princípio — `principles/SKILL.md`)
+## Análise de Qualidade (por princípio — `principios.md`)
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|
 | SRP (responsabilidade única, camadas) | ✅/⚠️ | |
@@ -98,11 +94,11 @@ Input validation | Auth | Dados sensíveis | Injection vectors (✅/❌/N/A)
 | Motores (§ 3.3 — um dono por capacidade) | ✅/⚠️ | |
 | Refatoração (saldo do perímetro, § 3.5) | ✅/⚠️ | |
 | Naming + consistência com o codebase | ✅/⚠️ | |
-| Nível 10x (o #1 do domínio é o piso) | ✅/⚠️ | |
+| Nível vs. referência #1 (big pop tech apps) | ✅/⚠️ | |
 
 Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio não revisado.
 
-## Análise de Design (por princípio — `ui/SKILL.md`) — só com superfície visual
+## Análise de Design (por princípio — `design.md`) — só com superfície visual
 
 | Princípio | Veredicto | Evidência / o que foi corrigido |
 |---|---|---|
@@ -129,7 +125,7 @@ Nenhum? → "nenhum follow-up emitido neste review".
 - Notas para o teste: pontos que exigem atenção
 ```
 
-### Regras Rígidas
+## Regras Rígidas
 
 - **NÃO crie PR** — apenas revise e corrija
 - **NÃO aprove PR** — apenas comente se existir
@@ -140,11 +136,11 @@ Nenhum? → "nenhum follow-up emitido neste review".
 - Veredicto ❌ → voltar ao 7b → rodar Step 8 inteiro novamente
 - Sem o .md criado = step NÃO completo
 
-### Gateway 8 → 9
+## Gateway 8 → 9
 
 - [ ] Veredicto **APROVADO** em 8b
 - [ ] Zero issues pendentes (balde A)
-- [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível 10x) — nenhuma linha em branco
+- [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível #1) — nenhuma linha em branco
 - [ ] **`## Análise de Design` preenchida por princípio** (se tem UI) — nenhuma linha em branco
 - [ ] **Princípios declarados** na linha do Gateway Check
 - [ ] **Refatoração declarada** na linha própria do Gateway Check

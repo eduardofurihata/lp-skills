@@ -1,21 +1,17 @@
-## Step 7 — Implementação
+# Step 7 — Implementação (7a: Plano + 7b: Codificar)
 
-### Princípios neste step (`principles/SKILL.md`)
+## 7a — Plano de Implementação (OBRIGATÓRIO antes de codar)
 
-A lente do Step 7 não é uma lista à parte — ela **é** a estrutura desta seção. No **7a** são as seções obrigatórias do plano: § 3.1 Reúso (DRY) · § 3.2 O que NÃO vamos construir (YAGNI) · § 3.3 Motores · § 3.4 Design System · § 3.5 Perímetro. No **7b** são § Práticas Obrigatórias (SOLID completo com limiar numérico, por arquivo aberto) e § Refatoração Obrigatória (o perímetro e a regra do saldo).
-
-### 7a — Plano de Implementação (OBRIGATÓRIO antes de codar)
-
-#### Reler antes
+### Reler antes
 
 - Steps 1-6 (todos) + código existente relevante
 
-#### Artefato
+### Artefato
 
 - **Pasta:** `kanban/07-implementation/`
 - **Arquivo:** `<tópico>.md` — prompt-mestre autocontido
 
-#### Estrutura
+### Estrutura
 
 ```markdown
 # Plano de Implementação — <feature>
@@ -32,7 +28,7 @@ A lente do Step 7 não é uma lista à parte — ela **é** a estrutura desta se
 ## 3. Estratégia de Implementação
 - Ordem de tasks (de 06-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
 - **Referência big apps:** como as big pop tech apps / líderes do domínio resolvem este problema de UX?
-- **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? A linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é **lei para consistência** — e **não para qualidade**: padrão abaixo do nível 10x se **eleva** ou vira achado no ledger, nunca se copia. Ver `ui/SKILL.md` § *Consistência é lei; mediocridade não é*.
+- **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? A linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é **lei para consistência** — e **não para qualidade**: padrão abaixo do nível #1 se **eleva** ou vira achado no ledger, nunca se copia. Ver `design.md` § *Consistência é lei; mediocridade não é*.
 - **Responsabilidade por arquivo (SRP):** para CADA arquivo a criar/modificar, uma frase — o que ele faz. Não coube em uma frase → o arquivo está fazendo duas coisas.
 
 ## 3.1 Reúso antes de criar (DRY) — OBRIGATÓRIO
@@ -52,7 +48,7 @@ Abstrações, camadas, flags, configs e generalizações que foram **considerada
 Seção vazia é suspeita: significa que nada foi cogitado, ou que tudo que foi cogitado entrou.
 
 ## 3.3 Motores — OBRIGATÓRIO
-Toda capacidade tem **um** dono (`principles/SKILL.md` § Motores):
+Toda capacidade tem **um** dono (`principios.md` § Motores):
 
 | Capacidade | Motor | Ação |
 |---|---|---|
@@ -61,7 +57,7 @@ Toda capacidade tem **um** dono (`principles/SKILL.md` § Motores):
 **Absorver é planejado, não improvisado:** liste onde a mesma regra está espalhada hoje e que passa a só chamar o motor.
 
 ## 3.4 Design System — OBRIGATÓRIO se a feature tem superfície visual
-Lido de `docs/04-spec/design-system.md` (`ui/SKILL.md`):
+Lido de `docs/04-spec/design-system.md` (`design.md`):
 
 | Preciso de | DS tem? | Decisão |
 |---|---|---|
@@ -72,11 +68,11 @@ Lido de `docs/04-spec/design-system.md` (`ui/SKILL.md`):
 - **Zero valor literal planejado** — se o plano já traz `#hex` ou `13px`, o 7b nasce errado.
 
 ## 3.5 Perímetro da refatoração — OBRIGATÓRIO
-O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um (`principles/SKILL.md` § Refatoração contínua):
+O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um (`principios.md` § Refatoração contínua):
 
 | Arquivo do perímetro | Por que entra | O que será elevado |
 |---|---|---|
-| `caminho/arquivo.ts` | editado / lido p/ entender / dependente do grep / no caminho do fluxo | duplicação → motor · naming · >40 linhas · morto · `a.b.c.d` · **ou** "já está no nível 10x" |
+| `caminho/arquivo.ts` | editado / lido p/ entender / dependente do grep / no caminho do fluxo | duplicação → motor · naming · >40 linhas · morto · `a.b.c.d` · **ou** "já está no nível #1" |
 
 ## 4. Mapa de Test Cases → Código
 - Para CADA TC: qual código atende, edge cases, validações necessárias
@@ -88,30 +84,29 @@ O que esta feature vai **abrir, ler ou atravessar** — e o que sobe em cada um 
 - [ ] Task 1: descrição — arquivos: [lista]
 ```
 
-#### Regras
+### Regras
 
-- Plano COMPLETO e AUTOCONTIDO — qualquer pessoa/AI implementa lendo apenas o plano + código
+- Plano COMPLETO e AUTOCONTIDO — qualquer pessoa/AI implementa lendo apenas este arquivo + código
 - Dúvida técnica → resolva autonomamente (padrão do projeto > big apps > boas práticas). Documente no plano.
 - Plano é **vivo**: pode ser atualizado **durante 7b** para registrar desvios/aprendizados. **Não pode** ser editado **após** 7b para retrofit.
 
-### 7b — Codificar
+## 7b — Codificar
 
 Implemente seguindo o plano como referência-mestre com **disciplina de engenharia rigorosa**.
 
-#### Antes de codar cada task
+### Antes de codar cada task
 
 - **Reler** `kanban/07-implementation/<feature>.md`
 - **Identificar a camada:** controller/service/component/hook/schema/shared — respeite responsabilidades
 - **Buscar código reutilizável ANTES de criar:** Grep/Glob em `packages/shared/`, `src/lib/`, `src/components/ui/`, `src/hooks/`. Se existe parecido, reutilize — NÃO duplique.
 - **Verificar direção de dependências:** shared → api/web ok. api → web ou web → api proibido.
-- **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-spec/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `ui/SKILL.md`.
+- **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-spec/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `design.md`.
 - **Ordem ao precisar de algo visual:** **reusar** o que o DS tem → **compor** do que ele tem → **promover** (criar no DS, nunca na pasta da feature).
-- **Padrões de código:** `.claude/patterns.md` (lido no Step 4) é lei para **consistência** — estrutura, nomenclatura, validação, erros. Não é lei para qualidade: padrão ruim no perímetro se eleva, e a elevação é **promovida** ao arquivo (Step 4, seção `## Esta feature promove`), não deixada implícita.
 - **i18n (se configurado):** TODA string user-facing nova/alterada DEVE ser chave de tradução, nunca literal. Strings literais hardcoded em projeto com i18n = bug, mesmo se texto estiver "correto".
 
-#### Práticas Obrigatórias
+### Práticas Obrigatórias
 
-**Arquitetura — os princípios na íntegra: `principles/SKILL.md` (fonte única).** Aqui é onde eles têm limiar numérico e viram checklist **por arquivo aberto**:
+**Arquitetura — os princípios na íntegra: `principios.md` (fonte única).** Aqui é onde eles têm limiar numérico e viram checklist **por arquivo aberto**:
 
 - **SRP:** cada arquivo/classe/função faz UMA coisa. >40 linhas → extraia helper. Componente mistura lógica+UI → separe em hook+componente.
 - **OCP:** comportamento novo entra por composição/estratégia. Se você está adicionando mais um `if`/`case` no meio de uma função que muita gente usa, pare — o ponto de extensão estava no plano (§ 3.3).
@@ -128,7 +123,7 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 
 > Desvio do que o plano decidiu em § 3.1/§ 3.2 é **decisão nova**: registre no plano (que é vivo em 7b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
 
-**Refatoração Obrigatória — a cada passada o código sobe** (`principles/SKILL.md` § Refatoração contínua):
+**Refatoração Obrigatória — a cada passada o código sobe** (`principios.md` § Refatoração contínua):
 
 Aplique os princípios acima (SOLID completo, DRY, KISS, YAGNI, LoD, Motores) ao código que **encontra**, não só ao que escreve. O alvo é o **perímetro do § 3.5** — e o perímetro não é só o arquivo que você editou:
 
@@ -139,9 +134,9 @@ Aplique os princípios acima (SOLID completo, DRY, KISS, YAGNI, LoD, Motores) ao
 | **dependente direto** que o grep revelou | quem importa o que você mexeu |
 | o **caminho que o fluxo atravessa** | tela → hook → service → motor |
 
-**Dentro do perímetro, refatore bastante — sem timidez.** Fora dele, é balde C (§ Follow-ups): o limite é o **caminho percorrido**, não o repositório.
+**Dentro do perímetro, refatore bastante — sem timidez.** Fora dele, é balde C (`follow-ups.md`): o limite é o **caminho percorrido**, não o repositório.
 
-Para CADA arquivo do perímetro, escaneie e eleve ao nível 10x:
+Para CADA arquivo do perímetro, escaneie e eleve ao nível #1:
 - **Capacidade espalhada** → **absorve no motor** (§ 3.3) e o chamador passa a só chamar
 - **Lógica duplicada** → extraia helper/util — e se for capacidade, é motor
 - **Tamanho:** services >400 linhas, componentes >300, funções >40 → divida
@@ -152,9 +147,9 @@ Para CADA arquivo do perímetro, escaneie e eleve ao nível 10x:
 - **Comentários enganosos** → corrija/remova
 - **TODO/FIXME resolúveis** → resolva agora ou deixe com contexto
 - **Código morto** → delete completamente. Sem `_unused`, sem `// removed`, sem re-export
-- **Padrão visual abaixo do nível 10x** (se tem UI) → eleve, não copie (`ui/SKILL.md`)
+- **Padrão visual abaixo do nível #1** (se tem UI) → eleve, não copie (`design.md`)
 
-**Regra do saldo (é o que o gateway cobra):** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível 10x** — e você **declara isso** —, ou ele **subiu**.
+**Regra do saldo (é o que o gateway cobra):** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível #1** — e você **declara isso** —, ou ele **subiu**.
 
 **Banco de Dados (quando aplicável):**
 - Migrações versionadas (`npx prisma migrate dev --name descritivo`)
@@ -183,13 +178,13 @@ Para CADA arquivo do perímetro, escaneie e eleve ao nível 10x:
 - Lazy load componentes pesados (`React.lazy`, dynamic imports)
 - Trade-offs conscientes e documentados
 
-#### Após cada task
+### Após cada task
 
 - Marque no checklist do plano
 - Auto-verifique: código satisfaz o use case?
 - Diff mental: o que mudou vs. o que deveria? Efeitos colaterais?
 
-#### TCs de Regressão (tocou = testa impacto)
+### TCs de Regressão (tocou = testa impacto)
 
 Para CADA arquivo alterado:
 
@@ -203,9 +198,9 @@ Para CADA arquivo alterado:
 - **Não existe "mudança isolada"** — toda mudança tem raio de impacto
 - Proporção: shared/util → muitos TCs. Componente folha → poucos.
 
-### Gateways
+## Gateways
 
-#### 7a → 7b
+### 7a → 7b
 - [ ] Plano autocontido (contexto + estratégia + mapa TC→código + checklist)
 - [ ] i18n planejado se projeto tem i18n
 - [ ] Referência de big apps citada para decisões UI/UX
@@ -220,13 +215,13 @@ Para CADA arquivo alterado:
 - [ ] **Refatoração declarada** na linha própria do Gateway Check
 - [ ] **Design declarado** na linha própria (se a feature tem superfície visual)
 
-#### 7b → 8
+### 7b → 8
 - [ ] Todas tasks do checklist marcadas
 - [ ] tsc/lint passam
-- [ ] **Checklist de princípios percorrido por arquivo do perímetro** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD · Motores) — `principles/SKILL.md`
-- [ ] **Refatoração do perímetro executada** com a **regra do saldo**: cada arquivo subiu, ou está declarado como já no nível 10x
+- [ ] **Checklist de princípios percorrido por arquivo do perímetro** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD · Motores) — `principios.md`
+- [ ] **Refatoração do perímetro executada** com a **regra do saldo**: cada arquivo subiu, ou está declarado como já no nível #1
 - [ ] Capacidade espalhada **absorvida no motor**; chamadores passaram a só chamar
-- [ ] **Se tem UI:** zero valor literal (tokens), composição > configuração, headless, **todos** os estados implementados, a11y AA, breakpoints do projeto — `ui/SKILL.md`
+- [ ] **Se tem UI:** zero valor literal (tokens), composição > configuração, headless, **todos** os estados implementados, a11y AA, breakpoints do projeto — `design.md`
 - [ ] Desvios de § 3.1/§ 3.2/§ 3.3/§ 3.4 registrados no plano (não em silêncio)
 - [ ] TCs de regressão criados em `docs/05-test-cases/` para features dependentes impactadas
 - [ ] **Princípios declarados** na linha do Gateway Check
