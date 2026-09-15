@@ -13,8 +13,7 @@
 
 ## Artefato
 
-- **Pasta:** `kanban/10-done/`
-- **Arquivo:** `<tópico>.md`
+`kanban/10-done/<tópico>.md` — nome por domínio (`inventario-docs.md`): o card promovido, com o resumo abaixo.
 
 ## Conteúdo — Resumo Final
 
@@ -45,20 +44,9 @@
 
 ## Gate de Convergência — ANTES de qualquer ação do Step 10
 
-> **O protocolo fecha SECO.** Nem o `rm` do card, nem o commit, nem resumo de conclusão acontecem enquanto houver follow-up aberto. Publique este bloco no chat:
+> **O protocolo fecha SECO.** Nem o `rm` do card, nem o commit, nem resumo de conclusão acontecem enquanto houver follow-up aberto. Publique no chat o bloco de `follow-ups.md` § Gate de Convergência.
 
-```markdown
-## Gate de Convergência — Follow-ups
-- Itens no ledger: **T** (A: **a** · B: **b** · C: **c**)
-- Ciclos de follow-up executados: **N** — listar (Fn → `kanban/10-done/<f>.md`)
-- Itens **ABERTOS**: **0**
-- Itens novos detectados no último passe: **0** → **passe seco**
-- **Veredicto: ✅ CONVERGIU** / ❌ BLOQUEADO — abertos: [listar Fn]
-```
-
-**❌ BLOQUEADO →** para CADA item aberto, **invoque o `/method`** (Skill tool — `furi-build:method`) e rode-o **COMPLETO** (Step 1→10, com `/solve`, tópico e artefatos próprios) — **sem commitar** (só o ciclo raiz commita) — marque `RESOLVIDO-POR-CICLO` no ledger e **republique o Gate**. Ciclo que gerar novo follow-up ⇒ passe não foi seco ⇒ o loop continua.
-
-Triagem A/B/C, formato do ledger e racionalizações: `follow-ups.md`.
+**❌ BLOQUEADO →** para CADA item aberto, **invoque o `/method`** (Skill tool — `furi-build:method`) e rode o ciclo completo — sem commitar — e **republique o Gate** (`follow-ups.md` § Como rodar um ciclo de follow-up).
 
 ## Ações obrigatórias (ORDEM É CONTRATO — mover primeiro, commitar por último)
 
@@ -90,10 +78,9 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 
 - Mensagem em **Conventional Commits** (`feat` / `fix` / `refactor` / `docs` … `(<escopo>)` = área da feature).
 - **`git add -A` pega tudo de uma vez:** código, docs (01-09), card de done e a remoção (`rm`) do card de todo entram no MESMO commit.
-- **NUNCA commite antes de mover o card.** Commitar o código primeiro e só depois mover o card força um segundo commit — exatamente o erro que esta ordem evita.
 - **SHA é nota de bastidor:** o commit já É o registro (está no `git log`). Anotar o SHA no done doc é opcional e **não justifica um segundo commit** só para gravá-lo.
 
-> **Escopo do commit:** só o `/method` completo — e, dentro dele, **só o ciclo RAIZ** — commita. **Ciclo de follow-up aninhado** roda este Step 10 inteiro (done doc + `rm` do card) **menos o commit** — se ele commitasse, o `git add -A` varreria o código não-commitado da feature-pai para dentro do commit errado. O commit único do ciclo raiz cobre tudo: a feature + todos os ciclos de follow-up (código, docs de todos os tópicos, todos os cards de done, todas as remoções de to-do).
+> **Escopo do commit:** só o ciclo **RAIZ** do `/method` commita; ciclo de follow-up aninhado roda este Step 10 inteiro **menos o commit** (`follow-ups.md` § Ciclo aninhado NÃO commita).
 
 ## Red Flags — PARE (cada uma gera o segundo commit que queremos evitar)
 
@@ -101,7 +88,6 @@ git commit -m "feat(<escopo>): <descrição da feature>"
 - "Commito o código, movo o card, e commito o card depois" → NÃO. Mover PRIMEIRO; UM commit no fim.
 - "Preciso gravar o SHA no done doc → commito de novo" → NÃO. O SHA vive no `git log`; não vale um segundo commit.
 - "O código já estava pronto, então commitei lá atrás" → NÃO. Código de steps anteriores espera o step 10 e entra no commit único, junto com o card.
-- "Commito a feature agora e resolvo os follow-ups num commit depois" → NÃO. Convergência vem ANTES do commit. Dois commits é exatamente o que esta ordem elimina.
 - "O ciclo de follow-up terminou, commito ele antes de voltar pra feature" → NÃO. Ciclo aninhado não commita. Um commit, no fim, no ciclo raiz.
 
 ## Checklist Final (step terminal — sem gateway de saída)

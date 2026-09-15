@@ -29,7 +29,7 @@
 Cada decisão se resolve, nesta ordem:
 
 1. **`/solve`** — a referência #1: big pop tech apps / líderes do domínio, boas práticas consagradas (Clean Architecture, OWASP, performance, escalabilidade) e os princípios (`principios.md`; `design.md` se tem UI)
-2. **Código existente** — o código do projeto, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
+2. **Código existente** — o código do projeto, CLAUDE.md, `.claude/patterns.md`, convenções já adotadas
 
 ## Autonomous Decision Loop
 
@@ -43,7 +43,7 @@ REPETIR até zero gaps:
      - Docs dos Steps 1-3
      - Decisões dos rounds anteriores
      - Código existente relevante
-     - CLAUDE.md e docs/04-spec/technical/patterns.md
+     - CLAUDE.md e .claude/patterns.md
 
   2. IDENTIFICAR GAPS — decisões em aberto:
      Stack/tecnologia | Regras de negócio | Edge cases | Integrações

@@ -6,8 +6,7 @@
 
 ## Artefato
 
-- **Pasta:** `kanban/09-run-test/`
-- **Arquivo:** `<tópico>.md`
+`kanban/09-run-test/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`). Guarda a evidência de cada TC (screenshot com path, ou o motivo do FAILED) e o `## Test Environment Setup`.
 
 ## FRONT É FRONT — Regra Absoluta
 
@@ -169,23 +168,15 @@ REPETIR até todos passarem SEM NENHUMA MUDANÇA:
      a. TaskUpdate grupo → in_progress
      b. CADA TC do batch: executar DO ZERO via ferramenta apropriada
      c. PASSED (com screenshot/evidência) ou FAILED (motivo)
-        → ao PASSED: marque `- [x]` na seção `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (TC-N + path do screenshot). FAILED: mantém `- [ ]` + nota do motivo.
-     d. Bug → CLASSIFICAR (ver `follow-ups.md`):
-        - dentro do escopo documentado → **balde A**: corrigir AGORA. ATENÇÃO: qualquer fix invalida
-          o ciclo → RESETE todos os `- [x]` do checklist de QA para `- [ ]` (vai retestar TUDO do zero)
-        - escopo novo que este trabalho expôs → **balde B**: registrar ABERTO no ledger
-          (`## Follow-ups` do card de to-do). NÃO corrige aqui — vira ciclo /method no Gate de Convergência
-        - pré-existente e não tocado → **balde C**: DESCARTADO + justificativa
-        Na dúvida entre B e C → B. Balde B **nunca** vira "bug conhecido, seguimos".
+        → atualize o checklist `## Test Cases (QA)` do card `kanban/06-todo/<tópico>.md` (regras em `06-todo.md` § Checklist de QA)
+     d. Bug → triagem A/B/C (`follow-ups.md`):
+        - **A** → corrigir AGORA. Qualquer fix invalida o ciclo → RESETE o checklist de QA inteiro (vai retestar TUDO do zero)
+        - **B** / **C** → registrar no ledger (`## Follow-ups` do card). NÃO corrige aqui — B vira ciclo /method no Gate de Convergência
      e. Todos TCs do batch PASSED → TaskUpdate grupo → completed
   4. Organizar kanban/09-run-test/<tópico>.md
   5. Algum FAILED com fix → volta ao Step 8 (Code Review) → retesta TUDO
   6. Todos PASSED sem nenhuma mudança de código → Step 10
 ```
-
-### Checklist de QA no card de to-do — atualizar ao vivo (retomada)
-
-O card `kanban/06-todo/<tópico>.md` tem a seção `## Test Cases (QA)` com um `- [ ]` por TC (semeada no Step 6). **Atualize-a em tempo real:** TC PASSED → `- [x]`; fix de código → reset tudo para `- [ ]`. É o que permite **parar e retomar** — ao voltar, abra o card e os `- [ ]` restantes são exatamente o que falta rodar. O `kanban/09-run-test/` guarda a evidência (screenshot/motivo); o checklist guarda o status de bate-pronto. No Step 10 este checklist final é copiado para o done.
 
 ## Ferramenta por Contexto
 
@@ -225,18 +216,6 @@ PROCEDIMENTO (ao iniciar testes via front):
 - **NUNCA marque PASSED apenas com tsc** — tsc verifica tipos, não comportamento.
 - **Qualquer fix de código** → fix invalida review → volta ao Step 8 → depois retesta TUDO no Step 9.
 
-## Princípios neste step (`principios.md`)
-
-O Step 9 não escreve feature — mas escreve **fixes**, e é aí que o protocolo mais escorrega: sob pressão de "fazer o TC passar", nasce o remendo.
-
-- **Todo fix obedece os princípios.** Fix é código: SOLID (os cinco), DRY, KISS, YAGNI, LoD e Motores valem igual. Não existe "fix rápido só pra passar".
-- **Workaround que faz o TC passar violando os princípios é FAILED disfarçado.** Duplicar lógica pra contornar, enfiar regra de negócio no componente, `if` especial pro cenário do teste — o TC até fica verde, a feature fica pior. Marque FAILED e conserte de verdade.
-- **Motor** — o fix vai **para o motor**, onde a regra mora; nunca de remendo no chamador. Corrigir na tela o que o motor calcula errado cria a segunda fonte da regra, que é exatamente o defeito.
-- **Refatoração** — fix novo **reabre o perímetro do fix**: os arquivos que ele tocou entram na regra do saldo como qualquer outro.
-- **Design** (se tem UI) — a evidência é por **estado × breakpoint**, não só o happy path em desktop: screenshot prova que a tela existe, a comparação com o DS e com o benchmark prova que está certa. **Remendo de CSS que faz o TC passar é FAILED disfarçado** (`design.md`).
-- **Fix → volta ao Step 8**, que revisa esse fix contra a lista de princípios como qualquer outro código. Sem atalho.
-- **KISS na investigação:** o fix mais simples que resolve a causa — não o mais engenhoso, nem o que "já aproveita e melhora" outra coisa (isso é ledger).
-
 ## Resultado de TC — Binário
 
 - **PASSED** = resultado esperado atingido + evidência (screenshot/dump)
@@ -272,7 +251,6 @@ Não existe meio-termo. Não existe "PASSED (partial)". Não existe "herança" e
 | "Marco os 2 faltantes como PASSED e documento depois" | NÃO. Sem evidência = NOT_RUN. BLOQUEADO. |
 | "Reporto parcial enquanto os últimos rodam" | NÃO. Audit ✅ antes de QUALQUER report. BLOQUEADO. |
 | "Publico Gateway sem Audit, audit é só formalidade" | NÃO. Audit é pré-requisito formal do Gateway. BLOQUEADO. |
-| "Dupliquei a lógica pro TC passar, depois eu limpo" | NÃO. Workaround que viola os princípios = FAILED disfarçado (`principios.md`). BLOQUEADO. |
 
 ## Evidência visual — estado × breakpoint (feature com superfície visual)
 

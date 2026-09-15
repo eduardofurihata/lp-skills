@@ -9,12 +9,9 @@
 3. **Bloqueante.** ❌ → volta ao step atual e corrige. Nunca "pula pra arrumar depois".
 4. **Atômico.** Não existe bypass granular. Pular 1 critério = pular o gateway. Ou 100% ou BLOQUEADO.
 5. **Universal.** "Não se aplica nesta feature" não é opção. Justifique no veredicto ou cumpra.
-6. **Sem ponta solta.** Todo Gateway Check declara os follow-ups detectados no step. O que apareceu vai para o **Ledger de Follow-ups** classificado (A/B/C) — nunca fica só na cabeça, nunca vira "depois". Ver `follow-ups.md`.
-7. **Princípios em todo gateway.** Todo Gateway Check declara como **SOLID · DRY · KISS · YAGNI · LoD · Motores** foram aplicados no step, pela lente daquele step (`principios.md`). Princípio não declarado = princípio não aplicado. **SOLID são cinco** (SRP, OCP, LSP, ISP, DIP) — declarar só o SRP não cumpre.
-8. **Refatoração em todo gateway.** Todo Gateway Check declara o que a passada **elevou** no perímetro (`principios.md` § Refatoração contínua). Linha ausente = gateway não publicado; "nada a elevar" exige dizer o que foi verificado.
-9. **Design em todo gateway de feature com UI.** Feature com superfície visual declara a linha de design (`design.md`). Superfície visual é **derivada no Step 4a**, nunca declarada pelo usuário — e a ausência dela se declara **uma vez**, no Gateway 4a→4b, que então libera direto para o Step 5.
+6. **Sem linha implícita.** As quatro linhas do Formato Padrão — follow-ups, princípios, refatoração e, com superfície visual, design — são obrigatórias em todo Gateway Check. O que não é declarado escapa; linha ausente = gateway não publicado.
 
-> Racionalizações para pular Gateway → ver `rationalizations.md` categoria 1, 3, 10 e 11.
+> Racionalizações para pular Gateway → `rationalizations.md` categorias 1, 3 e 9; as das linhas obrigatórias vivem com a doutrina: `follow-ups.md`, `principios.md` e `design.md` § Racionalizações proibidas.
 
 ## Formato Padrão (publicar em chat)
 
@@ -31,12 +28,12 @@
 - **Veredicto:** ✅ LIBERADO / ❌ BLOQUEADO — motivo: [listar critério falhado]
 ```
 
-**Três linhas são obrigatórias em TODO Gateway Check** — princípios, refatoração e follow-ups —, mais a de **design** em feature com superfície visual. Elas existem pelo mesmo motivo: o que não é declarado escapa.
+**Três linhas são obrigatórias em TODO Gateway Check** — princípios, refatoração e follow-ups —, mais a de **design** em feature com superfície visual. Elas existem pelo mesmo motivo: o que não é declarado escapa. Como preencher cada uma:
 
-- **Follow-ups:** mecanismo de captura do loop de convergência. Detectou e não registrou = a ponta escapou. Nos Steps 1-5 o card de to-do ainda não existe: anote na linha do gateway e **semeie o ledger no Step 6**.
-- **Princípios:** mecanismo que impede o protocolo de virar burocracia de artefato. Cada step tem sua **lente** (`principios.md` § Lente por step) — declare o que ela cobrou. "N/A" não existe: nada a corrigir → escreva o que você verificou e não encontrou. Violação achada → triagem A/B/C como qualquer achado. **Declarar "SOLID" significa os cinco** (SRP, OCP, LSP, ISP, DIP).
-- **Refatoração:** o que a passada **elevou** no perímetro — o arquivo que você editou, o que abriu só para entender, o dependente que o grep revelou, o caminho que o fluxo atravessa. Nos **Steps 1-6 a refatoração é do artefato** (doc consolidado, story separada, UC quebrado), não do código: a linha nunca é vazia. Regra do saldo em `principios.md`.
-- **Design:** só quando a feature tem superfície visual (derivada no Step 4a). Declare o que a lente do step cobrou (`design.md` § Lente por step). Feature sem UI: declare `❌ N/A — sem superfície visual, derivado do Step 4a` **uma vez**, no Gateway 4a→4b; o Step 4b não roda e os gateways seguintes herdam.
+- **Follow-ups:** mecanismo de captura do loop de convergência (`follow-ups.md`). Detectou e não registrou = a ponta escapou. Nos Steps 1-5 o card de to-do ainda não existe: anote na linha do gateway e **semeie o ledger no Step 6**.
+- **Princípios:** o que a **lente** do step cobrou (`principios.md` § Lente por step). "N/A" não existe: nada a corrigir → escreva o que você verificou e não encontrou. Violação achada → triagem A/B/C como qualquer achado. **Declarar "SOLID" significa os cinco** (SRP, OCP, LSP, ISP, DIP).
+- **Refatoração:** o que a passada **elevou** no perímetro (`principios.md` § Refatoração contínua — perímetro, regra do saldo e por que a linha nunca é vazia nos Steps 1-6). "Nada a elevar" exige dizer o que foi verificado.
+- **Design:** só com superfície visual — quando e por quê em `design.md` § *A quem se aplica*. Declare o que a lente do step cobrou (`design.md` § Lente por step). Sem superfície visual: `❌ N/A — sem superfície visual, derivado do Step 4a` **uma vez**, no Gateway 4a→4b; o Step 4b não roda e os gateways seguintes herdam.
 
 ## Tabela de Critérios (TODOS obrigatórios por linha)
 
@@ -49,10 +46,10 @@
 | **4a → 4b** (sem superfície visual: → 5) | Autonomous Decision Loop fechou com **zero gaps**; cada decisão (D-N) tem justificativa + referência (`/solve` > código existente) + alternativas descartadas; escopo de plataforma (web/android/ios) **derivado** aqui, não declarado; **superfície visual derivada** (sim/não) — é o que liga o Step 4b e a linha de design nos gateways seguintes; sem ela, a linha de design declara `❌ N/A` **uma vez** aqui e o próximo step é o 5; **princípios:** cada decisão declara o **UC que a exige** (YAGNI) · decisão que replica mecanismo existente vira decisão de **reúso** (DRY) · entre duas soluções no nível #1 ganha a mais simples (KISS) · fronteiras de módulo/camada explícitas (SRP) · direção de dependência declarada por decisão de integração (DIP/LoD) · pontos de extensão previstos (OCP) · **qual motor é dono de cada regra** |
 | **4b → 5** | `docs/04-design/<tópico>.md` cobre **toda tela** que os UCs atravessam, cada uma com componentes do DS (reusa / compõe / promove), hierarquia, **estados** (vazio, carregando, erro, sucesso, limite) e **breakpoints do projeto** (piso 320px); benchmark visual citado; padrão consagrado (Jakob) nomeado, desvio com motivo; `docs/04-design/design-system.md` inventariado e **promoções já registradas** nele; a11y alvo (AA) definido; **princípios:** YAGNI (promove só o que um UC pede) · DRY (reusar → compor → promover, nesta ordem) · KISS (a composição mais simples que atinge o nível #1) · Motor (o DS é o dono do componente — nada nasce na pasta da feature); **refatoração:** padrão do DS abaixo do nível #1 no perímetro **elevado**, ou no ledger; **design:** a lente do 4b (`design.md`) |
 | **5 → 6** | Nota de complexidade (1-10) publicada e derivada dos Steps 3-4; **nº de TCs == nota e ≤ 10** (diverge → BLOQUEADO); **os TCs contemplam 100% dos UCs (Step 3) + detalhes do Step 4** (somatório das linhas `Cobre`, nada descoberto); nenhum TC redundante (significância); cada TC com **Bug único** + observável no front; Android E iOS = execução no Step 9, não TCs extras; **princípios:** SRP (1 TC = 1 bug único) · DRY (significância) · YAGNI (teto de 10) · Motor (o TC exercita o comportamento pelo front, não a peça interna); **design** (se tem UI): a cobertura contempla **estados × breakpoints** e a11y — como lente, sem TC extra |
-| **6 → 7a** | Tasks atômicas (1 prompt cada); cada task rastreável; dependências mapeadas; seção `## Follow-ups` semeada no card (com o que apareceu nos Steps 1-5, ou vazia); **princípios:** SRP (1 task = 1 responsabilidade) · DRY (task que recria o existente virou task de **reúso**) · YAGNI (toda task rastreia a UC/TC) · Motor (cada task declara **qual motor** constrói/estende/absorve); **design** (se tem UI): task de UI declara o **nível atômico** e o componente do DS que constrói, estende ou promove |
+| **6 → 7a** | Tasks atômicas (1 prompt cada); cada task rastreável; dependências mapeadas (ordem de execução óbvia); seção `## Test Cases (QA)` semeada (1 `- [ ]` por TC do Step 5); seção `## Follow-ups` semeada no card (com o que apareceu nos Steps 1-5, ou vazia); **princípios:** SRP (1 task = 1 responsabilidade) · DRY (task que recria o existente virou task de **reúso**) · YAGNI (toda task rastreia a UC/TC) · Motor (cada task declara **qual motor** constrói/estende/absorve); **design** (se tem UI): task de UI declara o **nível atômico** e o componente do DS que constrói, estende ou promove |
 | **7a → 7b** | Plano autocontido (contexto + estratégia + mapa TC→código + checklist); i18n planejado se projeto tem i18n; referência de big apps citada para decisões UI/UX; **seção `Reúso antes de criar` preenchida** (DRY — grep feito, arquivo novo só com justificativa); **seção `O que NÃO vamos construir` preenchida** (YAGNI — abstrações consideradas e descartadas); **§ 3.3 Motores preenchida** (qual nasce, qual é estendido, qual lógica dispersa será absorvida); responsabilidade única declarada por arquivo do plano (SRP); pontos de extensão e direção de dependência declarados (OCP/DIP); **perímetro listado** com o que será elevado em cada arquivo; **§ 3.4 Design System preenchida** se tem UI (inventário, reúso/composição/promoção, tokens — zero literal planejado) |
-| **7b → 8** | Todas tasks do checklist marcadas; tsc/lint passam; **checklist de princípios do 7b percorrido por arquivo aberto** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · camadas · direção de dependências); **refatoração do perímetro executada** (regra do saldo: cada arquivo subiu ou já estava no nível #1, declarado); **design** (se tem UI): zero valor literal, composição > configuração, headless, todos os estados, a11y AA, breakpoints do projeto; TCs de regressão criados para features dependentes impactadas |
-| **8 → 9** | Veredicto **APROVADO** em 8b; zero issues pendentes; **review percorreu os princípios um a um, por nome** (seção `## Análise de Qualidade` preenchida por princípio, **os cinco do SOLID inclusive**); **saldo do perímetro conferido**; **design revisado por princípio e por nome** (se tem UI); achados fora de escopo do review classificados no ledger (A/B/C); PR existente atualizado (se houver) |
+| **7b → 8** | Todas tasks do checklist marcadas; tsc/lint passam; **checklist de princípios do 7b percorrido por arquivo aberto** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · camadas · direção de dependências); capacidade espalhada **absorvida** no motor (chamadores só chamam); desvios de § 3.1-3.4 do plano **registrados** nele, não em silêncio; **refatoração do perímetro executada** (regra do saldo: cada arquivo subiu ou já estava no nível #1, declarado); **design** (se tem UI): zero valor literal, composição > configuração, headless, todos os estados, a11y AA, breakpoints do projeto; TCs de regressão criados para features dependentes impactadas |
+| **8 → 9** | Veredicto **APROVADO** em 8b; zero issues pendentes; **review percorreu os princípios um a um, por nome** (seção `## Análise de Qualidade` preenchida por princípio, **os cinco do SOLID inclusive**); **saldo do perímetro conferido**; **design revisado por princípio e por nome** (se tem UI); achados fora de escopo do review classificados no ledger (A/B/C) e a seção `## Follow-ups Emitidos` preenchida; PR existente atualizado (se houver) |
 | **9 → 10** | Ver detalhado abaixo — TODOS TCs PASSED via front, evidência 1:1, último ciclo SEM mudanças de código |
 | **Gate de Convergência** | Entrada do Step 10, ANTES de mover o card e do commit — ledger sem item `ABERTO` e zero itens novos no último passe (**passe seco**). Ver `follow-ups.md`. |
 
@@ -97,13 +94,7 @@
 - **Veredicto: ✅ LIBERADO para Step 10** / ❌ BLOQUEADO — motivo: [listar]
 ```
 
-**Racionalizações proibidas para pular os audits:**
-
-| Racionalização | Realidade |
-|----------------|-----------|
-| "Gateway já cobre tudo, audit é redundante" | NÃO. Audit = verificação intermediária obrigatória (antes e depois). Gateway = certificação final. BLOQUEADO sem audits. |
-| "Faço o Gateway direto, os dois audits ficam implícitos" | NÃO. Audit implícito = audit inexistente. Cada um publicado visualmente. BLOQUEADO. |
-| "Publico um audit só (combinado)" | NÃO. Dois audits distintos (antes + depois). BLOQUEADO. |
+Racionalizações para pular os audits: as tabelas dos dois audits em `09-testing.md`.
 
 ## Exceções (NÃO requer Gate Check inicial)
 
@@ -123,10 +114,6 @@ Apenas estes casos dispensam Gate Check. **Qualquer dúvida → Gate Check.**
 
 Em dúvida: Gate Check. Custo é baixo, regressão é cara.
 
-## Step 10 é terminal (sem gateway de saída) — mas tem gateway de ENTRADA
+## Step 10 — sem gateway de saída, com gateway de ENTRADA
 
-Não existe Step 11. O Step 10 (Done) não tem gateway de saída — seu encerramento usa o **Checklist Final** de `10-done.md`: card movido (`kanban/06-todo/` deletado) + **commit** na branch atual com SHA registrado. Esse commit vale **só para o ciclo RAIZ do `/method`** — ciclos de follow-up aninhados não commitam.
-
-O que o Step 10 **tem** é um gateway de **entrada**: o **Gate de Convergência**. Antes de mover o card e antes do commit, o ledger de follow-ups precisa estar **seco** — zero itens `ABERTO`, zero itens novos no último passe. Item aberto → invoca o `/method` (Skill tool) e roda o ciclo completo (1→10, com `/solve`) para ele → volta ao Gate. Bloco a publicar e regras completas: `follow-ups.md` e `10-done.md`.
-
-**Publicar o Checklist Final sem o Gate de Convergência ✅ no chat = violação automática.**
+O Step 10 (Done) é terminal: fecha pelo **Checklist Final** de `10-done.md`, não por gateway. O que ele tem é um gateway de **entrada** — o **Gate de Convergência** (`follow-ups.md`): ledger seco antes de mover o card e antes do commit. **Publicar o Checklist Final sem o Gate ✅ no chat = violação automática.**

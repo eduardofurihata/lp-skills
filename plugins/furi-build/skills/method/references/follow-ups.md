@@ -2,7 +2,7 @@
 
 > **O `/method` fecha SECO.** Nada de "abro um card pra isso depois". Todo achado que este trabalho criou, tocou ou expôs é **resolvido dentro desta execução** — e resolver escopo novo significa **invocar o `/method`** (Skill tool) e rodá-lo COMPLETO (Step 1 → 10, com `/solve`) para ele.
 
-O loop **não é um step novo** (os 10 steps são contrato; não existe Step 11). É um **wrapper** com dois pontos de enforcement:
+O loop **não é um step novo** (os 10 steps são contrato). É um **wrapper** com dois pontos de enforcement:
 
 | Ponto | Onde acontece | O quê |
 |-------|---------------|-------|
@@ -131,6 +131,7 @@ Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por 
 | Frase | Realidade |
 |-------|-----------|
 | "Achei um bug lateral, abro card de follow-up" | Follow-up é débito com nome bonito. Balde B → ciclo `/method` agora. Card de follow-up é privilégio de **quem revisa de fora**, nunca saída do dev. BLOQUEADO. |
+| "Deixo anotado no relatório e sigo" | Relatório **documenta**; ledger **obriga a resolver**. Anotar sem entrar no ledger = a ponta escapou. BLOQUEADO. |
 | "Resolvo o follow-up direto no código, sem rodar o `/method` pra ele" | Escopo novo sem Gate Check = retrofit (Regra 2). Ou é balde A (dentro do escopo documentado) ou vira ciclo próprio. BLOQUEADO. |
 | "Rodo o ciclo de follow-up de cabeça, sem invocar o `/method`" | Mencionar não é invocar. O ciclo começa com a chamada da skill via Skill tool — sem ela não há Gate Check nem gateways, só retrofit. BLOQUEADO. |
 | "É escopo novo, YAGNI manda não fazer" | YAGNI mata complexidade **especulativa**, não achado **real**. Achado real que este trabalho expôs é B. BLOQUEADO. |
@@ -140,3 +141,4 @@ Um item `ABERTO` (balde B) é resolvido por um **`/method` completo**, não por 
 | "Marco como C pra não travar o Gate" | Classificação errada de propósito = fraude documental. Na dúvida entre B e C → **B**. BLOQUEADO. |
 | "Commito a feature e resolvo os follow-ups num commit depois" | Commit é o ÚLTIMO ato, depois da convergência. Dois commits = exatamente o que o Step 10 elimina. BLOQUEADO. |
 | "O ciclo de follow-up é pequeno, rodo uma versão light do /method" | Não existe versão light (Categoria 9 de `rationalizations.md`). O ciclo roda 1→10 completo. BLOQUEADO. |
+| "Bug conhecido, seguimos e o usuário decide depois" | Achado real de balde B não vira "bug conhecido". Vira ciclo. BLOQUEADO. |

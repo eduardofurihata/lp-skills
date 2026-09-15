@@ -6,9 +6,9 @@
 
 ```
 REPETIR até 100% limpo:
-  1. git diff main...HEAD — TODAS as mudanças
+  1. git status + git diff (e --cached) — TODAS as mudanças desta feature, ainda não commitadas
   2. Reler plano (7a) — código implementa tudo?
-  3. Reler TCs (6) — todos cenários cobertos?
+  3. Reler TCs (5) — todos cenários cobertos?
   4. Reler use cases (3) — edge cases tratados?
   5. Revisar CADA arquivo:
      - Código morto / imports não usados?
@@ -22,35 +22,12 @@ REPETIR até 100% limpo:
      - Erros (não genérico, não silencioso)?
      - Faz EXATAMENTE o que use cases pedem — nem mais, nem menos?
      - **Saldo do perímetro (§ 3.5 do plano):** todo arquivo que este trabalho abriu, leu ou atravessou saiu melhor do que entrou — ou está declarado como já no nível #1?
-     - **Princípios, UM A UM e POR NOME** (`principios.md` — a MESMA lista contra a qual o 7b escreveu):
-       · **SRP** — arquivo/função/componente faz uma coisa? >40 linhas sem extrair? lógica+UI juntos?
-       · **OCP** — comportamento novo entrou como `if`/`case` no meio do que já existia, em vez de composição?
-       · **LSP** — alguma implementação lança onde o contrato não prevê, ou exige mais do que ele exige?
-       · **ISP** — interface obrigando a implementar o que o cliente não usa?
-       · **DIP** — regra de negócio importando client de infra (Prisma, HTTP, lib) direto?
-       · **DRY** — lógica que já existe em shared/lib/components foi duplicada? (grep, não memória)
-       · **KISS** — dá pra fazer o mesmo com menos? abstração que só complica?
-       · **YAGNI** — entrou algo que nenhum UC exige? o § 3.2 do plano foi furado sem registro?
-       · **LoD / acoplamento** — `a.b.c.d`? dependência circular? direção `api ↔ web` violada?
-       · **Motores** — a capacidade vazou do motor? existe **segunda fonte** da mesma regra? o contrato virou tripa exposta? o § 3.3 foi cumprido?
-       · **Camadas** — lógica de negócio em controller/componente?
-     - **Design, UM A UM e POR NOME** (`design.md` — só se a feature tem superfície visual):
-       · **Tokens** — sobrou valor literal (`#hex`, `13px`) onde devia ser token?
-       · **Atomicidade** — átomo conhecendo regra de negócio ou fazendo fetch?
-       · **Composição > configuração** — >2 props booleanas de aparência?
-       · **Headless** — comportamento e aparência no mesmo arquivo?
-       · **Estados** — vazio, carregando, erro, sucesso, limite + hover/focus-visible/active/disabled/loading/selected: todos existem?
-       · **Consistência semântica / Jakob** — mesma ação com nome, ícone e lugar diferentes? padrão inventado sem motivo escrito?
-       · **Preservação de contexto** — voltar apaga? filtro/rascunho/scroll sobrevivem?
-       · **A11y (AA)** — contraste, foco visível, teclado, nome acessível, alvo ≥24px?
-       · **DS** — componente visual novo nasceu na pasta da feature em vez de ser **promovido**?
-     - **Nível referência #1:** está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"? ("Um líder do domínio assinaria isto — e assinaria esta tela?")
-  6. Problema encontrado → CLASSIFICAR e agir:
-     - dentro do escopo documentado (docs 01-04) → **balde A**: corrigir IMEDIATAMENTE → voltar ao 1
-     - escopo novo que este trabalho criou/tocou/expôs → **balde B**: registrar ABERTO no ledger
-       (`## Follow-ups` do card de to-do) → vira ciclo /method próprio no Gate de Convergência
-     - pré-existente e não tocado por este trabalho → **balde C**: registrar DESCARTADO + justificativa
-     Na dúvida entre B e C → B. Ver `follow-ups.md`.
+     - **Princípios, UM A UM e POR NOME:** a tabela de `principios.md` é o checklist — para cada linha, a *falha típica* aconteceu aqui? Os cinco do SOLID inclusive. E o plano foi cumprido — § 3.1 (reúso), § 3.2 (nada furado sem registro), § 3.3 (motores)?
+     - **Design, UM A UM e POR NOME** (só com superfície visual): a tabela de `design.md`, mesma mecânica; § 3.4 do plano cumprido?
+     - **Nível referência #1** (`/solve`): está no calibre dos big pop tech apps / líderes do domínio, não só "funciona"?
+  6. Problema encontrado → triagem A/B/C (`follow-ups.md`):
+     - **A** → corrigir IMEDIATAMENTE → voltar ao 1
+     - **B** / **C** → registrar no ledger (`## Follow-ups` do card de to-do); B vira ciclo /method no Gate de Convergência
   7. PR existente → atualizar comentários/descrição
   8. Loop até ZERO issues de balde A — NÃO aceitar "bom o suficiente"
 ```
@@ -140,14 +117,4 @@ Nenhum? → "nenhum follow-up emitido neste review".
 
 ## Gateway 8 → 9
 
-- [ ] Veredicto **APROVADO** em 8b
-- [ ] Zero issues pendentes (balde A)
-- [ ] **`## Análise de Qualidade` preenchida por princípio** (SOLID: SRP, OCP, LSP, ISP, DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração · naming · nível #1) — nenhuma linha em branco
-- [ ] **`## Análise de Design` preenchida por princípio** (se tem UI) — nenhuma linha em branco
-- [ ] **Princípios declarados** na linha do Gateway Check
-- [ ] **Refatoração declarada** na linha própria do Gateway Check
-- [ ] **Design declarado** na linha própria (se a feature tem superfície visual)
-- [ ] Achados fora de escopo classificados no ledger (B ou C) — seção `## Follow-ups Emitidos` preenchida
-- [ ] PR existente atualizado (se houver)
-- [ ] Artefato `kanban/08-code-review/<tópico>.md` existe com conteúdo substantivo
-- [ ] **Follow-ups detectados neste step:** N (registrados no ledger) / nenhum
+Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.

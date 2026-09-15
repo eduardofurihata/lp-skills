@@ -1,6 +1,6 @@
 {
   "name": "furi-build",
-  "version": "0.1.0+codex.020c3cdd2f67",
+  "version": "0.1.0+codex.fe8042f9421c",
   "description": "Skills de construção do Furihata — /solve, /method e /proto: do problema ao commit local, com QA. Funciona sozinho, em qualquer repositório.",
   "author": {
     "name": "Eduardo Furihata",

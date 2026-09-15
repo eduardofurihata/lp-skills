@@ -4,7 +4,9 @@
 
 **Design não é fase — é regime.** Não existe "step de fazer a UI ficar bonita". Vale do Step 1 ao Step 10: o problema nomeia a fricção, o UC lista os estados, o Design (4b) decide as telas e o design system, o código usa token, o review cobra princípio por nome e o teste prova estado por estado.
 
-**A quem se aplica:** feature com **superfície visual**, derivada no Step 4a (como o escopo de plataforma — nunca declarada pelo usuário). Feature sem superfície visual declara isso **uma vez** no Gateway 4a→4b — o Step 4b não roda — e os gateways seguintes herdam.
+## A quem se aplica
+
+Feature com **superfície visual**, derivada no Step 4a (como o escopo de plataforma — nunca declarada pelo usuário). Feature sem superfície visual declara isso **uma vez** no Gateway 4a→4b — o Step 4b não roda — e os gateways seguintes herdam.
 
 ## Os princípios de design (definição canônica)
 
@@ -68,8 +70,6 @@ O benchmark do `/solve` (referência #1, calibre dos big pop tech apps) aplicado
 - **A11y — WCAG AA é piso, não meta:** contraste 4.5:1 (texto) e 3:1 (elementos de UI), foco visível, alvo de toque ≥24px, navegação completa por teclado, nome acessível em todo controle, ordem de leitura coerente.
 - **Responsivo** — nos **breakpoints do projeto**, com **320px como piso**. Mobile não é desktop encolhido; desktop não é mobile esticado; nada quebra no meio do caminho.
 
-**Auto-check antes de entregar:** *"Um líder do domínio assinaria esta tela?"* Se não → não está pronta.
-
 ## Lente por step (o que cobrar em CADA um)
 
 | Step | O que o design exige AQUI |
@@ -89,15 +89,7 @@ O benchmark do `/solve` (referência #1, calibre dos big pop tech apps) aplicado
 
 ## Linha obrigatória no Gateway Check (condicional)
 
-Todo Gateway Check de feature **com superfície visual** carrega esta linha, junto das de princípios e follow-ups — pelo mesmo motivo (o que não é declarado, escapa):
-
-```markdown
-- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ aplicado — <1 linha: o que a lente deste step cobrou>
-```
-
-- **Sem a linha, o gateway não foi publicado.** Mesma régua da linha de princípios.
-- **Feature sem superfície visual:** declare **uma vez**, no Gateway 4a→4b (`❌ N/A — feature sem superfície visual, derivado do Step 4a`), e os gateways seguintes herdam sem repetir. Só o Step 4a pode derivar isso — nunca o usuário, nunca por conveniência.
-- **"Nada a cobrar" não é linha vazia:** escreva o que você verificou e não encontrou.
+Todo Gateway Check de feature **com superfície visual** carrega a linha de **design**, junto das de princípios, refatoração e follow-ups — pelo mesmo motivo (o que não é declarado, escapa). Texto da linha e regras de preenchimento: `gateways.md` § Formato Padrão. Sem ela, o gateway **não foi publicado**; feature sem superfície visual declara isso **uma vez**, no Gateway 4a→4b (§ *A quem se aplica*).
 
 ## Racionalizações proibidas
 
@@ -114,3 +106,4 @@ Todo Gateway Check de feature **com superfície visual** carrega esta linha, jun
 | "Inventei um padrão melhor que o consagrado" | Jakob: o usuário aprendeu em outro produto. Desvio exige motivo escrito no Spec, não gosto. BLOQUEADO. |
 | "Design é subjetivo, não dá pra cobrar em gateway" | Token, nível atômico, estados, contraste e breakpoint são **verificáveis**. O que se cobra aqui é isso, não gosto. BLOQUEADO. |
 | "A feature é pequena, não precisa mexer no DS" | Então ela reusa. Se não reusa nem compõe, promove. "Pequena" não cria exceção. BLOQUEADO. |
+| "Resolvo o design dentro do Spec, o 4b é formalidade" | O 4a decide arquitetura; a tela e o DS são decididos no **4b**, em `docs/04-design/`. Pular = a tela nasce no 7b sem DS nem estados. BLOQUEADO. |

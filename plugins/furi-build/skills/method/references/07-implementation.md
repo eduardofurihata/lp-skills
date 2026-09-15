@@ -4,14 +4,9 @@
 
 ## 7a — Plano de Implementação (OBRIGATÓRIO antes de codar)
 
-### Reler antes
-
-- Steps 1-6 (todos) + código existente relevante
-
 ### Artefato
 
-- **Pasta:** `kanban/07-implementation/`
-- **Arquivo:** `<tópico>.md` — prompt-mestre autocontido
+`kanban/07-implementation/<tópico>.md` — prompt-mestre autocontido; nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`inventario-docs.md`).
 
 ### Estrutura
 
@@ -30,7 +25,6 @@
 ## 3. Estratégia de Implementação
 - Ordem de tasks (de 06-todo), abordagem técnica por task, arquivos a criar/modificar, dependências
 - **Referência big apps:** como as big pop tech apps / líderes do domínio resolvem este problema de UX?
-- **Consistência UI/UX:** quais padrões visuais e de interação já existem no app? A linguagem visual existente (cores, espaçamentos, tipografia, animações, componentes, feedback) é **lei para consistência** — e **não para qualidade**: padrão abaixo do nível #1 se **eleva** ou vira achado no ledger, nunca se copia. Ver `design.md` § *Consistência é lei; mediocridade não é*.
 - **Responsabilidade por arquivo (SRP):** para CADA arquivo a criar/modificar, uma frase — o que ele faz. Não coube em uma frase → o arquivo está fazendo duas coisas.
 
 ## 3.1 Reúso antes de criar (DRY) — OBRIGATÓRIO
@@ -65,6 +59,7 @@ Lido de `docs/04-design/<tópico>.md` (as telas decididas no Step 4b) e de `docs
 |---|---|---|
 | <token/componente> | sim / não | **reusar** / **compor** de X+Y / **promover ao DS** (nunca criar na pasta da feature) |
 
+- **Padrões existentes no app** que a feature toca: quais segue (consistência) e quais **eleva** por estarem abaixo do nível #1 (`design.md` § *Consistência é lei; mediocridade não é*)
 - **Tokens novos** a promover: … (com o motivo de nenhum existente servir)
 - **Estados a implementar** por componente: vazio · carregando · erro · sucesso · limite · hover/focus/active/disabled/selected
 - **Zero valor literal planejado** — se o plano já traz `#hex` ou `13px`, o 7b nasce errado.
@@ -98,60 +93,18 @@ Implemente seguindo o plano como referência-mestre com **disciplina de engenhar
 
 ### Antes de codar cada task
 
-- **Reler** `kanban/07-implementation/<feature>.md`
+- **Reler** `kanban/07-implementation/<feature>.md` — o plano já decidiu reúso (§ 3.1), o que não entra (§ 3.2), motores (§ 3.3), DS (§ 3.4) e perímetro (§ 3.5)
 - **Identificar a camada:** controller/service/component/hook/schema/shared — respeite responsabilidades
-- **Buscar código reutilizável ANTES de criar:** Grep/Glob em `packages/shared/`, `src/lib/`, `src/components/ui/`, `src/hooks/`. Se existe parecido, reutilize — NÃO duplique.
-- **Verificar direção de dependências:** shared → api/web ok. api → web ou web → api proibido.
-- **Consistência UI/UX:** antes de criar/modificar componente visual, leia `docs/04-design/design-system.md` e as features similares. Padrão **bom** é lei — não invente estilo novo. Padrão **ruim** no perímetro se **eleva** (não se copia). Sem padrão local → big apps como referência, e o que você definir **vira** padrão: promova ao DS. Ver `design.md`.
-- **Ordem ao precisar de algo visual:** **reusar** o que o DS tem → **compor** do que ele tem → **promover** (criar no DS, nunca na pasta da feature).
-- **i18n (se configurado):** TODA string user-facing nova/alterada DEVE ser chave de tradução, nunca literal. Strings literais hardcoded em projeto com i18n = bug, mesmo se texto estiver "correto".
+- **Visual:** conforme § 3.4 do plano e `docs/04-design/design-system.md` — doutrina em `design.md`
+- **i18n (se configurado):** conforme § 2 do plano — string user-facing nova/alterada é chave de tradução; literal hardcoded em projeto com i18n = bug, mesmo com o texto "correto"
 
 ### Práticas Obrigatórias
 
-**Arquitetura — os princípios na íntegra: `principios.md` (fonte única).** Aqui é onde eles têm limiar numérico e viram checklist **por arquivo aberto**:
+**Arquitetura — os princípios de `principios.md` na íntegra, por arquivo aberto:** SOLID (os cinco), DRY, KISS, YAGNI, Law of Demeter, Motores, camadas e direção de dependências, com os limiares numéricos de lá. O plano já decidiu o que reusar (§ 3.1), o que não construir (§ 3.2) e qual motor é dono de cada regra (§ 3.3): o 7b **executa** essas decisões. Encontrou a mesma regra fora do motor → **absorve** conforme § 3.3, e o chamador passa a só chamar.
 
-- **SRP:** cada arquivo/classe/função faz UMA coisa. >40 linhas → extraia helper. Componente mistura lógica+UI → separe em hook+componente.
-- **OCP:** comportamento novo entra por composição/estratégia. Se você está adicionando mais um `if`/`case` no meio de uma função que muita gente usa, pare — o ponto de extensão estava no plano (§ 3.3).
-- **LSP:** implementação honra o contrato — mesmas garantias, sem lançar onde o contrato não prevê, sem exigir mais do que ele exige.
-- **ISP:** interface pequena, com o que o cliente usa. Interface que obriga a implementar 10 métodos para servir a 2 se quebra.
-- **DIP:** dependa de abstração. O **motor define o contrato**; banco, HTTP e lib implementam. `import` de client de infra dentro de regra de negócio é violação.
-- **Motores:** a capacidade mora no motor e o chamador **só chama**. Encontrou a mesma regra fora dele (um `if` na tela, um cálculo repetido) → **absorve** conforme § 3.3, e o chamador passa a chamar.
-- **Separação de camadas:** controller=HTTP, service=lógica, componente=UI. Lógica de negócio NUNCA no controller/componente.
-- **Baixo acoplamento, alta coesão:** módulos injetáveis, independentes. Sem dependências circulares. Direção: `shared → api/web` ok; `api ↔ web` proibido.
-- **KISS:** 5 linhas > 50 linhas.
-- **YAGNI:** APENAS o que o plano especifica — e o plano já declarou o que NÃO seria construído (§ 3.2). Zero abstrações especulativas. 3 linhas similares > abstração prematura.
-- **DRY:** confirme que não existe em shared/lib/components antes de criar novo — a tabela do § 3.1 é o contrato; achou algo que ela não previu, atualize o plano (ele é vivo durante o 7b).
-- **Law of Demeter:** objeto só fala com vizinhos diretos. Evite `a.b.c.d.method()`.
+> Desvio do que o plano decidiu em § 3.1-3.4 é **decisão nova**: registre no plano (que é vivo em 7b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
 
-> Desvio do que o plano decidiu em § 3.1/§ 3.2 é **decisão nova**: registre no plano (que é vivo em 7b) com o motivo. Desviar em silêncio é como a abstração especulativa entra sem ninguém decidir.
-
-**Refatoração Obrigatória — a cada passada o código sobe** (`principios.md` § Refatoração contínua):
-
-Aplique os princípios acima (SOLID completo, DRY, KISS, YAGNI, LoD, Motores) ao código que **encontra**, não só ao que escreve. O alvo é o **perímetro do § 3.5** — e o perímetro não é só o arquivo que você editou:
-
-| Entra no perímetro | Exemplo |
-|---|---|
-| arquivo **editado** | o que a task muda |
-| arquivo **aberto só para entender** | você leu para saber como chamar |
-| **dependente direto** que o grep revelou | quem importa o que você mexeu |
-| o **caminho que o fluxo atravessa** | tela → hook → service → motor |
-
-**Dentro do perímetro, refatore bastante — sem timidez.** Fora dele, é balde C (`follow-ups.md`): o limite é o **caminho percorrido**, não o repositório.
-
-Para CADA arquivo do perímetro, escaneie e eleve ao nível #1:
-- **Capacidade espalhada** → **absorve no motor** (§ 3.3) e o chamador passa a só chamar
-- **Lógica duplicada** → extraia helper/util — e se for capacidade, é motor
-- **Tamanho:** services >400 linhas, componentes >300, funções >40 → divida
-- **Responsabilidade misturada** → separe (SRP); lógica+UI juntos → hook + componente burro
-- **Naming que não diz a capacidade** → renomeie
-- **`a.b.c.d` / ciclo / direção invertida** → contrato (LoD, DIP)
-- **Imports mortos / variáveis não usadas** → remova
-- **Comentários enganosos** → corrija/remova
-- **TODO/FIXME resolúveis** → resolva agora ou deixe com contexto
-- **Código morto** → delete completamente. Sem `_unused`, sem `// removed`, sem re-export
-- **Padrão visual abaixo do nível #1** (se tem UI) → eleve, não copie (`design.md`)
-
-**Regra do saldo (é o que o gateway cobra):** nenhum arquivo do perímetro sai da passada no nível em que entrou. Ou ele **entrou já no nível #1** — e você **declara isso** —, ou ele **subiu**.
+**Refatoração Obrigatória — a cada passada o código sobe** (`principios.md` § Refatoração contínua): para CADA arquivo do perímetro do § 3.5, a tabela *Achou → Faça* de lá é o checklist, e a **regra do saldo** é o que o gateway cobra — o arquivo subiu, ou está declarado como já no nível #1. Dentro do perímetro, sem timidez; fora dele, balde C (`follow-ups.md`).
 
 **Banco de Dados (quando aplicável):**
 - Migrações versionadas (`npx prisma migrate dev --name descritivo`)
@@ -200,32 +153,6 @@ Para CADA arquivo alterado:
 - **Não existe "mudança isolada"** — toda mudança tem raio de impacto
 - Proporção: shared/util → muitos TCs. Componente folha → poucos.
 
-## Gateways
+## Gateways 7a → 7b e 7b → 8
 
-### 7a → 7b
-- [ ] Plano autocontido (contexto + estratégia + mapa TC→código + checklist)
-- [ ] i18n planejado se projeto tem i18n
-- [ ] Referência de big apps citada para decisões UI/UX
-- [ ] **§ 3.1 Reúso antes de criar preenchido** (DRY — grep feito; arquivo novo com justificativa)
-- [ ] **§ 3.2 O que NÃO vamos construir preenchido** (YAGNI)
-- [ ] **§ 3.3 Motores preenchida** — qual nasce, qual é estendido, que lógica dispersa será absorvida
-- [ ] **§ 3.4 Design System preenchida** (se tem UI) — reusar/compor/promover, tokens, estados; zero literal planejado
-- [ ] **§ 3.5 Perímetro preenchido** — o que será aberto/atravessado e o que sobe em cada arquivo
-- [ ] Responsabilidade única declarada por arquivo do plano (SRP); pontos de extensão (OCP) e direção de dependência (DIP) declarados
-- [ ] Artefato `kanban/07-implementation/<tópico>.md` existe com conteúdo substantivo
-- [ ] **Princípios declarados** na linha do Gateway Check
-- [ ] **Refatoração declarada** na linha própria do Gateway Check
-- [ ] **Design declarado** na linha própria (se a feature tem superfície visual)
-
-### 7b → 8
-- [ ] Todas tasks do checklist marcadas
-- [ ] tsc/lint passam
-- [ ] **Checklist de princípios percorrido por arquivo do perímetro** (SOLID: SRP >40 linhas, OCP, LSP, ISP, DIP · camadas · acoplamento/direção · KISS · YAGNI · DRY · LoD · Motores) — `principios.md`
-- [ ] **Refatoração do perímetro executada** com a **regra do saldo**: cada arquivo subiu, ou está declarado como já no nível #1
-- [ ] Capacidade espalhada **absorvida no motor**; chamadores passaram a só chamar
-- [ ] **Se tem UI:** zero valor literal (tokens), composição > configuração, headless, **todos** os estados implementados, a11y AA, breakpoints do projeto — `design.md`
-- [ ] Desvios de § 3.1/§ 3.2/§ 3.3/§ 3.4 registrados no plano (não em silêncio)
-- [ ] TCs de regressão criados em `docs/05-test-cases/` para features dependentes impactadas
-- [ ] **Princípios declarados** na linha do Gateway Check
-- [ ] **Refatoração declarada** na linha própria do Gateway Check
-- [ ] **Design declarado** na linha própria (se a feature tem superfície visual)
+Critérios e formato: `gateways.md` — as quatro linhas obrigatórias do Gateway Check inclusive.
