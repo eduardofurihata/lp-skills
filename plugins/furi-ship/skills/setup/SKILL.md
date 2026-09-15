@@ -8,7 +8,7 @@ argument-hint: "(vazio = mostrar o setup gravado, ou criá-lo num repo novo) | b
 
 # /setup — As convenções do time neste repositório
 
-Dono **único** de `.claude/ship-setup/setup.md`. Todo alvo do pipeline (`/work`, `/pull-request`, `/homolog`, `/prod`) e todo modificador (`/repro`, `/card`) começa passando por aqui — nenhum deles assume, descobre ou pergunta convenção por conta própria. É daqui que o pipeline sabe **quais estágios existem neste projeto**: se a branch sobe por PR ou por push (§ PR) e se há Jira para rastrear (§ Jira `Rastreamento`) — o resto do fluxo (tem homolog? qual o nome real da branch de integração?) é detectado e gravado no `.claude/ship-setup/deploy.md`, e o `/setup` aponta para lá em vez de repetir. O `/method` (§ Commit) **lê o arquivo por caminho** e aplica o que está escrito; criar e editar é daqui.
+Dono **único** de `.claude/ship-setup/setup.md`. Todo alvo do pipeline (`/work`, `/pull-request`, `/homolog`, `/prod`) e todo modificador (`/repro`, `/card`) começa passando por aqui — nenhum deles assume, descobre ou pergunta convenção por conta própria. É daqui que o pipeline sabe **quais estágios existem neste projeto**: se a branch sobe por PR ou por push (§ PR) e se há Jira para rastrear (§ Jira `Rastreamento`) — o resto do fluxo (tem homolog? qual o nome real da branch de integração?) é detectado e gravado no `.claude/ship-setup/deploy.md`, e o `/setup` aponta para lá em vez de repetir. **Quem fecha o estágio `commit`** lê o § Commit por caminho e aplica o que está escrito; criar e editar é daqui.
 
 **Começar um projeto:** `/setup` num repositório sem o arquivo roda a descoberta inteira (passos 0-4) e, no fim, oferece os dois vizinhos que um projeto novo ainda não tem — `/infra` (mapa da infra) e `/jira` (board e estrutura do Jira, quando `Rastreamento: Jira`).
 
@@ -39,11 +39,11 @@ Dono **único** de `.claude/ship-setup/setup.md`. Todo alvo do pipeline (`/work`
 | Sprint ativo | descoberto a cada uso (`/card`) | muda toda semana |
 | URL de ambiente, comando de deploy, runner, rollback | `.claude/ship-setup/deploy.md` (`pipeline/SKILL.md` § deploy-context) | processo de deploy tem dono próprio |
 | Provedores, contas, onde vive cada segredo | `.claude/ship-setup/infra.md` (`/infra`) | inventário de infra tem dono próprio |
-| Padrões de código | `.claude/patterns.md` (`/method` Step 4) | cresce com o código, não com o processo |
+| Padrões de código | `.claude/patterns.md` | cresce com o código, não com o processo |
 
 ## Onde mora
 
-`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de entrega no repositório-alvo: `setup.md` (este), `jira.md` (`/jira`), `infra.md` (`/infra`) e `deploy.md` (`deploy-context`), com as variantes `.local.md` ao lado. O `.claude/patterns.md` (padrões de código, dono `/method`, pacote `furi-build`) fica na raiz de `.claude/`: o build não conhece o ship e não escreve numa pasta com esse nome. É a casa do conhecimento **permanente** do projeto: o que não é por feature (`docs/01-problem/` … `docs/05-test-cases/`, `kanban/`) e não é da máquina (`~/.claude/projects/`).
+`.claude/ship-setup/setup.md` — a pasta `ship-setup/` é a casa do processo de entrega no repositório-alvo: `setup.md` (este), `jira.md` (`/jira`), `infra.md` (`/infra`) e `deploy.md` (`deploy-context`), com as variantes `.local.md` ao lado. O `.claude/patterns.md` (padrões de código do projeto) fica na raiz de `.claude/`, e não em `ship-setup/`: ele não é do processo de entrega — quem o escreve é quem implementa, e `ship-setup/` é só do que esta skill possui. É a casa do conhecimento **permanente** do projeto: o que não é por feature (`docs/01-problem/` … `docs/05-test-cases/`, `kanban/`) e não é da máquina (`~/.claude/projects/`).
 
 Por que `.claude/` e não `CLAUDE.md`: um `.md` solto em `.claude/` **não** é carregado automaticamente — só `CLAUDE.md`, `settings.json`, `rules/`, `skills/`, `agents/` e `commands/` são. É exatamente o que se quer: o arquivo só entra quando alguém o lê por caminho. **Nunca** o mova para `.claude/rules/` nem o importe do `CLAUDE.md`.
 
@@ -73,7 +73,7 @@ ls .claude/ship-setup/setup.md .claude/ship-setup/setup.local.md 2>/dev/null
   Do time — corrijo o `.gitignore` (`.claude/*` + negações) e gravo `.claude/ship-setup/setup.md`
 ```
 
-O candidato provável vem do contexto: remote de organização que não é do usuário + `.claude/` ignorado de propósito (com comentário, com exceções tipo `!.claude/settings.json`) ⇒ **"só meu" primeiro**. Repo do próprio usuário ⇒ "do time" primeiro. A resposta define o modo **deste repositório** para os cinco arquivos (`setup`, `jira`, `infra`, `deploy`, `patterns`) — o `/jira`, o `/infra`, o `deploy-context` e o `/method` seguem o que você decidiu aqui.
+O candidato provável vem do contexto: remote de organização que não é do usuário + `.claude/` ignorado de propósito (com comentário, com exceções tipo `!.claude/settings.json`) ⇒ **"só meu" primeiro**. Repo do próprio usuário ⇒ "do time" primeiro. A resposta define o modo **deste repositório** para os cinco arquivos (`setup`, `jira`, `infra`, `deploy`, `patterns`) — o `/jira`, o `/infra`, o `deploy-context` e quem escreve os padrões seguem o que você decidiu aqui.
 
 Correção do `.gitignore` quando o modo é **time** e `.claude/` está ignorado:
 
@@ -145,7 +145,7 @@ Neste repositório o trabalho é direto na `main` (40 commits diretos, 1 PR)?
 
 - Consistência: `direto na integração` ⇒ `Abre PR: não` ⇒ `Aprovação: —`, `Merge: —`, `Template: —`. `branch por card` e `branch acumula cards` ⇒ `Abre PR: sim` é o esperado (o `/pull-request` é o caminho); `não` é válido — a branch sobe por push, sem PR — e vale uma confirmação. Contradição → mostre e pergunte de novo; **não grave**.
 - `mkdir -p .claude/ship-setup` e escreva a partir de **§ Template** — um valor por linha, `- Campo: valor`, comentários HTML como dica. Mantenha o cabeçalho do template: ele diz a quem lê o que **não** mora ali. O nome do arquivo é o do **modo** (passo 0): `setup.md` (time) ou `setup.local.md` (só meu).
-- Modo **time**: avise que o arquivo é **versionado** e entra no commit de quem chamou (`/work` → Step 10 do `/method`; `/prod` → o commit de fechamento). Modo **só meu**: avise que ele fica **fora do git** (`git status` não o mostra) e, se o usuário tem backup de locais, que vale incluí-lo. Esta skill não commita.
+- Modo **time**: avise que o arquivo é **versionado** e entra no commit de quem chamou (`/work` → o commit que fecha o estágio `commit`; `/prod` → o commit de fechamento). Modo **só meu**: avise que ele fica **fora do git** (`git status` não o mostra) e, se o usuário tem backup de locais, que vale incluí-lo. Esta skill não commita.
 
 ### 5. Devolver
 
@@ -156,7 +156,7 @@ Quem chamou precisa de:
   jira: {rastreamento, idioma, dod, estrutura}, infra: {mapa, processo, conta}, guidelines, origem, arquivo }
 ```
 
-`arquivo` = `time` (`.claude/ship-setup/setup.md`) ou `local` (`.claude/ship-setup/setup.local.md`) — é o que diz ao `/infra`, ao `deploy-context` e ao `/method` em qual par de arquivos escrever neste repositório.
+`arquivo` = `time` (`.claude/ship-setup/setup.md`) ou `local` (`.claude/ship-setup/setup.local.md`) — é o que diz ao `/infra`, ao `deploy-context` e a quem escreve os padrões em qual par de arquivos escrever neste repositório.
 
 `origem` = `arquivo` (leu), `migrado` (movido da raiz de `.claude/` e lido), `criado agora` (passos 2-4 rodaram) ou `atualizado` (seção editada) — é o que permite ao chamador dizer a procedência no report dele.
 
@@ -174,7 +174,7 @@ Report de uma linha:
 | `/card` (modificador) | § Jira | recusa com motivo se `Rastreamento` ≠ Jira; idioma do card; a `DoD` orienta o `## Como testar` |
 | `pipeline/SKILL.md` § pr-publish (estágios `push`, `pr`) | § PR, § Commit | `Abre PR: não` → pusha, espelha no Jira e **não abre PR**; PR já aberto para a branch → **atualiza** (título e `## Cards` derivados dos commits); `Template:` → corpo nas seções do arquivo; keys no título conforme § Commit |
 | `pipeline/SKILL.md` § pr-cycle (estágio `integrado`) | § PR | `Merge:` decide `--merge/--squash/--rebase`; `Aprovação: <pessoa>` → merge **espera** o `APPROVED` dela |
-| `/method` (por caminho) | § Commit | mensagem do Step 10 na convenção; key do **card ativo** (passada pelo `work-cycle`), senão a do nome da branch |
+| quem fecha o estágio `commit` (por caminho) | § Commit | mensagem do commit na convenção; key do **card ativo** (passada pelo `work-cycle`), senão a do nome da branch |
 
 Quem lê por caminho **aplica o que está escrito** e, sem arquivo, mantém o próprio default — **não cria** o arquivo. Criar é aqui.
 
@@ -201,7 +201,7 @@ Editar uma seção é a única situação em que o arquivo é reescrito. Overrid
 - "Não tem board, então o pipeline não roda" → NÃO. `Rastreamento: kanban local` ou `nenhum` é projeto válido: o pipeline roda inteiro sem card, e ninguém pergunta board.
 - "Anoto a URL de homolog / o comando de deploy / o runner" → NÃO. É `.claude/ship-setup/deploy.md`, dono `pipeline/SKILL.md` § deploy-context.
 - "Anoto a conta da Vercel / onde está a chave do Neon" → NÃO. É `.claude/ship-setup/infra.md`, dono `/infra`.
-- "Anoto que o projeto usa Zod e feature-first" → NÃO. É `.claude/patterns.md`, dono `/method` Step 4.
+- "Anoto que o projeto usa Zod e feature-first" → NÃO. É `.claude/patterns.md` — padrões de código, não processo de entrega.
 - "Ponho `@.claude/ship-setup/setup.md` no `CLAUDE.md` pra carregar sempre" / "movo pra `.claude/rules/`" → NÃO. Só quem usa lê. Carregado em toda sessão é o problema que este arquivo existe pra resolver.
 - "Gravo em `~/.claude/projects/<slug>/memory/`" → NÃO. Memória apagada = convenção perdida, e o time nunca a vê. Setup que não pode ir pro repo tem casa: `.claude/ship-setup/setup.local.md`.
 - "`.claude/` está no `.gitignore`, então corrijo o `.gitignore`" → NÃO sem perguntar. Pode ser o time dizendo que processo de agente não entra ali — e aí o setup é **só meu** (`setup.local.md`). Mexer no `.gitignore` de um repositório do time é decisão deles (passo 0). E lembre: `!x` sob `.claude/` **não funciona**.
@@ -222,7 +222,7 @@ Copie o bloco abaixo para `.claude/ship-setup/setup.md` na raiz do repositório-
 
 > Convenções operacionais do time neste repositório. Dono: `/setup`. Lido **sob demanda** por quem usa
 > (os alvos `/work`, `/pull-request`, `/homolog`, `/prod` e os modificadores `/repro`, `/card`, via `/setup`;
-> `/method` § Commit por caminho). Nunca por `CLAUDE.md`/`@import`/`.claude/rules/`, nunca da memória da máquina.
+> e por quem fecha o estágio `commit`, § Commit por caminho). Nunca por `CLAUDE.md`/`@import`/`.claude/rules/`, nunca da memória da máquina.
 > NÃO mora aqui: topologia e nome das branches (detectados e gravados em `.claude/ship-setup/deploy.md`) ·
 > board do Jira (`/jira`, memória da máquina) · estrutura do Jira (`.claude/ship-setup/jira.md`) · mapa da infra
 > (`.claude/ship-setup/infra.md`) · padrões de código (`.claude/patterns.md`).
@@ -277,7 +277,7 @@ O pipeline (`pipeline/SKILL.md` § reconcile) monta a escada de estágios deste 
 | Infra: ponteiros, conta | sim (ponteiros) | o conteúdo → `.claude/ship-setup/infra.md` (`/infra`) e `.claude/ship-setup/deploy.md` (`deploy-context`) |
 | Guidelines | sim (ponteiro) | — |
 | Topologia, nome real das branches, ambientes (tem homolog?), URLs, secrets, runner, rollback | **não** | `.claude/ship-setup/deploy.md` — detectado por `pipeline/SKILL.md` § deploy-context, passo 1 e gravado; `dev`/`main` é só o padrão de quem nunca detectou |
-| Padrões de código | **não** | `.claude/patterns.md` (`/method` Step 4) |
+| Padrões de código | **não** | `.claude/patterns.md` — padrões do código, não do processo |
 
 ### Consistência (validada antes de gravar)
 

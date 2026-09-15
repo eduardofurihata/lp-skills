@@ -1,20 +1,20 @@
 ---
 name: repro
-description: 'Use when user invokes /repro to add live reproduction to the ship pipeline — a MODIFIER, not a target: the bug is reproduced where the user sees it BEFORE any code, and the dev sees it twice, before and after the fix. Alone (`/repro KEY-N` or `/repro "description"`) it only reproduces: syncs the branch, understands (≥90), reproduces (≥90, in a loop) on the right surface (web via Playwright, mobile on the emulator, API with a real call), stops so the dev clicks the trigger and sees the bug, and ENDS — the reproduction stays in the conversation; no /method, no commit. Composed with a target in any order — `/repro /work`, `/work /repro`, `/repro /prod` — it reproduces first, then delegates to the target, which runs its loop with the second human check (dev sees the fix) after the commit. Composed with /card (`/repro /card "…"`) it reproduces and then the card is created with the observed steps in PM/PO/QA voice. Works on any Jira board (/jira) and without Jira. `finish` skips optional questions but never the two human checks. Feature cards: maps where the change lands instead of a bug.'
+description: 'Use when user invokes /repro to add live reproduction to the ship pipeline — a MODIFIER, not a target: the bug is reproduced where the user sees it BEFORE any code, and the dev sees it twice, before and after the fix. Alone (`/repro KEY-N` or `/repro "description"`) it only reproduces: syncs the branch, understands (≥90), reproduces (≥90, in a loop) on the right surface (web via Playwright, mobile on the emulator, API with a real call), stops so the dev clicks the trigger and sees the bug, and ENDS — the reproduction stays in the conversation; nothing is implemented, nothing is committed. Composed with a target in any order — `/repro /work`, `/work /repro`, `/repro /prod` — it reproduces first, then delegates to the target, which runs its loop with the second human check (dev sees the fix) after the commit. Composed with /card (`/repro /card "…"`) it reproduces and then the card is created with the observed steps in PM/PO/QA voice. Works on any Jira board (/jira) and without Jira. `finish` skips optional questions but never the two human checks. Feature cards: maps where the change lands instead of a bug.'
 effort: max
-requires: [jira, setup, pipeline, solve, work, pull-request, homolog, prod, card]
+requires: [jira, setup, pipeline, work, pull-request, homolog, prod, card]
 argument-hint: "[KEY-N | descrição] [/work | /pull-request | /homolog | /prod] [/card] [finish] | (vazio = continuar o card ativo)"
 ---
 
 # /repro — reproduzir onde o usuário vê, e provar que sumiu (modificador do pipeline)
 
-**Modificador**, não alvo. O que ele acrescenta a qualquer alvo é uma característica: **o bug é reproduzido onde o usuário o vê, antes de qualquer código, e o dev o vê duas vezes** — antes do fix (o trigger na tela, o bug acontecendo) e depois (o mesmo trigger, o bug sumido). Sozinho, reproduz e para; com um alvo (`/repro /work`, `/repro /prod`, em qualquer ordem), reproduz e entrega ao alvo, que roda o loop com a segunda parada humana dentro. **10x acima da referência #1 do mercado**: carrega o `/solve` na ativação.
+**Modificador**, não alvo. O que ele acrescenta a qualquer alvo é uma característica: **o bug é reproduzido onde o usuário o vê, antes de qualquer código, e o dev o vê duas vezes** — antes do fix (o trigger na tela, o bug acontecendo) e depois (o mesmo trigger, o bug sumido). Sozinho, reproduz e para; com um alvo (`/repro /work`, `/repro /prod`, em qualquer ordem), reproduz e entrega ao alvo, que roda o loop com a segunda parada humana dentro. O nível é o do `pipeline/SKILL.md` § nivel.
 
-> 🚫 Sozinho, NÃO invoca o `/method`, NÃO commita, NÃO pusha. Reproduzir e parar é o que ele é. Corrigir é `/repro /work` (ou qualquer alvo mais distante); virar card é `/repro /card`.
+> 🚫 Sozinho, NÃO implementa, NÃO commita, NÃO pusha. Reproduzir e parar é o que ele é. Corrigir é `/repro /work` (ou qualquer alvo mais distante); virar card é `/repro /card`.
 
 ## Ordem de Operações ao Ativar
 
-**ANTES de tudo — invoque o `/solve`.** Toda vez que o `/repro` for ativado, a PRIMEIRA ação é **invocar o `/solve` via Skill tool** (`furi-build:solve`; a forma curta `solve` também resolve) para carregar o padrão. Chamada real, não "seguir de memória". Depois, o Step 0.
+**ANTES de tudo — a régua.** Leia `pipeline/SKILL.md § nivel`: a **referência #1 deste domínio**, nomeada, é o piso — é contra ela que o comportamento correto se define, não contra "voltou ao que era". Depois, o Step 0.
 
 ## Iron Law
 
@@ -36,14 +36,14 @@ argument-hint: "[KEY-N | descrição] [/work | /pull-request | /homolog | /prod]
 
 **`finish`** suprime "quer que eu continue?" e qualquer confirmação opcional. **Não** suprime a pergunta de **ambiguidade real** do § 3 nem as duas paradas humanas.
 
-**CONTINUE** por `phase:` do registro: `investigation` → retomar do § 3; `method`/`human-check` → o alvo que estava rodando é quem retoma (rode-o de novo: `/<alvo> KEY-N` — o loop re-diagnostica e a parada 2 fica onde estava).
+**CONTINUE** por `phase:` do registro: `investigation` → retomar do § 3; `commit`/`human-check` → o alvo que estava rodando é quem retoma (rode-o de novo: `/<alvo> KEY-N` — o loop re-diagnostica e a parada 2 fica onde estava). *Registro gravado por uma versão anterior pode trazer o valor legado `method` — é o mesmo estágio.*
 
 ## Convenções (CONTRATO)
 
 - **Qualquer projeto** do Atlassian, via `mcp__atlassian__*`; **sem Jira** (`Rastreamento` ≠ Jira) o objetivo é a descrição — reproduz do mesmo jeito.
 - **Board e estrutura vêm do `/jira`; modo e nome da branch vêm do `/setup`** — Step 0, a cada invocação. A branch é do motor `pipeline/SKILL.md` § branch (§ 2) — o mesmo do pipeline; `<integração>` detectada, nunca assumida.
 - **Superfície = onde o usuário vê o bug**, nunca o código: a tela/rota (web), o app (mobile) ou o endpoint (API) que o card e o anexo nomeiam.
-- **O registro `docs/jira/todo/KEY-N.md` existe só quando há card e um alvo vai consumir** (a parada 2 re-executa o que está escrito nele; o `/method` usa o cenário como TC de referência). Sozinho, ou sem card, a reprodução fica **na conversa** — é dali que o `/card` ou o alvo seguinte a aproveitam.
+- **O registro `docs/jira/todo/KEY-N.md` existe só quando há card e um alvo vai consumir** (a parada 2 re-executa o que está escrito nele; quem implementa usa o cenário observado como caso de teste de referência). Sozinho, ou sem card, a reprodução fica **na conversa** — é dali que o `/card` ou o alvo seguinte a aproveitam.
 - **A parada 2** é § Human Check: o loop do alvo a executa depois do estágio `commit` — esta seção é o único protocolo que sai daqui para o pipeline.
 
 ## Fluxo
@@ -78,7 +78,7 @@ Assignee (se ainda não for o executor): `jira_update_issue`. Status: `pipeline/
 
 ### 3. Entender o problema (nota ≥ 90) + gate de perguntas
 
-Ler o **código** relevante e entender o problema. Nota **0–100** à precisão do entendimento; `< 90` → ler mais e repontuar, **em loop até ≥ 90**. Já mapeie o que o `/method` vai cobrar: **qual motor é dono** da capacidade e se há **superfície visual** — entendimento, não implementação.
+Ler o **código** relevante e entender o problema. Nota **0–100** à precisão do entendimento; `< 90` → ler mais e repontuar, **em loop até ≥ 90**. Já mapeie o que o fechamento do `commit` vai cobrar: **qual motor é dono** da capacidade e se há **superfície visual** — entendimento, não implementação.
 
 - **Ambiguidade real** (2 caminhos opostos, requisito faltando, decisão que só o usuário julga) → **PARAR e perguntar** (`AskUserQuestion`) — em qualquer modo, `finish` inclusive.
 - `≥ 90` e sem ambiguidade → seguir. **Não invente pergunta.**
@@ -104,17 +104,17 @@ Rodar o fluxo de novo e parar **1 passo antes do trigger**: o gatilho visível n
 
 Publicar no chat: ambiente pronto + **"👉 Clique em / Execute: [elemento ou comando exato]"** + o comportamento atual (o bug; FEATURE: o estado do lugar onde vai nascer) + a evidência. **PARAR e aguardar o dev confirmar que viu — obrigatório também em `finish`.**
 
-Confirmou → o estágio `reprodução` está **fechado**. Com registro: `phase: method`.
+Confirmou → o estágio `reprodução` está **fechado**. Com registro: `phase: commit`.
 
 ### 6. Encerrar ou delegar (`pipeline/SKILL.md` § composicao)
 
 | Composição | O que acontece agora |
 |---|---|
-| **sozinho** | encerra com a saída abaixo. Nada de `/method`, nada de commit |
+| **sozinho** | encerra com a saída abaixo. Nada de implementação, nada de commit |
 | **`/card`** no argumento | `Skill(skill: "card", args: "<verbos restantes> <objetivo>")` — o `/card` lê a reprodução da conversa e escreve o `## Como testar` com os passos observados |
 | **alvo** no argumento (sem `/card`) | `Skill(skill: "<alvo>", args: "/repro <objetivo>")` — o alvo vê `reprodução` fechado, funde a parada 2 (§ Human Check, depois de `commit`) e roda o loop até o estágio dele |
 
-**A parada 2 é do loop do alvo**, não daqui: depois do `/method` fechar o commit, o loop roda § Human Check — reproduz o **mesmo fluxo** do § 4/§ 5, para 1 passo antes do trigger, e o dev confirma que **o bug não acontece mais** (FEATURE: que funciona como o card diz). Obrigatório também em `finish`. Ao confirmar, o registro (se existe) vai a `phase: human-check` e entra no commit por caminho explícito — nunca `git add -A`.
+**A parada 2 é do loop do alvo**, não daqui: depois de o estágio `commit` fechar, o loop roda § Human Check — reproduz o **mesmo fluxo** do § 4/§ 5, para 1 passo antes do trigger, e o dev confirma que **o bug não acontece mais** (FEATURE: que funciona como o card diz). Obrigatório também em `finish`. Ao confirmar, o registro (se existe) vai a `phase: human-check` e entra no commit por caminho explícito — nunca `git add -A`.
 
 ## Saída (sozinho)
 
@@ -140,8 +140,8 @@ Composto, a saída é a do alvo (ou do `/card`) — com a linha `Repro:` dentro.
 
 ## Red Flags — STOP
 
-- "`/repro` sozinho, então reproduzo, corrijo e commito" → NÃO. **Sozinho, reproduz e para.** Corrigir é `/repro /work` — o `/method` roda dentro do loop do alvo.
-- "`/repro /prod`: rodo o `/repro` inteiro com `/method` e depois o `/prod`" → NÃO. Reproduzo, parada 1, e **delego**. O `/method` roda uma vez, dentro do loop do `/prod`.
+- "`/repro` sozinho, então reproduzo, corrijo e commito" → NÃO. **Sozinho, reproduz e para.** Corrigir é `/repro /work` — o estágio `commit` fecha dentro do loop do alvo.
+- "`/repro /prod`: rodo o `/repro` inteiro com a correção e depois o `/prod`" → NÃO. Reproduzo, parada 1, e **delego**. O estágio `commit` fecha uma vez, dentro do loop do `/prod`.
 - "`/prod /repro` — não sou eu quem foi digitado, ignoro" → NÃO. O `/prod` me delega (`pipeline/SKILL.md` § composicao); a ordem de execução é fixa: `repro → card → alvo`.
 - "Descobri/perguntei o board direto aqui" → NÃO. Step 0 é o `/jira`.
 - "Pulei o Step 0 porque já sei desta sessão" → NÃO. Leitura é **toda** invocação.
@@ -152,10 +152,10 @@ Composto, a saída é a do alvo (ou do `/card`) — com a linha `Repro:` dentro.
 - "Mostro o resultado direto, sem o dev clicar" → NÃO. O dev clica no trigger e confirma ao vivo — antes e depois.
 - "Sem card, então não dá pra reproduzir" → NÃO. O objetivo é a descrição; a reprodução fica na conversa.
 - "Sem card, crio um pra ter registro" → NÃO. Card é `/repro /card`, decisão do usuário. Sozinho, a conversa é o registro.
-- "Gravei o registro num `/repro` sozinho, pra não perder" → NÃO. Registro só com card **e** alvo composto — quem consome é a parada 2 e o `/method`. Sozinho, fica na conversa.
+- "Gravei o registro num `/repro` sozinho, pra não perder" → NÃO. Registro só com card **e** alvo composto — quem consome é a parada 2 e quem implementa. Sozinho, fica na conversa.
 - "Card ambíguo, mas reproduzo e vejo o que dá" → NÃO. Gate de perguntas é **antes** de reproduzir o que não se entendeu.
 - "O card tinha print anexado, mas nem abri" → NÃO. A nota do § 4 é dada contra ele.
-- "Já conheço o `/solve` / o `/jira` / o `/setup`, sigo sem invocar" → NÃO. Skill entra pelo Skill tool, **toda** vez.
+- "Já conheço o `/jira` / o `/setup`, sigo sem invocar" → NÃO. Skill entra pelo Skill tool, **toda** vez.
 - "Terminei a reprodução, dou push / abro PR" → NÃO. Nem sozinho, nem composto: publicar é o estágio `push` do loop do alvo.
 
 ## Human Check — validação pós-fix (sem bug)
@@ -185,7 +185,7 @@ Reconstruir o mesmo estado da reprodução original, lendo `docs/jira/todo/<KEY>
 Screenshot mostrando a tela com o trigger visível e o contexto completo (web/mobile) — ou a requisição pronta + o estado dos dados (API) — idêntico ao ponto de gatilho do bug original.
 
 #### 3b — Se o card mexeu em texto gerado por IA
-Superfície de texto gerado por IA (derivada no Step 4 do `/method`) = **sim**? Então o human check não é só "o trigger está na tela": o que o usuário vai julgar é a **saída**, e **é aqui que o "funciona, mas lê mal" aparece** — o clique dá certo, o texto lê torto. Prepare a leitura, não só o clique:
+Superfície de texto gerado por IA (derivada no spec da feature — `docs/04-spec/<tópico>.md` § Texto gerado por IA) = **sim**? Então o human check não é só "o trigger está na tela": o que o usuário vai julgar é a **saída**, e **é aqui que o "funciona, mas lê mal" aparece** — o clique dá certo, o texto lê torto. Prepare a leitura, não só o clique:
 
 - Saída já visível na tela → **transcreva-a inteira** no bloco abaixo (ele não deve precisar rolar para julgar).
 - Saída que só nasce no clique → diga **o que ele deve ler** quando clicar e **contra qual referência** (`docs/04-spec/<tópico>.md` § Texto gerado por IA).
@@ -222,7 +222,7 @@ Após confirmar que o bug não ocorre mais, responda "ok" / "approved" / "ship" 
 
 **Qualquer uma dessas frases = PARE. Esse pensamento É a violação. Volte e execute do jeito certo.**
 
-> A fase de implementação/testes roda no `/method` — skill separada, invocada via Skill tool (`furi-build:method`); as racionalizações canônicas dela estão em `plugins/furi-build/skills/method/SKILL.md` § Rationalizations. Esta tabela cobre o **Step 0 e a orquestração**, o **entendimento** (§ 4), a **reprodução** (§ 5), as **validações humanas** (§ 5 e § Human Check) e o **ship** (§ 6).
+> A implementação e os testes acontecem no fechamento do estágio `commit` (`pipeline/SKILL.md` § work-cycle), dentro do loop do alvo — não aqui. Esta tabela cobre o **Step 0 e a orquestração**, o **entendimento** (§ 4), a **reprodução** (§ 5), as **validações humanas** (§ 5 e § Human Check) e o **ship** (§ 6).
 
 ### Step 0 e orquestração
 
@@ -230,7 +230,6 @@ Após confirmar que o bug não ocorre mais, responda "ok" / "approved" / "ship" 
 |-------|-----------|
 | "Já sei o board / o setup desta sessão, sigo sem invocar" | Mencionar não é invocar. `/jira` e `/setup` entram pelo Skill tool **toda** vez. |
 | "`git checkout main && git pull`, como sempre" | A integração vem da topologia (`pipeline/SKILL.md` § deploy-context, passo 1) e a branch do motor `pipeline/SKILL.md` § branch. `main` pode nem ser a integração. |
-| "Já conheço o `/method`, sigo sem invocar" | Mencionar não é invocar. O `/method` entra pelo Skill tool, **toda** vez — sem a chamada, não há Gate Check, gateways nem audits. BLOQUEADO. |
 
 ### Entender o problema (§ 4)
 
@@ -249,7 +248,7 @@ Após confirmar que o bug não ocorre mais, responda "ok" / "approved" / "ship" 
 | "Deduzi pelos logs / stacktrace" | Logs localizam; reprodução na superfície é obrigatória. Chegue ao comportamento por onde o usuário chega. |
 | "Vou simular o ambiente de cabeça pelo schema" | Sem simulação mental. Reprodução real ou nada. |
 | "É API, não tem front, então leio o código" | API tem superfície: a chamada real com o payload do card. Reproduza a resposta errada, não a suposição. |
-| "Reproduzi no browser, mas o card é do app mobile" | A superfície é onde o solicitante viu: card mobile → emulador/simulador (tabela por contexto do Step 9 do `/method`). |
+| "Reproduzi no browser, mas o card é do app mobile" | A superfície é onde o solicitante viu: card mobile → emulador/simulador. |
 | "A reprodução é parecida com o card" | Parecida ≠ exata. Passos exatos do card. A nota (≥ 90) mede justamente isso. |
 | "Usuário default está bom" | Só se o card não especificar condições. Senão crie o ambiente certo (`can create users: yes`). |
 | "Sem evidência, mas vi funcionando" | Evidência é prova — screenshot, ou a resposta real. Sem evidência = sem reprodução. |
@@ -276,9 +275,9 @@ Após confirmar que o bug não ocorre mais, responda "ok" / "approved" / "ship" 
 | Frase | Realidade |
 |-------|-----------|
 | "Invoco o `/pull-request` direto após o human check" | NÃO. Pergunte antes ("quer que eu rode o `/pull-request`?") — salvo em `finish`. |
-| "`git add -A` antes do `/pull-request`, pra limpar a árvore" | O commit de código é do `/method` (Step 10). Antes do `/pull-request` só entra o registro, por caminho explícito (`git add docs/jira/todo/<KEY>.md`). Código novo → `/method` (re-review), nunca commit avulso. |
+| "`git add -A` antes do `/pull-request`, pra limpar a árvore" | O commit de código é do estágio `commit`. Antes do `/pull-request` só entra o registro, por caminho explícito (`git add docs/jira/todo/<KEY>.md`). Código novo reabre o estágio `commit` (re-review e re-teste), nunca commit avulso. |
 | "Abro o PR com `gh pr create`, é a mesma coisa" | NÃO. Mencionar não é invocar: o `/pull-request` tem o corpo 3-em-1, a idempotência e o espelho no Jira. |
-| "O `/pull-request` parou (árvore suja / branch atrás), sigo à mão" | NÃO. O guard dele é contrato: resolva (registro por caminho explícito; integração pelo motor + re-teste no `/method`) e invoque de novo. |
+| "O `/pull-request` parou (árvore suja / branch atrás), sigo à mão" | NÃO. O guard dele é contrato: resolva (registro por caminho explícito; integração pelo motor + re-teste no fechamento do `commit`) e invoque de novo. |
 
 ### Red Flags Universais — PARE em qualquer fase ao ouvir/pensar:
 
