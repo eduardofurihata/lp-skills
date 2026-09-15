@@ -18,7 +18,7 @@
 ## Decisões
 ### D-N — <decisão em uma frase>
 - **Justificativa:** <por que esta é a melhor escolha>
-- **Referência:** <padrão do projeto / big app / boa prática / princípio>
+- **Referência:** <`/solve` (big app / boa prática / princípio) ou código existente>
 - **UC que exige:** UC-N
 - **Já existe no projeto?** <mecanismo encontrado → reusar/estender | nada → criar>
 - **Descartadas:** <alternativa — por que saiu>
@@ -26,14 +26,10 @@
 
 ## Hierarquia de decisão
 
-Referências de qualidade são **obrigatórias**: a solução padrão dos big pop tech apps e dos líderes do domínio é a baseline para competir no nível #1, e a complexidade necessária para chegar lá é requisito, não obstáculo. Cada decisão se resolve, nesta ordem:
+Cada decisão se resolve, nesta ordem:
 
-1. **Padrões do projeto** — código existente, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
-2. **Big apps** — big pop tech apps / líderes do mesmo domínio
-3. **Boas práticas de mercado** — padrões consagrados de engenharia de alto nível
-4. **Princípios** (`principios.md`; `design.md` se tem UI) — Clean Architecture, OWASP, performance, escalabilidade
-
-> Os princípios não são só o desempate nº 4: eles **filtram** 1-3. Decisão que vem de "big app faz assim" mas viola YAGNI (nenhum UC exige) ou DRY (o projeto já tem o mecanismo) **não passa** — vai para descartadas.
+1. **`/solve`** — a referência #1: big pop tech apps / líderes do domínio, boas práticas consagradas (Clean Architecture, OWASP, performance, escalabilidade) e os princípios (`principios.md`; `design.md` se tem UI)
+2. **Código existente** — o código do projeto, CLAUDE.md, `docs/04-spec/technical/patterns.md`, convenções já adotadas
 
 ## Autonomous Decision Loop
 
@@ -53,7 +49,7 @@ REPETIR até zero gaps:
      Stack/tecnologia | Regras de negócio | Edge cases | Integrações
      Permissões/roles | Dados/schemas | Performance | Segurança
      **Escopo de plataforma** (web/android/ios) — derivado, não declarado
-     **Superfície visual** (sim/não) — derivada aqui; é o que liga o Step 4b
+     **Superfície visual** (sim/não) — derivada, não declarada
      **Motores** — qual capacidade esta feature exige, e quem é o dono dela?
 
   3. RESOLVER CADA GAP — no formato D-N do artefato:
@@ -73,15 +69,14 @@ SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
 - **Cada round re-analisa TUDO do zero** — não confie na memória.
 - **Mínimo 1 round** — features "simples" escondem complexidade.
 - **Contradição interna** → a opção mais consistente com o projeto existente; documente o motivo.
-- **Não pergunte ao usuário.** A única pausa legítima é a do `SKILL.md`; "não tenho certeza do melhor approach" não é motivo.
 
 ## Escopo derivado, nunca declarado
 
 **PROIBIDO** aceitar "web-only, skip mobile" ou "isso não tem UI" como declaração do usuário. Os dois saem da Verificação de Realidade (Step 3) + análise do projeto:
 
-- Projeto tem app mobile? A feature tem superfície mobile? Se tem → TCs mobile OBRIGATÓRIOS (Android + iOS).
+- Projeto tem app mobile? A feature tem superfície mobile? Se tem → Android e iOS entram no escopo.
 - Projeto web-only (confirmado pela ausência de código mobile) → o spec documenta "feature não tem superfície mobile".
-- **Superfície visual = sim** quando algum UC lista estados de tela (Step 3) ou algum passo do happy path acontece numa tela do projeto. É o que liga o **Step 4b** e a linha de Design dos gateways seguintes.
+- **Superfície visual = sim** quando algum UC lista estados de tela (Step 3) ou algum passo do happy path acontece numa tela do projeto.
 
 ## Gateway 4a → 4b
 

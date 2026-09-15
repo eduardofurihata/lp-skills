@@ -233,7 +233,7 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 ❌ "Step 3 completo. Posso prosseguir?" | "Vamos pro code review?" | "Antes de prosseguir, quero confirmar..."
 ✅ Terminou Step 3 → relê docs → inicia Step 4 automaticamente.
 
-O protocolo é esteira de produção. Dúvidas de implementação → resolva pela hierarquia (padrão do projeto > big apps > boas práticas) e documente no spec. Única pausa legítima: decisão IRREVERSÍVEL + 2 caminhos radicalmente opostos + impacto que só usuário pode julgar.
+O protocolo é esteira de produção. Dúvidas de implementação → resolva pela hierarquia (`/solve` > código existente) e documente no spec. Única pausa legítima: decisão IRREVERSÍVEL + 2 caminhos radicalmente opostos + impacto que só usuário pode julgar.
 
 ## Arquivos de Referência
 
