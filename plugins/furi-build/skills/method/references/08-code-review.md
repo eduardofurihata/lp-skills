@@ -114,7 +114,7 @@ Nenhuma linha pode ficar em branco — princípio sem veredicto = princípio nã
 | A11y (WCAG AA) + responsivo (breakpoints, 320px) | ✅/⚠️ | |
 | DS evoluiu (promoções registradas, nada solto na feature) | ✅/⚠️ | |
 
-Feature sem superfície visual: escreva `N/A — sem superfície visual (derivado do Step 4)` **uma vez**, no lugar da tabela.
+Feature sem superfície visual: escreva `N/A — sem superfície visual (derivado do Step 4a)` **uma vez**, no lugar da tabela.
 
 ## Follow-ups Emitidos
 | # | Achado | Balde (A/B/C) | Status | Destino |

@@ -37,7 +37,7 @@
 |-------|-----------|
 | "Pula Gate Check, pula Gateways, pula mobile — roda Step 7 e Step 9" | **Bypass granular = bypass igual.** Protocolo é atômico. Ou roda completo ou não iniciou. BLOQUEADO. |
 | "Mantém os críticos, pula os simples" | Você não decide quais são críticos sem ter rodado os "simples" — os simples existem justamente pra expor o não-óbvio. BLOQUEADO. |
-| "Web-only, skip mobile TCs" | Escopo de plataforma é **derivado** do Step 4 (spec) + Step 3 (Verificação de Realidade), NÃO declarado pelo usuário. Se realmente é web-only, o spec documenta explicitamente "feature não tem superfície mobile". BLOQUEADO se declaração precede verificação. |
+| "Web-only, skip mobile TCs" | Escopo de plataforma é **derivado** do Step 4a (spec) + Step 3 (Verificação de Realidade), NÃO declarado pelo usuário. Se realmente é web-only, o spec documenta explicitamente "feature não tem superfície mobile". BLOQUEADO se declaração precede verificação. |
 | "Só os steps de documentação, pula testing" | Steps são encadeados — remover o último invalida todos. BLOQUEADO. |
 | "Testa metade dos TCs, se passar roda o resto" | Gateway 9→10 exige 100% executado com evidência. BLOQUEADO. |
 
@@ -151,7 +151,7 @@
 
 ## Categoria 12 — Design e UI (`design.md`)
 
-> Fonte única do design: `design.md`. Vale para feature com **superfície visual**, derivada no Step 4 — e é declarada na linha própria do Gateway Check.
+> Fonte única do design: `design.md`. Vale para feature com **superfície visual**, derivada no Step 4a — e é declarada na linha própria do Gateway Check.
 
 | Frase | Realidade |
 |-------|-----------|
@@ -159,13 +159,14 @@
 | "É só uma cor / um espaçamento, hardcode não faz mal" | Token é SSOT. Literal é hardcode visual e some do radar na próxima mudança de tema. BLOQUEADO. |
 | "As outras telas são assim, mantenho a consistência" | Consistência vale para padrão **bom**. Padrão ruim no perímetro se **eleva**; fora dele, vai pro ledger. Copiar é propagar. BLOQUEADO. |
 | "Faço a a11y depois, primeiro entrego a tela" | AA é **piso**, não fase. Retrofit de foco e contraste custa a tela inteira. BLOQUEADO. |
-| "Desktop primeiro, mobile numa próxima" | Escopo de plataforma é **derivado** no Step 4, não declarado. BLOQUEADO. |
+| "Desktop primeiro, mobile numa próxima" | Escopo de plataforma é **derivado** no Step 4a, não declarado. BLOQUEADO. |
 | "Estado vazio e erro resolvo se sobrar tempo" | Estado não desenhado = estado quebrado. É o que o usuário vê no pior dia dele. BLOQUEADO. |
 | "Adiciono uma prop booleana, é mais rápido que recompor" | >2 booleanas de aparência = recomponha. Cada flag multiplica os caminhos a testar. BLOQUEADO. |
 | "O screenshot do happy path já prova" | Evidência é por **estado × breakpoint**. Happy path em desktop é a fatia que nunca quebra. BLOQUEADO. |
 | "Inventei um padrão melhor que o consagrado" | Lei de Jakob: o usuário aprendeu em outro produto. Desvio exige motivo escrito no Spec, não gosto. BLOQUEADO. |
 | "Design é subjetivo, não dá pra cobrar em gateway" | Token, nível atômico, estados, contraste e breakpoint são **verificáveis**. É isso que se cobra. BLOQUEADO. |
 | "A feature é pequena, não precisa mexer no DS" | Então ela **reusa**. Se não reusa nem compõe, **promove**. "Pequena" não cria exceção. BLOQUEADO. |
+| "Resolvo o design dentro do Spec, o 4b é formalidade" | O 4a decide arquitetura; a tela e o DS são decididos no **4b**, em `docs/04-design/`. Pular = a tela nasce no 7b sem DS nem estados. BLOQUEADO. |
 
 ## Red Flags — Frases-Gatilho que Obrigam STOP
 
@@ -180,7 +181,7 @@ Se qualquer uma dessas aparece no seu raciocínio ou no prompt do usuário, **PA
 - "copy-paste retroativo"
 - "é só plugar / só trocar / só ligar"
 - "trust me"
-- "web-only, pula mobile" (sem Step 4 + Verificação)
+- "web-only, pula mobile" (sem Step 4a + Verificação)
 - "TC redundante, pulo"
 - "verifiquei no código, marco PASSED"
 - "tsc passou, tá testado"

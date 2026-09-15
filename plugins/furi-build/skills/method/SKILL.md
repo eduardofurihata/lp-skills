@@ -36,7 +36,7 @@ Os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, L
 - **Motores:** toda capacidade tem **um** dono. Regra espalhada por telas é defeito, não estilo; achou pedaço solto → **absorve**.
 - **Todo Gateway Check publica a linha de princípios** (`- **Princípios (SOLID · DRY · KISS · YAGNI · LoD · Motores):** ✅ aplicados — <o que a lente deste step cobrou>`). Sem a linha, o gateway não foi publicado — mesma régua da linha de follow-ups.
 - **KISS/YAGNI matam a complexidade *desnecessária*; a *necessária* para o nível #1 continua sendo requisito.** YAGNI nunca é desculpa para entregar menos que o UC pede nem para descartar achado real (isso é balde B).
-- Cobrar só no 7b é tarde: a complexidade especulativa nasce no **Spec (4)** e no **Plano (7a)** e chega no código como fato consumado.
+- Cobrar só no 7b é tarde: a complexidade especulativa nasce no **Spec (4a)** e no **Plano (7a)** e chega no código como fato consumado.
 
 ### Refatoração contínua — a cada passada o código sobe
 
@@ -48,11 +48,11 @@ Refatorar não é step nem pedido: é o padrão em **tudo por onde o trabalho pa
 
 ### Design — regime, não fase
 
-Feature com **superfície visual** (derivada no Step 4, nunca declarada pelo usuário) obedece a **`references/design.md`**: tokens como fonte única, atomicidade, composição > configuração, headless, todos os estados, Lei de Jakob, consistência semântica, preservação de contexto, fluxos modulares — e **WCAG AA como piso**.
+Feature com **superfície visual** (derivada no Step 4a, nunca declarada pelo usuário) obedece a **`references/design.md`**: tokens como fonte única, atomicidade, composição > configuração, headless, todos os estados, Lei de Jakob, consistência semântica, preservação de contexto, fluxos modulares — e **WCAG AA como piso**.
 
-- **O design system evolui com o produto:** precisou de algo que ele não tem → **reusar → compor → promover** (criar no DS, nunca na pasta da feature), registrando em `docs/04-spec/design-system.md`.
+- **O design system evolui com o produto:** precisou de algo que ele não tem → **reusar → compor → promover** (criar no DS, nunca na pasta da feature) — decidido no **Step 4b** e registrado em `docs/04-design/design-system.md`.
 - **Consistência é lei; mediocridade não é.** Padrão existente abaixo do nível #1 **não se copia** — eleva-se ou vira achado no ledger. É essa a diferença entre UI consistente e UI que nunca melhora.
-- **Gateway de feature com UI publica a linha de design** (`- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ …`). Sem superfície visual: declare `❌ N/A` **uma vez**, no Gateway 4→5.
+- **Gateway de feature com UI publica a linha de design** (`- **Design (tokens · atomicidade · composição · estados · a11y):** ✅ …`). Sem superfície visual: declare `❌ N/A` **uma vez**, no Gateway 4a→4b.
 
 Auto-check em cada gateway: *"Um líder do domínio assinaria isto — e assinaria esta tela?"* Se não → não está pronto.
 
@@ -64,7 +64,7 @@ Auto-check em cada gateway: *"Um líder do domínio assinaria isto — e assinar
 2. **Retrofit puro é PROIBIDO.** Código escrito fora do `/method` → você volta ao Step 1. O código vira *insumo* de Step 3 (Verificação de Realidade), nunca substituto.
 3. **Bypass granular = bypass igual.** "Pula Gate + mobile, roda 7+9" = violação completa. Ou roda 100% ou não iniciou.
 4. **"Trivial / 1 botão / outros já funcionam assim" NÃO é exceção.** Gate Check vale para TODAS as features — "não existe tarefa pequena demais".
-5. **Escopo de plataforma é DERIVADO** (Step 4 + Verificação de Realidade), nunca declarado pelo usuário.
+5. **Escopo de plataforma é DERIVADO** (Step 4a + Verificação de Realidade), nunca declarado pelo usuário.
 6. **Sem artefato .md = step não executado.** Exibir texto no chat sem salvar arquivo = falha.
 7. **Zero follow-ups — o protocolo fecha SECO.** Achado fora do escopo documentado, em qualquer step, vai para o **Ledger de Follow-ups**. O Step 10 só inicia com o ledger sem item aberto — e cada item aberto se resolve **invocando o `/method` via Skill tool** (`furi-build:method`) para ele — ciclo COMPLETO (Step 1→10; a primeira ação dele é invocar o `/solve`). Ciclo de follow-up pode gerar novo follow-up: entra no mesmo ledger, o loop continua até o **passe seco**. "Vira card", "abro depois", "fica de follow-up" = BLOQUEADO. Card de follow-up é privilégio de **quem revisa de fora**, nunca saída do dev. Ver `references/follow-ups.md`.
 
@@ -83,7 +83,8 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 | 1 | Problema | `docs/01-problem/` | `<tópico>.md` | — | `references/01-problema.md` |
 | 2 | User Stories | `docs/02-user-stories/` | `<tópico>.md` | 1 | `references/02-user-stories.md` |
 | 3 | Use Cases | `docs/03-use-cases/` | `<tópico>.md` | 1-2 | `references/03-use-cases.md` |
-| 4 | Spec | `docs/04-spec/` | `<tópico>.md` | 1-3 | `references/04-spec.md` |
+| 4a | Spec | `docs/04-spec/` | `<tópico>.md` | 1-3 | `references/04-spec.md` |
+| 4b | Design | `docs/04-design/` | `<tópico>.md` + `design-system.md` | 1-4a | `references/04b-design.md` |
 | 5 | Test Cases | `docs/05-test-cases/` | `<tópico>.md` | 1-4 | `references/05-test-cases.md` |
 | 6 | To Do | `kanban/06-todo/` | `<tópico>.md` | 1-5 | `references/06-todo.md` |
 | 7a | Plano | `kanban/07-implementation/` | `<tópico>.md` | 1-6 + código | `references/07-implementation.md` |
@@ -92,7 +93,7 @@ Lista completa de racionalizações + contra-argumentos: ver `references/rationa
 | 9 | Run Test | `kanban/09-run-test/` | `<tópico>.md` | TCs (5) + Review (8b) | `references/09-testing.md` |
 | 10 | Done | `kanban/10-done/` | `<tópico>.md` | — | `references/10-done.md` |
 
-**Abra o reference do step ANTES de executar.** Releia docs anteriores do step atual antes de começar.
+**Abra o reference do step ANTES de executar.** Releia docs anteriores do step atual antes de começar. O **Step 4b só roda com superfície visual**, derivada no 4a — sem ela, o Gateway 4a→4b declara N/A uma vez e libera para o Step 5.
 
 > **A lente de cada step** — o que princípios, motores, refatoração e design cobram *naquele* step — está em `references/principios.md` § Lente por step e `references/design.md` § Lente por step. Não duplicada aqui, e não executável de memória.
 
@@ -114,6 +115,7 @@ Antes de qualquer código:
 - [ ] **User Stories** — docs/02-user-stories/ contém doc cobrindo esta feature?
 - [ ] **Use Cases** — docs/03-use-cases/ contém doc cobrindo esta feature?
 - [ ] **Spec** — docs/04-spec/ contém doc cobrindo esta feature?
+- [ ] **Design** — docs/04-design/ contém doc cobrindo esta feature? (só com superfície visual, derivada no Spec)
 - **Status**: ✅ Pode prosseguir / ❌ BLOQUEADO — falta: [listar]
 ```
 
@@ -131,7 +133,7 @@ Antes de qualquer código:
 - **1 TaskCreate cobrindo Closeout (Step 10):** "Closeout — <feature>"
 
 `TaskUpdate → in_progress` ao começar cada um, `→ completed` somente quando:
-- **Discovery:** os 5 artefatos existirem e gateways 1→2…4→5 estiverem ✅
+- **Discovery:** os artefatos dos Steps 1-5 existirem (o de design só com superfície visual) e gateways 1→2 … 4b→5 estiverem ✅
 - **Steps 6-9:** artefato do step existir e gateway respectivo ✅
 - **Follow-up:** o ciclo `/method` do item existir em `kanban/10-done/<f>.md` e o ledger marcar `RESOLVIDO-POR-CICLO`
 - **Closeout:** **Gate de Convergência ✅ publicado (zero follow-ups abertos)**, artefato `kanban/10-done/` existir, card de `kanban/06-todo/` **movido (deletado) ANTES do commit**, e **um único commit** na branch atual capturando código + docs + card de done + remoção do todo (mover primeiro, commitar por último — nunca commit → move → commit de novo)
@@ -191,7 +193,7 @@ Formato do ledger, Gate de Convergência, triagem detalhada e racionalizações:
 - "é literalmente 1 [botão/linha/componente]"
 - "outros [logins/filtros] já funcionam assim"
 - "código já tá pronto, pula pro step X" / "preencho docs depois"
-- "web-only, skip mobile" (sem Step 4 + Verificação)
+- "web-only, skip mobile" (sem Step 4a + Verificação)
 - "verifiquei no código, marco PASSED" / "tsc passou, tá testado"
 - "TC redundante / trivial, pulo"
 - "não tenho o usuário/dado/estado" (sem ter tentado criar)

@@ -2,9 +2,9 @@
 
 > **Este arquivo é a fonte única de design.** Nenhum outro arquivo redefine os princípios de design — todos apontam para cá (DRY aplicado ao próprio protocolo). O que cada step tem é a **lente**: o que o princípio significa *naquele* step. Irmão de `principios.md`, mesma régua.
 
-**Design não é fase — é regime.** Não existe "step de fazer a UI ficar bonita". Vale do Step 1 ao Step 10: o problema nomeia a fricção, o UC lista os estados, o Spec decide o design system, o código usa token, o review cobra princípio por nome e o teste prova estado por estado.
+**Design não é fase — é regime.** Não existe "step de fazer a UI ficar bonita". Vale do Step 1 ao Step 10: o problema nomeia a fricção, o UC lista os estados, o Design (4b) decide as telas e o design system, o código usa token, o review cobra princípio por nome e o teste prova estado por estado.
 
-**A quem se aplica:** feature com **superfície visual**, derivada no Step 4 (como o escopo de plataforma — nunca declarada pelo usuário). Feature sem superfície visual declara isso **uma vez** no Gateway 4→5, e os gateways seguintes herdam.
+**A quem se aplica:** feature com **superfície visual**, derivada no Step 4a (como o escopo de plataforma — nunca declarada pelo usuário). Feature sem superfície visual declara isso **uma vez** no Gateway 4a→4b — o Step 4b não roda — e os gateways seguintes herdam.
 
 ## Os princípios de design (definição canônica)
 
@@ -31,7 +31,7 @@ Precisou de algo que o DS não tem? **Nesta ordem, sem pular:**
 
 1. **Reusar** — o DS já resolve? use.
 2. **Compor** — dá para montar com o que existe? componha (é o que o `/proto` já faz).
-3. **Promover** — não dá: crie o token/componente **no DS**, não na pasta da feature. Registre em `docs/04-spec/design-system.md` (seção `## Esta feature promove ao DS`) e no done doc do Step 10.
+3. **Promover** — não dá: crie o token/componente **no DS**, não na pasta da feature. Registre em `docs/04-design/design-system.md` e no `## Promove ao DS` de `docs/04-design/<tópico>.md` (Step 4b), e no done doc do Step 10.
 
 **Componente visual novo nascendo dentro da pasta da feature = dívida de DS.** É o equivalente visual de duplicar lógica em vez de extrair o motor (`principios.md` § Motores) — e a correção é a mesma: promover, e o chamador passa a só usar.
 
@@ -77,7 +77,8 @@ O benchmark do `/solve` (referência #1, calibre dos big pop tech apps) aplicado
 | **1 — Problema** | O problema é de UX? Nomeie a **fricção** (passo redundante, contexto perdido, ação que não se acha), não o widget. "Falta um botão" não é problema; "o usuário não consegue voltar sem perder o que digitou" é. |
 | **2 — User Stories** | A story descreve o **resultado para o usuário**, nunca o componente: "quero ver o total atualizado", não "quero um badge azul". Solução na story engessa o design antes de existir. |
 | **3 — Use Cases** | Cada UC lista seus **estados de tela**: vazio, carregando, erro, sucesso, limite (lista longa, texto longo, sem permissão). **Estado não listado aqui é estado que não vai ser desenhado** — e vira bug no Step 9. |
-| **4 — Spec** | **O step onde o DS é decidido.** Inventário do DS em `docs/04-spec/design-system.md`; o que será **reusado / composto / promovido**; qual padrão consagrado se aplica (Jakob) e o motivo de qualquer desvio; breakpoints; a11y alvo (AA); benchmark visual citado. Aqui também se **deriva a superfície visual** (sim/não). |
+| **4a — Spec** | Aqui se **deriva a superfície visual** (sim/não), como o escopo de plataforma — nunca declarada pelo usuário. Decisão de arquitetura não fixa tela: o que é visual espera o 4b. |
+| **4b — Design** | **O step onde a tela e o DS são decididos.** `docs/04-design/<tópico>.md`: toda tela dos UCs com componentes do DS (**reusado / composto / promovido**), hierarquia, estados e breakpoints; qual padrão consagrado se aplica (Jakob) e o motivo de qualquer desvio; a11y alvo (AA); benchmark visual citado. `docs/04-design/design-system.md` inventariado e crescido com as promoções. |
 | **5 — Test Cases** | A cobertura contempla **estados × breakpoints** e a11y — como **lente**, não como TC extra: o teto de 10 e `nº TCs == nota` continuam valendo (`05-test-cases.md`). Um TC denso cobre a tela em mobile e desktop, não dois TCs gêmeos. |
 | **6 — To Do** | Task de UI declara o **nível atômico** (átomo/molécula/organismo) e **qual componente do DS** ela constrói, estende ou promove. Task que espalha estilo por N telas não existe: vira task de promoção ao DS. |
 | **7a — Plano** | **§ 3.4 Design System** obrigatória: inventário, o que reusa, o que compõe, o que promove, tokens novos. Zero valor literal planejado. Se o plano já prevê `#hex`, o 7b vai nascer errado. |
@@ -95,7 +96,7 @@ Todo Gateway Check de feature **com superfície visual** carrega esta linha, jun
 ```
 
 - **Sem a linha, o gateway não foi publicado.** Mesma régua da linha de princípios.
-- **Feature sem superfície visual:** declare **uma vez**, no Gateway 4→5 (`❌ N/A — feature sem superfície visual, derivado do Step 4`), e os gateways seguintes herdam sem repetir. Só o Step 4 pode derivar isso — nunca o usuário, nunca por conveniência.
+- **Feature sem superfície visual:** declare **uma vez**, no Gateway 4a→4b (`❌ N/A — feature sem superfície visual, derivado do Step 4a`), e os gateways seguintes herdam sem repetir. Só o Step 4a pode derivar isso — nunca o usuário, nunca por conveniência.
 - **"Nada a cobrar" não é linha vazia:** escreva o que você verificou e não encontrou.
 
 ## Racionalizações proibidas
@@ -106,7 +107,7 @@ Todo Gateway Check de feature **com superfície visual** carrega esta linha, jun
 | "É só uma cor / um espaçamento, hardcode não faz mal" | Token é SSOT. Literal é hardcode visual, e some do radar na próxima mudança de tema. BLOQUEADO. |
 | "As outras telas são assim, mantenho a consistência" | Consistência vale para padrão **bom**. Padrão ruim se eleva ou vira ledger. Copiar é propagar. BLOQUEADO. |
 | "Faço a a11y depois, primeiro entrego a tela" | AA é piso, não fase. Depois = nunca, e retrofit de foco/contraste custa a tela inteira. BLOQUEADO. |
-| "Desktop primeiro, mobile numa próxima" | Escopo de plataforma é **derivado** no Step 4. Se tem superfície mobile, é agora. BLOQUEADO. |
+| "Desktop primeiro, mobile numa próxima" | Escopo de plataforma é **derivado** no Step 4a. Se tem superfície mobile, é agora. BLOQUEADO. |
 | "Estado vazio e erro eu resolvo se sobrar tempo" | Estado não desenhado = estado quebrado. É o que o usuário vê no pior dia dele. BLOQUEADO. |
 | "Adiciono uma prop booleana, é mais rápido que recompor" | >2 booleanas de aparência = recomponha. Cada flag nova multiplica os caminhos a testar. BLOQUEADO. |
 | "O screenshot do happy path já prova que funciona" | Evidência é por **estado × breakpoint**. Happy path em desktop é a fatia que nunca quebra. BLOQUEADO. |
