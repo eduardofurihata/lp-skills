@@ -1,7 +1,7 @@
 {
   "name": "furi-toolbox",
-  "version": "0.1.0+codex.56ebba551725",
-  "description": "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /ask, /chat, /save, /sync, /make-dev, /ctt, /proof, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+  "version": "0.1.0+codex.e07962bf836e",
+  "description": "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /ask, /chat, /save, /sync, /make-dev, /ctt, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata"
@@ -13,14 +13,13 @@
     "utilities",
     "git",
     "productivity",
-    "workflow",
-    "code-review"
+    "workflow"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Furi Toolbox",
     "shortDescription": "Ferramentas avulsas para o fluxo de desenvolvimento.",
-    "longDescription": "Use atalhos e utilitários independentes para analisar um problema e decidir, perguntar a uma sessão sem contexto, conversar, salvar, sincronizar, preparar projetos, auditar a prova de uma mudança e baixar gravações.",
+    "longDescription": "Use atalhos e utilitários independentes para analisar um problema e decidir, perguntar a uma sessão sem contexto, conversar, salvar, sincronizar, preparar projetos e baixar gravações.",
     "developerName": "Eduardo Furihata",
     "category": "Productivity",
     "capabilities": [
