@@ -2,7 +2,7 @@
 
 **Como cada tela deveria ser — decidida antes de qualquer código, a partir do design system.** Só roda com superfície visual (derivada no Step 4); sem ela, o Gateway 4 → 5 já declarou N/A e o próximo step é o 6.
 
-**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 
@@ -60,6 +60,10 @@
 - **Motor** — o DS é o dono do token e do componente; peça visual na pasta da feature é regra espalhada.
 - **Refatoração** — padrão do DS abaixo do nível #1 no perímetro → **eleva** (ou ledger).
 - **Design** — é o corpo deste step (o artefato acima é a lente em forma de template). O que se cobra por princípio: **reusar → compor → promover** nesta ordem, promoção **registrada no DS agora** (o 7b só usa), desvio de padrão consagrado só com motivo escrito, e a11y AA como piso — não como meta.
+
+## PARE se pensar
+
+- **"Resolvo o design dentro do Spec, o Step 5 é formalidade."** O Step 4 decide arquitetura; a tela e o DS são decididos **aqui**, em `docs/05-design/`. Pular = a tela nasce no 8b sem DS e sem estados. BLOQUEADO.
 
 ## Gateway 5 → 6
 

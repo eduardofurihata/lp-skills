@@ -2,7 +2,7 @@
 
 **Uma frase.** Se não cabe em uma frase, você não entendeu o problema ainda.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 

@@ -1,6 +1,6 @@
 # Step 8 — Implementação (8a: Plano + 8b: Codificar)
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## 8a — Plano de Implementação (OBRIGATÓRIO antes de codar)
 
@@ -167,6 +167,10 @@ Para CADA arquivo alterado:
 - Se impactar OUTRA feature → adicione TCs no arquivo dela
 - **Não existe "mudança isolada"** — toda mudança tem raio de impacto
 - Proporção: shared/util → muitos TCs. Componente folha → poucos.
+
+## PARE se pensar
+
+- **"Aplico tudo no 8b, lá é o lugar."** No 8b a complexidade especulativa já foi decidida no Spec (Step 4) e no Plano (8a) — você só implementa o erro. O portão barato é o 8a. BLOQUEADO.
 
 ## Gateway 8a → 8b
 

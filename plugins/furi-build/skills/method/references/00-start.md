@@ -2,7 +2,7 @@
 
 **Antes de qualquer step: as pastas estão certas e eu sei o que já existe.** Roda UMA vez, no início. Não produz artefato `.md` — publica os dois blocos abaixo no chat e, se preciso, arruma as pastas.
 
-**Chame e use:** `rationalizations.md` · `SKILL.md` § Gateway Check
+**Chame e use:** `SKILL.md` § Gateway Check
 
 ## 1. Estrutura — a numeração das pastas é contrato
 

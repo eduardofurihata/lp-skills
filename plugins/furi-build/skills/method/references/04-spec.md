@@ -2,7 +2,7 @@
 
 **Toda decisão em aberto, resolvida aqui — sem perguntar.** Zero ambiguidade sobra para os steps seguintes.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 
@@ -91,6 +91,10 @@ O step onde a arquitetura é decidida — **é aqui que YAGNI é mais barato**.
 - **Motor** — cada decisão declara **qual motor é dono da regra**; motor novo é nomeado e tem contrato desenhado aqui.
 - **Refatoração** — decisão que replica mecanismo existente vira **estender o motor que já existe**.
 - **Design** — aqui se **deriva a superfície visual** (§ Escopo derivado, nunca declarado). Decisão de arquitetura não fixa tela: o que é visual espera o 4b.
+
+## PARE se pensar
+
+- **"Não tem UI, pulo o `/front`."** Superfície visual é **derivada** aqui, nunca declarada. Sem ela, declare `❌ N/A` uma vez no Gateway 4 → 5 — é o que dispensa o `/front` dali em diante. Antes disso, BLOQUEADO.
 
 ## Gateway 4 → 5
 

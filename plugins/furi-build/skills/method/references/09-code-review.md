@@ -1,6 +1,6 @@
 # Step 9 — Code Review Crítico
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md` · `rationalizations.md`
+**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
 **A lente deste step é o próprio step:** o loop 8a revisa princípio a princípio e por nome, e o relatório 8b registra um veredicto por princípio. Motor (a capacidade vazou? há segunda fonte da mesma regra?) e saldo do perímetro são linhas do checklist, não observações.
 
@@ -116,6 +116,10 @@ Nenhum? → "nenhum follow-up emitido neste review".
 - Relatório **brutalmente honesto**
 - Veredicto ❌ → voltar ao 8b → rodar o Step 9 inteiro novamente
 - Sem o .md criado = step NÃO completo
+
+## PARE se pensar
+
+- **"O review já viu isso no geral, não preciso ir princípio a princípio."** A `## Análise de Qualidade` tem uma linha por princípio; linha em branco = princípio não revisado. BLOQUEADO.
 
 ## Gateway 9 → 10
 
