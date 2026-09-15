@@ -4,6 +4,7 @@ description: 'Use when user invokes /proof to code review a PR, diff or branch b
 context: fork
 effort: high
 argument-hint: "[nº da PR | branch | vazio = diff atual] [--desde <sha>] [--comment]"
+disable-model-invocation: true
 ---
 
 # /proof — Code review que audita a prova

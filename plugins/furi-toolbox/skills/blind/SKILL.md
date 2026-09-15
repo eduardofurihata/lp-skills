@@ -3,6 +3,7 @@ name: blind
 description: Use when user invokes /blind <texto> — the text goes verbatim to a fresh Claude session that sees nothing (no conversation, CLAUDE.md, memory, files, internet or tools) and the answer comes back whole. Removes context bias, not model bias.
 argument-hint: "<texto>"
 allowed-tools: Bash
+disable-model-invocation: true
 ---
 
 # /blind

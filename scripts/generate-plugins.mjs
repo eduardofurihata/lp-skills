@@ -114,10 +114,21 @@ const PACKAGES = [
   },
 ];
 
+// O gate de invocação explícita ("Use ONLY when the user explicitly invokes …
+// NEVER activate on your own initiative.") é para o modelo, não para quem lê o
+// catálogo: sai inteiro, até a sentinela. Espelha stripGate() de lib/skills.ts.
+const GATE_SENTINEL = "NEVER activate on your own initiative.";
+function stripGate(desc) {
+  const i = desc.indexOf(GATE_SENTINEL);
+  if (i === -1) return desc;
+  const rest = desc.slice(i + GATE_SENTINEL.length).replace(/^\s*[—–-]\s*/, "");
+  return rest.charAt(0).toUpperCase() + rest.slice(1);
+}
+
 // Primeira frase do description (cap 200 chars) — o frontmatter é longo demais
 // para caber num campo `description` de manifesto.
 function firstSentence(desc) {
-  const trimmed = String(desc ?? "").trim();
+  const trimmed = stripGate(String(desc ?? "")).trim();
   const match = trimmed.match(/^(.+?[.!?])(\s|$)/);
   let sentence = match ? match[1] : trimmed;
   if (sentence.length > 200) sentence = sentence.slice(0, 197).trimEnd() + "…";

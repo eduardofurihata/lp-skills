@@ -16,8 +16,15 @@
 //      existe — um typo some do grafo da LP e da dependência entre pacotes sem
 //      dar erro em lugar nenhum
 //   7. skill interna (`user-invocable: false` — fora do menu `/`) é alvo do
-//      `requires` de pelo menos uma skill: interna que ninguém invoca é skill
-//      morta, e o usuário não tem como chamá-la
+//      `requires` de pelo menos uma skill: interna que ninguém lê é skill
+//      morta, e o usuário não tem como chamá-la (a `pipeline` é lida por
+//      caminho pelos alvos — e leva também `disable-model-invocation: true`,
+//      porque `user-invocable: false` sozinho a mantém invocável pelo modelo)
+//   8. nenhuma skill se ativa sozinha: ou leva `disable-model-invocation: true`
+//      (o gate do harness — obrigatório quando nenhum `requires` a lista), ou,
+//      quando outra skill a invoca sem o usuário digitar o nome dela, carrega a
+//      sentinela `NEVER activate on your own initiative.` na description; e a
+//      description nunca traz frase de gatilho ("Triggers on …")
 //
 // Uso: node scripts/validate-plugins.mjs   (exit 1 em qualquer falha)
 import fs from "node:fs";
@@ -150,7 +157,9 @@ for (const pkg of packages) {
       file: r,
       pkg,
       name: typeof data.name === "string" ? data.name.trim() : slug,
+      description: typeof data.description === "string" ? data.description : "",
       internal: data["user-invocable"] === false,
+      blocked: data["disable-model-invocation"] === true,
       relations: Object.fromEntries(
         RELATION_FIELDS.map((f) => [f, parseList(data[f])]),
       ),
@@ -179,6 +188,45 @@ for (const { file, name, internal } of declared) {
       file,
       `\`user-invocable: false\` sem nenhuma skill listando \`${name}\` em \`requires\` — fora do menu \`/\` e sem quem a invoque`,
     );
+}
+
+// (8) nenhuma skill se ativa sozinha. Duas defesas, uma obrigatória:
+//   - `disable-model-invocation: true` — o gate do Claude Code: tira a skill da
+//     listagem do modelo e bloqueia a Skill tool, exceto quando o usuário digitou
+//     `/<name>` no turno. É a forte, e é a exigida quando ninguém lista a skill
+//     em `requires` (nada a invoca, só o usuário digita).
+//   - a sentinela na description — para quem OUTRA skill invoca sem o usuário
+//     digitar o nome dela (o /solve na ativação do /method, o /jira no Step 0):
+//     a trava quebraria essa chamada, então a defesa é o texto.
+//   E em nenhuma das duas a description pode carregar frase de gatilho — é ela
+//   que o modelo lê para decidir, e "Triggers on …" é autorização para ativar.
+const SENTINEL = "NEVER activate on your own initiative.";
+const AUTONOMOUS = [
+  [/triggers? on/i, "`Triggers on …`"],
+  [/dispara (em|quando)/i, "`Dispara em/quando …`"],
+  [
+    /use when (someone|you want|the user wants|starting|exiting|setting up)/i,
+    "abertura sem invocação explícita (`Use when someone / you want / starting / exiting …`)",
+  ],
+  [/before any code change/i, "`before any code change`"],
+  [/or when any\b[^.]*needs? it/i, "`or when any … needs it`"],
+  [/also invoked/i, "`Also invoked …`"],
+  [/or wants to/i, "`or wants to …`"],
+];
+for (const { file, name, description, blocked } of declared) {
+  for (const [re, what] of AUTONOMOUS)
+    if (re.test(description))
+      fail(
+        file,
+        `description autoriza auto-ativação: ${what} — descreva a capacidade ("Covers …"), não o gatilho`,
+      );
+  if (blocked || description.includes(SENTINEL)) continue;
+  fail(
+    file,
+    required.has(name)
+      ? `\`${name}\` é invocada por outra skill (está em algum \`requires\`) e não tem defesa: sem \`disable-model-invocation: true\` a description precisa conter a sentinela \`${SENTINEL}\``
+      : `nenhuma skill lista \`${name}\` em \`requires\` — nada a invoca além do usuário digitando \`/${name}\`: falta \`disable-model-invocation: true\` no frontmatter (ou, se ela invoca a si mesma, a sentinela \`${SENTINEL}\` na description)`,
+  );
 }
 
 // (4) os marketplaces apontam para diretórios que existem.
@@ -295,5 +343,5 @@ const total = packages.reduce(
 console.log(
   `validate-plugins: ok — ${packages.length} pacotes, ${total} skills, ` +
     `3 manifestos cada, 2 marketplaces, caminhos citados e relações resolvem, ` +
-    `internas têm quem as invoque.`,
+    `internas têm quem as leia, nenhuma skill se ativa sozinha.`,
 );

@@ -1,6 +1,6 @@
 ---
 name: solve
-description: Use when the user invokes /solve — resolve the requested task at world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality baseline, aiming to make us the #1 reference in the market.
+description: 'Use ONLY when the user explicitly invokes /solve (bare /solve = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:solve` via the Skill tool. NEVER activate on your own initiative. — resolve the requested task at world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality baseline, aiming to make us the #1 reference in the market.'
 effort: max
 argument-hint: "[o que resolver]"
 ---

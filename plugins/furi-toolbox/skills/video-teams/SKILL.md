@@ -1,6 +1,7 @@
 ---
 name: video-teams
-description: Use when the user runs /video-teams <link> or wants to download a Microsoft Teams / SharePoint / OneDrive "Stream" recording (stream.aspx player, *.svc.ms videomanifest) that plays in the logged-in Playwright browser but has download blocked (e.g. a meeting recording, "Access denied" on Download). Also for AES/SEA-encrypted videomanifest DASH streams that yt-dlp/ffmpeg cannot fetch directly. Pulls video + auto-transcript (srt/vtt) to ~/Downloads.
+description: 'Use when the user runs /video-teams <link> to download a Microsoft Teams / SharePoint / OneDrive "Stream" recording (stream.aspx player, *.svc.ms videomanifest) that plays in the logged-in Playwright browser but has download blocked (e.g. a meeting recording, "Access denied" on Download). Covers AES/SEA-encrypted videomanifest DASH streams that yt-dlp/ffmpeg cannot fetch directly. Pulls video + auto-transcript (srt/vtt) to ~/Downloads.'
+disable-model-invocation: true
 ---
 
 # /video-teams — download a logged-in Teams/SharePoint Stream recording

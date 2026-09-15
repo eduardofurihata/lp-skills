@@ -1,13 +1,14 @@
 ---
 name: pipeline
-description: 'The single home of the furi-ship delivery engines — read by path, never typed. Hosts the staircase every ship target walks (card → branch → reproduction → commit → push → pr → integrated → published → configured → verified → promoted), the target contract that `/work`, `/pull-request`, `/homolog` and `/prod` declare, the composition table that lets `/repro` and `/card` modify any target in any order, and the engines that close each stage: `reconcile` (the loop), `branch`, `work-cycle`, `pr-publish`, `pr-cycle`, `promote`, `deploy-context`, `deploy-run`, `env-config`, `smoke`, plus the support engines `jira-sync`, `findings`, `scope-split` and `composicao`. Internal (`user-invocable: false`): the four target skills list it in `requires` and read the `§ <engine>` sections of `pipeline/SKILL.md`; no engine invokes a skill that declares a target.'
+description: 'The single home of the furi-ship delivery engines — read by path, never typed. Hosts the staircase every ship target walks (card → branch → reproduction → commit → push → pr → integrated → published → configured → verified → promoted), the target contract that `/work`, `/pull-request`, `/homolog` and `/prod` declare, the composition table that lets `/repro` and `/card` modify any target in any order, and the engines that close each stage: `reconcile` (the loop), `branch`, `work-cycle`, `pr-publish`, `pr-cycle`, `promote`, `deploy-context`, `deploy-run`, `env-config`, `smoke`, plus the support engines `jira-sync`, `findings`, `scope-split` and `composicao`. Internal (`user-invocable: false` + `disable-model-invocation: true` — hidden from the user AND blocked for the model): the four target skills list it in `requires` and read the `§ <engine>` sections of `pipeline/SKILL.md`; no engine invokes a skill that declares a target.'
 effort: max
 user-invocable: false
+disable-model-invocation: true
 ---
 
 # pipeline — a sede dos motores de entrega
 
-Skill **interna**: ninguém a digita e ninguém a invoca. Existe para dar aos motores uma casa que não é de nenhum dos quatro alvos — antes eles moravam dentro do `/prod`, e o `/work` lia da pasta do `/prod` para fechar um commit local. Os alvos declaram `requires: pipeline` e leem as seções `§ <motor>` deste arquivo por caminho (mesmo pacote resolve no cache instalado).
+Skill **interna**: ninguém a digita (`user-invocable: false`) e ninguém a invoca (`disable-model-invocation: true` — o harness bloqueia a Skill tool; sem ele, `user-invocable: false` esconde do usuário mas **mantém** a skill invocável pelo modelo). Existe para dar aos motores uma casa que não é de nenhum dos quatro alvos — antes eles moravam dentro do `/prod`, e o `/work` lia da pasta do `/prod` para fechar um commit local. Os alvos declaram `requires: pipeline` e leem as seções `§ <motor>` deste arquivo por caminho (mesmo pacote resolve no cache instalado).
 
 ## Um pipeline, quatro alvos, dois modificadores
 
