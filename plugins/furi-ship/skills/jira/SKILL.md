@@ -231,7 +231,7 @@ Trocar o board e `ler` são as únicas situações em que os arquivos são reesc
 - "Anotei o board no `jira.md` do projeto pra não depender da memória" → NÃO. Board é coordenada de quem usa — outra pessoa do time pode estar em outro site.
 - "O setup diz `Rastreamento: kanban local`, mas achei um board e gravei" → NÃO. Sem Jira é sem Jira. Mudar é `/setup jira`, não é aqui.
 - "O usuário passou `ALK` no `/card`, então atualizei a memória pra ALK" → NÃO. Argumento é **override**, não redefinição. Só o `/jira` com argumento troca o board.
-- "O MCP não tem tool de upload, então anexo não dá" → NÃO. Tem: `jira_update_issue` + `attachments`, arquivo dentro do CWD — está no `## MCP` do arquivo. Ler o arquivo é o que impede redescobrir isso toda semana.
+- "O MCP não tem tool de upload, então anexo não dá" → NÃO. Tem: `jira_update_issue` + `attachments`, arquivo dentro do CWD — está no `## MCP` do arquivo e a receita em `references/anexar-jira.md`. Ler é o que impede redescobrir isso toda semana.
 - "Rodei `mkdir -p` no diretório de memória por segurança" → desnecessário. Ele já existe; escreva direto. (`.claude/ship-setup/` é diferente: pode não existir — `mkdir -p` lá.)
 - "Gravei o arquivo e esqueci o `MEMORY.md`" → NÃO. Memória sem linha no índice é memória que ninguém acha.
 - "Perguntei o board de novo porque a sessão é nova" → NÃO. Sessão nova, mesmo repositório, mesma memória. Leia o arquivo.
@@ -271,7 +271,7 @@ Copie o bloco abaixo para `.claude/ship-setup/jira.md` na raiz do repositório-a
 
 ## MCP — o que este servidor faz, e como                  <!-- as manhas: o que se descobre tropeçando, escrito UMA vez -->
 - Servidor: mcp-atlassian (`mcp__atlassian__*`) · site: <site>.atlassian.net · um site por servidor
-- Upload de anexo: FUNCIONA — não há tool `jira_upload_attachment`; é `jira_update_issue` com `fields: "{}"` + `attachments: "<caminhos>"`. O arquivo tem de estar DENTRO do CWD (path traversal fora); `jira_create_issue` não aceita anexo (sempre 2º passo); anexo que falha NÃO falha o update — confira `attachment_results`. Receita completa no `/card` (`card/SKILL.md` § Anexar arquivo a um card do Jira via MCP — mapeamento)
+- Upload de anexo: FUNCIONA — não há tool `jira_upload_attachment`; é `jira_update_issue` com `fields: "{}"` + `attachments: "<caminhos>"`. O arquivo tem de estar DENTRO do CWD (path traversal fora); `jira_create_issue` não aceita anexo (sempre 2º passo); anexo que falha NÃO falha o update — confira `attachment_results`. Receita completa: `references/anexar-jira.md`
 - Comentário na transição: NÃO use o parâmetro `comment` de `jira_transition_issue` (é ADF); comente antes com `jira_add_comment`, transicione depois
 - <outra manha observada: o que parecia não funcionar, o que funciona, como>
 ```
