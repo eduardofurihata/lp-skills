@@ -9,7 +9,7 @@ argument-hint: "[KEY] <descrição> [/skill…] [/work|/pull-request|/homolog|/p
 
 # /card — entender, conferir, redigir, criar, devolver
 
-**Modificador**: uma linha vira um card no board certo, e só isso — ninguém cria card sozinho; sozinho encerra, com alvo delega. Cinco passos, nesta ordem, cada um provado antes do seguinte:
+**Modificador**: uma linha vira um card no board certo, e só isso — ninguém cria card sozinho; sozinho encerra, com alvo delega. **Arquivo da skill: `.claude/ship/card.md`** — lido no início, criado na primeira vez, atualizado ao aprender; curto: o molde de card deste time (seções, idioma, tipos, um exemplo bom). Cinco passos, nesta ordem, cada um provado antes do seguinte:
 
 1. **Entender — o que vai virar card.** `/jira` e `/setup` via **Skill tool, a cada invocação**; sem Jira → recuse com o motivo (com alvo, delegue sem key). Outra `/skill` no argumento roda antes, com o objetivo. A key do argumento vence a memória sem reescrevê-la; sem descrição nem contexto → peça uma linha; duas entregas → dois cards.
 2. **Conferir que não existe.** Procure um card aberto no board sobre o mesmo assunto; parecido demais → pergunte antes de criar.

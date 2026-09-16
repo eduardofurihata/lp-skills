@@ -1,26 +1,26 @@
 ---
 name: jira
-description: 'Use ONLY when the user explicitly invokes /jira (bare /jira = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:jira` via the Skill tool. NEVER activate on your own initiative. — creates and keeps the MAP of the Jira board of THIS repository in `.claude/ship/jira.md` (real status names, issue types, stage → status, MCP quirks) plus the board in machine memory; single owner of writing to a card and of attaching images. `ler` re-reads the site; `mcp` records a quirk.'
+description: 'Use ONLY when the user explicitly invokes /jira (bare /jira = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:jira` via the Skill tool. NEVER activate on your own initiative. — the Jira map of THIS repository; card writes; attachments.'
 effort: max
-argument-hint: "(vazio = mostrar o mapa, ou criá-lo) | <KEY> | <link do board> | ler | mcp"
+argument-hint: "(vazio) | <KEY | link> | ler | mcp"
 ---
 
-# /jira — criar o mapa do board · sincronizar card · anexar imagem
+# /jira — mapa · sincronizar · anexar
 
-**Objetivo: o mapa do Jira deste repositório em `.claude/ship/jira.md`** (ou `.local.md`) — colunas reais, tipos de issue, etapa → status, se comenta, manhas do MCP; o **board** (site, key, id) fica na memória da máquina, coordenada de quem usa. Se o projeto tem Jira, é o `/setup` quem diz.
+**Objetivo: o mapa do Jira deste repositório em `.claude/ship/jira.md`** — colunas reais, tipos de issue, etapa → status, se comenta, manhas do MCP.
 
-## Criar o mapa — quatro passos, a cada invocação
+## Mapa
 
-1. **Tem Jira?** `Rastreamento` do setup ≠ `Jira` (`obra local`, o antigo `kanban local`, `nenhum`) → devolva isso e encerre. Sem setup → `Skill(skill: "setup")`.
-2. **O board — da memória; perguntar só na primeira vez.** Sem board → levante projetos e boards reais do site, cruze com o remote e a pasta, e **confirme** o candidato provável numa pergunta **isolada** (campo livre para key ou link). Valide key e board no site antes de gravar (outro site: avise, não aproxime; vários boards: pergunte). Grave a memória e a linha no índice. Key no argumento de outra skill **vence sem reescrever**; só `/jira <KEY|link>` troca, confirmando.
-3. **O mapa — ler `.claude/ship/jira.md`; mapear só na primeira vez.** Sem as quatro seções → do site, colunas com nomes exatos na ordem do board, tipos de issue (qual é bug, qual é o resto), etapa → status por candidato de nome, **confirmado com o usuário** numa pergunta isolada com a tabela preenchida; contradição não grava. Seções: Board (colunas, tipos, qual é bug) · Etapa do pipeline → status (`| Etapa | Status | Comenta? |`, as seis etapas abaixo; sem equivalente → `—`) · Comentário (idioma, formato) · MCP (manhas: sintoma → caminho). Só volta ao site com `ler`, com o diff antes de regravar.
-4. **Devolver** rastreamento, site, key, board, origem e o mapa. Vazio mostra os dois; `mcp` grava uma manha.
+1. **Tem Jira?** `Rastreamento` ≠ `Jira` no setup → devolva e encerre.
+2. **O board** — da memória da máquina; sem ele, confirme o candidato provável numa pergunta isolada, valide e grave; key no argumento vence sem reescrever.
+3. **O mapa** — leia o arquivo; sem ele, mapeie do site (colunas exatas, tipos, etapa → status) e **confirme com o usuário** antes de gravar. `ler` refaz com o diff.
+4. **Devolver** rastreamento, board e mapa. `mcp` grava uma manha.
 
-## Sincronizar card — `<KEY>-<N>`, etapa, texto leigo, link
+## Sincronizar card
 
-1. **A linha da etapa no mapa** dá status e se comenta. Etapas: **trabalho começou** · **publicado** (PR, ou branch e commit) · **integrado** · **no ar em homolog** / **em produção** (só depois de validado) · **devolvido ao dev**. Sem Jira, no-op declarado.
-2. **Comentar, se a etapa comenta** — `## O que foi feito` leigo (o **mesmo** texto da PR) e o rótulo com o link; num lote, abre com `<KEY>-<N> — <título>`. Comentário separado da transição (o parâmetro dela é ADF).
-3. **Transicionar pelo NOME do status**, descobrindo a transição na hora — o id muda, o nome fica. `—` não transiciona. Nome ausente → avise, siga, sugira `/jira ler`; nunca a parecida.
+1. **A linha da etapa** dá status e se comenta: começou · publicado · integrado · no ar em homolog / em produção (depois de validado) · devolvido ao dev. Sem Jira, no-op.
+2. **Comentar, se comenta** — `## O que foi feito` leigo (o mesmo da PR) + rótulo e link, separado da transição.
+3. **Transicionar pelo NOME do status**, descobrindo a transição na hora; `—` não transiciona; nome ausente → avise, siga, sugira `ler`.
 
 ## Anexar imagem a um card
 
