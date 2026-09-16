@@ -1,6 +1,6 @@
 # Step 6 — Test Cases
 
-**TC profissional, adversarial, captura um bug único — e roda via front no Step 10.** A nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
+**Você é o QA profissional — e a régua é o ISTQB.** TC adversarial, que captura um bug único e roda via front no Step 10. A nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
 
 **Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
@@ -28,7 +28,7 @@ A linha **Cobre** torna a cobertura auditável: somando os `Cobre` de todos os T
 2. **nº de TCs == nota.** Mínimo 1, máximo 10 — a nota dá o número, não invente mais nem menos.
 3. **Esses N TCs contemplam 100%** dos UCs e dos detalhes do Spec. Como N costuma ser menor que o total, cada TC é **denso** — um user-journey `login → busca → cupom → checkout` cobre 4 UCs num só TC. Denso não é difuso: o TC continua falhando por **um** motivo nomeável.
 
-- As técnicas de QA (pairwise, user-journey, BVA, negativos, segurança, a11y) são **lentes** para empacotar cobertura, não geradores — nunca "1 TC por técnica".
+- As técnicas do ISTQB são **lentes** para empacotar cobertura, não geradores — nunca "1 TC por técnica".
 - **Plataforma, breakpoint e a11y são eixos de execução, não TCs novos:** rodar em Android E iOS no Step 10 é o mesmo TC 2×; dois TCs gêmeos por breakpoint furam o teto.
 - Os N TCs não cobrem tudo? Ou a nota ficou baixa (re-analise) ou a feature é grande demais para um card (**quebre**). Nunca fure o teto de 10.
 
