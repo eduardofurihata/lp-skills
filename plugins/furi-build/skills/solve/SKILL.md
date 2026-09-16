@@ -16,13 +16,13 @@ Resolva mirando ser a **referência #1 do mercado** — no calibre dos **big pop
 
 ## Como resolver
 
-1. **Defina a referência — e a capacidade em jogo.** Quem são os líderes reconhecidos DESTE domínio — os big pop tech apps que o mercado admira (descubra pelo contexto da tarefa)? O que eles fazem é a **baseline** — o piso, nunca o teto. Ao mesmo tempo, nomeie **qual capacidade** a tarefa exige e **quem é o dono dela** hoje (o motor, se existir).
-2. **Iguale ou supere — consolidando.** Entregue no nível do melhor que existe e, onde der, vá além. A capacidade sai desta passada com **um dono** (motor) e, se tem tela, apoiada no **design system** — reusando, compondo ou promovendo, nunca inventando solto.
-3. **Auto-check antes de entregar.** *"Um líder do domínio assinaria isto — e assinaria esta tela?"* Mais: duplicou algo que já existia? criou abstração que ninguém pediu? alguma unidade ficou com duas responsabilidades? a capacidade tem um dono ou ficou espalhada? dava pra fazer mais simples sem cair de nível? todo arquivo por onde passei saiu melhor do que entrou? se tem tela: sobrou literal, faltou estado, passou a11y? Se não → não está pronto, refaça.
+1. **Defina a referência.** Quem são os líderes reconhecidos DESTE domínio — os big pop tech apps que o mercado admira (descubra pelo contexto da tarefa)? O que eles fazem é a **baseline** — o piso, nunca o teto.
+2. **Iguale ou supere.** Entregue no nível do melhor que existe e, onde der, vá além.
+3. **Auto-check antes de entregar.** *"Um líder do domínio assinaria isto — e assinaria esta tela?"* Se não → não está pronto, refaça.
 
 Qualidade vem antes de esforço, tempo ou tokens. A complexidade necessária para chegar nesse nível é requisito, não obstáculo. Genérico ou mediano = falha.
 
-Nível #1 é também no código e, com tela, no visual — mas a **forma** é doutrina de outras duas skills, não desta: `/principles` (engenharia) e `/front` (design). Esta skill define o **nível**; quem constrói invoca as três.
+Esta skill define o **nível**; a **forma** — código e, com tela, visual — é doutrina de outras duas: `/principles` (engenharia) e `/front` (design). Quem constrói invoca as três.
 
 ## PARE se pensar
 "tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "o existente tá longe demais do nível, começo outro do lado" · "crio o novo agora, o antigo eu apago depois"
