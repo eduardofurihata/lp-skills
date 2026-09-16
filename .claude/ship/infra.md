@@ -1,8 +1,8 @@
 # Infra — lp-skills
 
 > Mantido pelo `/infra`. **Inventário**: o que existe, onde, sob qual conta, e onde vive cada segredo — nunca o valor.
-> Processo de deploy (ambientes, como checar, como setar, rollback): `.claude/ship-setup/deploy.md`.
-> Convenções do time: `.claude/ship-setup/setup.md`.
+> Processo de deploy (ambientes, como checar, como setar, rollback): `.claude/ship/deploy.md`.
+> Convenções do time: `.claude/ship/setup.md`.
 >
 > Mapeado em 2026-09-11. Fontes: `.vercel/project.json`, `.github/workflows/ci.yml`, `app/`, `lib/`, `components/` (grep de `process.env`), ausência de `.secrets/`, `.env*`, `.mcp.json`, `prisma/`. Confirmado por `vercel whoami` + `vercel project ls` e `gh repo view`.
 
@@ -29,7 +29,7 @@
 |---|---|---|---|
 | **nenhum** | — | — | — |
 
-Não há `.secrets/`, `.env*`, `.mcp.json`, nem `process.env` no app; o workflow de CI não referencia `${{ secrets.* }}`. O deploy é a integração Git da Vercel — a autenticação é da conta Vercel ligada ao GitHub, não um token no repositório. Se um dia houver variável: comando para setar no `.claude/ship-setup/deploy.md`; a linha dela entra aqui (nome + onde vive + como se obtém — nunca o valor).
+Não há `.secrets/`, `.env*`, `.mcp.json`, nem `process.env` no app; o workflow de CI não referencia `${{ secrets.* }}`. O deploy é a integração Git da Vercel — a autenticação é da conta Vercel ligada ao GitHub, não um token no repositório. Se um dia houver variável: comando para setar no `.claude/ship/deploy.md`; a linha dela entra aqui (nome + onde vive + como se obtém — nunca o valor).
 
 ## Artefatos em `.secrets/` (não são credencial)
 | Caminho | O que é | De quando | Pode apagar? |
