@@ -12,90 +12,49 @@
 # <Tópico> — Spec
 
 ## Escopo derivado
-- **Plataformas:** web · android · ios — <o que a Verificação de Realidade (Step 3) e o código do projeto sustentam>
+- **Plataformas:** web · android · ios — <o que a Verificação de Realidade (Step 3) e o código sustentam>
 - **Superfície visual:** sim / não — <por quê>
 
 ## Decisões
 ### D-N — <decisão em uma frase>
-- **Justificativa:** <por que esta é a melhor escolha>
-- **Referência:** <`/solve` (big app / boa prática / princípio) ou código existente>
+- **Justificativa e referência:** <por quê; `/solve` (big app / boa prática) ou código existente>
 - **UC que exige:** UC-N
-- **Já existe no projeto?** <mecanismo encontrado → reusar/estender | nada → criar>
-- **Motor dono da regra:** <motor — nasce / estende / absorve lógica dispersa>
-- **Depende de:** <abstração (nunca implementação) — e em que direção>
-- **Ponto de extensão:** <por onde isso cresce sem editar o que já funciona>
+- **Já existe no projeto?** <mecanismo → reusar/estender | nada → criar>
+- **Motor dono da regra:** <nasce / estende / absorve lógica dispersa> · **depende de:** <abstração, e em que direção> · **cresce por:** <ponto de extensão>
 - **Descartadas:** <alternativa — por que saiu>
 ```
 
 ## Hierarquia de decisão
 
-Cada decisão se resolve, nesta ordem:
+1. **`/solve`** — a referência #1 e as boas práticas consagradas.
+2. **Código existente** — o projeto, `CLAUDE.md`, `.claude/patterns.md`, convenções já adotadas.
 
-1. **`/solve`** — a referência #1: big pop tech apps / líderes do domínio, boas práticas consagradas (Clean Architecture, OWASP, performance, escalabilidade) e os princípios (`/principles`; `/front` se tem UI)
-2. **Código existente** — o código do projeto, CLAUDE.md, `.claude/patterns.md`, convenções já adotadas
-
-**Empate entre duas soluções que atingem o nível #1:** ganha a mais simples — complexidade só se paga com requisito, nunca com elegância. E é aqui que o que **não** se constrói sai mais barato: decisão sem UC que a exija vai para `Descartadas`, não para o código.
+Empate entre soluções no nível #1: ganha a **mais simples**. Decisão sem UC que a exija vai para `Descartadas`, não para o código.
 
 ## Autonomous Decision Loop
 
-```
-ROUND = 0
+Repita até **zero gaps**, sem limite de rounds e nunca menos de um — feature "simples" esconde complexidade:
 
-REPETIR até zero gaps:
-  ROUND += 1
+1. **Analise tudo** — docs dos Steps 1-3, decisões dos rounds anteriores, código relevante, `CLAUDE.md`.
+2. **Identifique os gaps** — stack, regras de negócio, edge cases, integrações, permissões, dados, performance, segurança, i18n, rollback; **plataforma** e **superfície visual** (derivadas, nunca declaradas); **qual capacidade a feature exige e quem é o dono dela**.
+3. **Resolva cada gap** como uma D-N do artefato.
+4. **Re-analise do zero** — as decisões criaram ambiguidade nova, contradizem algo, espalham regra que já tem dono (→ absorve no motor)?
 
-  1. ANALISAR — releia TUDO:
-     - Docs dos Steps 1-3
-     - Decisões dos rounds anteriores
-     - Código existente relevante
-     - CLAUDE.md e .claude/patterns.md
-
-  2. IDENTIFICAR GAPS — decisões em aberto:
-     Stack/tecnologia | Regras de negócio | Edge cases | Integrações
-     Permissões/roles | Dados/schemas | Performance | Segurança
-     **Escopo de plataforma** (web/android/ios) — derivado, não declarado
-     **Superfície visual** (sim/não) — derivada, não declarada
-     **Motores** — qual capacidade esta feature exige, e quem é o dono dela?
-
-  3. RESOLVER CADA GAP — no formato D-N do artefato:
-     decisão · justificativa · referência · UC que exige · já existe? ·
-     motor dono · depende de (direção) · ponto de extensão · descartadas
-
-  4. RE-ANALISAR (do zero) — com as decisões tomadas, releia TUDO:
-     - Decisões geraram NOVAS ambiguidades? Contradizem algo anterior?
-     - Dimensões não cobertas? (segurança, performance, i18n, rollback)
-     - A decisão espalha uma regra que já tem dono? → **absorve no motor**
-
-  5. DECISÃO: gaps restantes? → novo round. Zero gaps? → sair.
-
-SAÍDA: "✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades"
-```
-
-- **Sem limite de rounds** — rode quantos for necessário.
-- **Cada round re-analisa TUDO do zero** — não confie na memória.
-- **Mínimo 1 round** — features "simples" escondem complexidade.
-- **Contradição interna** → a opção mais consistente com o projeto existente; documente o motivo.
+Saída: `✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades`.
 
 ## Escopo derivado, nunca declarado
 
-**PROIBIDO** aceitar "web-only, skip mobile" ou "isso não tem UI" como declaração do usuário. Os dois saem da Verificação de Realidade (Step 3) + análise do projeto:
-
-- Projeto tem app mobile? A feature tem superfície mobile? Se tem → Android e iOS entram no escopo.
-- Projeto web-only (confirmado pela ausência de código mobile) → o spec documenta "feature não tem superfície mobile".
-- **Superfície visual = sim** quando algum UC lista estados de tela (Step 3) ou algum passo do happy path acontece numa tela do projeto.
+"Web-only" e "não tem UI" não se aceitam do usuário. **Plataforma** = o que o código do projeto tem (app mobile existe e a feature aparece nele → Android e iOS entram). **Superfície visual = sim** quando algum UC lista estados de tela ou algum passo acontece numa tela.
 
 ## PARE se pensar
 
-- **"Não tem UI, pulo o `/front`."** Superfície visual é **derivada** aqui, nunca declarada. Sem ela, declare `❌ N/A` uma vez no Gateway 4 → 5 — é o que dispensa o `/front` dali em diante. Antes disso, BLOQUEADO.
+- **"Não tem UI, pulo o `/front`."** Superfície visual é **derivada** aqui. Sem ela, declare `❌ N/A` uma vez no Gateway 4 → 5 — é o que dispensa o `/front` dali em diante. Antes disso, BLOQUEADO.
 
 ## Gateway 4 → 5
 
-- [ ] Autonomous Decision Loop fechou com **zero gaps**
-- [ ] Cada decisão (D-N) com justificativa + referência (`/solve` > código existente) + alternativas descartadas + **UC que a exige**
-- [ ] Cada decisão declara **qual motor é dono da regra**, a **direção da dependência** e o ponto de extensão previsto
-- [ ] **Escopo de plataforma** (web/android/ios) **derivado** aqui, não declarado
-- [ ] **Superfície visual derivada** (sim/não) — é o que liga o Step 5 e a linha de design nos gateways seguintes
+- [ ] Loop fechou com **zero gaps**; cada D-N com todos os campos do artefato
+- [ ] **Plataforma** e **superfície visual** derivadas aqui, não declaradas
 - [ ] Artefato `docs/04-spec/<tópico>.md` existe com conteúdo substantivo
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
 
-**Sem superfície visual:** a linha de Design declara `❌ N/A — derivado do Step 4` **uma vez** aqui, o Step 5 não roda e os gateways seguintes herdam — o próximo é o **Step 6**.
+**Sem superfície visual:** a linha de Design declara `❌ N/A — derivado do Step 4` **uma vez** aqui, o Step 5 não roda, os gateways seguintes herdam — o próximo é o **Step 6**.

@@ -1,81 +1,51 @@
 # Step 0 — Start (estrutura + inventário)
 
-**Antes de qualquer step: as pastas estão certas e eu sei o que já existe.** Roda UMA vez, no início. Não produz artefato `.md` — publica os dois blocos abaixo no chat e, se preciso, arruma as pastas.
-
-**Chame e use:** `SKILL.md` § Gateway Check
+**Antes de qualquer step: as pastas estão certas e eu sei o que já existe.** Roda UMA vez. Não produz artefato — publica os dois blocos abaixo no chat e, se preciso, arruma as pastas. Ambiguidade de estrutura não resolvida → **pare e pergunte** antes do Step 1.
 
 ## 1. Estrutura — a numeração das pastas é contrato
 
-Confira as pastas do projeto contra a tabela. **Pasta na numeração antiga → `git mv` para a nova** (preserva histórico); pasta fora do contrato, numeração duplicada ou lacuna → reporte e corrija. Só pergunte quando houver ambiguidade real (duas pastas disputando o mesmo step).
+Confira as pastas do projeto contra o contrato. **Numeração antiga → `git mv` para a nova** (preserva histórico), **do maior para o menor** — na ordem inversa, um rename sobrescreve o outro. Pasta fora do contrato, duplicada ou com lacuna → reporte e corrija; pasta que ainda não existe **não se cria vazia**, nasce com o artefato do step.
 
-| Step | Pasta | Numeração antiga que ainda aparece por aí |
+| Step | Pasta | Antiga |
 |---|---|---|
-| 0 | `docs/00-context/` | — (não se renumera; ver § 3) |
+| 0 | `docs/00-context/` | — (fora da esteira, § 3) |
 | 1 | `docs/01-problem/` | — |
 | 2 | `docs/02-user-stories/` | — |
 | 3 | `docs/03-use-cases/` | — |
 | 4 | `docs/04-spec/` | — |
-| 5 | `docs/05-design/` | `docs/04-design/` |
-| 6 | `docs/06-test-cases/` | `docs/05-test-cases/` |
-| 7 | `kanban/07-todo/` | `kanban/06-todo/` |
-| 8 | `kanban/08-implementation/` | `kanban/07-implementation/` |
-| 9 | `kanban/09-code-review/` | `kanban/08-code-review/` |
-| 10 | `kanban/10-run-test/` | `kanban/09-run-test/` |
-| 11 | `kanban/11-follow-ups/` | — (pasta nova) |
-| 12 | `kanban/12-done/` | `kanban/10-done/` |
+| 5 | `docs/05-design/` | `04-design` |
+| 6 | `docs/06-test-cases/` | `05-test-cases` |
+| 7 | `kanban/07-todo/` | `06-todo` |
+| 8 | `kanban/08-implementation/` | `07-implementation` |
+| 9 | `kanban/09-code-review/` | `08-code-review` |
+| 10 | `kanban/10-run-test/` | `09-run-test` |
+| 11 | `kanban/11-follow-ups/` | — (nova) |
+| 12 | `kanban/12-done/` | `10-done` |
 
-> Renomeie **do maior para o menor** (`10-done` → `12-done` antes de `09-run-test` → `10-run-test`, e assim por diante) — na ordem inversa, um rename sobrescreve o outro.
-
-Pasta que não existe ainda **não se cria vazia**: ela nasce quando o step que a usa produzir o artefato.
+**Mexeu nas pastas? Commite só a arrumação antes do Step 1** (`chore: renumera docs/kanban`) — ela não entra no commit único da feature.
 
 ```markdown
 ## Step 0 — Estrutura
-- Pastas no contrato: <N>/13 · renomeadas agora: <lista `antiga → nova`, ou nenhuma>
-- Fora do contrato: <lista, e o que foi feito> / nenhuma
+- Pastas no contrato: <N>/13 · renomeadas agora: <antiga → nova, ou nenhuma> · commit: <sha> / nenhum
+- Fora do contrato: <lista e o que foi feito> / nenhuma
 - **Status:** ✅ estrutura OK / ❌ ambiguidade — [o que precisa de decisão]
 ```
 
 ## 2. Inventário de docs
 
-**Scan único**, para não re-escanear a cada step e para decidir criar/atualizar/mesclar/excluir com consistência.
+**Scan único** de `docs/**/*.md` e `kanban/**/*.md`, lendo o **conteúdo** (não só o nome — nomes não dizem tudo): tópico de cada arquivo e o que se relaciona com a feature atual (mesma área, fluxo, tela ou domínio).
 
-```
-1. LISTAR TUDO — Glob docs/**/*.md e kanban/**/*.md (todas as pastas de uma vez)
-2. LER — o CONTEÚDO de CADA arquivo (não só o nome)
-   - Muitos arquivos: leia pelo menos título + H2s + primeira frase de cada seção
-3. MAPEAR — para cada arquivo: tópico/domínio, features documentadas
-4. ANOTAR — quais se relacionam com a feature atual? (mesma área, fluxo, tela ou domínio)
-```
-
-- **Ler = ler o CONTEÚDO, não o nome.** Glob retorna nomes; nomes não dizem tudo.
-- **Features relacionadas = mesmo arquivo.** "Adicionar PIX" + "adicionar boleto" → `pagamentos.md`.
-- **O nome do arquivo reflete o DOMÍNIO, não a task.** ✅ `pagamentos.md`, `autenticacao.md`, `dashboard-admin.md` · ❌ `feat-1.md`, `add-pix.md`.
-- **Ao mesclar, preserve todo conteúdo relevante** — reorganize, não descarte. Dentro do arquivo, H2/H3 separam features.
-
-| Situação | Ação |
-|----------|------|
-| Arquivo relacionado existe (mesmo domínio) | **ATUALIZAR** (nova seção ou merge) |
-| Nada relacionado existe | **CRIAR**, nomeado por domínio |
-| Arquivos redundantes | **MESCLAR** num só; deletar os redundantes |
-| Arquivos obsoletos | **DELETAR** |
-
-**Anti-padrão:** `Glob docs/01-problem/*.md` → não acha `minha-feature.md` → cria novo. O correto: o inventário já sabe que existe `pagamentos.md`, e PIX é pagamento → **atualiza**.
+- **O nome do arquivo é o domínio, não a task** — `pagamentos.md`, `autenticacao.md`; nunca `feat-1.md`, `add-pix.md`. Features do mesmo domínio moram no mesmo arquivo, separadas por H2/H3.
+- **Relacionado existe → ATUALIZAR** (nova seção ou merge) · nada existe → **CRIAR** por domínio · redundantes → **MESCLAR** num só, preservando todo conteúdo relevante · obsoletos → **DELETAR**.
+- Anti-padrão: `Glob docs/01-problem/*.md` não acha `minha-feature.md` → cria novo. O inventário já sabe que `pagamentos.md` existe e PIX é pagamento → **atualiza**.
 
 ```markdown
 ## Step 0 — Inventário
 - Docs lidos: <N> em <M> pastas
 - Relacionados a esta feature: <arquivo → por quê> / nenhum
-- Ação por step: <01: atualizar pagamentos.md · 04: criar … >
+- Ação por step: <01: atualizar pagamentos.md · 04: criar …>
 ```
 
 ## 3. `docs/00-context/` — brainstorming, fora da esteira
 
-Rascunho, anotação de conversa, print, referência solta, estudo que ninguém sabe se vira feature: é ali que mora, e **não entra nos steps**. O Step 0 apenas **lista** o que existe como insumo; o que for virar trabalho entra pelo **Step 1**, escrito do jeito que o Step 1 exige.
-
-- Não se renumera, não se organiza por feature, não vira artefato.
-- Doc de lá **não substitui** nenhum step — citar um rascunho não cumpre Problema, Spec nem Design.
-- Conhecimento **permanente** do projeto (convenções, infra, padrões de código) não é brainstorming e não mora aqui: ele vive em `.claude/`, lido sob demanda por quem usa.
-
-## Saída do Step 0
-
-Os dois blocos publicados no chat (**Estrutura** e **Inventário**) e as pastas arrumadas. Não há gateway: o Step 0 não produz artefato — ele garante que os próximos produzam no lugar certo. Ambiguidade de estrutura não resolvida → **pare e pergunte** antes do Step 1.
+Rascunho, anotação, print, estudo que ninguém sabe se vira feature: mora ali e **não entra nos steps**. O Step 0 só **lista** o que existe como insumo; o que for virar trabalho entra pelo Step 1, do jeito que o Step 1 exige. Não se renumera, não vira artefato, não substitui nenhum step. Conhecimento **permanente** do projeto (convenções, infra, padrões) não é brainstorming: vive em `.claude/`, lido sob demanda.
