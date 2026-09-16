@@ -18,13 +18,13 @@ argument-hint: "(vazio) | <KEY | link> | ler | mcp"
 
 ## Sincronizar card
 
-1. **A linha da etapa** dá status e se comenta: começou · publicado · integrado · no ar em homolog / em produção (depois de validado) · devolvido ao dev. Sem Jira, no-op.
+1. **A linha da etapa** dá status e se comenta: começou · publicado · integrado · no ar em homolog / em produção (depois de validado) · devolvido ao dev. Sem Jira ou sem card, no-op.
 2. **Comentar, se comenta** — `## O que foi feito` leigo (o mesmo da PR) + rótulo e link, separado da transição.
 3. **Transicionar pelo NOME do status**, descobrindo a transição na hora; `—` não transiciona; nome ausente → avise, siga, sugira `ler`.
 
 ## Anexar imagem a um card
 
-**Existe upload — o que não existe é a tool `jira_upload_attachment`.** Procurar por ela é o que leva ao "o MCP não anexa": o upload é um parâmetro do `jira_update_issue` (verificado no código do `mcp-atlassian` 0.23.x). Cinco passos:
+**Existe upload — o que não existe é a tool `jira_upload_attachment`.** O upload é um parâmetro do `jira_update_issue` (verificado no código do `mcp-atlassian` 0.23.x). Cinco passos:
 
 1. **Materializar no projeto.** `mkdir -p .card-refs/` e copie cada imagem para lá, com nome curto. O caminho é resolvido contra o CWD do servidor MCP e **rejeitado se escapar** (symlink é resolvido antes; não contorna): `~/Downloads`, `/tmp` ou absoluto de fora → `ValueError: Path traversal detected: … resolves outside <base>`. Use **caminho relativo**.
 2. **Anexar** — o card já existe (`jira_create_issue` **não aceita** anexo; é sempre o 2º passo):
