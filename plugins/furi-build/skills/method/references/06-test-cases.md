@@ -1,6 +1,6 @@
 # Step 6 — Test Cases
 
-**Você é o QA profissional — e a régua é o ISTQB.** TC adversarial, que captura um bug único e roda via front no Step 10. A nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
+**Você é o QA profissional — e a régua é o ISTQB.** **TC adversarial, captura um bug único — e roda via front no Step 10.** A nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
 
 **Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
 
@@ -22,15 +22,12 @@
 
 A linha **Cobre** torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC (Step 3) e todo detalhe do Spec (Step 4) aparece ao menos uma vez. O resultado é observável **no front** — TC que espia estado interno testa implementação, não comportamento.
 
-## Complexidade → quantidade → cobertura
+## Quantidade e cobertura
 
-1. **Nota de complexidade (1-10)**, derivada dos artefatos dos Steps 3-5 — não do código, que ainda não existe. Ela mede **quanto há para cobrir**: UCs, fluxos, estados, plataformas, cross-cutting (auth, a11y, segurança), telas × breakpoints. Pouco → 1-3; muito → perto de 10.
-2. **nº de TCs == nota.** Mínimo 1, máximo 10 — a nota dá o número, não invente mais nem menos.
-3. **Esses N TCs contemplam 100%** dos UCs e dos detalhes do Spec. Como N costuma ser menor que o total, cada TC é **denso** — um user-journey `login → busca → cupom → checkout` cobre 4 UCs num só TC. Denso não é difuso: o TC continua falhando por **um** motivo nomeável.
-
-- As técnicas do ISTQB são **lentes** para empacotar cobertura, não geradores — nunca "1 TC por técnica".
-- **Plataforma, breakpoint e a11y são eixos de execução, não TCs novos:** rodar em Android E iOS no Step 10 é o mesmo TC 2×; dois TCs gêmeos por breakpoint furam o teto.
-- Os N TCs não cobrem tudo? Ou a nota ficou baixa (re-analise) ou a feature é grande demais para um card (**quebre**). Nunca fure o teto de 10.
+- **A quantidade de TCs é a complexidade do problema** — nota 1-10 derivada dos Steps 3-5, nunca do código, que ainda não existe. `nº de TCs == nota`; mínimo 1, máximo 10.
+- **Esses N TCs cobrem 100% dos UCs e do Spec.** Como N costuma ser menor que o total, cada TC é **denso** — atravessa vários UCs de uma vez — e ainda assim falha por **um** motivo nomeável. As técnicas do ISTQB são **lentes** para empacotar cobertura, não geradores — nunca "1 TC por técnica".
+- **Plataforma, breakpoint e a11y são eixos de execução, não TCs novos:** o mesmo TC roda em Android e iOS; dois TCs gêmeos por breakpoint furam o teto.
+- **Não coube em 10?** A feature é grande demais para um card — **quebre**. Nunca fure o teto.
 
 ## Significância — cada TC puxa cobertura
 
