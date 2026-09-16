@@ -100,7 +100,7 @@ const PACKAGES = [
     name: "furi-toolbox",
     category: "toolbox",
     description:
-      "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /ask, /chat, /save, /sync, /make-dev, /ctt, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+      "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /ask, /chat, /save, /sync, /make-dev, /make-skill, /ctt, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
     keywords: ["utilities", "git", "productivity", "workflow"],
     codex: {
       displayName: "Furi Toolbox",
