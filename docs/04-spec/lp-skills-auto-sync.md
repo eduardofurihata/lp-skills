@@ -52,7 +52,7 @@ lp-skills/
 ├── scripts/
 │   └── sync-from-local.sh            # hook do autor
 ├── docs/                             # /method artifacts
-├── kanban/                           # /method artifacts
+├── obra/                           # /method artifacts
 ├── package.json
 ├── tsconfig.json
 ├── next.config.mjs

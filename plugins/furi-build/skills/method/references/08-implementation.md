@@ -6,7 +6,7 @@
 
 ## 8a — Plano
 
-`kanban/08-implementation/<tópico>.md` — **autocontido**; nome por domínio; doc que já cobre o domínio se **atualiza** (`00-start.md`). O plano é **vivo** durante o 8b (desvio = decisão nova, com motivo) e **nunca** editado depois para retrofit.
+`obra/08-implementation/<tópico>.md` — **autocontido**; nome por domínio; doc que já cobre o domínio se **atualiza** (`00-start.md`). O plano é **vivo** durante o 8b (desvio = decisão nova, com motivo) e **nunca** editado depois para retrofit.
 
 ```markdown
 # Plano de Implementação — <feature>
@@ -39,7 +39,7 @@ A cada task, **releia o plano**: ele já decidiu (§ 3.1-3.5).
 ## Gateway 8a → 8b
 
 - [ ] Plano autocontido, § 3.1 a § 3.5 preenchidas (3.4 se tem UI); i18n planejado se o projeto tem
-- [ ] Artefato `kanban/08-implementation/<tópico>.md` existe com conteúdo substantivo
+- [ ] Artefato `obra/08-implementation/<tópico>.md` existe com conteúdo substantivo
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
 
 ## Gateway 8b → 9

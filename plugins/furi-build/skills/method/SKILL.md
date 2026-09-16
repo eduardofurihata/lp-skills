@@ -23,14 +23,14 @@ requires: solve
 
 ## A esteira — nomes, pastas e números são contrato
 
-`docs/`: **01-problem** · **02-user-stories** · **03-use-cases** · **04-spec** · **05-design** (só com superfície visual) · **06-test-cases**. `kanban/`: **07-todo** · **08-implementation** (8a plano, 8b código) · **09-code-review** · **10-run-test** · **11-follow-ups** · **12-done**. Um `<tópico>.md` e um `references/NN-*.md` por step.
+`docs/`: **01-problem** · **02-user-stories** · **03-use-cases** · **04-spec** · **05-design** (só com superfície visual) · **06-test-cases**. `obra/`: **07-todo** · **08-implementation** (8a plano, 8b código) · **09-code-review** · **10-run-test** · **11-follow-ups** · **12-done**. Um `<tópico>.md` e um `references/NN-*.md` por step.
 
 ## Como roda
 
 1. **Invoque o `/solve`** via Skill tool na ativação **e em todo step** — ele traz o `/principles` e, com superfície visual, o `/front`.
 2. **Step 0** (`00-start.md`), depois o **Gate Check** visível: docs 01-05 cobrem a feature? Faltando, escreve antes de codar. Uma task por step de 7 a 11.
 3. **Cada step**: abra o reference, produza o artefato, publique o **Gateway Check** — ✅ segue sozinho, ❌ corrige e republica.
-4. **8 → 9 → 10 é loop**: mudança de código volta ao 9; encerra com 100% PASSED e zero mudança. **11** fecha o ledger (só o ciclo raiz commita); **12** move o card para done e faz **um único commit**.
+4. **8 → 9 → 10 é loop**: mudança de código volta ao 9; encerra com 100% PASSED e zero mudança. **11** fecha o ledger (só o ciclo raiz commita); **12** move o artefato para done e faz **um único commit**.
 
 ## Gateway Check — em toda transição
 

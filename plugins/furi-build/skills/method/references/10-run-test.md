@@ -6,7 +6,7 @@
 
 ## Artefato
 
-`kanban/10-run-test/<tópico>.md` — nome por domínio (`00-start.md`). Evidência por TC (path do screenshot ou motivo do FAILED) e `## Test Environment Setup` (o que criou, qual `pw#`).
+`obra/10-run-test/<tópico>.md` — nome por domínio (`00-start.md`). Evidência por TC (path do screenshot ou motivo do FAILED) e `## Test Environment Setup` (o que criou, qual `pw#`).
 
 ## Antes de rodar
 
@@ -17,7 +17,7 @@
 ## Loop
 
 1. tsc/lint; depois cada TC **do zero**, pela ferramenta do contexto: web = MCP Playwright (`mcp__playwright-4__*`; ocupado → próximo índice livre, fixado na rodada) · Android = emulador · iOS = simulador ou device · API = chamada real. **Mobile = Android E iOS, sempre.**
-2. PASSED (resultado esperado + screenshot com path) ou FAILED — sem meio-termo. Atualize o `## Test Cases (QA)` do card.
+2. PASSED (resultado esperado + screenshot com path) ou FAILED — sem meio-termo. Atualize o `## Test Cases (QA)` do to-do.
 3. Bug → **A**: corrige agora, **reseta o checklist**, volta ao Step 9 e retesta TUDO; **B/C**: ledger.
 4. Todos PASSED sem mudança de código → Audit Pós → Gateway.
 

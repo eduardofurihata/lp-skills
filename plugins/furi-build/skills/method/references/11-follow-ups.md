@@ -6,12 +6,12 @@
 
 ## Artefato — o ledger
 
-`kanban/11-follow-ups/<tópico>.md` — semeado no Step 7, fechado aqui, copiado ao done no Step 12.
+`obra/11-follow-ups/<tópico>.md` — semeado no Step 7, fechado aqui, copiado ao done no Step 12.
 
 ```markdown
 # <Tópico> — Follow-ups
 | # | Achado | Detectado em | Balde | Status | Resolução |
-| F1 | Modal de erro sem i18n — exposto pelo novo fluxo | Step 10 | B | RESOLVIDO-POR-CICLO | `kanban/12-done/i18n-modal-erro.md` |
+| F1 | Modal de erro sem i18n — exposto pelo novo fluxo | Step 10 | B | RESOLVIDO-POR-CICLO | `obra/12-done/i18n-modal-erro.md` |
 ```
 
 **Status:** `ABERTO` · `RESOLVIDO-NO-STEP` (A) · `RESOLVIDO-POR-CICLO` (B) · `DESCARTADO` (C). Item resolvido ou descartado **não reabre** — senão o loop nunca converge.
@@ -33,7 +33,7 @@ Violação de princípio entra na mesma triagem; regra duplicada dentro do perí
 - **Veredicto: ✅ CONVERGIU** / ❌ BLOQUEADO — abertos: [Fn]
 ```
 
-**Passe seco** = zero `ABERTO` e zero item novo na varredura; ciclo que gera follow-up ⇒ o loop continua. ❌ = proibido iniciar o Step 12 — nem mover o card, nem commitar.
+**Passe seco** = zero `ABERTO` e zero item novo na varredura; ciclo que gera follow-up ⇒ o loop continua. ❌ = proibido iniciar o Step 12 — nem mover o artefato, nem commitar.
 
 ## Como rodar um ciclo (item B)
 
@@ -49,5 +49,5 @@ Violação de princípio entra na mesma triagem; regra duplicada dentro do perí
 
 - [ ] **Gate de Convergência ✅ CONVERGIU** publicado — passe seco
 - [ ] Cada B fechado por ciclo `/method` próprio, done linkado; cada C justificado
-- [ ] Ledger final em `kanban/11-follow-ups/<tópico>.md`
+- [ ] Ledger final em `obra/11-follow-ups/<tópico>.md`
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

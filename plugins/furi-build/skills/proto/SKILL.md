@@ -23,7 +23,7 @@ O entregável não é uma tela. É uma **escolha**.
 - **Protótipo que funciona.** Dados e estados reais (carregando, vazio, erro, cheio, limite), a interação que cada versão promete funcionando, a11y e estados de interação como o DS define, console sem erro — e você viu as 3 rodando, em mobile e desktop, antes de dizer que acabou. Descartável não é desculpa para código torto: a escolhida vira base do `/method`.
 - **Fecho que permite decidir.** As 3 URLs, o que cada versão aposta e quando ela ganha, sua recomendação com o motivo, e o que virou mock ou desvio do DS. Aí sim pergunte qual fica.
 
-Não commita. Não cria docs nem kanban — isso é o `/method`, depois da escolha.
+Não commita. Não cria `docs/` nem `obra/` — isso é o `/method`, depois da escolha.
 
 ## PARE se pensar
 "as 3 ficaram parecidas, mas cada uma tem seu charme" · "só um ajustinho nesse componente compartilhado" · "mobile depois" · "uso os breakpoints padrão da lib" · "protótipo pode ter botão morto e sem estado vazio" · "a tela já é assim, então mantenho" · "invento uma cor só pra essa versão" · "commito pra não perder" · "já sei o que o `/solve` / o `/front` diz, sigo sem invocar"
