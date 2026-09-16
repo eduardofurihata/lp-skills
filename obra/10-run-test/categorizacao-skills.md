@@ -25,7 +25,7 @@ Vou executar 8 TCs (TC-1..8). Vou produzir evidência para cada: 4 screenshots (
 > **Defeito colateral corrigido durante o ciclo (Issue #1 do review):** os 10 symlinks locais `~/.claude/skills/*` (e `make-dev` apontando pro labzz) foram re-apontados para `skills/personal/<slug>`. Verificado: 11 OK, 0 quebrados. Não houve mudança de **código** do app após o último build → ciclo fechou sem invalidar a validação.
 
 ## Nota sobre TC-8 / descontinuação
-TC-8 cobre também UC-22/23/24 (apagar pasta/repo/Vercel do labzz), que por natureza executam no **Step 10 (Closeout)**, após push + build verde — declarado no pre-flight e no próprio TC. A porção testável no Step 9 (migração íntegra + slug único + build) está **PASSED**; o gate de descontinuação (`gh repo view` falha, projeto Vercel removido, `ls` falha) é verificado e registrado no `kanban/10-done`.
+TC-8 cobre também UC-22/23/24 (apagar pasta/repo/Vercel do labzz), que por natureza executam no **Step 10 (Closeout)**, após push + build verde — declarado no pre-flight e no próprio TC. A porção testável no Step 9 (migração íntegra + slug único + build) está **PASSED**; o gate de descontinuação (`gh repo view` falha, projeto Vercel removido, `ls` falha) é verificado e registrado no `obra/10-done`.
 
 ## Reconciliação
 - **Predicted:** 8 TCs

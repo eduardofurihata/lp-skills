@@ -9,9 +9,9 @@ Consolidação das skills do `labzz-skillzz` no `lp-skills`, separadas em bucket
 - Spec: `docs/04-spec/categorizacao-skills.md` (2 rounds, 21 decisões)
 - Test Cases: `docs/05-test-cases/categorizacao-skills.md` (8 TCs + regressão)
 - To Do: promovido para este done (card de `06-todo` deletado)
-- Plano: `kanban/07-implementation/categorizacao-skills.md`
-- Code Review: `kanban/08-code-review/categorizacao-skills.md` (APROVADO, 1 issue corrigido)
-- Run Test: `kanban/09-run-test/categorizacao-skills.md` (8/8 PASSED)
+- Plano: `obra/07-implementation/categorizacao-skills.md`
+- Code Review: `obra/08-code-review/categorizacao-skills.md` (APROVADO, 1 issue corrigido)
+- Run Test: `obra/09-run-test/categorizacao-skills.md` (8/8 PASSED)
 
 ## Arquivos de código alterados
 **Novos:** `lib/categories.ts`, `components/CategoryBadge.tsx`, `components/CategoryFilter.tsx`

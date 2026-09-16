@@ -84,7 +84,7 @@ Comum: clone source uma vez em `~/.claude/lp-skills-source/`, hook SessionStart 
 - **Skills com nome com espaço/acento**: improvável (usuário usa kebab-case), mas o ln/symlink no install prompt assume sem espaços. Documentar limitação.
 - **Tailwind v4 vs v3**: shadcn em maio/2026 oficialmente suporta v4. Se houver issue, fallback para v3.
 - **Mascaramento de credenciais**: fazer ANTES do primeiro push. Edit em `~/.claude/skills/jira/SKILL.md` e re-sync, OU edit direto em `./skills/jira/SKILL.md` no repo após primeiro sync.
-- **Não publicar /method artifacts**: `docs/`, `kanban/`, arquivos `*.bak*` no .gitignore.
+- **Não publicar /method artifacts**: `docs/`, `obra/`, arquivos `*.bak*` no .gitignore.
 
 ## 6. Checklist de Implementação
 
@@ -121,7 +121,7 @@ Comum: clone source uma vez em `~/.claude/lp-skills-source/`, hook SessionStart 
 
 ### Pré-pub
 - [ ] Mascarar `test2@test.com / Test123!@#` em skills/jira/SKILL.md e references
-- [ ] `.gitignore` com node_modules, .next, .env*, *.log, *.bak*, *.backup, *.7z, kanban/, docs/, .vercel
+- [ ] `.gitignore` com node_modules, .next, .env*, *.log, *.bak*, *.backup, *.7z, obra/, docs/, .vercel
 - [ ] `README.md` com badge da LP, install one-liner, link, contribuição
 - [ ] git init, first commit "feat: initial LP scaffold + skills"
 

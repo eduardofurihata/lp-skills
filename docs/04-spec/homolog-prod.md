@@ -241,7 +241,7 @@
 **Alternativas descartadas:** manter em `prod/references/` — zero movimentação, mas a hospedagem é o que produzia o ciclo `homolog ↔ prod`.
 
 ### D-29 — O pipeline nunca cria card sozinho (revisa a tabela de destinos do `findings.md`)
-**Decisão:** `findings.md` (classes A e B) e `scope-split.md` deixam de invocar o `/card`. Achado e excedente vão para `kanban/08-code-review/<feature>.md § Achados do review` e para o relatório final — com a **prova** e a marca "candidato a card" — e o usuário abre, se quiser, com `/card`. As classes e as provas exigidas não mudam.
+**Decisão:** `findings.md` (classes A e B) e `scope-split.md` deixam de invocar o `/card`. Achado e excedente vão para `obra/08-code-review/<feature>.md § Achados do review` e para o relatório final — com a **prova** e a marca "candidato a card" — e o usuário abre, se quiser, com `/card`. As classes e as provas exigidas não mudam.
 **Justificativa:** "nenhum do processo work→prod deve acionar `/card` sozinho". A prova continua sendo a régua — é o que torna a linha do relatório um card de cinco segundos quando o usuário decidir.
 **Alternativas descartadas:** perguntar antes de cada card — o review pararia no meio pela atenção do usuário; manter só a classe A automática — exceção que reabre a porta.
 

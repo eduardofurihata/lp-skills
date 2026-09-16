@@ -71,7 +71,7 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 - **Fluxo**: 1) gap identificado; 2) skill invoca `/pull-request`; 3) segue para o ciclo de PR
 - **Resultado**: PR aberto — nada chega ao ambiente sem passar por review
 
-### UC-7 — PR com QA pendente (card em `kanban/06-todo/`)
+### UC-7 — PR com QA pendente (card em `obra/06-todo/`)
 - **Ator**: dev · **Precondição**: card do PR em `06-todo`
 - **Fluxo**: 1) gate de QA detecta; 2) skill roda o `/method` para **esse** feature até 100% PASSED; 3) segue para o review
 - **Resultado**: QA verde antes de a mudança entrar. Ambiente não recebe o que ninguém testou
@@ -102,7 +102,7 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 - **Resultado**: excedente volta à fila rastreado — não entra de carona nem desaparece
 
 ### UC-13 — PR com ledger de follow-up `ABERTO`
-- **Ator**: dev · **Precondição**: `kanban/10-done/<feature>.md` tem item `ABERTO`
+- **Ator**: dev · **Precondição**: `obra/10-done/<feature>.md` tem item `ABERTO`
 - **Fluxo**: 1) gate de convergência detecta; 2) skill **rejeita** (UC-11)
 - **Resultado**: pendência conhecida volta ao dev — não vira card de follow-up
 
@@ -207,7 +207,7 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 - **Fluxo**: 1) skill avisa; 2) segue sem transicionar
 - **Resultado**: entrega não trava por causa de status
 
-### UC-33 — Cards órfãos em `kanban/06-todo/`
+### UC-33 — Cards órfãos em `obra/06-todo/`
 - **Ator**: dev · **Precondição**: cards sem PR e sem branch viva
 - **Fluxo**: 1) skill classifica (com PR/branch = QA real; sem nada = provável órfão); 2) lista os órfãos e **pergunta**; 3) remove só o confirmado
 - **Resultado**: kanban limpo sem auto-delete

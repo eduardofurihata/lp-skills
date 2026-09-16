@@ -14,12 +14,12 @@ Landing page Next.js em dark mode que cataloga 15 skills do Claude Code do Furih
 | 4 Spec | [docs/04-spec/lp-skills-auto-sync.md](../../docs/04-spec/lp-skills-auto-sync.md) |
 | 5 Test Cases | [docs/05-test-cases/lp-skills-auto-sync.md](../../docs/05-test-cases/lp-skills-auto-sync.md) |
 | 6 To Do | (deletado — ver Ação obrigatória abaixo) |
-| 7a Plano | [kanban/07-implementation/lp-skills-auto-sync.md](../07-implementation/lp-skills-auto-sync.md) |
+| 7a Plano | [obra/07-implementation/lp-skills-auto-sync.md](../07-implementation/lp-skills-auto-sync.md) |
 | 7b Codificar | código no projeto |
-| 8 Code Review | [kanban/08-code-review/lp-skills-auto-sync.md](../08-code-review/lp-skills-auto-sync.md) |
-| 9 Run Test | [kanban/09-run-test/lp-skills-auto-sync.md](../09-run-test/lp-skills-auto-sync.md) |
+| 8 Code Review | [obra/08-code-review/lp-skills-auto-sync.md](../08-code-review/lp-skills-auto-sync.md) |
+| 9 Run Test | [obra/09-run-test/lp-skills-auto-sync.md](../09-run-test/lp-skills-auto-sync.md) |
 | 10 Done | este arquivo |
-| 11 Ship | [kanban/11-ship/lp-skills-auto-sync.md](../11-ship/lp-skills-auto-sync.md) (criado no Step 11) |
+| 11 Ship | [obra/11-ship/lp-skills-auto-sync.md](../11-ship/lp-skills-auto-sync.md) (criado no Step 11) |
 
 ## Arquivos de código criados
 
@@ -53,13 +53,13 @@ Landing page Next.js em dark mode que cataloga 15 skills do Claude Code do Furih
 - `scripts/sync-from-local.sh` — sync bidirecional com lockfile + debounce + symlink resolution + credential mask
 
 **Config:**
-- `.gitignore` — atualizado para excluir `docs/`, `kanban/`, backups, screenshots de teste
+- `.gitignore` — atualizado para excluir `docs/`, `obra/`, backups, screenshots de teste
 - `package.json` — deps: gray-matter, lucide-react, clsx, tailwind-merge, class-variance-authority, @radix-ui/{slot,dialog,tabs,tooltip}, sonner
 - `README.md` — overview, install, dev, sync
 
 **Documentação (não publicada — gitignored):**
 - `docs/01-problem/`, `docs/02-user-stories/`, `docs/03-use-cases/`, `docs/04-spec/`, `docs/05-test-cases/`
-- `kanban/07-implementation/`, `kanban/08-code-review/`, `kanban/09-run-test/`, `kanban/10-done/`
+- `obra/07-implementation/`, `obra/08-code-review/`, `obra/09-run-test/`, `obra/10-done/`
 
 **Total:** 19 arquivos de código, ~1100 linhas.
 
@@ -90,7 +90,7 @@ Landing page Next.js em dark mode que cataloga 15 skills do Claude Code do Furih
 - ✅ Sync script com lockfile + debounce + symlink resolution + mask
 - ✅ Primeiro sync (15 skills sincronizadas)
 - ✅ Credenciais mascaradas (test2@test.com / Test123!@# → placeholders)
-- ✅ .gitignore com docs/, kanban/, backups, screenshots
+- ✅ .gitignore com docs/, obra/, backups, screenshots
 - ✅ README atualizado
 
 **Pendente para Step 11:**
@@ -104,5 +104,5 @@ Landing page Next.js em dark mode que cataloga 15 skills do Claude Code do Furih
 Delete o todo da feature:
 
 ```bash
-rm kanban/06-todo/lp-skills-auto-sync.md
+rm obra/06-todo/lp-skills-auto-sync.md
 ```

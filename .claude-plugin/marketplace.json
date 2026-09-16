@@ -16,7 +16,7 @@
     {
       "name": "furi-ship",
       "source": "./plugins/furi-ship",
-      "description": "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores. Funciona sozinho: o estágio do commit é declarado como estado exigido, não como chamada a outro pacote.",
+      "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a deploy, interna, põe um ambiente no ar e prova. Funciona sozinho, sem depender de outro pacote.",
       "category": "ship"
     },
     {

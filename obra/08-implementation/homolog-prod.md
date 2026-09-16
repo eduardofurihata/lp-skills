@@ -33,7 +33,7 @@ created: 2026-09-02
 
 ## 3. Estratégia de Implementação
 
-Ordem = a numeração de `kanban/06-todo/homolog-prod.md` (T-01…T-15): estrutura → motores compartilhados → motores de ambiente → o loop → as duas skills → vizinhas → publicação. O loop (T-09) vem **depois** dos motores que ele invoca, e a publicação (T-15) por último porque o gerador lê o estado final.
+Ordem = a numeração de `obra/06-todo/homolog-prod.md` (T-01…T-15): estrutura → motores compartilhados → motores de ambiente → o loop → as duas skills → vizinhas → publicação. O loop (T-09) vem **depois** dos motores que ele invoca, e a publicação (T-15) por último porque o gerador lê o estado final.
 
 **Referência de mercado para as decisões de fluxo** (já fixada no Step 4): ArgoCD (`Sync` ≠ `Health`, um controller para N ambientes descritos como dados) · `terraform plan` antes de `apply` · GitHub Deployments API (`queued` como estado próprio) · Heroku release phase · Argo Rollouts (análise pós-deploy) · Vercel (rollback humano).
 

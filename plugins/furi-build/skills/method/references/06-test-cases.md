@@ -27,7 +27,7 @@ A linha **Cobre** torna a cobertura auditável: somando os `Cobre` de todos os T
 - **A quantidade de TCs é a complexidade do problema** — nota 1-10 derivada dos Steps 3-5, nunca do código, que ainda não existe. `nº de TCs == nota`; mínimo 1, máximo 10.
 - **Esses N TCs cobrem 100% dos UCs e do Spec.** Como N costuma ser menor que o total, cada TC é **denso** — atravessa vários UCs de uma vez — e ainda assim falha por **um** motivo nomeável. As técnicas do ISTQB são **lentes** para empacotar cobertura, não geradores — nunca "1 TC por técnica".
 - **Plataforma, breakpoint e a11y são eixos de execução, não TCs novos:** o mesmo TC roda em Android e iOS; dois TCs gêmeos por breakpoint furam o teto.
-- **Não coube em 10?** A feature é grande demais para um card — **quebre**. Nunca fure o teto.
+- **Não coube em 10?** A feature é grande demais para um ciclo — **quebre**. Nunca fure o teto.
 
 ## Significância — cada TC puxa cobertura
 

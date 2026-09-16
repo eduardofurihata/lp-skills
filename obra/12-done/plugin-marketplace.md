@@ -8,10 +8,10 @@ Migração da distribuição das skills do mecanismo antigo (symlink em `~/.clau
 - Use Cases: `docs/03-use-cases/plugin-marketplace.md`
 - Spec: `docs/04-spec/plugin-marketplace.md` (2 rounds + Round 3 bundles)
 - Test Cases: `docs/05-test-cases/plugin-marketplace.md`
-- To Do: movido para cá (deletado de `kanban/06-todo/`)
-- Plano: `kanban/07-implementation/plugin-marketplace.md`
-- Code Review: `kanban/08-code-review/plugin-marketplace.md`
-- Run Test: `kanban/09-run-test/plugin-marketplace.md`
+- To Do: movido para cá (deletado de `obra/06-todo/`)
+- Plano: `obra/07-implementation/plugin-marketplace.md`
+- Code Review: `obra/08-code-review/plugin-marketplace.md`
+- Run Test: `obra/09-run-test/plugin-marketplace.md`
 
 ## Código alterado/criado
 - **NOVO** `scripts/generate-plugins.mjs` — gera manifestos do frontmatter (fonte única)

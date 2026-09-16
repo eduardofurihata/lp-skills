@@ -17,7 +17,7 @@ Repita até zero issues de balde A — nunca "bom o suficiente":
 
 ## 9b — Relatório
 
-`kanban/09-code-review/<tópico>.md` — criar/atualizar:
+`obra/09-code-review/<tópico>.md` — criar/atualizar:
 
 ```markdown
 # Relatório de Code Review — <feature>
@@ -43,5 +43,5 @@ Relatório **brutalmente honesto**; achado fora do escopo vai ao **ledger**. **N
 - [ ] Veredicto **APROVADO**; zero issues de balde A
 - [ ] Qualidade (e Design, se tem UI) **por princípio**, nenhuma linha em branco; saldo do perímetro conferido
 - [ ] Achados fora de escopo classificados no ledger (A/B/C)
-- [ ] Artefato `kanban/09-code-review/<tópico>.md` existe com conteúdo substantivo
+- [ ] Artefato `obra/09-code-review/<tópico>.md` existe com conteúdo substantivo
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
