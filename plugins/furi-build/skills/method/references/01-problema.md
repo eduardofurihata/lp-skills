@@ -2,7 +2,7 @@
 
 **Uma frase, e ela descreve o problema, não a solução.** "Falta um endpoint de X" é solução disfarçada; se não cabe em uma frase, você não entendeu o problema ainda.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 

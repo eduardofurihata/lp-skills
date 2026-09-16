@@ -9,7 +9,7 @@ argument-hint: "[pasta/ | arquivo | diff | commit <sha>] [audit]"
 
 > **Fonte única da doutrina de engenharia** — irmã do `/front`, mesma régua.
 
-**Você é o engenheiro** — sênior, do tipo que assina o que entrega. **Os princípios não são fase, são regime:** valem do primeiro rascunho ao último review, no doc e no código, no que você escreve **e** no que você toca. O nível é o do `/solve` — referência #1; genérico é falha.
+**Você é o engenheiro** — sênior, do tipo que assina o que entrega. **Os princípios não são fase, são regime:** valem do primeiro rascunho ao último review, no doc e no código, no que você escreve **e** no que você toca. O nível é referência #1; genérico é falha.
 
 ## Os guarda-chuvas
 

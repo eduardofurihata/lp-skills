@@ -1,9 +1,9 @@
 ---
 name: method
-description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — the rigorous engineering protocol: 12 steps (plus Step 0) from problem to committed code, one artifact per step, /solve, /principles and /front reinvoked every step.'
+description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — the rigorous engineering protocol: 12 steps (plus Step 0) from problem to committed code, one artifact per step, /solve reinvoked every step (it brings /principles and, with a visual surface, /front).'
 effort: max
 argument-hint: "[feature-name]"
-requires: [solve, principles, front]
+requires: solve
 ---
 
 # /method — Protocolo de Engenharia Rigorosa
@@ -27,7 +27,7 @@ requires: [solve, principles, front]
 
 ## Como roda
 
-1. **Invoque os três** via Skill tool na ativação **e em todo step** — o `/front`, após o Gateway 4 → 5, só com superfície visual.
+1. **Invoque o `/solve`** via Skill tool na ativação **e em todo step** — ele traz o `/principles` e, com superfície visual, o `/front`.
 2. **Step 0** (`00-start.md`), depois o **Gate Check** visível: docs 01-05 cobrem a feature? Faltando, escreve antes de codar. Uma task por step de 7 a 11.
 3. **Cada step**: abra o reference, produza o artefato, publique o **Gateway Check** — ✅ segue sozinho, ❌ corrige e republica.
 4. **8 → 9 → 10 é loop**: mudança de código volta ao 9; encerra com 100% PASSED e zero mudança. **11** fecha o ledger (só o ciclo raiz commita); **12** move o card para done e faz **um único commit**.

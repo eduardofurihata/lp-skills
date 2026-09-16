@@ -2,7 +2,7 @@
 
 **8a é o portão mais barato do protocolo** — o que o plano decidir errado vira código errado. Reúso, descarte, motor, DS e perímetro se decidem **por escrito** aqui; o 8b **executa**.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## 8a — Plano
 

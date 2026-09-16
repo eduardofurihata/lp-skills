@@ -2,7 +2,7 @@
 
 **Para cada user story do Step 2, derive os Use Cases que cobrem TODAS as possibilidades.** Completude é obrigatória.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## Regra
 

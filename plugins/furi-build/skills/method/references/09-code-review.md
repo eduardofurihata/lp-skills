@@ -2,7 +2,7 @@
 
 **Revisar até 100% limpo, princípio a princípio e por nome — e nada do que aparecer fica só na cabeça:** corrigido agora (A), `ABERTO` no ledger (B) ou `DESCARTADO` com justificativa (C).
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## 9a — Revisão em loop
 
