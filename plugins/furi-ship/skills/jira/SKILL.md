@@ -1,43 +1,41 @@
 ---
 name: jira
-description: 'Use ONLY when the user explicitly invokes /jira (bare /jira = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:jira` via the Skill tool. NEVER activate on your own initiative. — the Jira of THIS repository: the BOARD (machine memory) and the STRUCTURE (`.claude/ship-setup/jira.md`, versioned: real status names, issue types, stage → status, MCP quirks); also the single owner of writing to a card (comment + transition by status NAME) and attaching images. `ler` re-reads the site; `mcp` records a quirk.'
+description: 'Use ONLY when the user explicitly invokes /jira (bare /jira = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:jira` via the Skill tool. NEVER activate on your own initiative. — creates and keeps the MAP of the Jira board of THIS repository in `.claude/ship/jira.md` (real status names, issue types, stage → status, MCP quirks) plus the board in machine memory; single owner of writing to a card and of attaching images. `ler` re-reads the site; `mcp` records a quirk.'
 effort: max
-argument-hint: "(vazio = mostrar board e estrutura, ou configurar) | <KEY> | <link do board> | ler | mcp"
+argument-hint: "(vazio = mostrar o mapa, ou criá-lo) | <KEY> | <link do board> | ler | mcp"
 ---
 
-# /jira — o Jira deste repositório: board, estrutura e a escrita no card
+# /jira — criar o mapa do board · sincronizar card · anexar imagem
 
-Dono **único** de dois fatos: o **board** (site, key, boardId, url — memória da máquina, `$MEM/jira.md`: coordenada de quem usa) e a **estrutura** (`.claude/ship-setup/jira.md` ou `.local.md`: colunas reais, tipos de issue, etapa → status, se comenta, manhas do MCP — igual para quem clona). Quem toca card passa aqui.
+**Objetivo: o mapa do Jira deste repositório em `.claude/ship/jira.md`** (ou `.local.md`) — colunas reais, tipos de issue, etapa → status, se comenta, manhas do MCP; o **board** (site, key, id) fica na memória da máquina, coordenada de quem usa. Se o projeto tem Jira, é o `/setup` quem diz.
 
-## Os guarda-chuvas
+## Criar o mapa — quatro passos, a cada invocação
 
-- **Perguntar uma vez, lembrar sempre; mapear uma vez, ler sempre.** Os dois arquivos são lidos **explicitamente a cada invocação** e nunca reconfirmados no site — isso é `/jira ler`. A pergunta é **isolada**, uma vez por repositório, e **confirma** o candidato provável.
-- **Só grava o validado; transição é por NOME.** Key em `jira_get_all_projects`, board em `jira_get_agile_boards`, status ⊂ colunas, tipos do site, etapa → status confirmado com o usuário. O id da transição muda; o nome fica. Um site por vez: key de outro → avise, não aproxime.
-- **Argumento é override, não redefinição.** `/card ALK …` vence sem reescrever a memória; só `/jira <KEY|link>` troca o board, confirmando. Board é de quem usa; colunas são do projeto.
+1. **Tem Jira?** `Rastreamento` do setup ≠ `Jira` (`obra local`, o antigo `kanban local`, `nenhum`) → devolva isso e encerre. Sem setup → `Skill(skill: "setup")`.
+2. **O board — da memória; perguntar só na primeira vez.** Sem board → levante projetos e boards reais do site, cruze com o remote e a pasta, e **confirme** o candidato provável numa pergunta **isolada** (campo livre para key ou link). Valide key e board no site antes de gravar (outro site: avise, não aproxime; vários boards: pergunte). Grave a memória e a linha no índice. Key no argumento de outra skill **vence sem reescrever**; só `/jira <KEY|link>` troca, confirmando.
+3. **O mapa — ler `.claude/ship/jira.md`; mapear só na primeira vez.** Sem as quatro seções → do site, colunas com nomes exatos na ordem do board, tipos de issue (qual é bug, qual é o resto), etapa → status por candidato de nome, **confirmado com o usuário** numa pergunta isolada com a tabela preenchida; contradição não grava. Seções: Board (colunas, tipos, qual é bug) · Etapa do pipeline → status (`| Etapa | Status | Comenta? |`, as seis etapas abaixo; sem equivalente → `—`) · Comentário (idioma, formato) · MCP (manhas: sintoma → caminho). Só volta ao site com `ler`, com o diff antes de regravar.
+4. **Devolver** rastreamento, site, key, board, origem e o mapa. Vazio mostra os dois; `mcp` grava uma manha.
 
-## Fluxo
+## Sincronizar card — `<KEY>-<N>`, etapa, texto leigo, link
 
-0. `Rastreamento` do `setup.md` ≠ `Jira` (`obra local`/`kanban local`, `nenhum`) → devolva `{rastreamento}` e encerre. Sem setup → `Skill(skill: "setup")` antes.
-1. `cat "$MEM/jira.md"` (`MEM` do system prompt). Sem board → `jira_get_all_projects` + `jira_get_agile_boards`, cruzados com remote e pasta → `AskUserQuestion`: *"Este repositório é do board <KEY> — <projeto> · board <ID>?"*, campo livre para key ou link. Validar; sem board ágil é legítimo; vários → pergunte. Gravar `$MEM/jira.md` + linha no `$MEM/MEMORY.md`.
-2. `cat .claude/ship-setup/jira.md`. Sem as quatro seções → mapear: `jira_search` (`project = <KEY>`, `fields: status`) + `jira_get_transitions` → colunas exatas na ordem do board; `jira_get_project_issue_types` → tipos, bug/resto por nome; etapa → status por candidato (In Progress · Review · QA · Done; rework = o de começou), **uma pergunta isolada** com a tabela preenchida; gravar pelo § Template.
-3. Devolver `{rastreamento, site, key, boardId, url, origem, estrutura: {colunas, tipos, tipoBug, tipoResto, etapas: {<etapa>: {status, comenta}}, mcp}}` e `📋 Jira: <KEY> · board <ID> · <site> [memória | gravado agora]`.
-
-**Modo direto:** vazio = mostra os dois; `<KEY>`/`<link>` = troca o board; `ler` = refaz o passo 2 e mostra o diff antes de regravar; `mcp` = registra uma manha.
-
-## Sincronizar card — `<KEY>-<N>` + etapa + texto leigo + link
-
-Etapas: **trabalho começou** · **publicado** (`PR: <URL>` / `Publicado em: <branch> @ <hash>`) · **integrado** (`Merged em <integração>: <commit>`) · **no ar em homolog** / **em produção** (`Em <ambiente>: <URL>`, só depois do smoke) · **devolvido ao dev** (o que reprovou + review). Sem Jira, no-op.
-1. A linha da etapa no `jira.md` dá `status` e `comenta`.
-2. `comenta: sim` → `jira_add_comment`: `## O que foi feito` leigo (o **mesmo** texto do PR) + `---` + `<rótulo>: <link>`; num lote, abre com `<KEY>-<N> — <título>`.
-3. `status: <nome>` → `jira_get_transitions` → a transição cujo destino tem esse nome → `jira_transition_issue` (sem `comment`: é ADF). `—` → não transiciona. Nome ausente → avise, siga, sugira `/jira ler`.
+1. **A linha da etapa no mapa** dá status e se comenta. Etapas: **trabalho começou** · **publicado** (PR, ou branch e commit) · **integrado** · **no ar em homolog** / **em produção** (só depois de validado) · **devolvido ao dev**. Sem Jira, no-op declarado.
+2. **Comentar, se a etapa comenta** — `## O que foi feito` leigo (o **mesmo** texto da PR) e o rótulo com o link; num lote, abre com `<KEY>-<N> — <título>`. Comentário separado da transição (o parâmetro dela é ADF).
+3. **Transicionar pelo NOME do status**, descobrindo a transição na hora — o id muda, o nome fica. `—` não transiciona. Nome ausente → avise, siga, sugira `/jira ler`; nunca a parecida.
 
 ## Anexar imagem a um card
 
-Existe upload; não existe a tool `jira_upload_attachment`. `mkdir -p .card-refs/`, copie a imagem (caminho **relativo** ao CWD; fora → `Path traversal`); `jira_update_issue` com `fields: "{}"` + `attachments: ".card-refs/a.png"` (2º passo: `jira_create_issue` não aceita); confira `attachment_results` — anexo que falha não falha o update; cite o arquivo em `## Referências visuais`; limpe `.card-refs/`. Imagem colada no chat não é arquivo — peça o caminho.
+**Existe upload — o que não existe é a tool `jira_upload_attachment`.** Procurar por ela é o que leva ao "o MCP não anexa": o upload é um parâmetro do `jira_update_issue` (verificado no código do `mcp-atlassian` 0.23.x). Cinco passos:
 
-## Template — `.claude/ship-setup/jira.md`
+1. **Materializar no projeto.** `mkdir -p .card-refs/` e copie cada imagem para lá, com nome curto. O caminho é resolvido contra o CWD do servidor MCP e **rejeitado se escapar** (symlink é resolvido antes; não contorna): `~/Downloads`, `/tmp` ou absoluto de fora → `ValueError: Path traversal detected: … resolves outside <base>`. Use **caminho relativo**.
+2. **Anexar** — o card já existe (`jira_create_issue` **não aceita** anexo; é sempre o 2º passo):
+   ```
+   mcp__atlassian__jira_update_issue
+     issue_key:   <KEY>-<N>
+     fields:      "{}"                                            ← obrigatório mesmo só anexando
+     attachments: ".card-refs/ref-01.png,.card-refs/ref-02.png"  ← lista por vírgula ou JSON array string
+   ```
+3. **Verificar.** Anexo que falha **não falha o update**: confira `attachment_results` no retorno, ou `jira_get_issue` → `attachment`. Quantos subiram de quantos vai ao report — sem conferir, "anexado" é palpite.
+4. **Citar.** A descrição nomeia cada anexo pelo arquivo em `## Referências visuais`; se o rascunho não os nomeou, atualize a descrição.
+5. **Limpar.** `rm -rf .card-refs/` depois de confirmado.
 
-`## Board` (Colunas na ordem do board, nomes exatos · Tipos de issue · Tipo para bug · Tipo para o resto) · `## Etapa do pipeline → status` (`| Etapa | Status | Comenta? |`, as seis etapas do § Sincronizar; começou não comenta; sem equivalente → `—`) · `## Comentário` (Idioma · Formato) · `## MCP` (manhas).
-
-## PARE se pensar
-"inferi o board do nome da pasta e segui" · "gravei o id da transição" · "uso 'Code Review', é parecido" · "o update deu ok, então anexou"
+Imagem **colada** no chat não vira arquivo em disco — **peça o caminho**, ou que o usuário salve; arquivo arrastado, caminho informado, screenshot ou download já estão em disco: copie. Quem executa o card não estava na conversa: imagem mostrada e não anexada é contexto perdido. **Não vá pela REST direto** (`POST …/attachments`): exigiria e-mail + token fora do MCP — credencial nova, com risco de vazar para o repositório.

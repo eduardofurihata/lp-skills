@@ -4,7 +4,7 @@
 > (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod` via `/setup`; `/method` § Commit por caminho).
 > Nunca por `CLAUDE.md`/`@import`/`.claude/rules/`, nunca da memória da máquina.
 > NÃO mora aqui: topologia (detectada: `git ls-remote`) · board do Jira (`/jira`) · mapa da infra
-> (`.claude/ship-setup/infra.md`) · ambientes e deploy (`.claude/ship-setup/deploy.md`) · padrões de código (`.claude/patterns.md`).
+> (`.claude/ship/infra.md`) · ambientes e deploy (`.claude/ship/deploy.md`) · padrões de código (`.claude/patterns.md`).
 >
 > Inferido em 2026-09-11 de: `git log -50` (49/50 em Conventional Commits, nenhuma key de card), `gh pr list --state merged` (1 PR em toda a história — o refactor #1 — contra 50 commits diretos), `gh api …/branches/main/protection` (404: sem proteção), rulesets (0), sem `CODEOWNERS`, sem template de PR, sem `CONTRIBUTING.md`, sem Jira (o fluxo é o `obra/` local).
 
@@ -31,8 +31,8 @@
 - Estrutura: —
 
 ## Infra
-- Mapa: `.claude/ship-setup/infra.md`
-- Processo: `.claude/ship-setup/deploy.md`
+- Mapa: `.claude/ship/infra.md`
+- Processo: `.claude/ship/deploy.md`
 - Conta (Eduzz/Labzz): —
 
 ## Guidelines

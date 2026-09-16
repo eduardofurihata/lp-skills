@@ -6,31 +6,16 @@ requires: [jira, setup, infra, work, pull-request, homolog, prod, card]
 argument-hint: "[KEY-N | descrição] [/work | /pull-request | /homolog | /prod] [/card] [finish] | (vazio = card ativo)"
 ---
 
-# /repro — reproduzir onde o usuário vê, e provar que sumiu
+# /repro — descobrir, entender, reproduzir, o dev vê, encerrar ou delegar
 
-**Modificador**, não alvo: **o bug é reproduzido onde o usuário o vê, antes de qualquer código, e o dev o vê duas vezes** — o trigger com o bug (parada 1) e o mesmo trigger com o bug sumido (parada 2, depois do commit). Sozinho, reproduz e para; não implementa, não commita, não pusha.
+**Modificador**, não alvo: **o bug é reproduzido onde o usuário o vê, antes de qualquer código, e o dev o vê duas vezes** — o trigger com o bug (parada 1, aqui) e o mesmo trigger com o bug sumido (parada 2, o § Human Check, depois do commit). Sozinho reproduz e para: não implementa, não commita, não pusha. Cinco passos, nesta ordem:
 
-## Os guarda-chuvas
-
-- **Código localiza; reproduzir prova.** Superfície = onde o usuário vê: web → Playwright (`pw4`, pool `pw#` como fallback — nunca SKIP com instância livre); mobile → emulador da plataforma do card; API → chamada real com o payload do card. Cenário **exato** (usuário, dados, condições — crie o que faltar), nota **0–100** contra o que está escrito e anexado, até ≥ 90. Sem evidência (screenshot ou resposta real) não há reprodução; não reproduziu → **pergunte**, nunca "pelo código o bug é…".
-- **Duas paradas humanas, obrigatórias em qualquer modo — `finish` inclusive.** O dev clica no trigger e confirma ao vivo, antes e depois. A parada 1 fecha aqui; a parada 2 é o § Human Check, executado pelo `/work` depois do commit.
-- **Descobrir, nunca assumir.** `/jira` e `/setup` via **Skill tool, a cada invocação**; a branch de trabalho pela mecânica do `/work` (§ Branch, `<integração>` detectada): o código que reproduz tem de ser o que será corrigido. O anexo é o que o solicitante viu — leia antes de dar nota.
-
-## Fluxo
-
-0. **Composição:** ordem fixa `repro → card → alvo`. Sozinho → passos 1–4 e encerra. `… /card` → depois `Skill(skill: "card", args: "<verbos restantes> <objetivo>")`. `… /<alvo>` → depois `Skill(skill: "<alvo>", args: "/repro <objetivo>")`: o alvo vê a reprodução feita e roda a parada 2 depois do commit. Vazio = card ativo (`docs/jira/todo/*.md` com `branch:` igual à atual); `finish` passa adiante.
-1. **Objetivo:** `jira_get_issue` (título, descrição, tipo `BUG`/`FEATURE`, `## Como testar`, **anexos**) ou a descrição do argumento. Com card **e** alvo: registro `docs/jira/todo/<KEY>-<N>.md` (`card`, `type`, `branch`, `phase: investigation`); assignee e `/jira` § Sincronizar (**trabalho começou**). Sem alvo ou sem card, a conversa é o registro.
-2. **Entender (≥ 90):** leia o código relevante; `< 90` → mais código, repontue. Ambiguidade real → `AskUserQuestion`, mesmo em `finish`. Problema **fora do card** → nunca decida em silêncio: pergunte (o que é · como reproduzi · causa provável · relação com o card · recomendação).
-3. **Reproduzir (≥ 90):** BUG → registre **como**: usuário, dados, ponto de partida (URL / tela / endpoint), passos, trigger, superfície (+ `pw#`) — no registro ou num bloco explícito da conversa; é o que a parada 2 re-executa e o `/card` transcreve. FEATURE → onde vai nascer e o estado atual desse lugar.
-4. **Parada 1:** publique *ambiente pronto* + **"👉 Clique em / Execute: [elemento ou comando exato]"** + o comportamento atual + a evidência, e **PARE** até o dev confirmar. Confirmou → `phase: commit`.
-5. **Saída** (sozinho): `✅ /repro <obj> — reproduzido e visto pelo dev · Repro: <superfície> · <partida> → <trigger> · Próximo: /repro /work <obj> · /card`. Composto, a saída é a do alvo.
+1. **Descobrir — composição, board, convenções, branch, objetivo.** Ordem fixa `repro → card → alvo`. `/jira` e `/setup` via **Skill tool, a cada invocação**; a branch de trabalho pela mecânica do `/work` (passo 2 — integração detectada, nunca `main` por hábito): o código que reproduz tem de ser o que será corrigido. Objetivo: o card (título, descrição, tipo bug ou feature, como testar, **anexos** — o anexo é o que o solicitante viu, leia antes de dar nota) ou a descrição do argumento; vazio = card ativo. Com card **e** alvo: registro em `docs/jira/todo/` (card, tipo, branch, `phase: investigation`), assignee e `/jira` § Sincronizar (**trabalho começou**); sem alvo ou sem card, a conversa é o registro. `finish` passa adiante intacto.
+2. **Entender — ≥ 90 antes de reproduzir.** Leia o código relevante; abaixo de 90, mais código e repontue. Ambiguidade real → pergunte, mesmo em `finish`. Problema **fora do card** → nunca decida em silêncio: pergunte (o que é, como reproduziu, causa provável, relação com o card, recomendação).
+3. **Reproduzir — na superfície onde o usuário vê, ≥ 90.** Web no browser automatizado (instância dedicada; outra do pool se ocupada — nunca pular enquanto houver uma livre), mobile no emulador da plataforma do card, API com a chamada real e o payload do card. Cenário **exato** (usuário, dados, condições — crie o que faltar), nota contra o que está escrito e anexado. Código localiza; reproduzir prova: sem evidência (screenshot ou resposta real) não há reprodução; não reproduziu → **pergunte**, nunca "pelo código o bug é…". Bug → registre **como** (usuário, dados, ponto de partida, passos, trigger, superfície) — é o que a parada 2 re-executa e o `/card` transcreve; feature → onde vai nascer e o estado atual desse lugar.
+4. **O dev vê o bug — parada 1, obrigatória em qualquer modo.** Publique: ambiente pronto, **"👉 Clique em / Execute: [elemento ou comando exato]"**, o comportamento atual, a evidência — e **pare** até o dev confirmar que viu. Confirmou → `phase: commit`.
+5. **Encerrar ou delegar.** Sozinho: `✅ /repro <obj> — reproduzido e visto pelo dev · superfície · partida → trigger · próximo: /repro /work <obj> · /card`. Com `/card`: `Skill(skill: "card", args: "<verbos restantes> <objetivo>")`. Com alvo: `Skill(skill: "<alvo>", args: "/repro <objetivo>")` — o alvo vê a reprodução feita e roda a parada 2 depois do commit.
 
 ## Human Check — parada 2, executada pelo `/work` depois do commit
 
-1. Ambiente **idêntico** ao § 3 (usuário, dados, ponto de partida, superfície), lendo o registro se existir.
-2. **Todos** os passos, na ordem, sem atalho; parar **um passo antes do trigger** — visível e pronto, não disparado (API: requisição montada, não enviada). Evidência do estado pré-trigger.
-3. Texto gerado por IA? O que o dev julga é a **saída**: transcreva-a inteira (ou diga o que ler ao clicar) — nunca resuma.
-4. Publique `## ✅ Human check — sua vez` (passos executados · onde está · **👉 Clique em / Execute** · comportamento esperado agora · evidência) e **PARE COMPLETAMENTE** até "ok". Confirmou → `phase: human-check`; quem chamou segue.
-
-## PARE se pensar
-"verifiquei no código, não preciso reproduzir" · "é API/mobile, leio o código" · "a reprodução é parecida com o card" · "em `finish` pulo a validação humana" · "mostro o resultado sem o dev clicar" · "pulo direto pra URL final" · "problema fora do card, ignoro"
+Quatro passos, obrigatórios em qualquer modo: ambiente **idêntico** ao da reprodução (usuário, dados, ponto de partida, superfície; o registro, se existir) → **todos** os passos na ordem, sem atalho, parando **um antes do trigger** — visível e pronto, não disparado (API: requisição montada, não enviada), com evidência → se o card mexeu em texto gerado por IA, o que o dev julga é a **saída**: transcreva-a inteira, nunca resuma → publique `## ✅ Human check — sua vez` (passos executados, onde está, **👉 Clique em / Execute**, comportamento esperado agora, evidência) e **pare completamente** até a confirmação; confirmou → `phase: human-check`, e quem chamou segue.

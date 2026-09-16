@@ -1,7 +1,7 @@
 # Deploy — lp-skills
 
 > Escrito pelo `deploy-context.md` (`/prod`). Tudo abaixo foi **inferido** dos arquivos do repositório — nenhum item precisou ser perguntado, e nenhum valor de secret aparece aqui.
-> **Processo**, não inventário: o que existe e onde vive cada segredo é o `.claude/ship-setup/infra.md` (`/infra`); as convenções do time, o `.claude/ship-setup/setup.md` (`/setup`).
+> **Processo**, não inventário: o que existe e onde vive cada segredo é o `.claude/ship/infra.md` (`/infra`); as convenções do time, o `.claude/ship/setup.md` (`/setup`).
 
 ## Topologia
 
@@ -29,7 +29,7 @@ Vercel CLI presente na máquina: `50.32.1`. **Não existe `gh run`** para este p
 
 ## Configuração
 
-- **Env vars / secrets:** **nenhuma** (inventário: `.claude/ship-setup/infra.md`). Não há `.env`, `.env.example` nem leitura de `process.env` de app — a LP lê o frontmatter dos `SKILL.md` do próprio repositório em build time (`lib/skills.ts`). Se algum dia houver, o comando para setar é `vercel env add <NOME> production` (*Vercel → Project → Settings → Environment Variables*), onde cada uma vive fica registrado no `infra.md`, e o **valor é sempre perguntado**, nunca escrito em nenhum dos dois.
+- **Env vars / secrets:** **nenhuma** (inventário: `.claude/ship/infra.md`). Não há `.env`, `.env.example` nem leitura de `process.env` de app — a LP lê o frontmatter dos `SKILL.md` do próprio repositório em build time (`lib/skills.ts`). Se algum dia houver, o comando para setar é `vercel env add <NOME> production` (*Vercel → Project → Settings → Environment Variables*), onde cada uma vive fica registrado no `infra.md`, e o **valor é sempre perguntado**, nunca escrito em nenhum dos dois.
 - **Migrations:** **nenhuma** — projeto sem banco (sem `prisma/`, `drizzle/`, `migrations/`).
 - **Feature flags:** nenhuma.
 - **Seeds:** nenhum.
