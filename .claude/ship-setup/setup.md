@@ -26,6 +26,8 @@
 - Rastreamento: kanban local             <!-- sem Jira: o pipeline roda sem card, nenhuma etapa comenta -->
 - Idioma dos cards: —                    <!-- os cards são kanban/06-todo … 10-done, locais -->
 - DoD: `pnpm check` verde + card em `kanban/10-done/`
+- Destino do card novo: —
+- Atribuir a: —
 - Estrutura: —
 
 ## Infra
