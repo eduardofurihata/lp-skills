@@ -9,18 +9,13 @@ argument-hint: "[KEY-N | descrição] [/repro] [/card] | (vazio = continuar o ca
 
 # /work — o trabalho commitado localmente, de onde ele estiver
 
-O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o trabalho do objetivo implementado, revisado, testado e **em commit local** na branch de trabalho — não uma sequência de passos. Onde ele está agora é o que o loop descobre; o que falta é o que o loop fecha. O nível é o do `pipeline/SKILL.md` § nivel — a referência #1 do domínio como piso.
+O primeiro **alvo** do pipeline de entrega: o que se pede é **um estado** — o trabalho do objetivo implementado, revisado, testado e **em commit local** na branch de trabalho — não uma sequência de passos. Onde ele está agora é o que o loop descobre; o que falta é o que o loop fecha.
 
 > 🚫 NÃO faz push, NÃO abre PR, NÃO mergeia. A faixa deste alvo termina no estágio `commit`. Os alvos seguintes da mesma escada são `/pull-request` → `/homolog` → `/prod` — cada um leva o trabalho **de onde estiver** até o próprio estágio.
 
-## Ordem de Operações ao Ativar
-
-**ANTES de tudo — a régua.** Leia `pipeline/SKILL.md § nivel` e mire o nível que ele declara: a **referência #1 deste domínio**, nomeada, é o **piso** — não o "bom o suficiente". Se a base atual não chega lá, refazer **no lugar** é decisão válida. Depois disso, o Step 0.
-
 ## Iron Law
 
-> **Precisão > tokens > velocidade.** Mire o nível do `pipeline/SKILL.md` § nivel. "É simples, pulo" = a violação.
-> Os princípios (**SOLID · DRY · KISS · YAGNI · LoD · Motores**), a **refatoração do perímetro** e o **design** (quando tem tela) são cobrados no estado que fecha o estágio `commit` (`pipeline/SKILL.md` § work-cycle, § 4). Card "pequeno" não relaxa nenhum deles.
+> **Precisão > tokens > velocidade.** "É simples, pulo" = a violação.
 >
 > **O alvo é estado, não etapa.** `/work` num card já commitado é gap zero, dito com a evidência. `/work` num card sem branch cria a branch, entende, implementa e commita — sem mandar ninguém "rodar outra coisa antes".
 
