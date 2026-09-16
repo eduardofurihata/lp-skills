@@ -2,7 +2,7 @@
 
 **Toda decisão em aberto, resolvida aqui — sem perguntar.** Zero ambiguidade sobra para os steps seguintes.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 

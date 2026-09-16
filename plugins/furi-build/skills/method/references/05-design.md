@@ -2,9 +2,9 @@
 
 **Como cada tela deveria ser — decidida antes de qualquer código, pelo designer que o `/front` descreve.** Só roda com superfície visual (derivada no Step 4); sem ela, o Gateway 4 → 5 já declarou N/A e o próximo step é o 6.
 
-**Chame e use:** `/solve` · `/principles` · `/front` — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
-**O corpo deste step é o `/front`.** Invoque-o e desenhe como ele manda — criativo, inovador, moderno, premium, no nível da referência #1 do domínio, com o design system como lei e como coisa que cresce. Este reference não diz como a tela deve ser: diz onde a decisão fica registrada e o que o gateway confere. Formulário preenchido não é tela desenhada.
+**O corpo deste step é o `/front`.** Ele chega pelo `/solve`; desenhe como ele manda — criativo, inovador, moderno, premium, no nível da referência #1 do domínio, com o design system como lei e como coisa que cresce. Este reference não diz como a tela deve ser: diz onde a decisão fica registrada e o que o gateway confere. Formulário preenchido não é tela desenhada.
 
 ## Artefato
 

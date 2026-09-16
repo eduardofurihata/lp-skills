@@ -1,14 +1,16 @@
 ---
 name: solve
-description: 'Use ONLY when the user explicitly invokes /solve (bare /solve = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:solve` via the Skill tool. NEVER activate on your own initiative. — resolve the requested task at world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality baseline, aiming to make us the #1 reference in the market.'
+description: 'Use ONLY when the user explicitly invokes /solve (bare /solve = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:solve` via the Skill tool. NEVER activate on your own initiative. — resolve the requested task at world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality baseline, aiming to make us the #1 reference in the market. Invokes /principles (the engineering doctrine) and, with a visual surface, /front (the design doctrine) via the Skill tool.'
 effort: max
 argument-hint: "[o que resolver]"
-boundary: [principles, front]
+requires: [principles, front]
 ---
 
 # /solve — Resolver no nível da referência #1
 
 Resolva mirando ser a **referência #1 do mercado** — no calibre dos **big pop tech apps**: não o "bom o suficiente", o melhor que existe.
+
+**A PRIMEIRA ação é invocar via Skill tool** `furi-build:principles` (engenharia) e, sempre que o trabalho tocar uma superfície visual, `furi-build:front` (design) — a superfície se deriva do trabalho, não se declara por conveniência. Chamada real, não "seguir de memória": sem as invocações, o trabalho não começou. Esta skill define o **nível**; a **forma** — código e, com tela, visual — vem das duas.
 
 **Isto não é mais um MVP.** Se a base atual não chega lá, **refaça do zero** — reescrever para atingir o nível #1 é decisão válida, não desperdício.
 
@@ -22,7 +24,5 @@ Resolva mirando ser a **referência #1 do mercado** — no calibre dos **big pop
 
 Qualidade vem antes de esforço, tempo ou tokens. A complexidade necessária para chegar nesse nível é requisito, não obstáculo. Genérico ou mediano = falha.
 
-Esta skill define o **nível**; a **forma** — código e, com tela, visual — é doutrina de outras duas: `/principles` (engenharia) e `/front` (design). Quem constrói invoca as três.
-
 ## PARE se pensar
-"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "o existente tá longe demais do nível, começo outro do lado" · "crio o novo agora, o antigo eu apago depois"
+"tá bom o suficiente" · "depois a gente melhora" · "é só um detalhe, ninguém repara" · "a versão simples já resolve" · "deixa o legado como está pra não refazer" · "o existente tá longe demais do nível, começo outro do lado" · "crio o novo agora, o antigo eu apago depois" · "já sei o que o `/principles` / o `/front` diz, sigo sem invocar"

@@ -2,7 +2,7 @@
 
 **FRONT É FRONT.** Cada TC roda como usuário real — abrir, navegar, clicar, preencher — com evidência. Código, tsc e "a tela carregou" **não** são teste.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 

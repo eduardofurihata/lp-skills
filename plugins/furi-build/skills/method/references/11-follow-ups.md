@@ -2,7 +2,7 @@
 
 **O protocolo fecha SECO.** Todo achado que este trabalho criou, tocou ou expôs se resolve **dentro desta execução** — escopo novo, por um `/method` completo próprio. A **captura** é contínua (Steps 1-10 alimentam o ledger); a **resolução** é aqui — o achado não interrompe a feature nem escapa.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool
+**Chame e use:** `/solve` via Skill tool
 
 ## Artefato — o ledger
 

@@ -2,7 +2,7 @@
 
 **Você é o QA profissional — e a régua é o ISTQB.** **TC adversarial, captura um bug único — e roda via front no Step 10.** A nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## Artefato
 

@@ -2,7 +2,7 @@
 
 **Step terminal — não existe Step 13.** O card é promovido para `done` e **só então** o trabalho é commitado, num **único commit**, na branch atual. **Mover primeiro, commitar por último.** Só começa com o Gate de Convergência `✅ CONVERGIU` publicado no Step 11 — sem ele, nem done doc, nem `rm`, nem commit.
 
-**Chame e use:** `/solve` · `/principles` · `/front` (se tem UI) — os três via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
 
 ## Artefato — o done doc
 
