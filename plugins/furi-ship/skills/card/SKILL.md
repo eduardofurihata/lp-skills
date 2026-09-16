@@ -22,7 +22,7 @@ argument-hint: "[KEY] <descrição> [/skill…] [/work|/pull-request|/homolog|/p
 2. Duplicata aberta: `jira_search` `project=<KEY> AND statusCategory!=Done AND text~"<termos>"`, limit 10; forte → pergunte.
 3. Scan leve → escreva no `Idioma dos cards` pelo template: título imperativo ≤ 80 · `## Contexto` (quem, tela + rota, impacto) · `## Objetivo` (pronto observável) · `## Critérios de aceite` (verificáveis; estados, se há tela) · `## Referências visuais` (se houver) · `## Como testar` por último (pré-condição → passos → resultado; a `DoD` orienta; reprodução já vista na conversa → transcreva).
 4. `jira_create_issue` (`tipoBug`/`tipoResto` do `/jira`); destino do setup: `sprint ativa` → `jira_get_sprints_from_board` (`boardId` do `/jira`, active) + `jira_add_issues_to_sprint`, sem sprint → backlog, avisado; `Atribuir a` → `jira_assign_issue`, não achou → sem dono, avisado.
-5. Anexos: toda imagem de referência sobe — receita em `jira/references/anexar-jira.md`.
+5. Anexos: toda imagem de referência sobe — receita em `jira/SKILL.md` § Anexar imagem a um card.
 6. Report: key, título, tipo, destino, dono, anexos, URL. Sozinho, encerre e sugira `/work <KEY>-<N>`; com alvo, `Skill(skill: "<alvo>", args: "<verbos restantes> <KEY>-<N>")`.
 
 ## PARE se pensar

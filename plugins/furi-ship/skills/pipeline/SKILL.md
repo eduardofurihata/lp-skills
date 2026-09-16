@@ -712,7 +712,7 @@ gh pr list --head <branch> --base <integração> --state open --json number,url 
 | Resultado | Ação |
 |---|---|
 | vazio | `gh pr create` (abaixo) |
-| PR aberto | `gh pr edit <n> --title "<título>" --body "<corpo>"` — o **mesmo** título e corpo abaixo, regenerados: `## Cards` e as keys do título vêm dos commits; `O que foi feito`, `Solução`, `Como testar` e `DevOps` absorvem o que o card novo mudou. **Nunca** um segundo `create` |
+| PR aberto | `gh pr edit <n> --title "<título>" --body "<corpo>"` — o **mesmo** título e corpo abaixo, regenerados: `## Cards` e as keys do título vêm dos commits; `O que foi feito`, `Solução`, `Como testar` e `DevOps` absorvem o que o card novo mudou — e `gh pr comment <n> --body "<o que este ciclo acrescentou: cards novos e o que mudou>"`, porque editar o corpo **não notifica** quem acompanha o PR. **Nunca** um segundo `create` |
 
 `--base` é `<integração>` (detectada). O título leva **todas** as keys da branch (passo 2), em ordem crescente, na posição que o § Commit do setup mandar: no escopo (`<tipo>(<KEY>-<N>, <KEY>-<M>): …`, o default abaixo), no início (`<KEY>-<N> <tipo>: …`), no fim (`<tipo>(<escopo>): … (<KEY>-<N>, <KEY>-<M>)`) ou ausente (`<tipo>(<escopo>): …` — as keys ficam no trailer `Jira:` do corpo, que é sempre escrito). Um card só → uma key. Se o § PR `Template:` apontar um arquivo (ex.: `.github/pull_request_template.md`), o corpo segue **as seções dele** — preenchidas, não deixadas em branco — e as 3 camadas daqui entram dentro delas (o `## O que foi feito` leigo e o `## Cards` são obrigatórios em qualquer template).
 
@@ -785,6 +785,7 @@ O loop re-diagnostica: `pr` (ou `push`) fechado abre `integrado`. Se o alvo era 
 - "O setup diz `Abre PR: não`, mas abro assim mesmo — é mais seguro" → NÃO. Convenção do time é contrato. Pushe, espelhe, **não crie PR**; mudar é `/setup pr`.
 - "`Abre PR: não`, então nem pusho" → NÃO. O push é o passo 1, **sempre**. O que o `não` pula é o passo 3.
 - "Já tem PR aberto pra essa branch, crio outro" → NÃO. `gh pr edit` no aberto.
+- "Editei título e corpo, quem acompanha o PR vai ver" → NÃO. Edição não notifica: comenta o que entrou.
 - "Os cards do PR são os do nome da branch" → NÃO. São os dos **commits**. Num lote, o nome é só o do 1º card.
 - "Sem card, então sem PR" → NÃO. PR sem card é publicação válida: `## Cards` diz que não há, e segue.
 - "Escrevi o corpo do PR só com a parte técnica" → NÃO. As 3 camadas: leiga, técnica, DevOps. Quem lê o PR pode não ser dev — e o `## DevOps` é o que o `env-config` vai consumir.

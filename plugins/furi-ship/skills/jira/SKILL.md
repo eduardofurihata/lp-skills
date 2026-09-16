@@ -217,6 +217,30 @@ Report de uma linha:
 
 Trocar o board e `ler` são as únicas situações em que os arquivos são reescritos. Uso de key por argumento numa **outra** skill nunca reescreve nada.
 
+## Anexar imagem a um card
+
+> **Existe upload — o que não existe é a tool `jira_upload_attachment`.** Procurar por ela é o que leva ao "o MCP não anexa": o upload é um parâmetro do `jira_update_issue` (verificado no código do `mcp-atlassian` 0.23.x). Lido pelo `/card` ao subir referências visuais e por quem anexar evidência de QA ou print de review.
+
+1. **Materializar no projeto.** `mkdir -p .card-refs/` e copie cada imagem para lá, com nome curto e descritivo. O caminho passa por checagem anti-traversal: é resolvido contra o CWD do servidor MCP e **rejeitado se escapar** (symlink é resolvido antes; não contorna). `~/Downloads`, `/tmp` ou absoluto de fora → `ValueError: Path traversal detected: … resolves outside <base>` — o `<base>` da mensagem é o CWD real. Use **caminho relativo**.
+2. **Anexar** — o card já existe: `jira_create_issue` **não aceita** anexo, é sempre o 2º passo.
+   ```
+   mcp__atlassian__jira_update_issue
+     issue_key:   <KEY>-<N>
+     fields:      "{}"                                              ← obrigatório mesmo só anexando
+     attachments: ".card-refs/ref-01.png,.card-refs/ref-02.png"    ← lista por vírgula ou JSON array string
+   ```
+3. **Verificar.** Anexo que falha **não falha o update** (o servidor loga e segue): confira `attachment_results` no retorno, ou `jira_get_issue` → `attachment`. Quantos subiram de quantos vai ao report; sem conferir, "anexado" é palpite.
+4. **Citar.** A descrição nomeia cada anexo pelo arquivo em `## Referências visuais`; se o rascunho não os nomeou, `jira_update_issue` com `fields: {"description": "<descrição atualizada>"}`.
+5. **Limpar.** `rm -rf .card-refs/` depois de confirmado.
+
+| Origem | Anexa? |
+|---|---|
+| Imagem **colada** no chat | não vira arquivo em disco — **peça o caminho** (ou que o usuário salve) |
+| Arquivo arrastado / caminho informado | sim — copie para `.card-refs/` |
+| Screenshot do Playwright, arquivo baixado | sim — já está em disco |
+
+Quem executa o card não estava na conversa: imagem que o usuário mostrou e não subiu é contexto perdido. **Não vá pela REST direto** (`POST /rest/api/3/issue/{key}/attachments`): exigiria e-mail + API token fora do MCP — credencial nova, com risco de vazar para o repositório. O MCP já está autenticado no site certo.
+
 ## Red Flags — STOP
 
 - "O `MEMORY.md` já estava no contexto, não precisei ler" → NÃO. A leitura de `$MEM/jira.md` **e** de `.claude/ship-setup/jira.md` é explícita, **toda** invocação. Índice não é conteúdo.
@@ -231,7 +255,8 @@ Trocar o board e `ler` são as únicas situações em que os arquivos são reesc
 - "Anotei o board no `jira.md` do projeto pra não depender da memória" → NÃO. Board é coordenada de quem usa — outra pessoa do time pode estar em outro site.
 - "O setup diz `Rastreamento: kanban local`, mas achei um board e gravei" → NÃO. Sem Jira é sem Jira. Mudar é `/setup jira`, não é aqui.
 - "O usuário passou `ALK` no `/card`, então atualizei a memória pra ALK" → NÃO. Argumento é **override**, não redefinição. Só o `/jira` com argumento troca o board.
-- "O MCP não tem tool de upload, então anexo não dá" → NÃO. Tem: `jira_update_issue` + `attachments`, arquivo dentro do CWD — está no `## MCP` do arquivo e a receita em `references/anexar-jira.md`. Ler é o que impede redescobrir isso toda semana.
+- "O MCP não tem tool de upload, então anexo não dá" → NÃO. Tem: `jira_update_issue` + `attachments`, arquivo dentro do CWD — está no `## MCP` do arquivo e a receita no § Anexar imagem a um card. Ler é o que impede redescobrir isso toda semana.
+- "Passei o caminho de `~/Downloads`" / "o update deu ok, então anexou" / "o usuário viu no chat, não precisa anexar" → NÃO. Caminho relativo dentro do CWD, `attachment_results` conferido, e o que foi mostrado sobe: quem executa o card não viu a conversa.
 - "Rodei `mkdir -p` no diretório de memória por segurança" → desnecessário. Ele já existe; escreva direto. (`.claude/ship-setup/` é diferente: pode não existir — `mkdir -p` lá.)
 - "Gravei o arquivo e esqueci o `MEMORY.md`" → NÃO. Memória sem linha no índice é memória que ninguém acha.
 - "Perguntei o board de novo porque a sessão é nova" → NÃO. Sessão nova, mesmo repositório, mesma memória. Leia o arquivo.
@@ -271,7 +296,7 @@ Copie o bloco abaixo para `.claude/ship-setup/jira.md` na raiz do repositório-a
 
 ## MCP — o que este servidor faz, e como                  <!-- as manhas: o que se descobre tropeçando, escrito UMA vez -->
 - Servidor: mcp-atlassian (`mcp__atlassian__*`) · site: <site>.atlassian.net · um site por servidor
-- Upload de anexo: FUNCIONA — não há tool `jira_upload_attachment`; é `jira_update_issue` com `fields: "{}"` + `attachments: "<caminhos>"`. O arquivo tem de estar DENTRO do CWD (path traversal fora); `jira_create_issue` não aceita anexo (sempre 2º passo); anexo que falha NÃO falha o update — confira `attachment_results`. Receita completa: `references/anexar-jira.md`
+- Upload de anexo: FUNCIONA — não há tool `jira_upload_attachment`; é `jira_update_issue` com `fields: "{}"` + `attachments: "<caminhos>"`. O arquivo tem de estar DENTRO do CWD (path traversal fora); `jira_create_issue` não aceita anexo (sempre 2º passo); anexo que falha NÃO falha o update — confira `attachment_results`. Receita completa: `/jira` § Anexar imagem a um card
 - Comentário na transição: NÃO use o parâmetro `comment` de `jira_transition_issue` (é ADF); comente antes com `jira_add_comment`, transicione depois
 - <outra manha observada: o que parecia não funcionar, o que funciona, como>
 ```
