@@ -13,7 +13,7 @@ argument-hint: "[KEY] <descrição> [/skill…] [/work|/pull-request|/homolog|/p
 
 - **Intake puro, no board certo.** Só o card remoto, uma entrega por card. **O pipeline nunca cria card sozinho.**
 - **Descobrir, nunca assumir.** `/jira` e `/setup` via Skill tool, toda vez; key, tipo, sprint e pessoa se conferem no site.
-- **Voz de PM/PO.** Para quem não viu a conversa: o quê, por quê, como se confere — nunca o como (rota sim, arquivo não). O nível vem da doutrina que o usuário compôs.
+- **Voz de PM/PO.** Para quem não viu a conversa: o quê, por quê, como se confere — nunca o como (rota sim, arquivo não).
 
 ## Fluxo
 

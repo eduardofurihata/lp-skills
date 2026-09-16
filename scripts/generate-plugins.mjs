@@ -84,7 +84,7 @@ const PACKAGES = [
     name: "furi-ship",
     category: "ship",
     description:
-      "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores e a régua de nível. Funciona sozinho: o estágio do commit é declarado como estado exigido, não como chamada a outro pacote.",
+      "Skills de entrega do Furihata — um pipeline só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship-setup/); a pipeline, interna, hospeda os motores. Funciona sozinho: o estágio do commit é declarado como estado exigido, não como chamada a outro pacote.",
     keywords: ["jira", "pull-request", "deployment", "delivery"],
     codex: {
       displayName: "Furi Ship",

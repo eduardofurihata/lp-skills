@@ -8,13 +8,9 @@ argument-hint: "[KEY-N | descrição] [/work | /pull-request | /homolog | /prod]
 
 # /repro — reproduzir onde o usuário vê, e provar que sumiu (modificador do pipeline)
 
-**Modificador**, não alvo. O que ele acrescenta a qualquer alvo é uma característica: **o bug é reproduzido onde o usuário o vê, antes de qualquer código, e o dev o vê duas vezes** — antes do fix (o trigger na tela, o bug acontecendo) e depois (o mesmo trigger, o bug sumido). Sozinho, reproduz e para; com um alvo (`/repro /work`, `/repro /prod`, em qualquer ordem), reproduz e entrega ao alvo, que roda o loop com a segunda parada humana dentro. O nível é o do `pipeline/SKILL.md` § nivel.
+**Modificador**, não alvo. O que ele acrescenta a qualquer alvo é uma característica: **o bug é reproduzido onde o usuário o vê, antes de qualquer código, e o dev o vê duas vezes** — antes do fix (o trigger na tela, o bug acontecendo) e depois (o mesmo trigger, o bug sumido). Sozinho, reproduz e para; com um alvo (`/repro /work`, `/repro /prod`, em qualquer ordem), reproduz e entrega ao alvo, que roda o loop com a segunda parada humana dentro.
 
 > 🚫 Sozinho, NÃO implementa, NÃO commita, NÃO pusha. Reproduzir e parar é o que ele é. Corrigir é `/repro /work` (ou qualquer alvo mais distante); virar card é `/repro /card`.
-
-## Ordem de Operações ao Ativar
-
-**ANTES de tudo — a régua.** Leia `pipeline/SKILL.md § nivel`: a **referência #1 deste domínio**, nomeada, é o piso — é contra ela que o comportamento correto se define, não contra "voltou ao que era". Depois, o Step 0.
 
 ## Iron Law
 
@@ -78,7 +74,7 @@ Assignee (se ainda não for o executor): `jira_update_issue`. Status: `pipeline/
 
 ### 3. Entender o problema (nota ≥ 90) + gate de perguntas
 
-Ler o **código** relevante e entender o problema. Nota **0–100** à precisão do entendimento; `< 90` → ler mais e repontuar, **em loop até ≥ 90**. Já mapeie o que o fechamento do `commit` vai cobrar: **qual motor é dono** da capacidade e se há **superfície visual** — entendimento, não implementação.
+Ler o **código** relevante e entender o problema. Nota **0–100** à precisão do entendimento; `< 90` → ler mais e repontuar, **em loop até ≥ 90**.
 
 - **Ambiguidade real** (2 caminhos opostos, requisito faltando, decisão que só o usuário julga) → **PARAR e perguntar** (`AskUserQuestion`) — em qualquer modo, `finish` inclusive.
 - `≥ 90` e sem ambiguidade → seguir. **Não invente pergunta.**
@@ -203,7 +199,7 @@ Executei todos os passos do fluxo original. O ambiente está idêntico ao ponto 
 
 Comportamento esperado agora (corrigido): [o que deve acontecer agora que o bug foi corrigido]
 
-**O que ler na saída:** tom/persona · completa até o fecho · no idioma do usuário · sem placeholder · sem invenção — a barra é [referência #1 nomeada no spec]   ← só com superfície de texto gerado por IA
+**O que ler na saída:** tom/persona · completa até o fecho · no idioma do usuário · sem placeholder · sem invenção   ← só com superfície de texto gerado por IA
 
 Evidência do estado atual: [screenshot, ou requisição + dados]
 

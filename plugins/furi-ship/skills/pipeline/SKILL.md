@@ -40,7 +40,6 @@ Cada **modificador** roda a própria parte antes e delega ao alvo com os verbos 
 |---|---|---|---|
 | § reconcile | **o loop** | todos, na ordem | os quatro alvos |
 | § composicao | apoio | — (quem roda o quê, antes do loop) | alvos e modificadores |
-| § nivel | apoio | — (o nível que todo trabalho deste pipeline mira) | alvos e modificadores |
 | § deploy-context | apoio | — (topologia, `<integração>`/`<produção>`, `deploy.md`) | todos |
 | § branch | estágio | `branch` | reconcile · `/repro` sozinho |
 | § work-cycle | estágio | `commit` (estado exigido: implementado · revisado · testado · documentado · um commit) | reconcile |
@@ -236,7 +235,7 @@ MODIFICADORES = repro · card                                 (acrescentam um es
 VERBO         = token do $ARGUMENTS que casa ^/(work|pull-request|homolog|prod|repro|card)$
 ```
 
-O resto do `$ARGUMENTS` (a key, a descrição, `finish`) é o **objetivo**, e passa adiante intacto. Só esses seis tokens são composição; qualquer outra barra — uma rota, uma skill de fora, uma barra no meio da descrição — não é verbo deste pipeline.
+O resto do `$ARGUMENTS` (a key, a descrição, `finish`) é o **objetivo**, e passa adiante intacto. Só esses seis tokens são verbos deste pipeline. **Outra `/skill` no argumento** é composição de fora: invoque-a via Skill tool **antes** de rodar a própria parte, com o objetivo, e tire-a do argumento — rota ou barra no meio da descrição ficam no objetivo.
 
 ### A ordem de execução é FIXA: `repro` → `card` → alvo
 
@@ -317,40 +316,9 @@ Publique o alvo efetivo **dentro** do bloco de diagnóstico do `reconcile` Passo
 - "`/prod /repro` é diferente de `/repro /prod`" → NÃO. Ordem de execução fixa: o `/prod` delega ao `/repro` e o resultado é o mesmo.
 - "Recebi `/repro`, a reprodução já foi confirmada nesta conversa, mas delego de novo" → NÃO. Reprodução feita = estágio fechado. Funde a parada 2 e roda. (Delegar de novo é o loop infinito.)
 - "Digitaram `/work /prod`, rodo o `/work` e aviso do `/prod`" → NÃO. Vence o mais distante.
-- "Vi um `/` no argumento, é composição" → só os seis verbos. Um caminho de rota, uma skill de fora, um `/` na descrição do card não são verbos.
+- "Vi um `/` no argumento, é verbo" → só os seis. Skill de fora é invocada antes e sai do argumento; rota ou `/` na descrição do card ficam no objetivo.
 - "Fundi o modificador mas esqueci de tirar o verbo do argumento" → NÃO. O objetivo que chega ao loop é limpo: `ALK-42`, não `/repro ALK-42`.
 - "O `/card` criou o card e eu, alvo, crio a branch com a key errada" → NÃO. A key chega no argumento da delegação; é ela que o § branch usa.
-
-## nivel
-
-> **Motor de apoio.** O nível que **todo** trabalho deste pipeline mira. Lido por caminho (`pipeline/SKILL.md § nivel`) no bloco de ativação dos alvos e dos modificadores — uma vez escrito, nunca copiado para dentro deles.
-
-**Responsabilidade única:** dizer **qual é a régua**. Não diz como construir, não revisa, não testa — isso é o estado exigido do § work-cycle.
-
-### A régua
-
-> **A referência é o líder reconhecido DESTE domínio** — os big pop tech apps que o mercado admira, nomeados, nunca "o mercado" ou "as boas práticas". O que ele entrega **neste ponto do produto** é o **piso**; o alvo é acima dele. "Bom o suficiente" é o que se está tentando não entregar.
-
-- **Nomeie o benchmark.** Referência genérica não é referência: ela não diz nada a quem vai executar. Não há líder óbvio no domínio? Nomeie o mais próximo e diga por que ele serve de régua.
-- **Refazer é decisão válida.** Se a base atual não chega lá, reescrever não é desperdício. E **é no lugar**: o arquivo/módulo/tela que já cobre a capacidade é o que se reescreve — nunca um `-v2` ao lado "pra limpar depois".
-- **Precisão > tokens > velocidade.** "É simples, pulo" é a violação, não o atalho.
-- **A régua sobe o nível, não o tempo.** Ela não autoriza investigação além do que a etapa pede: no intake o scan segue leve; no fechamento do `commit` é que a doutrina de engenharia é cobrada.
-
-### A fronteira — ambição × arquitetura
-
-| | |
-|---|---|
-| **A régua responde** | qual é o líder deste domínio, o que ele entrega neste ponto, que possibilidades isso abre e o quanto se está abaixo disso |
-| **A régua NÃO responde** | como construir — princípios, motores, tokens, nome de componente, prescrição de arquitetura. Isso é derivado por quem implementa, no fechamento do estágio `commit` |
-
-> **O par que confunde:** *"o checkout do Stripe confirma o pagamento sem tirar o usuário da tela"* é **referência de produto** — a régua. *"crie um motor de pagamento com contrato pequeno"* é **prescrição de arquitetura** — não é. Os dois miram o mesmo nível; só um é desta seção.
-
-### Red Flags — STOP
-
-- "É pequeno, a régua não se aplica" → NÃO. Ela vale em **toda** invocação; é o que separa "está quebrado" de "estamos abaixo do líder".
-- "Escrevi 'seguir o padrão de mercado'" → NÃO. Referência genérica não é referência. Nomeie o produto.
-- "A régua me deu vontade de investigar fundo" → NÃO. Ela sobe o nível, não o tempo.
-- "O padrão existente está abaixo, mas copio por consistência" → NÃO. Consistência é lei; mediocridade não é. Eleva-se.
 
 ## deploy-context
 
@@ -617,7 +585,7 @@ ls kanban/07-todo/<feature>.md                           # NÃO existe — o car
 
 **Com card:** `mcp__atlassian__jira_get_issue` (`issue_key: <KEY>-<N>`): título, descrição, tipo, `## Como testar`, assignee, **anexos**. Colar a descrição **real** do card; ambiguidade → listar ≥ 2 interpretações (insumo do § 3).
 
-> **O card vem em voz de PM/PO, QA ou Designer** (`/card`), não de dev — diz **o quê** e **por quê**, com rota, comportamento esperado e referência visual. Traduza para a **capacidade** que a feature exige. Card não é spec técnica: se prescrever solução, é ruído — quem deriva arquitetura é quem implementa.
+> **O card vem em voz de PM/PO, QA ou Designer** (`/card`), não de dev — diz **o quê** e **por quê**, com rota, comportamento esperado e referência visual. Card não é spec técnica: se prescrever solução, é ruído — quem deriva arquitetura é quem implementa.
 > Tem **anexo de imagem**? Baixe (`jira_download_attachments` / `jira_get_issue_images`) e leia antes de decidir: é o que o solicitante viu.
 
 **Sem card** (`rastreamento` ≠ Jira, ou o usuário chamou o alvo sem key): o objetivo é a descrição que veio no argumento ou, sem ela, **o trabalho que já está na árvore** (`git status --porcelain` + `git diff`). Nenhum dos dois → não há objetivo; devolva ao loop como fechado por vazio.
@@ -630,20 +598,20 @@ Só com card. Assignee (se ainda não for o executor): `mcp__atlassian__jira_upd
 
 #### 3. GATE de perguntas (analisar — perguntar SÓ se necessário)
 
-Entender o objetivo lendo o **código** relevante. Já mapeie o que o § 4 vai cobrar: **qual motor é dono da regra** (ou qual falta) e **se há superfície visual** — entendimento, não implementação.
+Entender o objetivo lendo o **código** relevante — entendimento, não implementação.
 
 Nota **0–100** à clareza do que precisa ser feito:
 - **< 90, ou ambiguidade real** (2 caminhos opostos, requisito de produto faltando, decisão que só o usuário julga) → **PARAR e perguntar** (`AskUserQuestion`) ANTES de implementar. Só seguir com a resposta.
 - **≥ 90 e sem ambiguidade** → seguir. **Não invente pergunta.**
 
-> O gate é **pré-implementação** e é sobre *produto/escopo*. Dúvida de *implementação* resolve pela hierarquia (padrão do projeto > big apps > boas práticas) e documenta no spec — não vira pergunta.
+> O gate é **pré-implementação** e é sobre *produto/escopo*. Dúvida de *implementação* é de quem implementa — resolve pelo padrão do projeto e registra no spec; não vira pergunta.
 
 #### 4. Fechar o estágio — o estado exigido
 
 Este motor **não prescreve protocolo**: declara o **estado em que a branch tem de ficar**. Como se chega lá é de quem fecha. Ao fim deste passo, na branch de trabalho:
 
 1. **Implementado** — o objetivo está no código. Código que já estava na árvore é **insumo**, não entrega: entra no mesmo fechamento e sai revisado e testado como o resto.
-2. **Revisado a frio** — o diff foi revisado contra os princípios (**SOLID** — SRP, OCP, LSP, ISP, DIP —, **DRY, KISS, YAGNI, Law of Demeter, Motores**: toda capacidade com **um** dono), contra os padrões do projeto (`.claude/patterns.md`) e, se há tela, contra o design: tokens como fonte única, todos os estados (vazio, carregando, erro, sucesso), responsivo e **WCAG AA como piso**. Relatório em `kanban/09-code-review/<feature>.md`.
+2. **Revisado a frio** — o diff revisado arquivo a arquivo: bugs, edge cases, padrões do projeto (`.claude/patterns.md`), segurança, performance, código morto, e "faz exatamente o que o card pede". Relatório em `kanban/09-code-review/<feature>.md`.
 3. **Testado com evidência** — os casos de teste do objetivo (o `## Como testar` do card, ou `docs/06-test-cases/<feature>.md`) executados **na superfície onde o usuário vê**, 100% PASSED, com evidência por caso (screenshot com caminho), em `kanban/10-run-test/<feature>.md`. "`tsc` passou" não é teste; "conferi no código" também não.
 4. **Sem pendência conhecida** — nada adiado. Achado que este trabalho criou, tocou ou expôs se resolve **agora**, no mesmo fechamento. Item registrado como `ABERTO` mantém o estágio **aberto** — e "vira card depois" não é saída: o pipeline nunca cria card sozinho.
 5. **Documentado** — os artefatos do objetivo existem (`docs/01-problem/` … `docs/06-test-cases/`), o card saiu de `kanban/07-todo/` e virou `kanban/12-done/<feature>.md` com `tests: passed` e o ledger `## Follow-ups` seco.
@@ -674,7 +642,6 @@ O loop re-diagnostica: `commit` fechado abre `push`. Se o alvo era `/work`, o lo
 - "Card ambíguo, mas começo a codar e ajusto depois" → NÃO. Gate de perguntas é **antes**.
 - "A árvore já tem código, só commito" → NÃO. Código sem review nem QA registrados não fecha o estágio. O fechamento parte dele.
 - "Não tem card, então não tem o que fazer" → depende: tem descrição ou árvore suja → é o objetivo. Nada → fechado por vazio, e o loop diz isso.
-- "O card não falou de motor, então espalho a regra" → NÃO. O card fala de produto; a arquitetura é derivada por quem implementa, e capacidade tem **um** dono.
 - "O card tinha print anexado, mas nem abri" → NÃO. O anexo é o que o solicitante viu.
 - "Terminei, já pusho" → NÃO. Este motor fecha em **commit local**. `push` é o próximo estágio, do § pr-publish — e é o loop que decide se ele está na faixa.
 
@@ -880,11 +847,8 @@ Argumento com número/`<KEY>-<N>` → seleciona direto. 1 PR só → automático
 
 ### 3 — Review + autenticar a resolução (loop até limpo **ou** rejeita)
 
-1. **Code review do diff** (o mesmo calibre que o § work-cycle exige de quem implementa): `gh pr diff <n>` → cada arquivo — bugs, edge cases, padrões do projeto (`.claude/patterns.md` — ou, se o projeto ainda não migrou, o caminho antigo `docs/00-context/technical/patterns.md`; este motor **lê**, nunca escreve esse arquivo), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/09-code-review/<feature>.md`.
+1. **Code review do diff:** `gh pr diff <n>` → cada arquivo — bugs, edge cases, padrões do projeto (`.claude/patterns.md` — ou, se o projeto ainda não migrou, o caminho antigo `docs/00-context/technical/patterns.md`; este motor **lê**, nunca escreve esse arquivo), segurança, performance, código morto, "faz exatamente o que o card pede". Relatório em `kanban/09-code-review/<feature>.md`.
    - **Escopo = o diff.** Os arquivos que o PR toca, mais o que eles chamam direto. Auditoria do repo inteiro **não é este passo**: o que aparecer fora do diff é achado pré-existente e passa pelo § findings.
-   - **Princípios, um a um e por nome** — a mesma lista que o § work-cycle cobra de quem implementa: **SOLID** — **SRP** (responsabilidade única, camadas, >40 linhas), **OCP** (comportamento novo entrou como `if` no meio do que já funcionava?), **LSP** (implementação lança onde o contrato não prevê?), **ISP** (interface maior que o cliente?), **DIP** (regra de negócio importando client de infra?) · **DRY** (duplicou o que já existe? conferir com grep, e o grep é sobre **símbolo que o diff introduz**, não varredura do repo) · **KISS** · **YAGNI** (entrou abstração que nenhum UC pede?) · **LoD / acoplamento / direção de dependências** · **Motores** (a capacidade tem dono, ou o diff criou a segunda fonte da mesma regra?). Violação **sem sintoma observável** é classe **C** no § findings: linha no relatório, nunca card.
-   - **Design, se o diff tem tela:** tokens como fonte única (sobrou literal de cor, espaçamento ou tipografia?) · **todos os estados** (vazio, carregando, erro, sucesso; hover, focus-visible, disabled) · responsivo nos breakpoints do projeto · **acessibilidade com WCAG AA como piso** · consistência com o design system — e padrão existente abaixo do nível **não se copia**: eleva-se ou vira achado.
-   - **Cheque o done doc:** ele declara "reutilizado / descartado / elevado". Diff que cria do zero o que o projeto já tinha, com o done doc silencioso, é sinal de que o inventário do plano não foi feito.
 2. **Autenticar a resolução via front — CONDICIONAL** (rede de segurança, não redo): **PULA** se a QA está documentada e 100% PASSED. **FAZ** (Playwright MCP, validando o `## Como testar` de CADA card do PR) só quando a QA falhou, não está explícito que passou, ou veio de TODO pendente.
 3. **Achou problema → CONSERTA ou REJEITA:**
    - **Conserta in-place** (default do reparável): bug pontual, edge case, null-check, desvio de pattern, erro de copy → corrige na branch do PR → **re-review + re-autentica**. Loop até zero issues.
@@ -1465,12 +1429,12 @@ Não vale paráfrase, não vale "o UC-17 **implica** que", não vale "pelo espí
 - **Paridade entre regiões** — fluxo implementado numa e ausente na outra é furo **objetivo**, não opinião
 - **Invariante de dinheiro, dado clínico/sensível ou segurança/privacidade** — prod tem usuários reais
 
-**NÃO autorizam:** benchmark ("big tech faz assim" — isso é a régua do § nivel dentro de escopo, não fábrica de card) · robustez genérica · elegância · "seria bom ter" · violação de princípio (SRP/DRY/KISS/YAGNI) **sem sintoma observável**, que é classe **C** por definição.
+**NÃO autorizam:** benchmark ("big tech faz assim") · robustez genérica · elegância · "seria bom ter" · "poderia ser mais limpo" **sem sintoma observável** — tudo classe **C** por definição.
 
 ### Checagem negativa (A **e** B) + consequência material (B)
 
 **Comportamento deliberado não é achado.** Antes de propor **qualquer** A ou B, grepar:
-- `kanban/08-implementation/*.md` → seção **`### 3.2 O que NÃO vamos construir (YAGNI)`** — descarte explícito **com motivo**
+- `kanban/08-implementation/<feature>.md` → o que foi cogitado e **descartado com motivo**
 - decisão registrada (`docs/00-context/decisions/`, `D<NN>` citado em spec/código) ou comentário no código declarando o comportamento **intencional**
 
 Achou → **não é card**. No máximo uma **pergunta** ao usuário, se o motivo registrado parecer stale.
@@ -1534,12 +1498,12 @@ A mesma tabela vai para o **relatório final da skill** (`Achados:` na saída do
 | Situação | É excedente? |
 |---|---|
 | Arquivo/feature que o `## Como testar` do card não menciona e nenhum UC do card exige | **sim** |
-| Refatoração de arquivo **no perímetro** da mudança (o contrato do estágio `commit` exige — regra do saldo: nada do perímetro sai no nível em que entrou) | **não.** É a passada elevando o que tocou |
+| Refatoração de arquivo que a mudança **já toca** | **não** — faz parte da mudança |
 | Renomeação/limpeza em arquivo que o PR nem abriu | **sim** |
 | Segunda feature completa, com telas e regras próprias | **sim**, e é o caso mais claro |
 | Correção pontual de bug encontrado no caminho, com sintoma no fluxo do card | **não** — é conserto in-place legítimo |
 
-Dúvida entre "elevou o perímetro" e "trouxe feature nova" → olhe o `kanban/08-implementation/<feature>.md` § 3.5: o perímetro estava **declarado** no plano. Fora do perímetro declarado e sem UC do card = excedente.
+Dúvida entre "mexeu no que a mudança toca" e "trouxe feature nova" → o `## Como testar` do card e os UCs decidem: código que nenhum deles exige é excedente.
 
 ### 2 — Separável ou não?
 
@@ -1560,13 +1524,13 @@ No `request-changes`, dizer exatamente: o que sai, que fica registrado como cand
 ### 4 — Quando NÃO usar isto
 
 - PR maior que o normal, mas **todo** ele rastreável ao card → não é excedente, é um card grande. Revisa e segue.
-- Refatoração do perímetro → o contrato do estágio `commit` **exige**; punir isso ensina o dev a não elevar o código.
+- Refatoração em arquivo que a mudança já toca → faz parte dela; punir isso ensina o dev a não melhorar o que mexe.
 - Achado de algo **faltando** → é § findings, não aqui.
 
 ### Red Flags — STOP
 
 - "Já está pronto e funciona, mergeio junto" → NÃO. Código que ninguém especificou nem testou contra critério entra sem dono e sem histórico.
-- "É só uma refatoraçãozinha extra, deixo passar" → depende: **no perímetro** é obrigação de quem fechou o `commit`; **fora** dele é excedente.
+- "É só uma refatoraçãozinha extra, deixo passar" → depende: em arquivo que a mudança **já toca** faz parte dela; em arquivo que o PR nem abriria, é excedente.
 - "Peço para remover e não registro" → NÃO, se é trabalho real: aí ele desaparece. Registro com o motivo de ter saído e onde está.
 - "É trabalho real, então abro o card" → NÃO. **O pipeline nunca cria card sozinho.** Registra como candidato; o usuário abre com `/card`.
 - "Registro já dizendo como implementar" → NÃO. O registro **descreve**; a solução é de quem resolver o card que vier a existir.
