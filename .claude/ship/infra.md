@@ -31,7 +31,7 @@
 
 Não há `.secrets/`, `.env*`, `.mcp.json`, nem `process.env` no app; o workflow de CI não referencia `${{ secrets.* }}`. O deploy é a integração Git da Vercel — a autenticação é da conta Vercel ligada ao GitHub, não um token no repositório. Se um dia houver variável: comando para setar no `.claude/ship/deploy.md`; a linha dela entra aqui (nome + onde vive + como se obtém — nunca o valor).
 
-## Artefatos em `.secrets/` (não são credencial)
+## Dumps e exports em `.secrets/` (não são credencial)
 | Caminho | O que é | De quando | Pode apagar? |
 |---|---|---|---|
 | — | não há `.secrets/` neste projeto | — | — |
