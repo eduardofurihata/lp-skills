@@ -25,6 +25,8 @@
 //      quando outra skill a invoca sem o usuário digitar o nome dela, carrega a
 //      sentinela `NEVER activate on your own initiative.` na description; e a
 //      description nunca traz frase de gatilho ("Triggers on …")
+//   9. build e ship não se conhecem — nem por nome, nem por pasta, nem por
+//      vocabulário: cada pacote é instalável e utilizável sozinho
 //
 // Uso: node scripts/validate-plugins.mjs   (exit 1 em qualquer falha)
 import fs from "node:fs";
@@ -266,6 +268,8 @@ function walk(dir, out = []) {
 // moram lá NO PROJETO (`.claude/setup.md`, `.claude/deploy.md`,
 // `.github/pull_request_template.md`, `.secrets/README.md`) — sem isso a regex
 // abaixo os trataria como caminho de skill e cobraria existência aqui.
+// `obra` é a pasta da esteira do /method: caminho legítimo do projeto-alvo,
+// mas SÓ para o furi-build — no furi-ship quem a barra é a regra (9).
 const TARGET_PROJECT_ROOTS = new Set([
   "docs",
   "obra",
@@ -326,6 +330,37 @@ for (const pkg of packages) {
   }
 }
 
+// (9) build e ship não se conhecem — nem por nome, nem por pasta, nem por
+// vocabulário. O nome de uma skill do outro pacote um leitor humano percebe; a
+// pasta e o jargão passam batido, e foi por eles que o vazamento voltou: uma
+// skill do ship mandando gravar em `obra/12-done/` faz o modelo construir o
+// artefato do /method no meio de uma entrega. Por isso a regra é por termo, e
+// não por `requires`. O furi-toolbox fica fora: citar `/prod` de lá é fronteira
+// documentada, sem dependência.
+const VOCABULARIO_DO_IRMAO = {
+  // termos do furi-build, proibidos numa skill do furi-ship
+  "furi-ship":
+    /\bobras?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|solve|principles|front|proto)\b/gi,
+  // e o simétrico: termos do furi-ship, proibidos numa skill do furi-build
+  "furi-build":
+    /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|jira|card|repro|setup|infra|deploy)\b/gi,
+};
+
+for (const [pkg, proibido] of Object.entries(VOCABULARIO_DO_IRMAO)) {
+  const pkgSkills = path.join(PLUGINS_DIR, pkg, "skills");
+  if (!fs.existsSync(pkgSkills)) continue;
+  for (const file of walk(pkgSkills)) {
+    const achados = [
+      ...new Set(fs.readFileSync(file, "utf8").match(proibido) ?? []),
+    ];
+    if (achados.length)
+      fail(
+        path.relative(ROOT, file),
+        `vocabulário do pacote irmão: ${achados.join(", ")}`,
+      );
+  }
+}
+
 if (errors.length) {
   console.error(`validate-plugins: ${errors.length} problema(s)\n`);
   for (const e of errors) console.error(`  ✗ ${e}`);
@@ -343,5 +378,6 @@ const total = packages.reduce(
 console.log(
   `validate-plugins: ok — ${packages.length} pacotes, ${total} skills, ` +
     `3 manifestos cada, 2 marketplaces, caminhos citados e relações resolvem, ` +
-    `internas têm quem as leia, nenhuma skill se ativa sozinha.`,
+    `internas têm quem as leia, nenhuma skill se ativa sozinha, ` +
+    `build e ship não se conhecem.`,
 );
