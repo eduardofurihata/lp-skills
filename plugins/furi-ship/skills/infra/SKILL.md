@@ -2,13 +2,13 @@
 name: infra
 description: 'Use ONLY when the user explicitly invokes /infra (bare /infra = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:infra` via the Skill tool. NEVER activate on your own initiative. — the map of the infra config of THIS project in `.claude/ship/infra.md`: the `.secrets/` folder and its variables, providers, accounts and accesses — where each secret lives, never a value. `<provedor>` focuses one; `audit` reports only.'
 effort: max
-boundary: [prod, setup]
+boundary: [homolog, prod, setup]
 argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 ---
 
 # /infra — o mapa da config da infra
 
-**Objetivo: o mapa da infra deste projeto em `.claude/ship/infra.md`** (ou `.local.md`, no modo só-meu do `/setup`) — o que existe, sob qual conta e acesso, e **onde vive cada variável e segredo** da pasta `.secrets/`. Identificador entra; **valor de credencial, nunca** — nem mascarado, nem no chat ou no log. A pasta `.secrets/` fica **na raiz** do repositório e no `.gitignore` (confira; falta → acrescente): **todo token ou credencial que o usuário colar no chat é salvo lá** (`.secrets/<provedor>.env`, pelo nome da variável), como backup para uso futuro — e o mapa registra o nome e onde mora, nunca o valor. O processo de deploy é do `deploy` (`deploy.md`); aqui não se seta variável nem se faz deploy.
+**Objetivo: o mapa da infra deste projeto em `.claude/ship/infra.md`** (ou `.local.md`, no modo só-meu do `/setup`) — o que existe, sob qual conta e acesso, e **onde vive cada variável e segredo** da pasta `.secrets/`. Identificador entra; **valor de credencial, nunca** — nem mascarado, nem no chat ou no log. A pasta `.secrets/` fica **na raiz** do repositório e no `.gitignore` (confira; falta → acrescente): **todo token ou credencial que o usuário colar no chat é salvo lá** (`.secrets/<provedor>.env`, pelo nome da variável), como backup para uso futuro — e o mapa registra o nome e onde mora, nunca o valor. Publicar e configurar ambientes é do `/homolog` e do `/prod`; aqui não se seta variável nem se faz deploy.
 
 ## Mapa — cinco passos
 
