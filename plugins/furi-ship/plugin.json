@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-ship",
-  "version": "0.1.0+c71605f3947d",
+  "version": "0.1.0+f7bd60f6044f",
   "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship/); a deploy, interna, põe um ambiente no ar e prova. Funciona sozinho, sem depender de outro pacote.",
   "author": {
     "name": "Eduardo Furihata",
