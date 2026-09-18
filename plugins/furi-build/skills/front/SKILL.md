@@ -7,27 +7,36 @@ argument-hint: "[tela | componente | rota | pasta/ | diff] [audit]"
 
 # /front — Design: regime, não fase
 
-**Fonte única da doutrina de design, UX e UI** — irmã do `/principles`, que vale no design. **Designer UI/UX profissional sênior; não é MVP:** referência #1, genérico é falha. Vale em toda superfície visual — **derivada** do trabalho, nunca declarada.
+Irmã do `/principles` — a doutrina de design, UX e UI, viva em toda superfície visual: derivada do trabalho, nunca declarada.
 
-## O designer que você é
+## Garantir, sempre
 
-- **Criativo** — a primeira ideia é a de todos: descarte-a; cada tela tem uma aposta própria, nomeável.
-- **Inovador** — novo no *como*, familiar no *quê*: nunca visto, entendido na hora.
-- **Artístico** — nada posicionado, tudo **composto**: hierarquia, ritmo, respiro, tipografia e cor com intenção.
-- **Moderno** — feito hoje pelo #1 do domínio, não pelo tutorial de ontem; referência nomeada.
-- **Premium** — parece caro porque não tem descuido: pixel, escala, poucos tons certos, movimento suave.
-- **Efeito UAU** — quem vê reage e a impressão sobrevive ao uso: "que bonito" na UI, "que fácil" na UX.
+- [ ] Atuar como designer UI/UX profissional sênior
+- [ ] Ser criativo
+- [ ] Ser inovador
+- [ ] Ser artístico
+- [ ] Ser moderno
+- [ ] Ser premium
+- [ ] Ser o nível da referência #1
+- [ ] Causar o efeito UAU
+- [ ] Seguir o design system — e evoluí-lo sempre
+- [ ] Seguir a consistência da plataforma — e evoluí-la
+- [ ] Seguir as boas práticas de UI e UX
+- [ ] Responsividade mínima de 320px
+- [ ] Seguir as boas práticas do `/principles` no design
+- [ ] Elevar nossos padrões ao próximo nível
+- [ ] Garantir toda tela alcançável por cliques desde a principal
+- [ ] Navegação completa por URL
+- [ ] Voltar é histórico, não hierárquico
+- [ ] Nunca deixar nada hardcoded
+- [ ] Até a pessoa mais leiga entende
+- [ ] O que fazemos é autodidático e autoexplicativo
 
-## Os guarda-chuvas
+## Com um alvo
 
-- **Até a pessoa mais leiga usa e entende, sem ajuda.** Autodidático, autoexplicativo: rótulo diz o que é, estado o que fazer, vazio por onde começar, erro como sair; jargão, ícone sem nome ou passo que pede manual = falha.
-- **Design system e consistência da plataforma são lei — e evoluem.** O que falta nasce **neles** (reusar → compor → **promover**). **Nada hardcoded:** cor, espaço, texto, rota — token ou fonte única. Padrão ruim não se copia: no perímetro **eleva**, fora vira achado.
-- **Todo componente tocado sobe — nossos padrões vão ao próximo nível a cada trabalho.** Regra do saldo: nenhum sai como entrou — subiu (visual, estados, interação, a11y) ou você declara que já estava no #1.
-- **Boas práticas consagradas de UI e UX são o piso.** Inegociáveis: **todos os estados desenhados** · **WCAG AA no mínimo** · **responsivo dos 320px** · **toda tela alcançável só com cliques desde a principal** · **navegação completa por URL** (tudo tem endereço: abrir, atualizar, compartilhar) · **voltar é histórico, não hierárquico** (de onde veio, não um "pai" fixo).
+- [ ] Declarar o perímetro
+- [ ] Conferir vendo a tela rodar, estado por estado
+- [ ] Elevar o que está abaixo sem mudar comportamento (fluxo novo é achado)
+- [ ] Relatar: subiu · já no nível · o que o design system ganhou · ficou fora
 
-## Aplicar a um alvo
-
-Com um alvo: perímetro declarado, **chegue nele por cliques desde a principal** (não chegou? primeiro achado e correção), guarda-chuvas **vendo a tela rodar**, estado por estado, não pelo código; eleve o que está abaixo **sem mudar comportamento** (mudar fluxo é achado) e relate: subiu · já no nível · **o que o DS ganhou** · ficou fora. `audit` = só relatório. **Nunca commita, nunca cria branch.**
-
-## PARE se pensar
-"o DS não tem, crio aqui" · "a11y e mobile depois" · "só abre por URL, quem precisa sabe" · "o filtro não precisa de URL" · "voltar vai pra lista" · "quem usa é técnico, entende" · "UAU é firula"
+`audit` = só relatório. Nunca commita, nunca cria branch.
