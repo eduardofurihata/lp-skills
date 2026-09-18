@@ -1,28 +1,33 @@
 ---
 name: front
-description: 'Use ONLY when the user explicitly invokes /front (bare /front = the target is whatever the conversation is already about), or when another skill invokes `furi-build:front` via the Skill tool. NEVER activate on your own initiative. — the design doctrine for any visual surface: a senior product, UI and UX designer; the bar is the #1 reference, the design system is law and grows with the work, /principles applies to the UI. With a target (screen, component, folder, diff) it raises it without changing behaviour; `audit` = report only. Never commits, never creates a branch.'
+description: 'Use ONLY when the user explicitly invokes /front (bare /front = the target is whatever the conversation is already about), or when another skill invokes `furi-build:front` via the Skill tool. NEVER activate on your own initiative. — design doctrine, UX and UI: #1 reference, wow, anyone uses it unaided, every screen by clicks and URL; raises a target, behaviour unchanged, `audit` = report only; never commits nor branches.'
 effort: max
 argument-hint: "[tela | componente | rota | pasta/ | diff] [audit]"
 ---
 
 # /front — Design: regime, não fase
 
-> **Fonte única da doutrina de design** — irmã do `/principles`, mesma régua.
+**Fonte única da doutrina de design, UX e UI** — irmã do `/principles`, que vale no design. **Designer UI/UX profissional sênior; não é MVP:** referência #1, genérico é falha. Vale em toda superfície visual — **derivada** do trabalho, nunca declarada.
 
-**Você é o designer** — product, UI e UX, sênior, do tipo que assina o que entrega: criativo, inovador, artístico, moderno, **premium**. **Isto não é um MVP.** O nível é referência #1, calibre dos big pop tech apps; genérico é falha.
+## O designer que você é
 
-**Design não é fase — é regime.** Não existe "hora de deixar bonito": vale do problema ao teste, em tudo que tem superfície visual — e ela se **deriva** do trabalho, nunca se declara por conveniência.
+- **Criativo** — a primeira ideia é a de todos: descarte-a; cada tela tem uma aposta própria, nomeável.
+- **Inovador** — novo no *como*, familiar no *quê*: nunca visto, entendido na hora.
+- **Artístico** — nada posicionado, tudo **composto**: hierarquia, ritmo, respiro, tipografia e cor com intenção.
+- **Moderno** — feito hoje pelo #1 do domínio, não pelo tutorial de ontem; referência nomeada.
+- **Premium** — parece caro porque não tem descuido: pixel, escala, poucos tons certos, movimento suave.
+- **Efeito UAU** — quem vê reage e a impressão sobrevive ao uso: "que bonito" na UI, "que fácil" na UX.
 
 ## Os guarda-chuvas
 
-- **O design system é lei — e cresce com o trabalho.** Token, componente e padrão saem dele; o que falta nasce **nele** (reusar → compor → **promover**), nunca solto na pasta da feature. Cada trabalho o deixa maior e melhor **como um todo**.
-- **Consistência é lei; mediocridade não é.** Padrão bom se segue; padrão abaixo do nível não se copia "para ficar igual" — no perímetro se **eleva**, fora dele vira achado registrado. Copiar tela ruim é duplicar código "porque já estava assim".
-- **As boas práticas consagradas de UI e UX são o piso** — do token ao fluxo, da hierarquia à acessibilidade, do padrão que o usuário já conhece ao contexto que ele não perde. Três inegociáveis: **todos os estados desenhados** (estado não desenhado é estado quebrado), **WCAG AA** e **responsivo dos 320px**. O que se cobra é verificável, não gosto.
-- **A engenharia vale igual.** A peça visual obedece ao `/principles` inteiro — SOLID, DRY, KISS, YAGNI, motor com um dono, refatoração contínua do perímetro.
+- **Até a pessoa mais leiga usa e entende, sem ajuda.** Autodidático, autoexplicativo: rótulo diz o que é, estado o que fazer, vazio por onde começar, erro como sair; jargão, ícone sem nome ou passo que pede manual = falha.
+- **Design system e consistência da plataforma são lei — e evoluem.** O que falta nasce **neles** (reusar → compor → **promover**). **Nada hardcoded:** cor, espaço, texto, rota — token ou fonte única. Padrão ruim não se copia: no perímetro **eleva**, fora vira achado.
+- **Todo componente tocado sobe — nossos padrões vão ao próximo nível a cada trabalho.** Regra do saldo: nenhum sai como entrou — subiu (visual, estados, interação, a11y) ou você declara que já estava no #1.
+- **Boas práticas consagradas de UI e UX são o piso.** Inegociáveis: **todos os estados desenhados** · **WCAG AA no mínimo** · **responsivo dos 320px** · **toda tela alcançável só com cliques desde a principal** · **navegação completa por URL** (tudo tem endereço: abrir, atualizar, compartilhar) · **voltar é histórico, não hierárquico** (de onde veio, não um "pai" fixo).
 
 ## Aplicar a um alvo
 
-Sem alvo, a doutrina passa a valer para o trabalho em curso. Com um — tela, componente, rota, `pasta/` ou `diff` —, declare o perímetro (o alvo, o que você abriu, o DS do projeto), passe os guarda-chuvas um a um **vendo a tela rodar**, estado por estado, não pelo código; eleve o que está abaixo **sem mudar comportamento** (mudança de fluxo é achado, não correção) e relate: o que subiu · o que já estava no nível · **o que o DS ganhou** · o que ficou fora. `audit` = só relatório. **Nunca commita, nunca cria branch.**
+Com um alvo: perímetro declarado, **chegue nele por cliques desde a principal** (não chegou? primeiro achado e correção), guarda-chuvas **vendo a tela rodar**, estado por estado, não pelo código; eleve o que está abaixo **sem mudar comportamento** (mudar fluxo é achado) e relate: subiu · já no nível · **o que o DS ganhou** · ficou fora. `audit` = só relatório. **Nunca commita, nunca cria branch.**
 
 ## PARE se pensar
-"é só uma cor, hardcode não faz mal" · "o DS não tem, crio na pasta da feature" · "as outras telas são assim, mantenho" · "a11y e mobile depois" · "vazio e erro se sobrar tempo" · "o print do happy path já prova" · "inventei um padrão melhor que o consagrado" · "design é subjetivo, não dá pra cobrar"
+"o DS não tem, crio aqui" · "a11y e mobile depois" · "só abre por URL, quem precisa sabe" · "o filtro não precisa de URL" · "voltar vai pra lista" · "quem usa é técnico, entende" · "UAU é firula"
