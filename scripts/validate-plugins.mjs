@@ -265,7 +265,7 @@ function walk(dir, out = []) {
 
 // Diretórios que pertencem ao projeto-alvo, não a este repo.
 // `.claude`, `.github` e `.secrets` entram porque as skills citam arquivos que
-// moram lá NO PROJETO (`.claude/setup.md`, `.claude/deploy.md`,
+// moram lá NO PROJETO (`.claude/ship/setup.md`, `.claude/ship/homolog.md`,
 // `.github/pull_request_template.md`, `.secrets/README.md`) — sem isso a regex
 // abaixo os trataria como caminho de skill e cobraria existência aqui.
 // `obra` é a pasta da esteira do /method: caminho legítimo do projeto-alvo,
@@ -343,7 +343,7 @@ const VOCABULARIO_DO_IRMAO = {
     /\bobras?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|solve|principles|front|proto)\b/gi,
   // e o simétrico: termos do furi-ship, proibidos numa skill do furi-build
   "furi-build":
-    /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|jira|card|repro|setup|infra|deploy)\b/gi,
+    /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|jira|card|repro|setup|infra)\b/gi,
 };
 
 for (const [pkg, proibido] of Object.entries(VOCABULARIO_DO_IRMAO)) {
