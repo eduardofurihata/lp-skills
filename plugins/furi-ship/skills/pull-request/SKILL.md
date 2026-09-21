@@ -15,7 +15,7 @@ O alvo: a branch em `origin` com a PR no destino que o setup manda — ou só o 
 - [ ] Ler `.claude/ship/setup.md § Pull-request`: destino da PR (`main`, `dev`, `homolog`, outra branch, stacked PR ou sem PR — só push), status da etapa; falta → pergunte e grave ali
 - [ ] Garantir o `/work` completo: mudança sem commit → `Skill(skill: "work")`, vai tudo junto; só se commita o inteiro, nunca pela metade
 - [ ] Trazer a branch destino para a atual, para não ficar desatualizada
-- [ ] Fazer push da branch
+- [ ] Fazer push
 - [ ] Abrir ou atualizar a PR no destino que o § Pull-request manda; sem PR → fica no push
 - [ ] Atualizar o título: keys dos cards Jira, se houver, e tudo o que foi feito
 - [ ] Atualizar a descrição: `## O que foi feito` (simples e leigo) · `## Cards` · `## Summary` · `## Solução` · `## Como testar` · `## DevOps`
