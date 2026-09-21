@@ -84,7 +84,7 @@ const PACKAGES = [
     name: "furi-ship",
     category: "ship",
     description:
-      "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup e /infra configuram o processo e a infra do projeto (versionados em .claude/ship/). Funciona sozinho, sem depender de outro pacote.",
+      "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /infra mapeia a infra do projeto; o processo mora em .claude/ship/setup.md, uma seção por skill. Funciona sozinho, sem depender de outro pacote.",
     keywords: ["jira", "pull-request", "deployment", "delivery"],
     codex: {
       displayName: "Furi Ship",

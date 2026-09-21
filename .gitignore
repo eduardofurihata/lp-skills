@@ -58,7 +58,7 @@ __pycache__/
 /prod-*.png
 
 # Claude Code — o pessoal fica fora. O que é do time fica DENTRO e versionado:
-# .claude/ship/<skill>.md (processo de entrega — um por skill do ship)
+# .claude/ship/setup.md (processo de entrega, uma seção por skill do ship) e infra.md (mapa da infra)
 # e .claude/patterns.md (padrões de código — /method, na raiz porque o build não conhece o ship).
 # Nunca ignore `.claude/` inteiro: `!x` sob um diretório excluído não reinclui nada no git.
 # `*.local.md` é a variante "só minha" dos quatro — nunca versionada.
