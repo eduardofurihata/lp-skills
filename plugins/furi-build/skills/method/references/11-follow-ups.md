@@ -6,7 +6,7 @@
 
 ## Artefato — o ledger
 
-`obra/11-follow-ups/<tópico>.md` — semeado no Step 7, fechado aqui, copiado ao done no Step 12.
+`obra/11-follow-ups/<tópico>.md` — semeado no Step 7, fechado aqui, movido ao done no Step 12.
 
 ```markdown
 # <Tópico> — Follow-ups

@@ -198,7 +198,7 @@ for (const { file, name, internal } of declared) {
 //     `/<name>` no turno. É a forte, e é a exigida quando ninguém lista a skill
 //     em `requires` (nada a invoca, só o usuário digita).
 //   - a sentinela na description — para quem OUTRA skill invoca sem o usuário
-//     digitar o nome dela (o /solve na ativação do /method, o /jira no Step 0):
+//     digitar o nome dela (o /solve na ativação do /method):
 //     a trava quebraria essa chamada, então a defesa é o texto.
 //   E em nenhuma das duas a description pode carregar frase de gatilho — é ela
 //   que o modelo lê para decidir, e "Triggers on …" é autorização para ativar.
@@ -343,7 +343,7 @@ const VOCABULARIO_DO_IRMAO = {
     /\bobras?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|solve|principles|front|proto)\b/gi,
   // e o simétrico: termos do furi-ship, proibidos numa skill do furi-build
   "furi-build":
-    /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|jira|card|repro|setup|infra)\b/gi,
+    /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|card|repro|setup|infra)\b/gi,
 };
 
 for (const [pkg, proibido] of Object.entries(VOCABULARIO_DO_IRMAO)) {

@@ -15,7 +15,7 @@
 
 ## Ações — a ordem é contrato
 
-1. **Mover o artefato.** Copie o checklist de QA e o ledger para o done doc, escreva-o e delete o to-do: `rm obra/07-todo/<tópico>.md`. Em `obra/`, a pasta é o status: to-do só tem trabalho ativo.
+1. **Mover o artefato.** Copie o checklist de QA e o ledger para o done doc, escreva-o e delete o to-do e o ledger: `rm obra/07-todo/<tópico>.md obra/11-follow-ups/<tópico>.md`. Em `obra/`, a pasta é o status: to-do e follow-ups só têm trabalho ativo.
 2. **Um único commit, na branch atual** (nunca crie branch): `git add -A` + `git commit -m "feat(<escopo>): <descrição>"` (Conventional Commits). Ele fecha o protocolo capturando tudo de uma vez — código, docs 01-11, artefato de done, remoção do to-do e **todos os ciclos de follow-up**. Código de steps anteriores fica **não-commitado** até aqui; commitar antes de mover força um segundo commit, que é exatamente o que esta ordem elimina. O SHA já vive no `git log` — anotá-lo no done não vale um segundo commit.
 
 **Só o ciclo raiz commita**: ciclo de follow-up aninhado roda este step inteiro menos o commit (`11-follow-ups.md`). **Nenhuma decisão nova de arquitetura ou design se toma aqui** — o que aparecer é achado e reabre o Gate de Convergência, não vira ajuste de última hora.
@@ -27,7 +27,7 @@
 
 - [ ] Gate de Convergência `✅ CONVERGIU` publicado no Step 11
 - [ ] Done doc com links, arquivos de código, checklist por TC, ledger final e as **5 linhas de princípios**
-- [ ] `obra/07-todo/<tópico>.md` deletado **antes** do commit; `obra/12-done/<tópico>.md` existe com conteúdo substantivo
+- [ ] To-do e ledger deletados **antes** do commit; `obra/12-done/<tópico>.md` existe com conteúdo substantivo
 - [ ] **Um único commit** na branch atual — código + docs + done + remoção do to-do + ciclos de follow-up; nenhum commit adiantado, nenhum extra depois
 
 Tudo ✅ → feature encerrada. **Fim do protocolo.**

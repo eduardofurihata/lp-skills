@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-ship",
-  "version": "0.1.0+78c9b0c44f25",
-  "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup, /jira e /infra configuram o processo, o Jira e a infra do projeto (versionados em .claude/ship/). Funciona sozinho, sem depender de outro pacote.",
+  "version": "0.1.0+2f42ff43e388",
+  "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /setup e /infra configuram o processo e a infra do projeto (versionados em .claude/ship/). Funciona sozinho, sem depender de outro pacote.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata/lp-skills"
