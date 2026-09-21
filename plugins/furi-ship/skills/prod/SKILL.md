@@ -1,32 +1,24 @@
 ---
 name: prod
-description: 'Use ONLY when the user explicitly invokes /prod (bare /prod = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:prod` via the Skill tool. NEVER activate on your own initiative. — production live with the work: homolog guaranteed (/homolog) → promote integration to production → publish, configure, validate production → Jira → return. Single owner of production.'
+description: 'Use ONLY when the user explicitly invokes /prod (bare /prod = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:prod` via the Skill tool. NEVER activate on your own initiative. — homolog promoted, production live and proven. Single owner of production.'
 effort: max
 requires: [homolog, infra]
 boundary: sync
-argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo que está pronto)"
+argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo pronto)"
 ---
 
-# /prod — homolog garantido e promovido, depois produção no ar e provado
+# /prod — homolog promovido, produção no ar e provado
 
-Dono único de produção, onde há usuários reais: cada passo tem prova; quem digita `/prod` autoriza este release — promover não pergunta.
+Cada passo tem prova; quem digita `/prod` autoriza o release — promover não pergunta. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-## Primeiro, homolog e a promoção
-
-- [ ] Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra
-- [ ] Ler `.claude/ship/setup.md § Prod`: `<produção>` (a branch que publica), URL, gatilho, checagem, rotas críticas, rollback, runner, último release (commit, data, cards), pendências, status da etapa; criar ou atualizar a seção se e somente se faltar ou divergir, perguntando só o não derivável. `<integração>` vem do § Homolog (não existe → a branch que os PRs miram; sem gravar)
-- [ ] Diagnosticar antes de agir: `verificado@homolog`, `promovido` (integração e produção iguais em `origin`), ambiente; faixa longa é o pedido — diga o tamanho; tudo fechado → gap zero
+- [ ] Ler `.claude/ship/setup.md § Prod`: `<produção>`, URL, gatilho, checagem, rotas críticas, rollback, runner, último release, pendências, status da etapa; `<integração>` no § Homolog; falta → pergunte e grave ali
+- [ ] Diagnosticar: `verificado@homolog`, `promovido` (integração e produção iguais em `origin`), ambiente
 - [ ] Garantir homolog: aberto → `Skill(skill: "homolog")`; só o verificado se promove
-- [ ] Promover: integração atualizada com o remoto → o que é seu commitado com paths explícitos → integração em produção → push em produção (o gatilho) → resync produção em integração → assert de que as duas são iguais em `origin`
-
-Produção é `main`, senão `master`, senão a default; igual à integração ⇒ branch única: sem homolog nem promoção, `verificado@homolog` e `promovido` = `—`, diagnóstico `pr` · `integrado` · ambiente — a PR é o release, resolvida como `homolog/SKILL.md` § Primeiro, a PR, sem § Homolog. Valor de secret, nunca. Conflito entendendo os dois lados; conflito que muda código → re-review antes do push; assert divergente → o release não fecha. Hotfix direto em produção → merge nos dois sentidos, re-review. `/sync` é ferramenta de branch, sem publicar.
-
-## Só então, produção no ar
-
-- [ ] Publicar: push na `<produção>` dispara o workflow; esperar o run verde
-- [ ] Configurar, em prod e em homolog: migrations (após o código no ar), env, secrets, flags e seeds do `## DevOps` das PRs
-- [ ] Validar em live, só leitura: responde, commit publicado no ar, rotas críticas sem erro
+- [ ] Promover: integração atualizada → em produção → push (o gatilho) → resync produção em integração → assert: iguais em `origin`
+- [ ] Publicar: push na `<produção>`; esperar o run verde
+- [ ] Configurar prod e homolog: migrations (depois do código), env, secrets, flags, seeds do `## DevOps`
+- [ ] Validar em live, só leitura: responde, commit no ar, rotas críticas
 - [ ] Mover cada card que subiu para o status da etapa — só depois de validado
-- [ ] Atualizar § Prod; devolver estágios, promoção (commits, cards), run, validação, cards, assert
+- [ ] Atualizar § Prod e retornar estágios, promoção, run, validação, assert
 
-Run vermelho seu: conserte e redeploye, teto ~3; fila, runner offline, nenhum run: reporte, não contorne. Secret: pedido, nunca inventado; onde vive e o backup → `Skill(skill: "infra")`. Falhou: gap, volta ao passo dono, o card não muda; rollback oferecido, nunca automático; passo aberto devolve o que ficou e por quê.
+Produção igual à integração ⇒ branch única: sem promoção, a PR é o release, resolvida como o `/homolog`. Conflito que muda código → re-review; assert divergente → o release não fecha. Hotfix direto em produção → merge nos dois sentidos. Run vermelho seu: conserte, teto ~3; fila ou runner offline: reporte. Secret: pedido, nunca inventado → `Skill(skill: "infra")`. Falhou: volta ao passo dono; rollback oferecido, nunca automático.

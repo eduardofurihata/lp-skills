@@ -14,7 +14,7 @@ Quem lê o card não viu esta conversa: ele vale o que valeu o entendimento ante
 - [ ] Entender o problema do prompt
 - [ ] Entender os arquivos do projeto e o projeto como um todo
 - [ ] Investigar o problema
-- [ ] Brainstorm do problema
+- [ ] Fazer brainstorm do problema
 - [ ] Escrever o entendimento
 - [ ] Ler `.claude/ship/setup.md § Card`: rastreamento, board, destino (na sprint ou fora, qual coluna), dono e idioma; falta → pergunte e grave ali
 - [ ] Verificar se já existe card aberto do problema
