@@ -8,7 +8,7 @@ argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 
 # /infra — o mapa da config da infra
 
-**Objetivo: o mapa da infra deste projeto em `.claude/ship/infra.md`** (ou `infra.local.md`, fora do git, quando o mapa é só seu) — o que existe, sob qual conta e acesso, e **onde vive cada variável e segredo** da pasta `.secrets/`. Identificador entra; **valor de credencial, nunca** — nem mascarado, nem no chat ou no log. A pasta `.secrets/` fica **na raiz** do repositório e no `.gitignore` (confira; falta → acrescente): **todo token ou credencial que o usuário colar no chat é salvo lá** (`.secrets/<provedor>.env`, pelo nome da variável), como backup para uso futuro — e o mapa registra o nome e onde mora, nunca o valor. Publicar e configurar ambientes é do `/homolog` e do `/prod`; aqui não se seta variável nem se faz deploy.
+**Objetivo: o mapa da infra deste projeto em `.claude/ship/infra.md`** (ou `infra.local.md`, fora do git, quando o mapa é só seu) — o que existe, sob qual conta e acesso, e **onde vive cada variável e segredo** da pasta `.secrets/`. Identificador entra; **valor de credencial, nunca** — nem mascarado, nem no chat ou no log. A pasta `.secrets/` fica **na raiz** do repositório e no `.gitignore` (confira; falta → acrescente): **todo token ou credencial que o usuário colar no chat é salvo lá** (`.secrets/<provedor>.env`, pelo nome da variável), como backup para uso futuro — e o mapa registra o nome e onde mora, nunca o valor. Publicar e configurar ambientes é do `/homolog` e do `/prod`; aqui não se seta variável nem se faz deploy. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra.
 
 ## Mapa — cinco passos
 

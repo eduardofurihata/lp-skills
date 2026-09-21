@@ -1,6 +1,6 @@
 ---
 name: repro
-description: 'Use ONLY when the user explicitly invokes /repro (bare /repro = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:repro` via the Skill tool. NEVER activate on your own initiative. — a MODIFIER: understand the report and reproduce it on the front as the user, each graded ≥ 90 by a judge subagent; the dev sees the bug one step before it fires; return the official description. Alone it stops; with another /skill it delegates; whoever commits shows the dev the fix BEFORE the commit.'
+description: 'Use ONLY when the user explicitly invokes /repro (bare /repro = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:repro` via the Skill tool. NEVER activate on your own initiative. — a MODIFIER: understand the report and reproduce it on the front as the user, each graded ≥ 90 by a judge subagent; the dev sees the bug one step before it fires; return the official description. With other skills it combines them in one pass; whoever commits shows the dev the fix BEFORE the commit.'
 effort: max
 argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 ---
@@ -15,7 +15,7 @@ argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 4. **Reproduzir — no front, simulando o usuário.** Browser automatizado (mobile: emulador), cenário **exato** (usuário, dados, condições — crie o que faltar), evidência a cada passo. Não reproduziu → pergunte, nunca "pelo código o bug é…". Registre **como**: usuário, dados, partida, passos, trigger, superfície.
 5. **Julgar a reprodução — outro subagente.** Relato original + registro + evidência → nota 0–100 de "isto É o problema relatado" e o que diverge. **≥ 90 avança**; senão passo 4 — sem limite.
 6. **O dev vê o bug — parada 1.** Rode o fluxo do zero e **pare um passo antes do trigger** (visível, não disparado). Publique onde está, **"👉 Clique em / Execute: [elemento exato]"**, o que vai acontecer, a evidência — e **pare** até o dev dizer que viu.
-7. **Devolver — a descrição oficial, debugada.** Superfície · usuário e dados · partida → passos → trigger · atual vs esperado · evidência · causa localizada. Sozinho: encerre. Outra `/skill` no argumento: `Skill(skill: "<skill>", args: "<verbos restantes> <objetivo>")` — recebe a descrição e, se codar, deve a parada 2.
+7. **Devolver — a descrição oficial, debugada.** Superfície · usuário e dados · partida → passos → trigger · atual vs esperado · evidência · causa localizada. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Quem codar deve a parada 2.
 
 ## Human Check — parada 2, de quem fecha o commit, ANTES dele
 

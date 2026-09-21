@@ -4,7 +4,7 @@ description: 'Use ONLY when the user explicitly invokes /prod (bare /prod = the 
 effort: max
 requires: [homolog, infra]
 boundary: sync
-argument-hint: "[PR | KEY-N | descrição] [/repro] [/card] | (vazio = tudo que está pronto)"
+argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo que está pronto)"
 ---
 
 # /prod — homolog garantido e promovido, depois produção no ar e provado
@@ -13,7 +13,7 @@ Dono único de produção, onde há usuários reais: cada passo tem prova; quem 
 
 ## Primeiro, homolog e a promoção
 
-- [ ] Compor: `repro → card → alvo`, skill de fora antes; os outros alvos perdem
+- [ ] Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra
 - [ ] Ler `.claude/ship/setup.md § Prod`: `<produção>` (a branch que publica), URL, gatilho, checagem, rotas críticas, rollback, runner, último release (commit, data, cards), pendências, status da etapa; criar ou atualizar a seção se e somente se faltar ou divergir, perguntando só o não derivável. `<integração>` vem do § Homolog (não existe → a branch que os PRs miram; sem gravar)
 - [ ] Diagnosticar antes de agir: `verificado@homolog`, `promovido` (integração e produção iguais em `origin`), ambiente; faixa longa é o pedido — diga o tamanho; tudo fechado → gap zero
 - [ ] Garantir homolog: aberto → `Skill(skill: "homolog")`; só o verificado se promove
