@@ -16,7 +16,7 @@ Quem lê o card não viu esta conversa: ele vale o que valeu o entendimento ante
 - [ ] Investigar o problema
 - [ ] Brainstorm do problema
 - [ ] Escrever o entendimento
-- [ ] Ler `.claude/ship/card.md`: board, destino (na sprint ou fora, qual coluna) e dono
+- [ ] Ler `.claude/ship/setup.md § Card`: rastreamento, board, destino (na sprint ou fora, qual coluna), dono e idioma; falta → pergunte e grave ali
 - [ ] Verificar se já existe card aberto do problema
 - [ ] Escrever o problema como PM/PO, para quem não viu a conversa
 - [ ] Criar o card no board, com destino, dono e imagens
