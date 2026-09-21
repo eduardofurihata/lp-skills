@@ -15,7 +15,7 @@ Aprova e põe no ar; produção é o `/prod`. Com outras skills no argumento: en
 - [ ] Parar se não tem homolog: nada a fazer — diga e retorne
 - [ ] Ler `.claude/ship/infra.md`, o ambiente de homolog: branch que publica, URL, gatilho e run, como configurar, como checar, rollback; falta → `Skill(skill: "infra")`
 - [ ] Garantir o `/pull-request` completo: sem PR ou push → `Skill(skill: "pull-request")`
-- [ ] Aprovar a PR, se há processo de PR: PR sua → só mergear; PR de outro → revisar (o card faz sentido e o código o atende? bugs, edge cases, padrões, segurança), corrigir as pendências na branch da PR e commitar, aprovar, mergear
+- [ ] Aprovar a PR, se há processo de PR: PR sua → só mergear; PR de outro → revisar (o card faz sentido e o código o atende? bugs, edge cases, padrões, segurança, regressão), corrigir as pendências na branch da PR e commitar, aprovar, mergear
 - [ ] Fazer todas as configs do ambiente de homolog, pelo mapa do infra: migrations (depois do código), env, secrets, flags, seeds
 - [ ] Checar se realmente está no ar o que subimos: responde, commit no ar, rotas críticas sem erro
 - [ ] Atualizar o status do card Jira para o da etapa, se houver card
