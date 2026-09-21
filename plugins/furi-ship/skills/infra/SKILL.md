@@ -1,19 +1,21 @@
 ---
 name: infra
-description: 'Use ONLY when the user explicitly invokes /infra (bare /infra = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:infra` via the Skill tool. NEVER activate on your own initiative. — the map of the infra config of THIS project in `.claude/ship/infra.md`: the `.secrets/` folder and its variables, providers, accounts and accesses — where each secret lives, never a value. `<provedor>` focuses one; `audit` reports only.'
+description: 'Use ONLY when the user explicitly invokes /infra (bare /infra = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:infra` via the Skill tool. NEVER activate on your own initiative. — the infra map of THIS project in `.claude/ship/infra.md`: providers, accounts, accesses and where each secret lives, never a value. `audit` reports only.'
 effort: max
 boundary: [homolog, prod]
 argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 ---
 
-# /infra — o mapa da config da infra
+# /infra — o mapa da infra
 
-**Objetivo: o mapa da infra deste projeto em `.claude/ship/infra.md`** (ou `infra.local.md`, fora do git, quando o mapa é só seu) — o que existe, sob qual conta e acesso, e **onde vive cada variável e segredo** da pasta `.secrets/`. Identificador entra; **valor de credencial, nunca** — nem mascarado, nem no chat ou no log. A pasta `.secrets/` fica **na raiz** do repositório e no `.gitignore` (confira; falta → acrescente): **todo token ou credencial que o usuário colar no chat é salvo lá** (`.secrets/<provedor>.env`, pelo nome da variável), como backup para uso futuro — e o mapa registra o nome e onde mora, nunca o valor. Publicar e configurar ambientes é do `/homolog` e do `/prod`; aqui não se seta variável nem se faz deploy. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra.
+O que existe, sob qual conta e acesso, e onde vive cada segredo de `.secrets/` — identificador entra; valor, nunca. `.secrets/` fica na raiz e no `.gitignore`; token colado no chat é salvo lá (`.secrets/<provedor>.env`) e o mapa registra só o nome e onde mora. Publicar e configurar: `/homolog` e `/prod`. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-## Mapa — cinco passos
+- [ ] Ler `.claude/ship/infra.md` (ou `infra.local.md`, fora do git); não existe → nasce agora
+- [ ] Inferir das pastas, citando a fonte: `.secrets/` pelos nomes (chave privada e JSON de conta de serviço não se abrem), `.env.example`, `.mcp.json`, plataforma, terraform, workflows, compose, schema; provedores pelos prefixos, nem todo `AWS_*` é AWS
+- [ ] Confirmar os acessos por CLI, só leitura, só o já autenticado (conta, projeto, região, time); nunca `login`; não confirmou → dizer o motivo
+- [ ] Perguntar só o não-derivável, dizendo o que inferiu e confirmou
+- [ ] Passar o gate anti-vazamento: chave privada, token, senha, connection string → não grava
+- [ ] Gravar as seções: Provedores e contas · Serviços · Domínios e DNS · Onde vive cada segredo (nome · onde mora · como se obtém) · Dumps e exports · Se vazar, ordem de revogação · Identificadores em uso
+- [ ] Reportar o diff: apareceu, sumiu (pergunte antes de apagar), mudou, não confirmado; `audit` = sem gravar
 
-1. **Ler o mapa atual** — é contra ele que o diff do fim se mede; não existe → nasce agora.
-2. **Inferir das pastas, citando a fonte.** `.secrets/` por **nomes** (os arquivos e as chaves das variáveis dos `.env`; chaves privadas, `id_*` e JSON de conta de serviço não se abrem; dumps e exports não são credencial), o README do cofre, `.env.example`, `.mcp.json`, arquivos de plataforma (Vercel, Netlify, Railway, Fly), terraform, workflows (segredos do GitHub, runner), compose, schema do banco. Provedores pelos prefixos das variáveis — nem todo `AWS_*` é AWS. Repo Eduzz/Labzz: o recorte deste projeto e um ponteiro para o mapa da conta, nunca uma cópia.
-3. **Confirmar os acessos por CLI, só leitura, só o que já está autenticado** — conta, projeto, região, time. Nunca `login`, nunca carregar o cofre no ambiente. Não confirmou → `não confirmado (motivo)`, dito; não se chuta conta pelo nome do projeto.
-4. **Perguntar só o não-derivável** — papel de arquivo com nome obscuro, conta canônica entre várias, o que é cópia de outro lugar: *"inferi isto; confirmei aquilo; preciso que você diga isso"*.
-5. **Gravar e reportar o diff** — antes, o gate anti-vazamento no rascunho (chave privada, token, senha, connection string com senha → não grava; falso positivo → reescreva a linha e rode de novo). Seções: Provedores e contas · Serviços · Domínios e DNS · **Onde vive cada segredo** (nome · onde mora localmente · onde mora no ambiente · como se obtém) · Dumps e exports em `.secrets/` · Se vazar, ordem de revogação · Identificadores em uso. Report: apareceu, sumiu (pergunte antes de apagar), mudou, não confirmado. `audit` = tudo isto sem gravar.
+Repo Eduzz/Labzz: o recorte deste projeto e um ponteiro para o mapa da conta, nunca cópia; conta não se chuta pelo nome do projeto.
