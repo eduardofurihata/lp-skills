@@ -28,7 +28,7 @@ requires: solve
 ## Como roda
 
 1. **Invoque o `/solve`** via Skill tool na ativação **e em todo step** — ele traz o `/principles` e, com superfície visual, o `/front`.
-2. **Step 0** (`00-start.md`), depois o **Gate Check** visível: docs 01-05 cobrem a feature? Faltando, escreve antes de codar. Uma task por step de 7 a 11.
+2. **Step 0** (`00-start.md`), depois o **Gate Check** visível: docs 01-05 cobrem a feature? Faltando, escreve antes de codar. **Uma task por step, do 0 ao 12: `TaskCreate` ao abrir, `TaskUpdate` fecha antes do seguinte — sem task, o step não começou.**
 3. **Cada step**: abra o reference, produza o artefato, publique o **Gateway Check** — ✅ segue sozinho, ❌ corrige e republica.
 4. **8 → 9 → 10 é loop**: mudança de código volta ao 9; encerra com 100% PASSED e zero mudança. **11** fecha o ledger (só o ciclo raiz commita); **12** move o artefato para done e faz **um único commit**.
 

@@ -14,7 +14,7 @@ Quem digita `/prod` autoriza o release — promover não pergunta. Com outras sk
 - [ ] Ler `.claude/ship/setup.md § Prod`: tem processo de PR para produção? status da etapa; tem homolog? no § Homolog; falta → pergunte e grave ali
 - [ ] Ler `.claude/ship/infra.md`, o ambiente de prod: branch que publica, URL, gatilho e run, como configurar e checar, rollback; falta → `Skill(skill: "infra")`
 - [ ] Garantir o `/homolog` completo: `Skill(skill: "homolog")`; sem homolog, vai a branch de trabalho
-- [ ] Trazer homolog para produção: sem PR → merge e push, sem revisar; com processo de PR → abrir ou atualizar a PR para produção; PR sua → só mergear; PR de outro → revisar (o card faz sentido e o código o atende? bugs, edge cases, padrões, segurança), corrigir as pendências na branch e commitar, aprovar, mergear
+- [ ] Trazer homolog para produção: sem PR → merge e push, sem revisar; com processo de PR → abrir ou atualizar a PR para produção; PR sua → só mergear; PR de outro → revisar (o card faz sentido e o código o atende? bugs, edge cases, padrões, segurança, regressão), corrigir as pendências na branch e commitar, aprovar, mergear
 - [ ] Fazer todas as configs do ambiente de prod, pelo mapa do infra: migrations, env, secrets, flags, seeds
 - [ ] Checar se realmente está no ar o que subimos: responde, commit no ar, rotas críticas
 - [ ] Atualizar o status do card Jira para o da etapa, se houver card
