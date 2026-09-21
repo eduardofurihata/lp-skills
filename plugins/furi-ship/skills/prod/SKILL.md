@@ -1,24 +1,23 @@
 ---
 name: prod
-description: 'Use ONLY when the user explicitly invokes /prod (bare /prod = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:prod` via the Skill tool. NEVER activate on your own initiative. — homolog promoted, production live and proven.'
+description: 'Use ONLY when the user explicitly invokes /prod (bare /prod = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:prod` via the Skill tool. NEVER activate on your own initiative. — /homolog guaranteed → homolog promoted to production (PR or merge and push) → configured from the infra map → checked live → Jira card. Single owner of production.'
 effort: max
 requires: [homolog, infra]
 boundary: sync
 argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo pronto)"
 ---
 
-# /prod — homolog promovido, produção no ar e provado
+# /prod — homolog promovido, produção configurada e no ar
 
-Cada passo tem prova; quem digita `/prod` autoriza o release — promover não pergunta. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+Quem digita `/prod` autoriza o release — promover não pergunta. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-- [ ] Ler `.claude/ship/setup.md § Prod`: `<produção>`, URL, gatilho, checagem, rotas críticas, rollback, runner, último release, pendências, status da etapa; `<integração>` no § Homolog; falta → pergunte e grave ali
-- [ ] Diagnosticar: `verificado@homolog`, `promovido` (integração = produção em `origin`), ambiente
-- [ ] Garantir homolog: aberto → `Skill(skill: "homolog")`; só o verificado promove
-- [ ] Promover: integração atualizada → em produção → push (o gatilho) → resync produção em integração → assert em `origin`
-- [ ] Publicar: push na `<produção>`, run verde
-- [ ] Configurar prod e homolog: migrations (depois do código), env, secrets, flags, seeds do `## DevOps`
-- [ ] Validar em live, só leitura: responde, commit no ar, rotas críticas
-- [ ] Mover cada card que subiu para o status da etapa, só depois de validado
-- [ ] Atualizar § Prod e retornar promoção, run, validação, assert
+- [ ] Ler `.claude/ship/setup.md § Prod`: tem processo de PR para produção? status da etapa — e no § Homolog, tem homolog?; falta → pergunte e grave ali
+- [ ] Ler `.claude/ship/infra.md`, o ambiente de prod: branch que publica, URL, gatilho e run, como configurar, como checar, rollback; falta → `Skill(skill: "infra")`
+- [ ] Garantir o `/homolog` completo: `Skill(skill: "homolog")`; sem homolog, vai a branch de trabalho
+- [ ] Trazer homolog para produção: com processo de PR → abrir ou atualizar a PR para produção, aprovar (revisar só se você não for o autor) e mergear; sem PR → merge e push
+- [ ] Fazer todas as configs do ambiente de prod, pelo mapa do infra: migrations (depois do código), env, secrets, flags, seeds
+- [ ] Checar se realmente está no ar o que subimos: responde, commit no ar, rotas críticas sem erro
+- [ ] Atualizar o status do card Jira para o da etapa, se houver card
+- [ ] Retornar promoção (PR ou push), run, checagem, cards
 
-Produção igual à integração ⇒ branch única: sem promoção, a PR é o release, como no `/homolog`. Conflito que muda código → re-review; assert divergente → o release não fecha. Hotfix direto em produção → merge nos dois sentidos. Run vermelho seu: conserte, teto ~3; fila ou runner offline: reporte. Secret: pedido, nunca inventado → `Skill(skill: "infra")`. Falhou: volta ao passo dono; rollback oferecido, nunca automático.
+Conflito ao promover: entendendo os dois lados, nunca force; mudou código → re-review. Hotfix direto em produção → merge de volta em homolog. Run vermelho seu: conserte, teto ~3; fila ou runner offline: reporte. Rollback oferecido, nunca automático. Secret: pedido, nunca inventado.
