@@ -1,6 +1,6 @@
 {
   "name": "furi-ship",
-  "version": "0.1.0+codex.585a0bc4bbbc",
+  "version": "0.1.0+codex.2e2ddede3133",
   "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /infra mapeia a infra do projeto; o processo mora em .claude/ship/setup.md, uma seção por skill. Funciona sozinho, sem depender de outro pacote.",
   "author": {
     "name": "Eduardo Furihata",
