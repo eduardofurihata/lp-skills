@@ -4,7 +4,7 @@ description: 'Use ONLY when the user explicitly invokes /homolog (bare /homolog 
 effort: max
 requires: [work, pull-request, infra]
 handoff: prod
-argument-hint: "[PR | KEY-N | descrição] [/repro] [/card] | (vazio = tudo que está pronto)"
+argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo que está pronto)"
 ---
 
 # /homolog — a PR resolvida, depois homolog no ar e provado
@@ -13,8 +13,8 @@ Gate: aprova ou devolve; produção é o `/prod`.
 
 ## Primeiro, a PR
 
-- [ ] Compor: `repro → card → alvo`, skill de fora antes; `/prod` vence — delegue
-- [ ] Ler `.claude/ship/setup.md § Homolog`: `<integração>` (a branch que publica), URL, gatilho, checagem, rotas críticas, rollback, runner, histórico, status da etapa; criar ou atualizar a seção se e somente se faltar ou divergir, perguntando só o não derivável; `Aprovação` e `Merge` no § Pull-request
+- [ ] Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra
+- [ ] Ler `.claude/ship/setup.md § Homolog`: `<integração>` (a branch que publica), URL, gatilho, checagem, rotas críticas, rollback, runner, histórico, status da etapa; criar ou atualizar a seção só se faltar ou divergir, perguntando só o não derivável; `Aprovação` e `Merge` no § Pull-request
 - [ ] Diagnosticar antes de agir: `pr`, `integrado`, ambiente; tudo fechado → gap zero
 - [ ] Garantir a PR: faltando → `Skill(skill: "pull-request")`; sem PR por convenção, os commits não verificados da integração; abertas → uma por vez
 - [ ] Revisar o diff, sempre você: faz o que o card pede e está concluído? Bugs, edge cases, padrões, segurança; QA duvidosa → front-test do `## Como testar`
