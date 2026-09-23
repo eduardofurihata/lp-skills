@@ -2,7 +2,7 @@
 
 **FRONT É FRONT.** Cada TC roda como usuário real — abrir, navegar, clicar, preencher — com evidência. Código, tsc e "a tela carregou" **não** são teste.
 
-**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool
 
 ## Artefato
 
@@ -18,7 +18,7 @@
 
 1. tsc/lint; depois cada TC **do zero**, pela ferramenta do contexto: web = MCP Playwright (`mcp__playwright-4__*`; ocupado → próximo índice livre, fixado na rodada) · Android = emulador · iOS = simulador ou device · API = chamada real. **Mobile = Android E iOS, sempre.**
 2. PASSED (resultado esperado + screenshot com path) ou FAILED — sem meio-termo. Atualize o `## Test Cases (QA)` do to-do.
-3. Bug → **A**: corrige agora, **reseta o checklist**, volta ao Step 9 e retesta TUDO; **B/C**: ledger.
+3. Bug ou achado → corrige agora, **reseta o checklist**, volta ao Step 9 e retesta TUDO.
 4. Todos PASSED sem mudança de código → Audit Pós → Gateway.
 
 **Workaround que faz o TC passar é FAILED disfarçado.** O fix vai **para o motor**, nunca de remendo no chamador, e reabre o perímetro. Com UI, remendo de CSS é o mesmo caso — e a evidência é por **estado × breakpoint** (piso 320px), não só o happy path em desktop.
@@ -42,5 +42,5 @@ No chat: tasks N · `completed` C · evidências E · C == N e E == N? · N PASS
 - [ ] N PASSED via front com screenshot, 0 FAILED / NOT_RUN / BLOCKED; último ciclo sem mudança
 - [ ] Mobile: Android E iOS (ou N/A derivado no Step 4); UI: estado × breakpoint
 - [ ] Nenhum TC passou por workaround — fix foi ao motor e voltou pelo Step 9
-- [ ] Follow-ups no ledger (balde B bloqueia o Step 11, não este)
+- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

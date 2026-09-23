@@ -4,11 +4,11 @@
 
 ## 1. Estrutura — a numeração das pastas é contrato
 
-Confira as pastas do projeto contra o contrato. **`kanban/` (nome antigo) → `git mv kanban obra` primeiro; numeração antiga → `git mv` para a nova** (preserva histórico), **do maior para o menor** — na ordem inversa, um rename sobrescreve o outro. Pasta fora do contrato, duplicada ou com lacuna → reporte e corrija; pasta que ainda não existe **não se cria vazia**, nasce com o artefato do step.
+Confira as pastas do projeto contra o contrato. **`kanban/` (nome antigo) → `git mv kanban obra` primeiro; numeração antiga → `git mv` para a nova** (preserva histórico), **do maior para o menor** — na ordem inversa, um rename sobrescreve o outro. `11-follow-ups/` antiga → apague. Pasta fora do contrato, duplicada ou com lacuna → reporte e corrija; pasta que ainda não existe **não se cria vazia**, nasce com o artefato do step.
 
 | Step | Pasta | Antiga |
 |---|---|---|
-| 0 | `docs/00-context/` | — (fora da esteira, § 3) |
+| 0 | `docs/00-context/` | — (fora da esteira) |
 | 1 | `docs/01-problem/` | — |
 | 2 | `docs/02-user-stories/` | — |
 | 3 | `docs/03-use-cases/` | — |
@@ -19,14 +19,13 @@ Confira as pastas do projeto contra o contrato. **`kanban/` (nome antigo) → `g
 | 8 | `obra/08-implementation/` | `07-implementation` |
 | 9 | `obra/09-code-review/` | `08-code-review` |
 | 10 | `obra/10-run-test/` | `09-run-test` |
-| 11 | `obra/11-follow-ups/` | — (nova) |
-| 12 | `obra/12-done/` | `10-done` |
+| 11 | `obra/11-done/` | `12-done`, `10-done` |
 
 **Mexeu nas pastas? Commite só a arrumação antes do Step 1** (`chore: renumera docs/obra`) — ela não entra no commit único da feature.
 
 ```markdown
 ## Step 0 — Estrutura
-- Pastas no contrato: <N>/13 · renomeadas agora: <antiga → nova, ou nenhuma> · commit: <sha> / nenhum
+- Pastas no contrato: <N>/12 · renomeadas agora: <antiga → nova, ou nenhuma> · commit: <sha> / nenhum
 - Fora do contrato: <lista e o que foi feito> / nenhuma
 - **Status:** ✅ estrutura OK / ❌ ambiguidade — [o que precisa de decisão]
 ```

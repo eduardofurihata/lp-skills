@@ -2,7 +2,7 @@
 
 **8a é o portão mais barato do protocolo** — o que o plano decidir errado vira código errado. Reúso, descarte, motor, DS e perímetro se decidem **por escrito** aqui; o 8b **executa**.
 
-**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool
 
 ## 8a — Plano
 
@@ -26,7 +26,7 @@
 A cada task, **releia o plano**: ele já decidiu (§ 3.1-3.5).
 
 - **Motor** — a capacidade mora nele e o chamador **só chama**; a mesma regra encontrada fora → **absorve**.
-- **Perímetro** — cada arquivo do § 3.5 sai melhor do que entrou, ou declarado no nível #1 (`/principles`); fora dele, balde C no ledger.
+- **Perímetro** — cada arquivo do § 3.5 sai melhor do que entrou, ou declarado no nível #1 (`/principles`); fora dele, não se vasculha.
 - **DS (se tem UI)** — zero literal, todos os estados, a11y AA, breakpoints do projeto; padrão ruim no perímetro se **eleva** (`/front`).
 - **Em cada linha** — input validado, auth explícito, zero segredo no código, sanitize, least privilege; erro com contexto, nunca `catch {}`; sem N+1. O específico da stack: `.claude/patterns.md` do projeto.
 
@@ -47,4 +47,5 @@ A cada task, **releia o plano**: ele já decidiu (§ 3.1-3.5).
 - [ ] Todas as tasks marcadas; tsc/lint passam; desvios do plano **registrados**
 - [ ] Capacidade espalhada **absorvida no motor**; perímetro elevado (regra do saldo); TCs de regressão criados
 - [ ] **Se tem UI:** zero literal, todos os estados, a11y AA, breakpoints do projeto
+- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

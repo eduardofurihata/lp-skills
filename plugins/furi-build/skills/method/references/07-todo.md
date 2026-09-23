@@ -2,7 +2,7 @@
 
 **Cada task = uma unidade resolvível em um prompt — e o artefato é a superfície viva da feature até o Done.** Carrega as tasks e o checklist de QA; é o que permite parar e retomar de onde parou.
 
-**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool
 
 ## Artefato
 
@@ -31,19 +31,15 @@ A seção `## Test Cases (QA)` é o rastreador vivo do Step 10:
 
 - **Agora:** um `- [ ]` por TC de `docs/06-test-cases/<tópico>.md`, todos abertos.
 - **No Step 10:** TC que PASSA via front vira `- [x] TC-N — ✅ (path do screenshot)`; FAILED continua `- [ ]` com `❌ motivo`. **Qualquer fix de código reseta todos para `- [ ]`** — o ciclo retesta tudo.
-- **No Step 12:** o checklist final (tudo `- [x]`) é copiado para `obra/12-done/<tópico>.md` ANTES de apagar o to-do — o to-do some, o status sobrevive.
+- **No Step 11:** o checklist final (tudo `- [x]`) é copiado para `obra/11-done/<tópico>.md` ANTES de apagar o to-do — o to-do some, o status sobrevive.
 
 > Parou e vai retomar? Os `- [ ]` restantes são exatamente o que falta rodar.
-
-## Ledger de follow-ups — semear agora
-
-`obra/11-follow-ups/<tópico>.md` é onde todo achado fora do escopo é registrado e classificado do Step 1 ao 10 — é o que faz o protocolo **fechar seco** no Step 11. Crie o arquivo com o cabeçalho da tabela e transcreva o que já apareceu nas linhas "Follow-ups" dos gateways 1-6; nada apareceu → tabela vazia. Formato, baldes e status: `11-follow-ups.md`.
 
 ## Gateway 7 → 8
 
 - [ ] Tasks atômicas, rastreáveis a UC/TC, com dependências e ordem; recriar o existente virou **reúso**
 - [ ] Cada task declara **qual motor** (e, com UI, o nível atômico e o componente do DS)
 - [ ] `## Test Cases (QA)` semeada — 1 `- [ ]` por TC do Step 6
-- [ ] Ledger semeado em `obra/11-follow-ups/<tópico>.md`
 - [ ] Artefato `obra/07-todo/<tópico>.md` existe com conteúdo substantivo
+- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

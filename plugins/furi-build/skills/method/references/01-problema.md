@@ -2,7 +2,7 @@
 
 **Uma frase, e ela descreve o problema, não a solução.** "Falta um endpoint de X" é solução disfarçada; se não cabe em uma frase, você não entendeu o problema ainda.
 
-**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool
 
 ## Artefato
 
@@ -30,4 +30,5 @@
 - [ ] Problema em **1 frase clara**, sem solução embutida
 - [ ] Quem é afetado identificado (persona/role)
 - [ ] Artefato `docs/01-problem/<tópico>.md` existe com conteúdo substantivo
+- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
