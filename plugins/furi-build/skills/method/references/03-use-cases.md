@@ -2,7 +2,7 @@
 
 **Para cada user story do Step 2, derive os Use Cases que cobrem TODAS as possibilidades.** Completude é obrigatória.
 
-**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool
 
 ## Regra
 
@@ -56,4 +56,5 @@ A duplicata a caçar é **na tabela**, nunca nos UCs: o mesmo fluxo com outro at
 - [ ] Seção `## Verificação de Realidade` com cada passo do happy path mapeado a `arquivo:linha` OU 🔨 gap
 - [ ] **Se tem UI:** cada UC lista seus **estados de tela** (vazio · carregando · erro · sucesso · limite)
 - [ ] Artefato `docs/03-use-cases/<tópico>.md` existe com conteúdo substantivo
+- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

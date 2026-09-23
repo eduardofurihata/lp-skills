@@ -2,7 +2,7 @@
 
 **Em linguagem de usuário: o benefício, nunca o mecanismo.** "Quero um botão que chame o endpoint X" não é story, é solução disfarçada de necessidade.
 
-**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool
 
 ## Artefato
 
@@ -24,4 +24,5 @@
 - [ ] Stories cobrem **todas** as personas do Step 1; nenhuma story sem persona de lá
 - [ ] Formato "Como X, quero Y para Z" em cada uma, em linguagem de usuário
 - [ ] Artefato `docs/02-user-stories/<tópico>.md` existe com conteúdo substantivo
+- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

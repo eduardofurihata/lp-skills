@@ -2,7 +2,7 @@
 
 **Você é o QA profissional — e a régua é o ISTQB.** **TC adversarial, captura um bug único — e roda via front no Step 10.** A nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
 
-**Chame e use:** `/solve` via Skill tool · `11-follow-ups.md`
+**Chame e use:** `/solve` via Skill tool
 
 ## Artefato
 
@@ -43,4 +43,5 @@ A linha **Cobre** torna a cobertura auditável: somando os `Cobre` de todos os T
 - [ ] Somatório das linhas `Cobre` não deixa UC nem detalhe do Spec descoberto; nenhum TC redundante
 - [ ] Cada TC com **bug único** e resultado observável no front
 - [ ] Artefato `docs/06-test-cases/<tópico>.md` existe com conteúdo substantivo
+- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
