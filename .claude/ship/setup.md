@@ -1,39 +1,23 @@
 # Setup — lp-skills
 
-> Convenções operacionais do time neste repositório. Dono: `/setup`. Lido **sob demanda** por quem usa
-> (`/work`, `/card`, `/pull-request`, `/homolog`, `/prod` via `/setup`).
-> Nunca por `CLAUDE.md`/`@import`/`.claude/rules/`, nunca da memória da máquina.
-> NÃO mora aqui: topologia (detectada: `git ls-remote`) · board do Jira (`/jira`) · mapa da infra
-> (`.claude/ship/infra.md`) · ambientes e deploy (`.claude/ship/deploy.md`) · padrões de código (`.claude/patterns.md`).
->
-> Inferido em 2026-09-11 de: `git log -50` (49/50 em Conventional Commits, nenhuma key de card), `gh pr list --state merged` (1 PR em toda a história — o refactor #1 — contra 50 commits diretos), `gh api …/branches/main/protection` (404: sem proteção), rulesets (0), sem `CODEOWNERS`, sem template de PR, sem `CONTRIBUTING.md`, sem Jira (rastreamento local).
+> Uma seção por skill do ship; cada uma grava a sua. Mapa da infra: `.claude/ship/infra.md`.
+> Sem Jira: rastreamento local, nenhuma etapa move card.
 
-## Branch
-- Trabalho: direto na integração
-- Nome: —
+## Work
+- Branch: `main` direto
+- Commit: Conventional Commits (`feat/fix/refactor/docs/chore(<escopo>): …`, escopo = pacote ou área), sem key de card
+- DoD: `pnpm check` verde (README.md § Workflow do autor)
+- Status da etapa: —
 
-## Commit
-- Convenção: Conventional Commits        <!-- feat/fix/refactor/docs/chore(<escopo>): … — escopo = pacote ou área (gen, ci, setup, lp) -->
-- Key do card: não entra
+## Pull-request
+- Destino: sem PR — só push na `main`
+- Status da etapa: —
 
-## PR
-- Abre PR: não                           <!-- exceção pontual, por pedido explícito: refactor grande (PR #1) -->
-- Aprovação: —
-- Merge: —
-- Template: —
+## Homolog
+- Tem homolog: não — só existe a `main`
+- Status da etapa: —
 
-## Jira
-- Rastreamento: local                    <!-- sem Jira: nenhuma etapa comenta -->
-- Idioma dos cards: —
-- DoD: `pnpm check` verde
-- Destino do card novo: —
-- Atribuir a: —
-- Estrutura: —
-
-## Infra
-- Mapa: `.claude/ship/infra.md`
-- Processo: `.claude/ship/deploy.md`
-- Conta (Eduzz/Labzz): —
-
-## Guidelines
-- README.md § Workflow do autor
+## Prod
+- Processo de PR: não — o push na `main` é o release
+- Deploy: integração Git da Vercel (a LP) + o próprio GitHub (o marketplace); o CI de Actions só valida os manifestos, não deploya
+- Status da etapa: —
