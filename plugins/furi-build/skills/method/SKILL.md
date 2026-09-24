@@ -8,7 +8,7 @@ requires: solve
 
 # /method — Protocolo de Engenharia Rigorosa
 
-> 🚫 **Sem branch nem worktree novo** — trabalhe onde a conversa começou. 🚫 **Sem merge para `main`** sem o usuário autorizar ESTE merge.
+> 🚫 **Sem branch, worktree novo nem subagente** — tudo nesta conversa. 🚫 **Sem merge para `main`** sem o usuário autorizar ESTE merge.
 
 **Esta skill é FERRO.** Ativada, vale para toda a conversa, do Step 0 ao 11, com transição automática — nunca "posso prosseguir?"; única pausa: decisão irreversível que só o usuário julga. **Precisão > tokens**: "posso pular, é simples" É a violação.
 
