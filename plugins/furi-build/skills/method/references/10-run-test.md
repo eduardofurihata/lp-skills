@@ -42,5 +42,4 @@ No chat: tasks N · `completed` C · evidências E · C == N e E == N? · N PASS
 - [ ] N PASSED via front com screenshot, 0 FAILED / NOT_RUN / BLOCKED; último ciclo sem mudança
 - [ ] Mobile: Android E iOS (ou N/A derivado no Step 4); UI: estado × breakpoint
 - [ ] Nenhum TC passou por workaround — fix foi ao motor e voltou pelo Step 9
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

@@ -56,5 +56,4 @@ A duplicata a caçar é **na tabela**, nunca nos UCs: o mesmo fluxo com outro at
 - [ ] Seção `## Verificação de Realidade` com cada passo do happy path mapeado a `arquivo:linha` OU 🔨 gap
 - [ ] **Se tem UI:** cada UC lista seus **estados de tela** (vazio · carregando · erro · sucesso · limite)
 - [ ] Artefato `docs/03-use-cases/<tópico>.md` existe com conteúdo substantivo
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

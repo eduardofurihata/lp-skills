@@ -19,7 +19,7 @@ requires: solve
 - **Autoridade não é bypass** — nada pula o protocolo; ou roda 100% ou não iniciou.
 - **Retrofit é proibido** — código feito fora do `/method` volta ao Step 1 como insumo.
 - **Não existe tarefa pequena demais.** **Escopo se deriva** (Steps 3-4), nunca se declara.
-- **Sem artefato `.md` = step não executado.** **Follow-up se resolve no step em que aparece** — qualquer um, na hora: nos docs vira escopo, no código se corrige; não se caça.
+- **Sem artefato `.md` = step não executado.**
 
 ## A esteira — nomes, pastas e números são contrato
 
@@ -34,6 +34,6 @@ requires: solve
 
 ## Gateway Check — em toda transição
 
-Binário, bloqueante, publicado antes de transitar. `## Gateway Check — Step N → N+1`, linhas — ausente = não publicado: artefato e critérios do step · **Princípios** (o que o `/principles` cobrou; SOLID = os cinco) · **Refatoração** (o que subiu no perímetro, ou "já no nível #1") · **Design** (o que o `/front` cobrou, ou `N/A — derivado do Step 4`) · **Follow-ups** (achado → como se resolveu, ou nenhum) · **Veredicto** ✅ LIBERADO / ❌ BLOQUEADO — motivo.
+Binário, bloqueante, publicado antes de transitar. `## Gateway Check — Step N → N+1`, linhas — ausente = não publicado: artefato e critérios do step · **Princípios** (o que o `/principles` cobrou; SOLID = os cinco) · **Refatoração** (o que subiu no perímetro, ou "já no nível #1") · **Design** (o que o `/front` cobrou, ou `N/A — derivado do Step 4`) · **Veredicto** ✅ LIBERADO / ❌ BLOQUEADO — motivo.
 
 Fora do protocolo só typo, refactor sem mudança de comportamento, config sem código e pergunta; dúvida → Gate Check.

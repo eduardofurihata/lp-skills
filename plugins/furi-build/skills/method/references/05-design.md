@@ -22,5 +22,4 @@
 - [ ] `docs/05-design/<tópico>.md` decide **toda tela** que os UCs atravessam, cobrada pelos guarda-chuvas do `/front` — DS reusado, composto ou promovido; consistência elevada; **todos os estados**, **WCAG AA** e **breakpoints do projeto** (piso 320px) desenhados
 - [ ] Referência de mercado nomeada; desvio de padrão consagrado com motivo escrito
 - [ ] `docs/05-design/design-system.md` inventariado, com as **promoções já registradas**
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

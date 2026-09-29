@@ -28,7 +28,6 @@ Repita até zero issues — nunca "bom o suficiente":
 ## Segurança — input · auth · dados sensíveis · injection (✅/❌/N/A)
 ## Análise de Qualidade — UMA linha por princípio: SRP · OCP · LSP · ISP · DIP · DRY · KISS · YAGNI · LoD · Motores · Refatoração (saldo) · nível #1 — veredicto + evidência
 ## Análise de Design (só com UI) — UMA linha por guarda-chuva do /front — veredicto + evidência; sem UI: `N/A — derivado do Step 4`, uma vez
-## Follow-ups — achado · como foi resolvido (ou "nenhum")
 ## Veredicto — ✅ APROVADO / ❌ REQUER correções · confiança · notas para o teste
 ```
 
@@ -43,5 +42,4 @@ Relatório **brutalmente honesto**. **Não cria nem aprova PR** — só revisa, 
 - [ ] Veredicto **APROVADO**; zero issues
 - [ ] Qualidade (e Design, se tem UI) **por princípio**, nenhuma linha em branco; saldo do perímetro conferido
 - [ ] Artefato `track/09-code-review/<tópico>.md` existe com conteúdo substantivo
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

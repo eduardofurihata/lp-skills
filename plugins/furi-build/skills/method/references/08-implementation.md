@@ -40,12 +40,11 @@ A cada task, **releia o plano**: ele já decidiu (§ 3.1-3.5).
 
 - [ ] Plano autocontido, § 3.1 a § 3.5 preenchidas (3.4 se tem UI); i18n planejado se o projeto tem
 - [ ] Artefato `track/08-implementation/<tópico>.md` existe com conteúdo substantivo
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
 
 ## Gateway 8b → 9
 
 - [ ] Todas as tasks marcadas; tsc/lint passam; desvios do plano **registrados**
 - [ ] Capacidade espalhada **absorvida no motor**; perímetro elevado (regra do saldo); TCs de regressão criados
 - [ ] **Se tem UI:** zero literal, todos os estados, a11y AA, breakpoints do projeto
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

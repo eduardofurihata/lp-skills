@@ -41,5 +41,4 @@ A seção `## Test Cases (QA)` é o rastreador vivo do Step 10:
 - [ ] Cada task declara **qual motor** (e, com UI, o nível atômico e o componente do DS)
 - [ ] `## Test Cases (QA)` semeada — 1 `- [ ]` por TC do Step 6
 - [ ] Artefato `track/07-todo/<tópico>.md` existe com conteúdo substantivo
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

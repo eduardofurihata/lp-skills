@@ -43,5 +43,4 @@ A linha **Cobre** torna a cobertura auditável: somando os `Cobre` de todos os T
 - [ ] Somatório das linhas `Cobre` não deixa UC nem detalhe do Spec descoberto; nenhum TC redundante
 - [ ] Cada TC com **bug único** e resultado observável no front
 - [ ] Artefato `docs/06-test-cases/<tópico>.md` existe com conteúdo substantivo
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

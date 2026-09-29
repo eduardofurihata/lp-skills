@@ -55,7 +55,6 @@ Saída: `✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades`.
 - [ ] Loop fechou com **zero gaps**; cada D-N com todos os campos do artefato
 - [ ] **Plataforma** e **superfície visual** derivadas aqui, não declaradas
 - [ ] Artefato `docs/04-spec/<tópico>.md` existe com conteúdo substantivo
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
 
 **Sem superfície visual:** a linha de Design declara `❌ N/A — derivado do Step 4` **uma vez** aqui, o Step 5 não roda, os gateways seguintes herdam — o próximo é o **Step 6**.

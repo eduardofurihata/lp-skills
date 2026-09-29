@@ -5,7 +5,6 @@
 - [ ] Conferir as pastas do projeto contra o contrato abaixo
 - [ ] Renomear `obra/` ou `kanban/` para `track/` com `git mv`, antes de tudo
 - [ ] Renumerar as pastas antigas com `git mv`, do maior para o menor — senão um rename sobrescreve o outro
-- [ ] Apagar a `11-follow-ups/` antiga
 - [ ] Corrigir pasta fora do contrato, duplicada ou com lacuna — pasta que não existe não se cria vazia, nasce com o artefato do step
 - [ ] Commitar só a arrumação antes do Step 1 (`chore: renumera docs/track`), fora do commit da feature
 - [ ] Ler o conteúdo de todo `docs/**/*.md` e `track/**/*.md` num scan único — o nome não diz tudo
