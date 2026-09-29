@@ -4,5 +4,5 @@
 
 - [ ] Invocar o `/solve` via Skill tool
 - [ ] Escrever uma story por necessidade de cada persona que o problema afeta: "Como <persona>, quero <ação> para <benefício>."
-- [ ] Escrever `docs/02-user-stories/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — com `# <Tópico> — User Stories` e uma story por linha
+- [ ] Atualizar em `docs/02-user-stories/` os arquivos do Roteamento, no presente (`00-start.md`) — uma story por linha
 - [ ] Publicar o Gateway Check 2 → 3 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
