@@ -7,7 +7,7 @@ argument-hint: "[tela | componente | rota | pasta/ | diff] [audit]"
 
 # /front — Design: regime, não fase
 
-Irmã do `/principles` — a doutrina de design, UX e UI, viva em toda superfície visual: derivada do trabalho, nunca declarada. **Cada `- [ ]` vale o tempo todo, do primeiro pixel ao último:** ao fechar o trabalho, confira item por item e aponte o que ficou abaixo.
+Irmã do `/principles` — a doutrina de design, UX e UI, viva em toda superfície visual: derivada do trabalho, nunca declarada. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
 - [ ] Atuar como designer UI/UX profissional sênior
 - [ ] Ser criativo

@@ -1,34 +1,14 @@
 # Step 1 — Problema
 
-**Uma frase, e ela descreve o problema, não a solução.** "Falta um endpoint de X" é solução disfarçada; se não cabe em uma frase, você não entendeu o problema ainda.
+**Uma frase, e ela descreve o problema, não a solução.** "Falta um endpoint de X" é solução disfarçada; se não cabe em uma frase, você não entendeu o problema ainda. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-**Chame e use:** `/solve` via Skill tool
+- [ ] Invocar o `/solve` via Skill tool
+- [ ] Escrever o problema em 1 frase, sem solução embutida
+- [ ] Nomear a capacidade que falta, não a tela onde ela some — com UI, a fricção, não o widget
+- [ ] Separar em outro problema cada "e" da frase, cada um na sua seção
+- [ ] Identificar quem é afetado (persona/role) e como — um problema com N afetados, não N problemas gêmeos
+- [ ] Escrever `docs/01-problem/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — com `# <Tópico>` · `## Problema` (1 frase) · `## Contexto` (2-3 linhas, se preciso) · `## Afetados` (`- <persona> (<como é afetada>)`)
+- [ ] Resolver aqui o follow-up que apareceu aqui — nada se caça
+- [ ] Publicar o Gateway Check 1 → 2 com as quatro linhas obrigatórias (`SKILL.md` § Gateway Check)
 
-## Artefato
-
-`docs/01-problem/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`).
-
-```markdown
-# <Tópico>
-
-## Problema
-<1 frase>
-
-## Contexto
-<2-3 linhas, se necessário>
-
-## Afetados
-- <persona / role> (<como é afetada>)
-```
-
-- A frase nomeia a **capacidade que falta**, não a tela onde ela some — e, com UI, a **fricção**, não o widget: "falta um botão" não é problema; "o usuário não consegue voltar sem perder o que digitou" é.
-- Um problema por frase: a que tem "e" são dois, cada um na sua seção.
-- Um problema com N afetados, não N problemas gêmeos.
-
-## Gateway 1 → 2
-
-- [ ] Problema em **1 frase clara**, sem solução embutida
-- [ ] Quem é afetado identificado (persona/role)
-- [ ] Artefato `docs/01-problem/<tópico>.md` existe com conteúdo substantivo
-- [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
-- [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+"Falta um botão" não é problema; "o usuário não consegue voltar sem perder o que digitou" é.
