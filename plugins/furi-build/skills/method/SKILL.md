@@ -25,4 +25,8 @@ Tudo nesta conversa, sem branch, worktree nem subagente; merge para `main` só c
 - [ ] Rodar o Step 10 (`references/10-run-test.md`) — mudança de código volta ao 9, até 100% PASSED sem mudança
 - [ ] Rodar o Step 11 — o que vale vai aos docs, os arquivos dela saem do `track/` e sai o único commit (`references/11-done.md`)
 
-Cada step deixa as suas edições — Steps 1-6 nos docs vivos do Roteamento (`00-start.md`), 7-10 no `track/` efêmero; sem elas, não foi executado — e publica `## Gateway Check — Step N → N+1`: artefato e critérios · **Princípios** (SOLID = os cinco) · **Refatoração** · **Design** (ou `N/A — derivado do Step 4`) · **Veredicto** ✅ LIBERADO / ❌ BLOQUEADO — motivo. Fora do protocolo: typo, refactor sem mudança de comportamento, config sem código e pergunta.
+Cada step deixa as suas edições — Steps 1-6 nos docs vivos do Roteamento (`00-start.md`), 7-10 no `track/` efêmero; sem elas, não foi executado. Fora do protocolo: typo, refactor sem mudança de comportamento, config sem código e pergunta.
+
+## Gateway Check
+
+Antes de passar ao próximo step, publicar `Gateway Check — Step N → N+1`: artefato escrito · itens do step fechados · **Veredicto** ✅ LIBERADO / ❌ BLOQUEADO — motivo.

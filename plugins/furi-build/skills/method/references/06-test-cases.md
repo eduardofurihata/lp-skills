@@ -4,13 +4,8 @@
 
 - [ ] Invocar o `/solve` via Skill tool
 - [ ] Dar e publicar a nota de complexidade, de 1 a 10, derivada dos Steps 3-5 — nº de TCs == nota
-- [ ] Quebrar a feature se não couber em 10 — nunca furar o teto
 - [ ] Escrever cada TC denso, atravessando vários UCs e falhando por um motivo nomeável — as técnicas do ISTQB são lentes, nunca "1 TC por técnica"
-- [ ] Tratar plataforma, breakpoint e a11y como eixos de execução do mesmo TC, não como TCs novos
 - [ ] Preencher em cada TC: Cobre (UCs e detalhes do Step 4) · Bug único · Pré-condição · Passos que outra pessoa executa sem o seu contexto · Resultado observável no front · Prova: screenshot (Step 10)
 - [ ] Somar os `Cobre` e conferir que todo UC e todo detalhe do Spec aparecem ao menos uma vez
-- [ ] Cortar o TC cuja deleção não descobre nada e usar o slot no que falta
 - [ ] Atualizar em `docs/06-test-cases/` os arquivos do Roteamento, no presente (`00-start.md` § Doc vivo) — um `### TC-N: <nome>` por TC; o TC que o comportamento novo invalida se reescreve ou sai
 - [ ] Publicar o Gateway Check 6 → 7 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
-
-TC que espia estado interno testa implementação, não comportamento.
