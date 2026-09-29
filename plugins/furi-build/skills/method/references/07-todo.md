@@ -1,16 +1,8 @@
 # Step 7 — To Do
 
-**Cada task = uma unidade resolvível em um prompt — e o artefato é a superfície viva da feature até o Done:** é o que permite parar e retomar de onde parou. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+**O plano da feature — o portão mais barato do protocolo: o que ele decidir errado vira código errado.** Cada tarefa é uma unidade resolvível em um prompt, e o to-do é o que permite parar e retomar de onde parou. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
 - [ ] Invocar o `/solve` via Skill tool
-- [ ] Quebrar o trabalho em tasks atômicas — a que tem "e depois" são duas — na linguagem do que muda, não do como interno
-- [ ] Rastrear cada task a um UC (Step 3) ou TC (Step 6) — task sem origem não entra
-- [ ] Trocar por reúso ("estender X") a task que recria o que já existe — a checagem é grep, não memória
-- [ ] Declarar em cada task o motor que ela constrói, estende ou absorve; com UI, o nível atômico e o componente do DS
-- [ ] Anotar o perímetro que cada task vai abrir — é o que o 8a usa para planejar a elevação
-- [ ] Mapear as dependências e a ordem de execução
-- [ ] Semear `## Test Cases (QA)` com um `- [ ] TC-N: <nome>` por TC do Step 6, todos abertos
-- [ ] Escrever `track/07-todo/<objetivo>.md` — efêmero, um por esteira (`00-start.md`) — uma linha por task: `- [ ] <o que muda> · motor: <X> (nasce/estende/absorve) · UC-N/TC-N · arquivos: <lista>`
+- [ ] Analisar os docs dos Steps 1-6 e o código e criar, pelo `/solve`, o plano
+- [ ] Escrever `track/07-todo/<objetivo>.md` — o arquivo único da esteira, que muda de pasta a cada step (`00-start.md`): uma linha por tarefa, `- [ ] <o que muda> · UC-N/TC-N · arquivos: <lista>`, e `## Test Cases (QA)` com um `- [ ] TC-N: <nome>` por TC do Step 6
 - [ ] Publicar o Gateway Check 7 → 8 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
-
-`## Test Cases (QA)` é o rastreador do Step 10: PASSED vira `- [x] TC-N — ✅ (path do screenshot)`, FAILED fica `- [ ]` com `❌ motivo`, e qualquer fix de código reseta todos. No Step 11 o placar vai para a mensagem do commit e o to-do sai com os outros arquivos desta esteira. Parou? Os `- [ ]` restantes são o que falta rodar.

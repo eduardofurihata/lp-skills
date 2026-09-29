@@ -3,13 +3,6 @@
 **Toda decisão em aberto, resolvida aqui — sem perguntar.** Zero ambiguidade sobra para os steps seguintes. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
 - [ ] Invocar o `/solve` via Skill tool
-- [ ] Analisar tudo: docs dos Steps 1-3, decisões anteriores, código relevante, `CLAUDE.md`
-- [ ] Listar os gaps: stack, regras de negócio, edge cases, integrações, permissões, dados, performance, segurança, i18n, rollback — e qual capacidade a feature exige e quem é o dono dela
-- [ ] Derivar a plataforma do código: app mobile existe e a feature aparece nele → Android e iOS entram
-- [ ] Derivar a superfície visual: sim quando algum UC lista estados de tela ou algum passo acontece numa tela — "web-only" e "não tem UI" não se aceitam declarados
-- [ ] Resolver cada gap como uma D-N: justificativa e referência · UC que exige · já existe no projeto? (reusar/estender/criar) · motor dono (nasce/estende/absorve), depende de, cresce por · descartadas e por quê
-- [ ] Decidir pelo `/solve` (referência #1 e boas práticas) e depois pelo código existente (`CLAUDE.md`, `.claude/patterns.md`, convenções); empate → a mais simples; decisão sem UC vai para descartadas
-- [ ] Re-analisar do zero e repetir até zero gaps, nunca menos de um round — decisão nova criou ambiguidade, contradição ou regra que já tem dono (→ absorve no motor)?
-- [ ] Publicar `✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades`
-- [ ] Atualizar em `docs/04-spec/` os arquivos do Roteamento, no presente (`00-start.md` § Doc vivo) — com `## Escopo derivado` (plataformas · superfície visual e por quê) e `## Decisões` (`### D-N`); a D-N que a decisão nova muda se reescreve, nunca ganha outra ao lado
+- [ ] Analisar os docs dos Steps 1-3, as decisões anteriores, o código e o `CLAUDE.md` e tomar, pelo `/solve`, cada decisão necessária
+- [ ] Atualizar em `docs/04-spec/` os arquivos do Roteamento, no presente (`00-start.md`) — `## Escopo derivado` (plataformas · superfície visual) e `## Decisões`, uma `### D-N` por decisão: por quê · UC que exige · reusar, estender ou criar · descartadas e por quê; a D-N que muda se reescreve, nunca ganha outra ao lado
 - [ ] Publicar o Gateway Check 4 → 5 com as linhas obrigatórias (`SKILL.md` § Gateway Check) — sem superfície visual, o próximo é o Step 6

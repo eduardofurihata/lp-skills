@@ -21,11 +21,11 @@ Tudo nesta conversa, sem branch, worktree nem subagente; merge para `main` só c
 - [ ] Rodar o Step 6 (`references/06-test-cases.md`)
 - [ ] Rodar o Step 7 (`references/07-todo.md`)
 - [ ] Rodar o Step 8 (`references/08-implementation.md`)
-- [ ] Rodar o Step 9 (`references/09-code-review.md`)
-- [ ] Rodar o Step 10 (`references/10-run-test.md`) — mudança de código volta ao 9, até 100% PASSED sem mudança
-- [ ] Rodar o Step 11 — o que vale vai aos docs, os arquivos dela saem do `track/` e sai o único commit (`references/11-done.md`)
+- [ ] Rodar o Step 9 (`references/09-code-review.md`) — achado volta ao 8
+- [ ] Rodar o Step 10 (`references/10-run-test.md`) — TC falhando volta ao 8, até 100% PASSED sem mudança
+- [ ] Rodar o Step 11 — o que vale vai aos docs, o arquivo dela sai do `track/` e sai o único commit (`references/11-done.md`)
 
-Cada step deixa as suas edições — Steps 1-6 nos docs vivos do Roteamento (`00-start.md`), 7-10 no `track/` efêmero; sem elas, não foi executado. Fora do protocolo: typo, refactor sem mudança de comportamento, config sem código e pergunta.
+Cada step deixa as suas edições — Steps 1-6 nos docs vivos do Roteamento (`00-start.md`), 7-10 no arquivo único da esteira, que muda de pasta no `track/`; sem elas, não foi executado. Fora do protocolo: typo, refactor sem mudança de comportamento, config sem código e pergunta.
 
 ## Gateway Check
 
