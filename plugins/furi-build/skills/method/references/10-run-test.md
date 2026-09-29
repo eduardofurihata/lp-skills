@@ -6,7 +6,7 @@
 
 ## Artefato
 
-`obra/10-run-test/<tópico>.md` — nome por domínio (`00-start.md`). Evidência por TC (path do screenshot ou motivo do FAILED) e `## Test Environment Setup` (o que criou, qual `pw#`).
+`track/10-run-test/<tópico>.md` — nome por domínio (`00-start.md`). Evidência por TC (path do screenshot ou motivo do FAILED) e `## Test Environment Setup` (o que criou, qual `pw#`).
 
 ## Antes de rodar
 

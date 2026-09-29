@@ -251,7 +251,7 @@ for (const p of codexMkt?.plugins ?? []) {
 // Uma skill cita dois tipos de caminho, e só um deles é deste repo:
 //   - deste repo   → outra skill ou reference: `references/x.md`, `<slug>/SKILL.md`,
 //                    `../<slug>/references/x.md`, `plugins/<pkg>/skills/…`
-//   - do PROJETO onde a skill roda → `docs/04-spec/…`, `obra/11-done/…`, `src/…`
+//   - do PROJETO onde a skill roda → `docs/04-spec/…`, `track/11-done/…`, `src/…`
 // O segundo tipo não existe aqui e nunca deve ser cobrado — por isso a checagem
 // é por forma do caminho, não por "existe no disco".
 function walk(dir, out = []) {
@@ -268,11 +268,11 @@ function walk(dir, out = []) {
 // moram lá NO PROJETO (`.claude/ship/setup.md`, `.claude/ship/infra.md`,
 // `.github/pull_request_template.md`, `.secrets/README.md`) — sem isso a regex
 // abaixo os trataria como caminho de skill e cobraria existência aqui.
-// `obra` é a pasta da esteira do /method: caminho legítimo do projeto-alvo,
+// `track` é a pasta da esteira do /method: caminho legítimo do projeto-alvo,
 // mas SÓ para o furi-build — no furi-ship quem a barra é a regra (9).
 const TARGET_PROJECT_ROOTS = new Set([
   "docs",
-  "obra",
+  "track",
   "src",
   "app",
   "lib",
@@ -333,14 +333,14 @@ for (const pkg of packages) {
 // (9) build e ship não se conhecem — nem por nome, nem por pasta, nem por
 // vocabulário. O nome de uma skill do outro pacote um leitor humano percebe; a
 // pasta e o jargão passam batido, e foi por eles que o vazamento voltou: uma
-// skill do ship mandando gravar em `obra/11-done/` faz o modelo construir o
+// skill do ship mandando gravar em `track/11-done/` faz o modelo construir o
 // artefato do /method no meio de uma entrega. Por isso a regra é por termo, e
 // não por `requires`. O furi-toolbox fica fora: citar `/prod` de lá é fronteira
 // documentada, sem dependência.
 const VOCABULARIO_DO_IRMAO = {
   // termos do furi-build, proibidos numa skill do furi-ship
   "furi-ship":
-    /\bobras?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|solve|principles|front|proto)\b/gi,
+    /\btracks?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|solve|principles|front|proto)\b/gi,
   // e o simétrico: termos do furi-ship, proibidos numa skill do furi-build
   "furi-build":
     /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|card|repro|infra)\b/gi,

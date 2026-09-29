@@ -23,7 +23,7 @@ requires: solve
 
 ## A esteira — nomes, pastas e números são contrato
 
-`docs/`: **01-problem** · **02-user-stories** · **03-use-cases** · **04-spec** · **05-design** (só com superfície visual) · **06-test-cases**. `obra/`: **07-todo** · **08-implementation** (8a plano, 8b código) · **09-code-review** · **10-run-test** · **11-done**. Um `<tópico>.md` e um `references/NN-*.md` por step.
+`docs/`: **01-problem** · **02-user-stories** · **03-use-cases** · **04-spec** · **05-design** (só com superfície visual) · **06-test-cases**. `track/`: **07-todo** · **08-implementation** (8a plano, 8b código) · **09-code-review** · **10-run-test** · **11-done**. Um `<tópico>.md` e um `references/NN-*.md` por step.
 
 ## Como roda
 

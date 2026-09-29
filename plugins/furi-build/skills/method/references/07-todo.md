@@ -6,7 +6,7 @@
 
 ## Artefato
 
-`obra/07-todo/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Toda task rastreia a um UC (Step 3) ou TC (Step 6); task sem origem não entra.
+`track/07-todo/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Toda task rastreia a um UC (Step 3) ou TC (Step 6); task sem origem não entra.
 
 ```markdown
 # <Tópico> — To Do
@@ -31,7 +31,7 @@ A seção `## Test Cases (QA)` é o rastreador vivo do Step 10:
 
 - **Agora:** um `- [ ]` por TC de `docs/06-test-cases/<tópico>.md`, todos abertos.
 - **No Step 10:** TC que PASSA via front vira `- [x] TC-N — ✅ (path do screenshot)`; FAILED continua `- [ ]` com `❌ motivo`. **Qualquer fix de código reseta todos para `- [ ]`** — o ciclo retesta tudo.
-- **No Step 11:** o checklist final (tudo `- [x]`) é copiado para `obra/11-done/<tópico>.md` ANTES de apagar o to-do — o to-do some, o status sobrevive.
+- **No Step 11:** o checklist final (tudo `- [x]`) é copiado para `track/11-done/<tópico>.md` ANTES de apagar o to-do — o to-do some, o status sobrevive.
 
 > Parou e vai retomar? Os `- [ ]` restantes são exatamente o que falta rodar.
 
@@ -40,6 +40,6 @@ A seção `## Test Cases (QA)` é o rastreador vivo do Step 10:
 - [ ] Tasks atômicas, rastreáveis a UC/TC, com dependências e ordem; recriar o existente virou **reúso**
 - [ ] Cada task declara **qual motor** (e, com UI, o nível atômico e o componente do DS)
 - [ ] `## Test Cases (QA)` semeada — 1 `- [ ]` por TC do Step 6
-- [ ] Artefato `obra/07-todo/<tópico>.md` existe com conteúdo substantivo
+- [ ] Artefato `track/07-todo/<tópico>.md` existe com conteúdo substantivo
 - [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)

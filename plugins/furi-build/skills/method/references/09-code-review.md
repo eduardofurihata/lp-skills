@@ -17,7 +17,7 @@ Repita até zero issues — nunca "bom o suficiente":
 
 ## 9b — Relatório
 
-`obra/09-code-review/<tópico>.md` — criar/atualizar:
+`track/09-code-review/<tópico>.md` — criar/atualizar:
 
 ```markdown
 # Relatório de Code Review — <feature>
@@ -42,6 +42,6 @@ Relatório **brutalmente honesto**. **Não cria nem aprova PR** — só revisa, 
 
 - [ ] Veredicto **APROVADO**; zero issues
 - [ ] Qualidade (e Design, se tem UI) **por princípio**, nenhuma linha em branco; saldo do perímetro conferido
-- [ ] Artefato `obra/09-code-review/<tópico>.md` existe com conteúdo substantivo
+- [ ] Artefato `track/09-code-review/<tópico>.md` existe com conteúdo substantivo
 - [ ] Follow-up que apareceu aqui, resolvido aqui — nada se caça
 - [ ] As **quatro linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
