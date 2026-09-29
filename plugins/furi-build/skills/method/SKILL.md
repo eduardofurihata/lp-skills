@@ -24,9 +24,9 @@ Contrato — `docs/`: `00-context` (brainstorming) · `01-problem` · `02-user-s
 ## Steps 1-6 — docs: atualizam os arquivos do Roteamento, no presente
 
 - [ ] 1 · Problema: 1 frase, sem solução embutida → `docs/01-problem/`: `## <problema>` · `### Problema` · `### Contexto`
-- [ ] 2 · User Stories: uma por necessidade de cada persona que o problema afeta → `docs/02-user-stories/`: "Como <persona>, quero <ação> para <benefício>."
-- [ ] 3 · Use Cases: todos os casos de uso de cada story → `docs/03-use-cases/`: `## UC-N — <nome>` · Ator · Fluxo · Resultado · Estados de tela (com UI)
-- [ ] 4 · Spec: toda decisão em aberto, sem perguntar, olhando docs, código e `CLAUDE.md` → `docs/04-spec/`: `## Escopo derivado` (plataformas · superfície visual) e `### D-N` · por quê · UC que exige · reusar, estender ou criar · descartadas — sem superfície visual, pula o 5
+- [ ] 2 · User Stories: uma por necessidade de cada persona que o problema afeta → `docs/02-user-stories/`
+- [ ] 3 · Use Cases: todos os casos de uso de cada story → `docs/03-use-cases/`
+- [ ] 4 · Spec: toda decisão em aberto, sem perguntar, olhando docs, código e `CLAUDE.md` → `docs/04-spec/` — sem superfície visual, pula o 5
 - [ ] 5 · Design: as decisões de cada tela, pelo `/front` → `docs/05-design/`: `## <tela>` + o que o DS ganhou no `docs/05-design/design-system.md`
 - [ ] 6 · Test Cases: no máximo 10, adversariais, pela régua do ISTQB, cobrindo todo UC e D-N → `docs/06-test-cases/`: `### TC-N` · Cobre · Bug único · Pré-condição · Passos que outra pessoa executa · Resultado no front
 
