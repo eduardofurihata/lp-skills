@@ -10,5 +10,5 @@
 - [ ] Desenhar todos os estados, WCAG AA e os breakpoints do projeto (piso 320px)
 - [ ] Elevar aqui o padrão do DS que está abaixo do nível no perímetro da feature — não se copia adiante
 - [ ] Registrar agora as promoções em `docs/05-design/design-system.md`, único e cumulativo — o 8b só usa
-- [ ] Escrever `docs/05-design/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — no formato que melhor comunica a decisão: prosa, croqui ou lista
+- [ ] Atualizar em `docs/05-design/` os arquivos do Roteamento, no presente (`00-start.md` § Doc vivo) — no formato que melhor comunica a decisão: prosa, croqui ou lista
 - [ ] Publicar o Gateway Check 5 → 6 com as linhas obrigatórias (`SKILL.md` § Gateway Check)

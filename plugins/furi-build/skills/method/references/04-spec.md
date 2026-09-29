@@ -11,5 +11,5 @@
 - [ ] Decidir pelo `/solve` (referência #1 e boas práticas) e depois pelo código existente (`CLAUDE.md`, `.claude/patterns.md`, convenções); empate → a mais simples; decisão sem UC vai para descartadas
 - [ ] Re-analisar do zero e repetir até zero gaps, nunca menos de um round — decisão nova criou ambiguidade, contradição ou regra que já tem dono (→ absorve no motor)?
 - [ ] Publicar `✅ Spec completo — [N] rounds, [M] decisões, zero ambiguidades`
-- [ ] Escrever `docs/04-spec/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — com `## Escopo derivado` (plataformas · superfície visual e por quê) e `## Decisões` (`### D-N`)
+- [ ] Atualizar em `docs/04-spec/` os arquivos do Roteamento, no presente (`00-start.md` § Doc vivo) — com `## Escopo derivado` (plataformas · superfície visual e por quê) e `## Decisões` (`### D-N`); a D-N que a decisão nova muda se reescreve, nunca ganha outra ao lado
 - [ ] Publicar o Gateway Check 4 → 5 com as linhas obrigatórias (`SKILL.md` § Gateway Check) — sem superfície visual, a linha de Design declara `❌ N/A — derivado do Step 4` uma vez aqui, os seguintes herdam e o próximo é o Step 6

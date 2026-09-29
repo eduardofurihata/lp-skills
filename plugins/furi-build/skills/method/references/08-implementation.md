@@ -3,7 +3,7 @@
 **8a é o portão mais barato do protocolo** — o que o plano decidir errado vira código errado. Reúso, descarte, motor, DS e perímetro se decidem por escrito aqui; o 8b executa. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
 - [ ] Invocar o `/solve` via Skill tool
-- [ ] Escrever `track/08-implementation/<tópico>.md` autocontido — nome por domínio, atualiza o que já cobre (`00-start.md`) — com 1 Contexto (Steps 1-5) · 2 Código existente e i18n (string user-facing é chave) · 3 Estratégia (ordem das tasks, referência, uma frase por arquivo, extensão e direção das dependências) · 4 Mapa TC → código · 5 Riscos · 6 Checklist de tasks
+- [ ] Escrever `track/08-implementation/<objetivo>.md` autocontido — efêmero, um por esteira (`00-start.md`) — com 1 Contexto (Steps 1-5) · 2 Código existente e i18n (string user-facing é chave) · 3 Estratégia (ordem das tasks, referência, uma frase por arquivo, extensão e direção das dependências) · 4 Mapa TC → código · 5 Riscos · 6 Checklist de tasks
 - [ ] Decidir o reúso (§ 3.1): preciso de → já existe? (grep) → reutilizar / estender / criar justificado
 - [ ] Listar o que não se constrói (§ 3.2): cogitado e sem UC
 - [ ] Mapear os motores (§ 3.3): capacidade → motor → nasce / estende / absorve

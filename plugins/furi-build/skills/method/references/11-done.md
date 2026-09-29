@@ -1,13 +1,13 @@
 # Step 11 — Done
 
-**Step terminal — não existe Step 12.** O artefato é promovido para `done` e **só então** o trabalho é commitado, num **único commit**, na branch atual: mover primeiro, commitar por último. Nenhuma decisão nova de arquitetura ou design se toma aqui. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+**Step terminal — não existe Step 12.** O que a esteira aprendeu e ainda vale vai para os docs vivos, os arquivos dela saem do `track/` e **só então** o trabalho é commitado, num **único commit**, na branch atual: consolidar primeiro, commitar por último. Nenhuma decisão nova de arquitetura ou design se toma aqui. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
 - [ ] Invocar o `/solve` via Skill tool
-- [ ] Escrever `track/11-done/<tópico>.md` (nome por domínio, `00-start.md`) com links para todos os artefatos (`docs/01` … `docs/06`, `track/08` … `track/10`) e a lista de arquivos de código alterados
-- [ ] Copiar para o done doc o checklist por TC (`- [x] TC-N`) da seção `## Test Cases (QA)` do to-do
-- [ ] Escrever as 5 linhas de princípios, sem prosa: **Reutilizado** (DRY, § 3.1 do plano) · **Descartado** (YAGNI, § 3.2) · **Motores** (§ 3.3: nasceram, cresceram, absorveram) · **Elevado** (perímetro § 3.5: o que subiu e o que já estava no nível #1) · **DS ganhou** (`/front`, se tem UI; nada → "coube no DS existente")
-- [ ] Deletar o to-do: `rm track/07-todo/<tópico>.md` — em `track/`, a pasta é o status
-- [ ] Commitar uma vez, na branch atual: `git add -A` + `git commit -m "feat(<escopo>): <descrição>"` — código, artefatos 01-10, done e remoções; nenhum commit antes, nenhum depois, e o SHA não vai ao done
+- [ ] Levar aos docs do Roteamento o que o `track/` decidiu e ainda vale — desvio do plano que virou regra entra na D-N do spec; o resto morre com os arquivos da esteira
+- [ ] Conferir que cada doc tocado descreve o estado de agora, sem `Round N`, `-iterN` nem changelog (`00-start.md` § Doc vivo)
+- [ ] Escrever a mensagem do commit: `feat(<escopo>): <descrição>` e, no corpo, o placar `X de N PASSED via front` do `## Test Cases (QA)` e as 5 linhas de princípios, sem prosa: **Reutilizado** (DRY, § 3.1 do plano) · **Descartado** (YAGNI, § 3.2) · **Motores** (§ 3.3: nasceram, cresceram, absorveram) · **Elevado** (perímetro § 3.5: o que subiu e o que já estava no nível #1) · **DS ganhou** (`/front`, se tem UI; nada → "coube no DS existente")
+- [ ] Apagar só os arquivos desta esteira: `track/*/<objetivo>.md` e a evidência dela — nunca o `track/` inteiro, que pode ter esteira em paralelo
+- [ ] Commitar uma vez, na branch atual: `git add -A -- . ':(exclude)track'` + `git commit` com essa mensagem — código, docs e remoções; nenhum commit da feature antes, nenhum depois
 - [ ] Encerrar dizendo o que foi feito — sem pendência, próximo passo nem sugestão
 
 Tudo ✅ → feature encerrada. **Fim do protocolo.**

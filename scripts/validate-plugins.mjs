@@ -251,7 +251,7 @@ for (const p of codexMkt?.plugins ?? []) {
 // Uma skill cita dois tipos de caminho, e só um deles é deste repo:
 //   - deste repo   → outra skill ou reference: `references/x.md`, `<slug>/SKILL.md`,
 //                    `../<slug>/references/x.md`, `plugins/<pkg>/skills/…`
-//   - do PROJETO onde a skill roda → `docs/04-spec/…`, `track/11-done/…`, `src/…`
+//   - do PROJETO onde a skill roda → `docs/04-spec/…`, `track/08-implementation/…`, `src/…`
 // O segundo tipo não existe aqui e nunca deve ser cobrado — por isso a checagem
 // é por forma do caminho, não por "existe no disco".
 function walk(dir, out = []) {

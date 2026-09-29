@@ -14,7 +14,7 @@
 - [ ] Reconciliar: TC sem evidência = NOT_RUN, nunca "coberto por"
 - [ ] Publicar o Audit Pós: C == N · E == N · 0 FAILED/NOT_RUN/BLOCKED · último ciclo sem mudança
 - [ ] Abrir o report com `X de N PASSED via front. Y NOT_RUN. Z FAILED. Net: PASS|FAIL|INCOMPLETE.`
-- [ ] Escrever `track/10-run-test/<tópico>.md` (nome por domínio, `00-start.md`) com evidência por TC e `## Test Environment Setup` (o que criou, qual `pw#`)
+- [ ] Escrever `track/10-run-test/<objetivo>.md` (efêmero, `00-start.md`) com evidência por TC e `## Test Environment Setup` (o que criou, qual `pw#`)
 - [ ] Publicar o Gateway Check 10 → 11 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
 
 Workaround que faz o TC passar é FAILED disfarçado. Dizer "não rodei X" não libera PASSED: pragmatismo muda o como, nunca o quanto.

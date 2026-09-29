@@ -10,7 +10,7 @@
 - [ ] Preencher em cada TC: Cobre (UCs e detalhes do Step 4) · Bug único · Pré-condição · Passos que outra pessoa executa sem o seu contexto · Resultado observável no front · Prova: screenshot (Step 10)
 - [ ] Somar os `Cobre` e conferir que todo UC e todo detalhe do Spec aparecem ao menos uma vez
 - [ ] Cortar o TC cuja deleção não descobre nada e usar o slot no que falta
-- [ ] Escrever `docs/06-test-cases/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — com um `### TC-N: <nome>` por TC
+- [ ] Atualizar em `docs/06-test-cases/` os arquivos do Roteamento, no presente (`00-start.md` § Doc vivo) — um `### TC-N: <nome>` por TC; o TC que o comportamento novo invalida se reescreve ou sai
 - [ ] Publicar o Gateway Check 6 → 7 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
 
 TC que espia estado interno testa implementação, não comportamento.

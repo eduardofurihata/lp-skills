@@ -10,7 +10,7 @@
 - [ ] Anotar o perímetro que cada task vai abrir — é o que o 8a usa para planejar a elevação
 - [ ] Mapear as dependências e a ordem de execução
 - [ ] Semear `## Test Cases (QA)` com um `- [ ] TC-N: <nome>` por TC do Step 6, todos abertos
-- [ ] Escrever `track/07-todo/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — uma linha por task: `- [ ] <o que muda> · motor: <X> (nasce/estende/absorve) · UC-N/TC-N · arquivos: <lista>`
+- [ ] Escrever `track/07-todo/<objetivo>.md` — efêmero, um por esteira (`00-start.md`) — uma linha por task: `- [ ] <o que muda> · motor: <X> (nasce/estende/absorve) · UC-N/TC-N · arquivos: <lista>`
 - [ ] Publicar o Gateway Check 7 → 8 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
 
-`## Test Cases (QA)` é o rastreador do Step 10: PASSED vira `- [x] TC-N — ✅ (path do screenshot)`, FAILED fica `- [ ]` com `❌ motivo`, e qualquer fix de código reseta todos. No Step 11 ele é copiado para o done antes de o to-do sumir. Parou? Os `- [ ]` restantes são o que falta rodar.
+`## Test Cases (QA)` é o rastreador do Step 10: PASSED vira `- [x] TC-N — ✅ (path do screenshot)`, FAILED fica `- [ ]` com `❌ motivo`, e qualquer fix de código reseta todos. No Step 11 o placar vai para a mensagem do commit e o to-do sai com os outros arquivos desta esteira. Parou? Os `- [ ]` restantes são o que falta rodar.
