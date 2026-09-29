@@ -1,46 +1,16 @@
 # Step 6 — Test Cases
 
-**Você é o QA profissional — e a régua é o ISTQB.** **TC adversarial, captura um bug único — e roda via front no Step 10.** A nota de complexidade dá o número de TCs, e esses N TCs cobrem 100% dos UCs e do Spec.
+**Você é o QA profissional — e a régua é o ISTQB.** TC adversarial, captura um bug único e roda via front no Step 10; deriva da spec, nunca do código. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-**Chame e use:** `/solve` via Skill tool
+- [ ] Invocar o `/solve` via Skill tool
+- [ ] Dar e publicar a nota de complexidade, de 1 a 10, derivada dos Steps 3-5 — nº de TCs == nota
+- [ ] Quebrar a feature se não couber em 10 — nunca furar o teto
+- [ ] Escrever cada TC denso, atravessando vários UCs e falhando por um motivo nomeável — as técnicas do ISTQB são lentes, nunca "1 TC por técnica"
+- [ ] Tratar plataforma, breakpoint e a11y como eixos de execução do mesmo TC, não como TCs novos
+- [ ] Preencher em cada TC: Cobre (UCs e detalhes do Step 4) · Bug único · Pré-condição · Passos que outra pessoa executa sem o seu contexto · Resultado observável no front · Prova: screenshot (Step 10)
+- [ ] Somar os `Cobre` e conferir que todo UC e todo detalhe do Spec aparecem ao menos uma vez
+- [ ] Cortar o TC cuja deleção não descobre nada e usar o slot no que falta
+- [ ] Escrever `docs/06-test-cases/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — com um `### TC-N: <nome>` por TC
+- [ ] Publicar o Gateway Check 6 → 7 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
 
-## Artefato
-
-`docs/06-test-cases/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`).
-
-```markdown
-# <Tópico> — Test Cases
-
-### TC-N: <nome>
-- Cobre: <UCs e detalhes do Step 4 que este TC contempla — ex: UC-1, UC-3, a11y, mobile>
-- Bug único: <frase concreta>
-- Pré-condição: <setup, estado, persona>
-- Passos: <numerados, executáveis por outra pessoa sem o seu contexto>
-- Resultado: <observável no front>
-- Prova: screenshot (Step 10)
-```
-
-A linha **Cobre** torna a cobertura auditável: somando os `Cobre` de todos os TCs, todo UC (Step 3) e todo detalhe do Spec (Step 4) aparece ao menos uma vez. O resultado é observável **no front** — TC que espia estado interno testa implementação, não comportamento.
-
-## Quantidade e cobertura
-
-- **A quantidade de TCs é a complexidade do problema** — nota 1-10 derivada dos Steps 3-5, nunca do código, que ainda não existe. `nº de TCs == nota`; mínimo 1, máximo 10.
-- **Esses N TCs cobrem 100% dos UCs e do Spec.** Como N costuma ser menor que o total, cada TC é **denso** — atravessa vários UCs de uma vez — e ainda assim falha por **um** motivo nomeável. As técnicas do ISTQB são **lentes** para empacotar cobertura, não geradores — nunca "1 TC por técnica".
-- **Plataforma, breakpoint e a11y são eixos de execução, não TCs novos:** o mesmo TC roda em Android e iOS; dois TCs gêmeos por breakpoint furam o teto.
-- **Não coube em 10?** A feature é grande demais para um ciclo — **quebre**. Nunca fure o teto.
-
-## Significância — cada TC puxa cobertura
-
-> *"Se eu deletar este TC, algum UC ou detalhe do Step 4 fica descoberto — um bug ÚNICO passaria?"* SIM → necessário. NÃO → redundante; reaproveite o slot para o que ainda falta.
-
-## PARE se pensar
-
-- **"Escrevo os TCs depois de codar, é mais fácil."** TC deriva da **spec** (o que o sistema DEVERIA fazer), não do código (o que ele FAZ). Depois = confirmação, não validação. BLOQUEADO.
-
-## Gateway 6 → 7
-
-- [ ] **Nota de complexidade publicada**, derivada dos Steps 3-5; **nº de TCs == nota**, ≤ 10
-- [ ] Somatório das linhas `Cobre` não deixa UC nem detalhe do Spec descoberto; nenhum TC redundante
-- [ ] Cada TC com **bug único** e resultado observável no front
-- [ ] Artefato `docs/06-test-cases/<tópico>.md` existe com conteúdo substantivo
-- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+TC que espia estado interno testa implementação, não comportamento.

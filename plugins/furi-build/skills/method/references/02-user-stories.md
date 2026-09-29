@@ -1,27 +1,13 @@
 # Step 2 — User Stories
 
-**Em linguagem de usuário: o benefício, nunca o mecanismo.** "Quero um botão que chame o endpoint X" não é story, é solução disfarçada de necessidade.
+**Em linguagem de usuário: o benefício, nunca o mecanismo.** "Quero um botão que chame o endpoint X" não é story, é solução disfarçada de necessidade — e cada story é um requisito. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-**Chame e use:** `/solve` via Skill tool
-
-## Artefato
-
-`docs/02-user-stories/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Toda persona do Step 1 tem story aqui; story sem persona de lá não entra — e cada story é um requisito.
-
-```markdown
-# <Tópico> — User Stories
-
-- Como <persona>, quero <ação> para <benefício>.
-```
-
-- 1 story = 1 necessidade de 1 persona; a que tem "e também" são duas.
-- A mesma necessidade em duas personas é **uma** story com dois atores, não duas gêmeas.
-- Stories que pedem a mesma capacidade apontam para o **mesmo motor** — anote, o Step 4 vai usar.
-- **Se tem UI:** a story descreve o **resultado para o usuário**, nunca o componente: "quero ver o total atualizado", não "quero um badge azul".
-
-## Gateway 2 → 3
-
-- [ ] Stories cobrem **todas** as personas do Step 1; nenhuma story sem persona de lá
-- [ ] Formato "Como X, quero Y para Z" em cada uma, em linguagem de usuário
-- [ ] Artefato `docs/02-user-stories/<tópico>.md` existe com conteúdo substantivo
-- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+- [ ] Invocar o `/solve` via Skill tool
+- [ ] Escrever uma story por necessidade de cada persona do Step 1: "Como <persona>, quero <ação> para <benefício>."
+- [ ] Separar em duas a story que tem "e também"
+- [ ] Juntar numa story só, com dois atores, a mesma necessidade em duas personas
+- [ ] Anotar o mesmo motor nas stories que pedem a mesma capacidade — o Step 4 vai usar
+- [ ] Descrever, com UI, o resultado para o usuário, nunca o componente: "quero ver o total atualizado", não "quero um badge azul"
+- [ ] Conferir que toda persona do Step 1 tem story e nenhuma story vem sem persona de lá
+- [ ] Escrever `docs/02-user-stories/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — com `# <Tópico> — User Stories` e uma story por linha
+- [ ] Publicar o Gateway Check 2 → 3 com as linhas obrigatórias (`SKILL.md` § Gateway Check)

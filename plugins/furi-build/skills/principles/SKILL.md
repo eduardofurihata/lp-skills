@@ -7,20 +7,22 @@ argument-hint: "[pasta/ | arquivo | diff | commit <sha>] [audit]"
 
 # /principles — Engenharia: regime, não fase
 
-> **Fonte única da doutrina de engenharia** — irmã do `/front`, mesma régua.
+Fonte única da doutrina de engenharia, irmã do `/front`: vale do primeiro rascunho ao último review, no doc e no código, no que você escreve e no que toca. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-**Você é o engenheiro** — sênior, do tipo que assina o que entrega. **Os princípios não são fase, são regime:** valem do primeiro rascunho ao último review, no doc e no código, no que você escreve **e** no que você toca. O nível é referência #1; genérico é falha.
+- [ ] Atuar como engenheiro sênior, do tipo que assina o que entrega
+- [ ] Aplicar o SRP: uma responsabilidade por unidade
+- [ ] Aplicar o OCP: crescer por extensão, não por `if` novo
+- [ ] Aplicar o LSP: quem implementa o contrato honra o contrato
+- [ ] Aplicar o ISP: interface pequena
+- [ ] Aplicar o DIP: depender de abstração, na direção do domínio
+- [ ] Aplicar o DRY: uma fonte de verdade — procurar antes de criar
+- [ ] Aplicar o KISS: a solução mais simples que atinge o nível #1
+- [ ] Aplicar o YAGNI: só o que o requisito exige, zero abstração especulativa
+- [ ] Dar um dono a cada capacidade — o motor: nome = capacidade, contrato pequeno, o chamador só chama
+- [ ] Aplicar a LoD: falar só com o vizinho, dependência numa direção, zero ciclo
+- [ ] Elevar todo arquivo do perímetro ou declará-lo no nível #1 — fora dele, listar sem mexer
+- [ ] Declarar o perímetro do alvo
+- [ ] Elevar o que está abaixo sem mudar comportamento — mudar é achado
+- [ ] Relatar: subiu · já no nível · achados fora do perímetro
 
-## Os guarda-chuvas
-
-- **SOLID são cinco.** SRP, OCP, LSP, ISP, DIP — cobrados **por nome**: o que não é nomeado nunca é revisado. Uma responsabilidade por unidade; cresce por extensão, não por `if` novo; quem implementa o contrato honra o contrato; interface pequena; dependa de abstração, na direção do domínio.
-- **DRY · KISS · YAGNI.** Uma fonte de verdade — antes de criar, procure. A solução mais simples que atinge o nível #1 — simplicidade ≠ mediocridade. Só o que o requisito exige — zero abstração especulativa. KISS e YAGNI matam a complexidade *desnecessária*; a *necessária* para o nível #1 é requisito.
-- **Toda capacidade tem um dono — o motor.** Nome = capacidade, não camada; contrato pequeno e público — o chamador só chama. Duas fontes da mesma regra = defeito. **Fale só com o vizinho** (Law of Demeter): `a.b.c.d` é acoplamento a três objetos; direção de dependência declarada, zero ciclo. Auto-check: *se essa regra mudar, existe UM arquivo pra abrir?*
-- **Refatoração contínua.** Tudo por onde o trabalho passa sobe — o **perímetro** é o que você editou, abriu para entender, o dependente direto e o caminho do fluxo. **Regra do saldo:** nenhum arquivo do perímetro sai no nível em que entrou — ou subiu, ou você declara que já estava no nível #1. Dentro, sem timidez; fora, **lista**, não mexe.
-
-## Aplicar a um alvo
-
-Sem alvo, a doutrina passa a valer para o trabalho em curso. Com um — `pasta/`, arquivo, `diff` ou `commit <sha>` —, declare o perímetro, passe os guarda-chuvas um a um e **por nome**, eleve o que está abaixo **sem mudar comportamento** (mudar comportamento é achado, não correção) e relate: o que subiu · o que já estava no nível · achados fora do perímetro. `audit` = só relatório. **Nunca commita, nunca cria branch.**
-
-## PARE se pensar
-"princípio é coisa de código, aqui é doc" · "duplicar é mais rápido que entender o que existe" · "YAGNI, então não faço o que foi pedido" · "o arquivo já estava ruim, não fui eu" · "SOLID eu cubro com o SRP" · "é só um `if` a mais, não precisa de motor" · "refatorei e aproveitei pra mudar o comportamento"
+`audit` = só relatório. Nunca commita, nunca cria branch.

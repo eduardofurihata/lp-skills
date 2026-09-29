@@ -1,44 +1,16 @@
 # Step 7 — To Do
 
-**Cada task = uma unidade resolvível em um prompt — e o artefato é a superfície viva da feature até o Done.** Carrega as tasks e o checklist de QA; é o que permite parar e retomar de onde parou.
+**Cada task = uma unidade resolvível em um prompt — e o artefato é a superfície viva da feature até o Done:** é o que permite parar e retomar de onde parou. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
-**Chame e use:** `/solve` via Skill tool
+- [ ] Invocar o `/solve` via Skill tool
+- [ ] Quebrar o trabalho em tasks atômicas — a que tem "e depois" são duas — na linguagem do que muda, não do como interno
+- [ ] Rastrear cada task a um UC (Step 3) ou TC (Step 6) — task sem origem não entra
+- [ ] Trocar por reúso ("estender X") a task que recria o que já existe — a checagem é grep, não memória
+- [ ] Declarar em cada task o motor que ela constrói, estende ou absorve; com UI, o nível atômico e o componente do DS
+- [ ] Anotar o perímetro que cada task vai abrir — é o que o 8a usa para planejar a elevação
+- [ ] Mapear as dependências e a ordem de execução
+- [ ] Semear `## Test Cases (QA)` com um `- [ ] TC-N: <nome>` por TC do Step 6, todos abertos
+- [ ] Escrever `track/07-todo/<tópico>.md` — nome por domínio; doc que já cobre o domínio se atualiza, não se duplica (`00-start.md`) — uma linha por task: `- [ ] <o que muda> · motor: <X> (nasce/estende/absorve) · UC-N/TC-N · arquivos: <lista>`
+- [ ] Publicar o Gateway Check 7 → 8 com as linhas obrigatórias (`SKILL.md` § Gateway Check)
 
-## Artefato
-
-`track/07-todo/<tópico>.md` — nome por domínio; doc que já cobre o domínio se **atualiza**, não se duplica (`00-start.md`). Toda task rastreia a um UC (Step 3) ou TC (Step 6); task sem origem não entra.
-
-```markdown
-# <Tópico> — To Do
-
-- [ ] <task — o que muda> · motor: <X> (nasce / estende / absorve) · UC-N / TC-N · arquivos: <lista>
-
-## Test Cases (QA)
-- [ ] TC-1: <nome>
-```
-
-## Regras
-
-- Tasks atômicas (1 prompt por task) — a que tem "e depois" são duas; descrição na linguagem do **que muda**, não do como interno.
-- Task que recria o que já existe vira task de **reúso** ("estender X") — a checagem é grep, não memória.
-- Cada task declara **qual motor** constrói, estende ou absorve — nenhuma espalha a mesma regra por N telas. **Se tem UI:** declara o nível atômico e o componente do DS que constrói, estende ou promove.
-- O **perímetro** que a task vai abrir já entra anotado — é o que o 8a usa para planejar a elevação.
-- Dependências mapeadas, ordem de execução óbvia.
-
-## Checklist de QA — testado ou não
-
-A seção `## Test Cases (QA)` é o rastreador vivo do Step 10:
-
-- **Agora:** um `- [ ]` por TC de `docs/06-test-cases/<tópico>.md`, todos abertos.
-- **No Step 10:** TC que PASSA via front vira `- [x] TC-N — ✅ (path do screenshot)`; FAILED continua `- [ ]` com `❌ motivo`. **Qualquer fix de código reseta todos para `- [ ]`** — o ciclo retesta tudo.
-- **No Step 11:** o checklist final (tudo `- [x]`) é copiado para `track/11-done/<tópico>.md` ANTES de apagar o to-do — o to-do some, o status sobrevive.
-
-> Parou e vai retomar? Os `- [ ]` restantes são exatamente o que falta rodar.
-
-## Gateway 7 → 8
-
-- [ ] Tasks atômicas, rastreáveis a UC/TC, com dependências e ordem; recriar o existente virou **reúso**
-- [ ] Cada task declara **qual motor** (e, com UI, o nível atômico e o componente do DS)
-- [ ] `## Test Cases (QA)` semeada — 1 `- [ ]` por TC do Step 6
-- [ ] Artefato `track/07-todo/<tópico>.md` existe com conteúdo substantivo
-- [ ] As **linhas obrigatórias** publicadas (`SKILL.md` § Gateway Check)
+`## Test Cases (QA)` é o rastreador do Step 10: PASSED vira `- [x] TC-N — ✅ (path do screenshot)`, FAILED fica `- [ ]` com `❌ motivo`, e qualquer fix de código reseta todos. No Step 11 ele é copiado para o done antes de o to-do sumir. Parou? Os `- [ ]` restantes são o que falta rodar.
