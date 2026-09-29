@@ -7,7 +7,7 @@ argument-hint: "[pasta/ | arquivo | diff | commit <sha>] [audit]"
 
 # /principles — Engenharia: regime, não fase
 
-Fonte única da doutrina de engenharia, irmã do `/front`: vale do primeiro rascunho ao último review, no doc e no código, no que você escreve e no que toca. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+Fonte única da doutrina de engenharia: vale do primeiro rascunho ao último review, no doc e no código, no que você escreve e no que toca. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
 
 - [ ] Atuar como engenheiro sênior, do tipo que assina o que entrega
 - [ ] Aplicar o SRP: uma responsabilidade por unidade

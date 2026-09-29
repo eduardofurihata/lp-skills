@@ -14,7 +14,7 @@ O entregável não é uma tela, é uma **escolha**. Não commita e não cria `do
 - [ ] Invocar `furi-build:solve` via Skill tool — traz o `/principles` e o `/front`
 - [ ] Perguntar qual tela, se não ficou claro
 - [ ] Ler a tela atual pelos dados, estados e o que a pessoa vem fazer — não pelo layout
-- [ ] Criar 3 versões que competem de verdade, cada uma apostando em algo diferente (hierarquia, fluxo, densidade)
+- [ ] Criar 3 versões que competem de verdade
 - [ ] Publicar cada uma em rota paralela temporária — `{rota-original}-v1`, `-v2`, `-v3` — com a original e o código compartilhado intocados
 - [ ] Usar tokens, componentes e tipografia do design system; o que falta sai da composição, sem promover ao DS
 - [ ] Fazer mobile e desktop nos breakpoints do projeto
