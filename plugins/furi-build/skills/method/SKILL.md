@@ -1,45 +1,72 @@
 ---
 name: method
-description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — the rigorous engineering protocol: 11 steps (plus Step 0) from problem to committed code, living docs updated in place.'
+description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — rigorous engineering protocol: Step 0 + 11 steps from problem to commit, living docs in place.'
 argument-hint: "[objetivo]"
 requires: solve
 ---
 
 # /method — Protocolo de Engenharia Rigorosa
 
-Não cria branch nem worktree, não usa subagente, não faz push nem merge: faz o commit e para.
-
-**Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima. Os Steps 1-10 abrem com `- [ ] Invocar o /solve via Skill tool` — cada item do step se decide e se faz no nível dele — e fecham com `- [ ] Publicar o Gateway Check N → N+1`: ✅ LIBERADO ou ❌ BLOQUEADO, com o motivo — ❌ refaz o step.
+Não cria branch, worktree nem subagente, não faz push nem merge. Cada `- [ ]` é uma tarefa: `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima. Invocar = Skill tool, chamada real. Gateway = ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Docs (1-6) no presente, sem `Round N` nem changelog; Steps 7-10 levam o `<objetivo>.md` à pasta do step em `track/`.
 
 ## Step 0 — Start
+- [ ] Rotear cada parte do pedido ao doc de `docs/` dono dela (novo só sem dono, com motivo, nomeado pela capacidade) e publicar o Roteamento
+- [ ] Retomar do step da pasta do `<objetivo>.md`, se já existe em `track/`
 
-- [ ] Rotear cada parte do pedido ao doc que já é dono dela e publicar o Roteamento no chat
+## Step 1 — Problem
+- [ ] Invocar o /solve
+- [ ] Escrever o problema em 1 frase (≤ 150 chars) com contexto (≤ 300), sem solução → `docs/01-problem/`
+- [ ] Publicar Gateway 1 → 2
 
-**Rotear:** procurar o dono em `docs/`; doc novo só sem dono, com o motivo, nomeado pela capacidade, nunca pelo ticket.
-
-Se o `<objetivo>.md` já existe em `track/`, a esteira retoma do step da pasta dele.
-
-## Steps 1-6 — docs: atualizam os arquivos do Roteamento, reescritos no presente, sem `Round N` nem changelog
-
-- [ ] Escrever o problema em 1 frase (até 150 caracteres) com contexto (até 300), sem dar solução → `docs/01-problem/`
+## Step 2 — User stories
+- [ ] Invocar o /solve
 - [ ] Criar as user stories do problema → `docs/02-user-stories/`
+- [ ] Publicar Gateway 2 → 3
+
+## Step 3 — Use cases
+- [ ] Invocar o /solve
 - [ ] Criar os use cases de cada story → `docs/03-use-cases/`
-- [ ] Decidir o que está em aberto, analisando docs e código → `docs/04-spec/`
-- [ ] Decidir o design de cada tela, se houver → `docs/05-design/` e o `design-system.md`
+- [ ] Publicar Gateway 3 → 4
+
+## Step 4 — Spec
+- [ ] Invocar o /solve
+- [ ] Decidir o que está em aberto, lendo docs e código → `docs/04-spec/`
+- [ ] Publicar Gateway 4 → 5
+
+## Step 5 — Design
+- [ ] Invocar o /solve
+- [ ] Decidir o design de cada tela, se houver → `docs/05-design/` e `design-system.md`
+- [ ] Publicar Gateway 5 → 6
+
+## Step 6 — Test cases
+- [ ] Invocar o /solve
 - [ ] Criar até 10 TCs cobrindo os UCs e o spec → `docs/06-test-cases/`
+- [ ] Publicar Gateway 6 → 7
 
-## Steps 7-10 — código: cada step move o `<objetivo>.md` para a sua pasta
-
+## Step 7 — Todo
+- [ ] Invocar o /solve
 - [ ] Criar o plano em `track/07-todo/<objetivo>.md`: um `- [ ]` por tarefa e um `- [ ] TC-N` por TC
-- [ ] Executar as tarefas abertas do plano, marcando `- [x]`, em `track/08-implementation/`
-- [ ] Fazer o code review das mudanças da feature, com o lint, em `track/09-code-review/`
-- [ ] Rodar o build, os TCs e a regressão, do zero e pelo front, em `track/10-run-test/`
+- [ ] Publicar Gateway 7 → 8
 
-Desvio vira decisão nova, com motivo, no plano. Achado do review e falha de teste viram `- [ ]` no plano e voltam ao 8; o teste só decide depois de rodar todos, e aí o checklist de TCs reseta. Teste é como usuário (Playwright na instância livre), criando as condições de cada TC, com `- [x]` e screenshot ao lado do `<objetivo>.md`, ou `❌ motivo`; workaround que faz o TC passar é FAILED disfarçado.
+## Step 8 — Implementation
+- [ ] Invocar o /solve
+- [ ] Executar as tarefas abertas, marcando `- [x]`; desvio = decisão nova, com motivo, no plano
+- [ ] Publicar Gateway 8 → 9
+
+## Step 9 — Code review
+- [ ] Invocar o /solve
+- [ ] Revisar as mudanças da feature, com o lint; achado = `- [ ]` no plano e volta ao 8
+- [ ] Publicar Gateway 9 → 10
+
+## Step 10 — Run test
+- [ ] Invocar o /solve
+- [ ] Rodar build, TCs e regressão do zero, como usuário (Playwright na instância livre), criando as condições de cada TC
+- [ ] Marcar cada TC com screenshot ao lado do `<objetivo>.md`, ou `❌ motivo`; workaround que faz passar é FAILED
+- [ ] Voltar ao 8 com cada falha como `- [ ]` no plano, só depois de rodar todos, resetando os TCs
+- [ ] Publicar Gateway 10 → 11
 
 ## Step 11 — Done
-
-- [ ] Levar aos docs do Roteamento o que a esteira decidiu e ainda vale
+- [ ] Levar aos docs do Roteamento o que foi decidido e ainda vale
 - [ ] Apagar o `<objetivo>.md` e os screenshots ao lado dele
 - [ ] Commitar uma vez: `<tipo>(<escopo>): <descrição>`, placar `X de N PASSED` no corpo
-- [ ] Encerrar dizendo o que foi feito — sem pendência, próximo passo nem sugestão
+- [ ] Encerrar com o que foi feito, sem pendência, próximo passo nem sugestão
