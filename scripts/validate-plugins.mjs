@@ -333,7 +333,7 @@ for (const pkg of packages) {
 // (9) build e ship não se conhecem — nem por nome, nem por pasta, nem por
 // vocabulário. O nome de uma skill do outro pacote um leitor humano percebe; a
 // pasta e o jargão passam batido, e foi por eles que o vazamento voltou: uma
-// skill do ship mandando gravar em `track/11-done/` faz o modelo construir o
+// skill do ship mandando gravar em `track/` faz o modelo construir o
 // artefato do /method no meio de uma entrega. Por isso a regra é por termo, e
 // não por `requires`. O furi-toolbox fica fora: citar `/prod` de lá é fronteira
 // documentada, sem dependência.

@@ -71,16 +71,6 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 - **Fluxo**: 1) gap identificado; 2) skill invoca `/pull-request`; 3) segue para o ciclo de PR
 - **Resultado**: PR aberto — nada chega ao ambiente sem passar por review
 
-### UC-7 — PR com QA pendente (card em `obra/06-todo/`)
-- **Ator**: dev · **Precondição**: card do PR em `06-todo`
-- **Fluxo**: 1) gate de QA detecta; 2) skill roda o `/method` para **esse** feature até 100% PASSED; 3) segue para o review
-- **Resultado**: QA verde antes de a mudança entrar. Ambiente não recebe o que ninguém testou
-
-### UC-8 — PR sem card no kanban (dev trabalhou cru)
-- **Ator**: dev · **Precondição**: nenhum card corresponde ao PR
-- **Fluxo**: 1) skill detecta a ausência de test cases; 2) **para** e explica que não há como autenticar QA; 3) pergunta como proceder
-- **Resultado**: decisão do usuário (discovery+QA, ou review-only sob risco declarado)
-
 ### UC-9 — PR com review limpo e resolução autenticada
 - **Ator**: dev · **Precondição**: code review sem issue, card resolvido de fato
 - **Fluxo**: 1) skill **aprova** o PR; 2) mergeia; 3) apaga a branch remota **e** a local; 4) verifica que as duas listagens vêm vazias
@@ -93,18 +83,13 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 
 ### UC-11 — PR cru (rejeição — saída terminal)
 - **Ator**: dev · **Precondição**: abordagem fundamentalmente errada, ou não faz o que o card pede, ou desastre de segurança, ou loop de conserto não converge (~2–3 rodadas)
-- **Fluxo**: 1) `request-changes` com feedback por item; 2) **não** mergeia, **não** apaga a branch; 3) devolve o card ao "Em andamento" com comentário; 4) kanban → `07-implementation` com `status: rework`
+- **Fluxo**: 1) `request-changes` com feedback por item; 2) **não** mergeia, **não** apaga a branch; 3) devolve o card ao "Em andamento" com comentário
 - **Resultado**: nada entra; nada deploya. Rejeitar é o gate funcionando
 
 ### UC-12 — PR com escopo grande demais
 - **Ator**: dev · **Precondição**: o PR entrega além do card, ou o card era grande demais e virou um PR inaudível
 - **Fluxo**: 1) skill separa o que o card pede do excedente; 2) cria card(s) para o excedente via `/card`; 3) devolve o excedente ao dev via `request-changes` ou mantém o núcleo mergeável, conforme separabilidade
 - **Resultado**: excedente volta à fila rastreado — não entra de carona nem desaparece
-
-### UC-13 — PR com ledger de follow-up `ABERTO`
-- **Ator**: dev · **Precondição**: `obra/10-done/<feature>.md` tem item `ABERTO`
-- **Fluxo**: 1) gate de convergência detecta; 2) skill **rejeita** (UC-11)
-- **Resultado**: pendência conhecida volta ao dev — não vira card de follow-up
 
 ### UC-14 — Branch do PR atrás ou conflitada com a integração
 - **Ator**: dev · **Precondição**: `mergeable: CONFLICTING` ou `BEHIND`
@@ -166,7 +151,7 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 
 ### UC-26 — Release autorizado (happy path)
 - **Ator**: dev · **Precondição**: "sim" explícito agora
-- **Fluxo**: 1) fecha a `dev` (commit de paths explícitos do que estiver solto, sync, push); 2) promove `dev`→`main` e empurra; 3) acompanha o run; 4) aplica configs em **prod e homolog**; 5) smoke em prod; 6) resync `main`→`dev` + assert; 7) Jira + kanban
+- **Fluxo**: 1) fecha a `dev` (commit de paths explícitos do que estiver solto, sync, push); 2) promove `dev`→`main` e empurra; 3) acompanha o run; 4) aplica configs em **prod e homolog**; 5) smoke em prod; 6) resync `main`→`dev` + assert; 7) Jira
 - **Resultado**: prod no ar, verificado, e `origin/dev == origin/main`
 
 ### UC-27 — Conflito ao promover
@@ -195,22 +180,17 @@ Ator único em todos os UCs: **dev** (quem invoca a skill). Onde outro papel apa
 
 ---
 
-## Jira, kanban e limpeza
+## Jira
 
 ### UC-31 — Card alcançou o ambiente
 - **Ator**: dev · **Precondição**: feature verificada no ar
-- **Fluxo**: 1) comentário no card em linguagem leiga + URL do ambiente; 2) `get_transitions` → `transition_issue` para o status correspondente (sem `comment` na transição — ADF); 3) kanban atualizado
+- **Fluxo**: 1) comentário no card em linguagem leiga + URL do ambiente; 2) `get_transitions` → `transition_issue` para o status correspondente (sem `comment` na transição — ADF)
 - **Resultado**: card reflete onde a feature realmente está
 
 ### UC-32 — Workflow do projeto sem status equivalente
 - **Ator**: dev · **Precondição**: nenhuma transição corresponde ao estado alcançado
 - **Fluxo**: 1) skill avisa; 2) segue sem transicionar
 - **Resultado**: entrega não trava por causa de status
-
-### UC-33 — Cards órfãos em `obra/06-todo/`
-- **Ator**: dev · **Precondição**: cards sem PR e sem branch viva
-- **Fluxo**: 1) skill classifica (com PR/branch = QA real; sem nada = provável órfão); 2) lista os órfãos e **pergunta**; 3) remove só o confirmado
-- **Resultado**: kanban limpo sem auto-delete
 
 ---
 

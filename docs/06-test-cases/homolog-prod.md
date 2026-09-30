@@ -67,7 +67,7 @@ O produto entregue é **skill executável pelo Claude Code**. O "front" tem trê
 - **Prova:** saída do harness, separando "inferido" de "perguntado".
 
 ### TC-7: o ciclo de PR sobreviveu ao refactor — todos os gates herdados continuam valendo
-- **Cobre:** UC-6, UC-7, UC-8, UC-10, UC-11, UC-12, UC-13, UC-14, UC-33, D-15/D-16 (motores e fronteira)
+- **Cobre:** UC-6, UC-10, UC-11, UC-12, UC-14, D-15/D-16 (motores e fronteira)
 - **Bug único:** ao extrair o ciclo de PR para `pr-cycle.md`, um gate se perde — a skill passa a mergear com QA pendente, com ledger `ABERTO`, com branch atrás da integração, ou deixa de saber rejeitar.
 - **Pré-condição:** plugin carregado.
 - **Passos:** 1) pedir à skill que declare seu ciclo de PR completo — o que faz com QA pendente, sem card, com ledger aberto, com branch atrás, com escopo grande demais, e quando rejeita; 2) conferir cada item.
@@ -108,7 +108,7 @@ O produto entregue é **skill executável pelo Claude Code**. O "front" tem trê
 | UC-2 | TC-1 |
 | UC-4 | TC-1 |
 | UC-5, UC-15, UC-23, UC-29 | TC-2 |
-| UC-6, UC-7, UC-8, UC-10, UC-11, UC-12, UC-13, UC-14, UC-33 | TC-7 |
+| UC-6, UC-10, UC-11, UC-12, UC-14 | TC-7 |
 | UC-9 | TC-5 |
 | UC-16, UC-17, UC-18, UC-22 | TC-8 |
 | UC-19, UC-20, UC-21 | TC-9 |
