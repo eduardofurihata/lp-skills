@@ -7,61 +7,62 @@ requires: solve
 
 # /method — Protocolo de Engenharia Rigorosa
 
-Não cria branch, worktree nem subagente, não faz push nem merge. Cada `- [ ]` é uma tarefa, feita e fechada antes da próxima. Invocar = Skill tool, chamada real. Gateway = ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Docs (1-6) no presente, sem `Round N` nem changelog; Steps 7-10 levam o `<objetivo>.md` à pasta do step em `track/`.
+Não cria branch/worktree/subagente nem faz push/merge. Cada `- [ ]` é uma tarefa, feita e fechada antes da próxima. Invocar = Skill tool real. Gateway = ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Docs 1-6 no presente, sem `Round N` nem changelog; Steps 7-10 levam `<objetivo>.md` ao step em `track/`.
 
 ## Step 0 — Start
-- [ ] Rotear cada parte do pedido ao doc de `docs/` dono dela (novo só sem dono, com motivo, nomeado pela capacidade) e publicar o Roteamento
-- [ ] Retomar do step da pasta do `<objetivo>.md`, se já existe em `track/`
+- [ ] Rotear cada parte do pedido ao doc dono em `docs/` (novo só sem dono, com motivo, nomeado pela capacidade) e publicar Roteamento
+- [ ] Retomar do step do `<objetivo>.md`, se já existe em `track/`
 
 ## Step 1 — Problem
-- [ ] Invocar o /solve
-- [ ] Escrever o problema: em 1 frase (≤ 150 chars) e contexto (≤ 300) apenas, sem solução → `docs/01-problem/`
+- [ ] Invocar /solve
+- [ ] Escrever o problema: em 1 frase (≤150 chars) e contexto (≤300) apenas, sem solução → `docs/01-problem/`
 - [ ] Publicar Gateway 1 → 2
 
 ## Step 2 — User stories
-- [ ] Invocar o /solve
+- [ ] Invocar /solve
 - [ ] Criar as user stories do problema → `docs/02-user-stories/`
 - [ ] Publicar Gateway 2 → 3
 
 ## Step 3 — Use cases
-- [ ] Invocar o /solve
+- [ ] Invocar /solve
 - [ ] Criar os use cases de cada story → `docs/03-use-cases/`
 - [ ] Publicar Gateway 3 → 4
 
 ## Step 4 — Spec
-- [ ] Invocar o /solve
+- [ ] Invocar /solve
 - [ ] Decidir o que está em aberto, lendo docs e código → `docs/04-spec/`
 - [ ] Publicar Gateway 4 → 5
 
 ## Step 5 — Design
-- [ ] Invocar o /solve
+- [ ] Invocar /solve
 - [ ] Decidir o design de cada tela, se houver → `docs/05-design/` e `design-system.md`
 - [ ] Publicar Gateway 5 → 6
 
 ## Step 6 — Test cases
-- [ ] Invocar o /solve
-- [ ] Criar até 10 TCs cobrindo os UCs e o spec → `docs/06-test-cases/`
+- [ ] Invocar /solve
+- [ ] Criar até 10 TCs cobrindo os UCs e spec → `docs/06-test-cases/`
 - [ ] Publicar Gateway 6 → 7
 
 ## Step 7 — Todo
-- [ ] Invocar o /solve
-- [ ] Criar o plano em `track/07-todo/<objetivo>.md`: um `- [ ]` por tarefa e um `- [ ] TC-N` por TC
+- [ ] Invocar /solve
+- [ ] Criar o plano em `track/07-todo/<objetivo>.md`: `- [ ]` por tarefa, `- [ ] TC-N` por TC
 - [ ] Publicar Gateway 7 → 8
 
 ## Step 8 — Implementation
-- [ ] Invocar o /solve
+- [ ] Invocar /solve
 - [ ] Executar as tarefas abertas, marcando `- [x]`; desvio = decisão nova, com motivo, no plano
-- [ ] Proteger tudo o que fizemos com pirâmide de testes
+- [ ] Proteger o que fizemos com pirâmide de testes
 - [ ] Publicar Gateway 8 → 9
 
 ## Step 9 — Code review
 - [ ] Invocar /solve e revisar as mudanças
-- [ ] Invocar /code-review [medium] em loop e corrigir até tudo ok; achado dos dois = `- [ ]` no plano, volta ao 8 até zerar
+- [ ] Invocar /code-review [medium], no máx 3x
+- [ ] Voltar ao 8 com cada achado dos dois como `- [ ]` no plano
 - [ ] Publicar Gateway 9 → 10
 
 ## Step 10 — Run test
-- [ ] Invocar o /solve
-- [ ] Rodar build, a pirâmide de testes, regressão e os TCs como usuário (Playwright na instância livre), criando as condições de cada TC
+- [ ] Invocar /solve
+- [ ] Rodar build, a pirâmide de testes, regressão e TCs como usuário (Playwright na instância livre), criando as condições de cada TC
 - [ ] Marcar cada TC com screenshot ao lado do `<objetivo>.md`, ou `❌ motivo`; workaround que faz passar é FAILED
 - [ ] Voltar ao 8 com cada falha como `- [ ]` no plano, só depois de rodar todos, resetando os TCs
 - [ ] Publicar Gateway 10 → 11
