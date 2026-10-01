@@ -7,7 +7,7 @@ requires: solve
 
 # /method — Protocolo de Engenharia Rigorosa
 
-Não cria branch, worktree nem subagente, não faz push nem merge. Cada `- [ ]` é uma tarefa: `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima. Invocar = Skill tool, chamada real. Gateway = ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Docs (1-6) no presente, sem `Round N` nem changelog; Steps 7-10 levam o `<objetivo>.md` à pasta do step em `track/`.
+Não cria branch, worktree nem subagente, não faz push nem merge. Cada `- [ ]` é uma tarefa, feita e fechada antes da próxima. Invocar = Skill tool, chamada real. Gateway = ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Docs (1-6) no presente, sem `Round N` nem changelog; Steps 7-10 levam o `<objetivo>.md` à pasta do step em `track/`.
 
 ## Step 0 — Start
 - [ ] Rotear cada parte do pedido ao doc de `docs/` dono dela (novo só sem dono, com motivo, nomeado pela capacidade) e publicar o Roteamento
@@ -15,7 +15,7 @@ Não cria branch, worktree nem subagente, não faz push nem merge. Cada `- [ ]` 
 
 ## Step 1 — Problem
 - [ ] Invocar o /solve
-- [ ] Escrever o problema em 1 frase (≤ 150 chars) com contexto (≤ 300), sem solução → `docs/01-problem/`
+- [ ] Escrever o problema: em 1 frase (≤ 150 chars) e contexto (≤ 300) apenas, sem solução → `docs/01-problem/`
 - [ ] Publicar Gateway 1 → 2
 
 ## Step 2 — User stories
@@ -51,16 +51,17 @@ Não cria branch, worktree nem subagente, não faz push nem merge. Cada `- [ ]` 
 ## Step 8 — Implementation
 - [ ] Invocar o /solve
 - [ ] Executar as tarefas abertas, marcando `- [x]`; desvio = decisão nova, com motivo, no plano
+- [ ] Proteger tudo o que fizemos com pirâmide de testes
 - [ ] Publicar Gateway 8 → 9
 
 ## Step 9 — Code review
-- [ ] Invocar o /solve
-- [ ] Revisar as mudanças da feature, com o lint; achado = `- [ ]` no plano e volta ao 8
+- [ ] Invocar /solve e revisar as mudanças
+- [ ] Invocar /code-review [medium] em loop e corrigir até tudo ok; achado dos dois = `- [ ]` no plano, volta ao 8 até zerar
 - [ ] Publicar Gateway 9 → 10
 
 ## Step 10 — Run test
 - [ ] Invocar o /solve
-- [ ] Rodar build, TCs e regressão do zero, como usuário (Playwright na instância livre), criando as condições de cada TC
+- [ ] Rodar build, a pirâmide de testes, regressão e os TCs como usuário (Playwright na instância livre), criando as condições de cada TC
 - [ ] Marcar cada TC com screenshot ao lado do `<objetivo>.md`, ou `❌ motivo`; workaround que faz passar é FAILED
 - [ ] Voltar ao 8 com cada falha como `- [ ]` no plano, só depois de rodar todos, resetando os TCs
 - [ ] Publicar Gateway 10 → 11
