@@ -19,7 +19,8 @@ Não pusha nem mergeia: o alvo é um commit local com a tela provando o que mudo
 - [ ] Implementar o que o card pede
 - [ ] Fechar **um** commit
 - [ ] Listar todas as telas de front mexidas — nenhuma, diga e siga
-- [ ] Subir no card o print de cada tela mexida
+- [ ] Tirar o print de cada tela mexida com zoom out, para dar contexto
+- [ ] Subir no card cada print separado e, além deles, um único arquivo com todos empilhados na vertical (um abaixo do outro), sem perder qualidade na junção (empilhe sem recomprimir, ex. `convert -append`)
 - [ ] Retornar branch, commit, telas, anexos e status; próximo: `/pull-request`
 
 Nunca rebase, force nem branch sobre integração stale.
