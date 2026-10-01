@@ -56,7 +56,7 @@ Não cria branch/worktree/subagente nem faz push/merge. Cada `- [ ]` é uma tare
 
 ## Step 9 — Code review
 - [ ] Invocar /solve e revisar as mudanças
-- [ ] Invocar /code-review [medium], no máx 3x
+- [ ] Invocar /code-review [medium], no máx 1x
 - [ ] Voltar ao 8 com cada achado dos dois como `- [ ]` no plano
 - [ ] Publicar Gateway 9 → 10
 
