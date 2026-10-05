@@ -7,11 +7,11 @@ requires: solve
 
 # /method — Protocolo de Engenharia Rigorosa
 
-/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa. Vontade de pular um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado. Não cria branch/worktree/subagente nem faz push/merge. Steps 1-10 invocam /solve (Skill tool real) e, ao fim, publicam o Gateway → próximo: ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Cada linha é uma ação, feita e fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog; Steps 7-10 levam `<objetivo>.md` ao step em `track/`.
+/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa. Vontade de pular um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado. Não cria branch/worktree/subagente nem faz push/merge. Cada step 1-10 invoca /solve (Skill tool real) e, ao fim, publica o Gateway → próximo: ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Cada linha é uma ação, feita e fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog; Steps 7-10 levam `<objetivo>.md` ao step em `track/`.
 
 ## Step 0 — Start
 - Rotear cada parte do pedido ao doc dono em `docs/` (novo só sem dono, com motivo, nomeado pela capacidade) e publicar Roteamento
-- Declarar o plano combinado quando houver outra skill — a espinha são os 11 steps, a outra intercala — e ter o sim antes de seguir
+- Declarar o plano combinado quando houver outra skill e ter o sim antes de seguir
 - Retomar do step do `<objetivo>.md`, se já existe em `track/`
 
 ## Step 1 — Problem
@@ -37,11 +37,11 @@ requires: solve
 
 ## Step 8 — Implementation
 - Executar as tarefas abertas, marcando `- [x]`; desvio = decisão nova, com motivo, no plano
-- Proteger o que fizemos com a pirâmide: unit, integração e e2e
+- Proteger o que fizemos com a pirâmide: unit, integração, e2e — cada uma versionada e rodável, ou N/A com motivo; manual não conta
 
 ## Step 9 — Code review
 - Revisar as mudanças
-- Invocar /code-review [medium], no máx 1x
+- Invocar /code-review [medium] pela Skill tool, no máx 1x — é do harness (lista de skills), não do cache de plugins; não rodou = ❌
 - Voltar ao 8 com cada achado dos dois como `- [ ]` no plano
 
 ## Step 10 — Run test
