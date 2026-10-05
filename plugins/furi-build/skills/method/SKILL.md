@@ -42,7 +42,7 @@ requires: solve
 
 ## Step 9 — Code review
 - Revisar as mudanças
-- Invocar 1x /code-review [medium] pela Skill tool, no máx 1x — é do harness (lista de skills), não do cache de plugins; não rodou = ❌
+- Invocar 1x /code-review [medium] pela Skill tool — é do harness (lista de skills), não do cache de plugins; não rodou = ❌
 - Voltar ao 8 com cada achado dos dois como `- [ ]` no plano
 
 ## Step 10 — Run test
