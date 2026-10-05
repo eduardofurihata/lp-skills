@@ -7,12 +7,13 @@ requires: solve
 
 # /method — Protocolo de Engenharia Rigorosa
 
-/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa. Vontade de pular um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado. Não cria branch/worktree/subagente nem faz push/merge. Cada step 1-10 invoca /solve (Skill tool real) e, ao fim, publica o Gateway → próximo: ✅ LIBERADO ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Cada linha é uma ação, feita e fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog; Steps 7-10 levam `<objetivo>.md` ao step em `track/`.
+/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa. Vontade de pular um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado. Não cria branch/worktree/subagente nem faz push/merge. Cada step 1-10 invoca /solve (Skill tool real) e, ao fim, publica o Gateway → próximo: ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Cada linha é uma ação, feita e fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog.
 
 ## Step 0 — Start
 - Rotear cada parte do pedido ao doc dono em `docs/` (novo só sem dono, com motivo, nomeado pela capacidade) e publicar Roteamento
-- Declarar o plano combinado quando houver outra skill e ter o sim antes de seguir
-- Retomar do step do `<objetivo>.md`, se já existe em `track/`
+- Declarar o plano combinado quando houver outra skill
+- Criar `track/<objetivo>.md`: os 11 steps como `- [ ]`
+- Retomar do primeiro `- [ ]`, se o `<objetivo>.md` já existe em `track/`
 
 ## Step 1 — Problem
 - Escrever o problema: em 1 frase (≤150 chars) e contexto (≤300) apenas, sem solução → `docs/01-problem/`
@@ -33,15 +34,15 @@ requires: solve
 - Criar até 10 TCs cobrindo os UCs e spec → `docs/06-test-cases/`
 
 ## Step 7 — Todo
-- Criar o plano em `track/07-todo/<objetivo>.md`: `- [ ]` por tarefa, `- [ ] TC-N` por TC
+- Abrir no `<objetivo>.md` um `- [ ]` por tarefa e `- [ ] TC-N` por TC
 
 ## Step 8 — Implementation
 - Executar as tarefas abertas, marcando `- [x]`; desvio = decisão nova, com motivo, no plano
-- Proteger o que fizemos com a pirâmide: unit, integração, e2e — cada uma versionada e rodável, ou N/A com motivo; manual não conta
+- Proteger o que fizemos com a pirâmide completa: unit, integração, e2e
 
 ## Step 9 — Code review
 - Revisar as mudanças
-- Invocar /code-review [medium] pela Skill tool, no máx 1x — é do harness (lista de skills), não do cache de plugins; não rodou = ❌
+- Invocar 1x /code-review [medium] pela Skill tool, no máx 1x — é do harness (lista de skills), não do cache de plugins; não rodou = ❌
 - Voltar ao 8 com cada achado dos dois como `- [ ]` no plano
 
 ## Step 10 — Run test
