@@ -10,7 +10,7 @@ argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = a branch atual)"
 
 # /pull-request — o trabalho completo, publicado, a PR onde o setup manda
 
-O alvo: a branch em `origin` com a PR no destino que o setup manda — ou só o push, se o time não abre PR. Não mergeia nem deploya. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+O alvo: a branch em `origin` com a PR no destino que o setup manda — ou só o push, se o time não abre PR. Não mergeia nem deploya. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/setup.md § Pull-request`: destino da PR (`main`, `dev`, `homolog`, outra branch, stacked PR ou sem PR — só push), status da etapa; falta → pergunte e grave ali
 - [ ] Garantir o `/work` completo: mudança sem commit → `Skill(skill: "work")`, vai tudo junto; só se commita o inteiro, nunca pela metade

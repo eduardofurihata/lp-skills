@@ -8,7 +8,7 @@ argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 
 # /infra — o mapa da infra
 
-Contas, acessos, onde vive cada segredo de `.secrets/` e os ambientes de homolog e prod — identificador entra; valor, nunca. `.secrets/` fica na raiz, no `.gitignore`; token colado no chat é salvo lá (`.secrets/<provedor>.env`), o mapa registra só o nome. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+Contas, acessos, onde vive cada segredo de `.secrets/` e os ambientes de homolog e prod — identificador entra; valor, nunca. `.secrets/` fica na raiz, no `.gitignore`; token colado no chat é salvo lá (`.secrets/<provedor>.env`), o mapa registra só o nome. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/infra.md` (ou `infra.local.md`, fora do git); não existe → criar
 - [ ] Inferir das pastas, citando a fonte: `.secrets/` pelos nomes (chave privada e JSON de conta de serviço não se abrem), `.env.example`, `.mcp.json`, plataforma, workflows e o `runs-on`; provedores pelos prefixos

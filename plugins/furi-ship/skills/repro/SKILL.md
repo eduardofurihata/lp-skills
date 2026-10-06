@@ -7,7 +7,7 @@ argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 
 # /repro — reproduzir, julgar, mostrar
 
-Reproduz o bug no front como o usuário, antes de codar; o dev o vê com o bug (parada 1) e sem (parada 2). Não coda. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra; quem codar deve a parada 2. Sem card: o mesmo processo, sem Jira e sem criar card. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+Reproduz o bug no front como o usuário, antes de codar; o dev o vê com o bug (parada 1) e sem (parada 2). Não coda. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra; quem codar deve a parada 2. Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/infra.md`: o ambiente e onde vivem usuários e dados de teste (`.secrets/`, não no setup); falta → `Skill(skill: "infra")`
 - [ ] Ler o card e anexos, ou a descrição; mover o card ao status de `/work`

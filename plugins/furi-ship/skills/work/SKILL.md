@@ -9,7 +9,7 @@ argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 
 # /work — o terreno, o commit, a prova na tela
 
-Não pusha nem mergeia: o alvo é um commit local com a tela provando o que mudou. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+Não pusha nem mergeia: o alvo é um commit local com a tela provando o que mudou. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/setup.md § Work`: o status da etapa e qual branch — `main`, `dev`, `homolog`, a do card (`<prefixo>-##-##-…`) ou outra que o projeto use; falta → pergunte e grave ali
 - [ ] Ler o card ou o prompt — descrição, critérios, anexos, comentários; vazio = o card da branch

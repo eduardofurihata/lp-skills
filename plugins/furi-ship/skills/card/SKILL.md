@@ -9,7 +9,7 @@ argument-hint: "[KEY] <descrição> [/skill…]"
 
 # /card — uma linha vira um card que o dev pega sem perguntar
 
-Quem lê o card não viu esta conversa: ele vale o que valeu o entendimento antes dele. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem Jira → recuse. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+Quem lê o card não viu esta conversa: ele vale o que valeu o entendimento antes dele. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem Jira → recuse. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Entender o problema do prompt
 - [ ] Entender os arquivos do projeto e o projeto como um todo

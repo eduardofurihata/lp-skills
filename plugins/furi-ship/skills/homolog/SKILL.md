@@ -9,7 +9,7 @@ argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo pronto)"
 
 # /homolog — a PR aprovada, homolog configurado e no ar
 
-Aprova e põe no ar; produção é o `/prod`. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+Aprova e põe no ar; produção é o `/prod`. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/setup.md § Homolog`: tem homolog? tem processo de PR? deploy (vazio = GitHub Actions self-hosted)? status da etapa; falta → pergunte e grave ali
 - [ ] Parar se não tem homolog: nada a fazer — diga e retorne
