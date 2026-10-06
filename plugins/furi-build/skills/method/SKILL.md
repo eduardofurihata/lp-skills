@@ -7,7 +7,7 @@ requires: solve
 
 # /method — Protocolo de Engenharia Rigorosa
 
-/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa. Vontade de pular um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado. Não cria branch/worktree/subagente nem faz push/merge. Cada step 1-10 invoca /solve (Skill tool real) e, ao fim, publica o Gateway → próximo: ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO com motivo; ❌ refaz o step. Cada linha é uma ação, feita e fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog.
+/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa; combinada, é o final dela que vence o do /method. Vontade de pular ou comprimir um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado — comprimir um doc nunca é pular story nem use case. Não cria branch/worktree/subagente nem faz push/merge. Cada step 1-10 invoca /solve (Skill tool real) e fecha publicando o Gateway → próximo: uma linha, barata e obrigatória — ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO: `<motivo>` (refaz o step). Cada linha é uma ação fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog.
 
 ## Step 0 — Start
 - Rotear cada parte do pedido ao doc dono em `docs/` (novo só sem dono, com motivo, nomeado pela capacidade) e publicar Roteamento
@@ -38,7 +38,7 @@ requires: solve
 
 ## Step 8 — Implementation
 - Executar as tarefas abertas, marcando `- [x]`; desvio = decisão nova, com motivo, no plano
-- Proteger o que fizemos com a pirâmide completa: unit, integração, e2e — versionadas e rodáveis (ou N/A com motivo); manual não conta
+- Proteger o que fizemos com a pirâmide completa: unit, integração, e2e — versionadas e rodáveis; N/A só nomeando o stack/harness conferido e o comando que falharia, N/A sem evidência de tentativa = ❌; manual não conta
 
 ## Step 9 — Code review
 - Revisar as mudanças
@@ -46,7 +46,7 @@ requires: solve
 - Voltar ao 8 com cada achado dos dois como `- [ ]` no plano
 
 ## Step 10 — Run test
-- Rodar build, a pirâmide inteira, regressão e TCs como usuário (Playwright na instância livre), criando as condições de cada TC
+- Rodar build, a pirâmide inteira, regressão e TCs como usuário (Playwright na instância livre), criando as condições de cada TC; dado que vive em prod = e2e com fixtures mockados é a forma canônica, declarar ao substituir a rota de navegador
 - Marcar cada TC com screenshot ao lado do `<objetivo>.md`, ou `❌ motivo`; workaround que faz passar é FAILED
 - Voltar ao 8 com cada falha como `- [ ]` no plano, só depois de rodar todos, resetando os TCs
 
@@ -54,4 +54,4 @@ requires: solve
 - Levar aos docs do Roteamento o que foi decidido e ainda vale
 - Apagar o `<objetivo>.md` e os screenshots ao lado dele
 - Commitar uma vez: `<tipo>(<escopo>): <descrição>`, placar `X de N PASSED` no corpo
-- Encerrar com o que foi feito, sem pendência, próximo passo nem sugestão
+- Encerrar com o que foi feito, sem pendência; sozinho, sem próximo passo nem sugestão; combinado, o final da skill-alvo vence
