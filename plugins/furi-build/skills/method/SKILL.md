@@ -38,7 +38,7 @@ requires: solve
 
 ## Step 8 — Implementation
 - Executar as tarefas abertas, marcando `- [x]`; desvio = decisão nova, com motivo, no plano
-- Proteger o que fizemos com a pirâmide completa: unit, integração, e2e
+- Proteger o que fizemos com a pirâmide completa: unit, integração, e2e — versionadas e rodáveis (ou N/A com motivo); manual não conta
 
 ## Step 9 — Code review
 - Revisar as mudanças
