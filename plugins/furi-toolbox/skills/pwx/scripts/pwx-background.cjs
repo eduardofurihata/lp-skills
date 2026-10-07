@@ -1,4 +1,4 @@
-// pwx-background.cjs — pré-carregado no daemon do playwright-cli (NODE_OPTIONS, via pwx).
+// pwx-background.cjs — pré-carregado (NODE_OPTIONS, via pwx) no daemon do playwright-cli e nos scripts de `pwx run`.
 // O Playwright cria aba com Target.createTarget sem `background`, e no macOS isso traz o navegador para a frente
 // a cada sessão nova. Aqui cada sessão nasce numa janela própria em segundo plano: não rouba o foco e a aba,
 // sendo a ativa da janela, segue visível (aba de fundo numa janela alheia fica `hidden` e trava o rAF/clique).

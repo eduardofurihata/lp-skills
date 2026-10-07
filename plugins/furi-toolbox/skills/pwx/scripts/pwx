@@ -26,8 +26,8 @@ if (cfg.roles[args[0]]) role = args.shift();
 const session = `${role}-${(process.env.PWX_SESSION || projectName()).replace(/[^\w.-]/g, '_')}`;
 
 if (!args.length || (args[0] === '--help' && args.length === 1)) {
-  console.log('uso: pwx [papel] <comando playwright-cli...>\npapéis: ' + Object.keys(cfg.roles).join(', ') +
-    '\nex.: pwx goto https://mail.google.com · pwx snapshot · pwx click e12 · pwx close-tab\nsessão atual: ' + session);
+  console.log('uso: pwx [papel] <comando playwright-cli...>   ·   pwx [papel] run <script> [args...]\npapéis: ' + Object.keys(cfg.roles).join(', ') +
+    '\nex.: pwx goto https://mail.google.com · pwx snapshot · pwx click e12 · pwx close-tab · pwx run fluxo.mjs\nsessão atual: ' + session);
   process.exit(0);
 }
 
@@ -42,9 +42,12 @@ const isOpen = () => {
   try { return JSON.parse(cli(['list', '--json']).stdout).browsers.some((b) => b.name === session && b.status === 'open'); }
   catch { return false; }
 };
-function attach() {
-  const up = spawnSync(process.execPath, [path.join(__dirname, 'browser'), 'up', role], { stdio: 'pipe', encoding: 'utf8', env });   // sobe o Edge do papel se não estiver de pé
+function browserUp() {   // sobe o Edge do papel se não estiver de pé
+  const up = spawnSync(process.execPath, [path.join(__dirname, 'browser'), 'up', role], { stdio: 'pipe', encoding: 'utf8', env });
   if (up.status !== 0) { process.stderr.write(up.stdout + up.stderr); process.exit(1); }
+}
+function attach() {
+  browserUp();
   const r = cli(['attach', `--cdp=http://127.0.0.1:${cfg.roles[role]}`, `--session=${session}`]);
   if (r.status !== 0) { process.stderr.write(r.stdout + r.stderr); process.exit(r.status || 1); }
   cli(['-s=' + session, 'tab-new']);   // aba própria: nunca mexe nas abas de outra sessão
@@ -54,6 +57,11 @@ if (args[0] === 'close-tab') {
   if (isOpen()) { cli(['-s=' + session, 'tab-close']); cli(['-s=' + session, 'detach']); }
   console.log(`aba da sessão ${session} fechada`);
   process.exit(0);
+}
+if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, pelo preload, abre página sem roubar o foco
+  browserUp();
+  const s = spawnSync(process.execPath, args.slice(1), { stdio: 'inherit', env: { ...env, PWX_CDP: `http://127.0.0.1:${cfg.roles[role]}` } });
+  process.exit(s.status ?? 1);
 }
 if (!isOpen()) attach();
 let r = cli(['-s=' + session, ...args]);
