@@ -24,7 +24,11 @@
 //      (o gate do harness — obrigatório quando nenhum `requires` a lista), ou,
 //      quando outra skill a invoca sem o usuário digitar o nome dela, carrega a
 //      sentinela `NEVER activate on your own initiative.` na description; e a
-//      description nunca traz frase de gatilho ("Triggers on …")
+//      description nunca traz frase de gatilho ("Triggers on …"). Exceção
+//      declarada, uma por skill: `auto-invoke: true` no frontmatter — a skill
+//      é FEITA para o modelo ativar sozinho (ex.: /pwx, ferramenta que qualquer
+//      tarefa com navegador usa); ela dispensa a trava e a sentinela e pode dizer
+//      na description quando é usada
 //   9. build e ship não se conhecem — nem por nome, nem por pasta, nem por
 //      vocabulário: cada pacote é instalável e utilizável sozinho
 //
@@ -162,6 +166,7 @@ for (const pkg of packages) {
       description: typeof data.description === "string" ? data.description : "",
       internal: data["user-invocable"] === false,
       blocked: data["disable-model-invocation"] === true,
+      autoInvoke: data["auto-invoke"] === true,
       relations: Object.fromEntries(
         RELATION_FIELDS.map((f) => [f, parseList(data[f])]),
       ),
@@ -215,7 +220,13 @@ const AUTONOMOUS = [
   [/also invoked/i, "`Also invoked …`"],
   [/or wants to/i, "`or wants to …`"],
 ];
-for (const { file, name, description, blocked } of declared) {
+for (const { file, name, description, blocked, autoInvoke } of declared) {
+  if (autoInvoke) {
+    // exceção declarada: feita para o modelo ativar sozinho; travá-la seria contradição
+    if (blocked)
+      fail(file, "`auto-invoke: true` com `disable-model-invocation: true` — escolha um: a trava desliga a auto-ativação declarada");
+    continue;
+  }
   for (const [re, what] of AUTONOMOUS)
     if (re.test(description))
       fail(
@@ -378,6 +389,6 @@ const total = packages.reduce(
 console.log(
   `validate-plugins: ok — ${packages.length} pacotes, ${total} skills, ` +
     `3 manifestos cada, 2 marketplaces, caminhos citados e relações resolvem, ` +
-    `internas têm quem as leia, nenhuma skill se ativa sozinha, ` +
+    `internas têm quem as leia, só as auto-invoke se ativam sozinhas, ` +
     `build e ship não se conhecem.`,
 );

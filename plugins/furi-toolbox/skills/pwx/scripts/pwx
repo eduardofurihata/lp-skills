@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+// pwx — playwright-cli no Edge de automação (perfil próprio em ~/.browser-automation), via CDP.
+// Uso: pwx [papel] <comando playwright-cli...>   ex.: pwx goto https://x.com · pwx snapshot · pwx click e12 · pwx close-tab
+// Cada projeto ganha a PRÓPRIA aba; os logins são os do perfil do papel, compartilhados por todos.
+// Duas janelas no mesmo projeto: PWX_SESSION=<nome> pwx …   Papel padrão do projeto: .pwx.json { "defaultRole": "admin" }
+const fs = require('fs'), path = require('path'), os = require('os');
+const { spawnSync, execSync } = require('child_process');
+
+const HOME = path.join(os.homedir(), '.browser-automation');
+const cfg = JSON.parse(fs.readFileSync(path.join(HOME, 'config.json'), 'utf8'));
+const args = process.argv.slice(2);
+
+function projectDefaultRole() {
+  for (let d = process.cwd(); d !== path.dirname(d); d = path.dirname(d)) {
+    const f = path.join(d, '.pwx.json');
+    if (fs.existsSync(f)) return JSON.parse(fs.readFileSync(f, 'utf8')).defaultRole;
+  }
+}
+function projectName() {
+  try { return path.basename(execSync('git rev-parse --show-toplevel', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()); }
+  catch { return path.basename(process.cwd()); }
+}
+
+let role = process.env.PWX_ROLE || projectDefaultRole() || cfg.defaultRole;
+if (cfg.roles[args[0]]) role = args.shift();
+const session = `${role}-${(process.env.PWX_SESSION || projectName()).replace(/[^\w.-]/g, '_')}`;
+
+if (!args.length || (args[0] === '--help' && args.length === 1)) {
+  console.log('uso: pwx [papel] <comando playwright-cli...>\npapéis: ' + Object.keys(cfg.roles).join(', ') +
+    '\nex.: pwx goto https://mail.google.com · pwx snapshot · pwx click e12 · pwx close-tab\nsessão atual: ' + session);
+  process.exit(0);
+}
+
+const cli = (a) => spawnSync('playwright-cli', a, { stdio: 'pipe', encoding: 'utf8' });
+const isOpen = () => {
+  try { return JSON.parse(cli(['list', '--json']).stdout).browsers.some((b) => b.name === session && b.status === 'open'); }
+  catch { return false; }
+};
+function attach() {
+  const up = spawnSync('browser', ['up', role], { stdio: 'pipe', encoding: 'utf8' });   // sobe o Edge do papel se não estiver de pé
+  if (up.status !== 0) { process.stderr.write(up.stdout + up.stderr); process.exit(1); }
+  const r = cli(['attach', `--cdp=http://127.0.0.1:${cfg.roles[role]}`, `--session=${session}`]);
+  if (r.status !== 0) { process.stderr.write(r.stdout + r.stderr); process.exit(r.status || 1); }
+  cli(['-s=' + session, 'tab-new']);   // aba própria: nunca mexe nas abas de outra sessão
+}
+
+if (args[0] === 'close-tab') {
+  if (isOpen()) { cli(['-s=' + session, 'tab-close']); cli(['-s=' + session, 'detach']); }
+  console.log(`aba da sessão ${session} fechada`);
+  process.exit(0);
+}
+if (!isOpen()) attach();
+let r = cli(['-s=' + session, ...args]);
+if (r.status !== 0 && /closed|disconnected|not connected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
+  cli(['-s=' + session, 'detach']);    // o Edge reiniciou: refaz a sessão e tenta de novo
+  attach();
+  r = cli(['-s=' + session, ...args]);
+}
+process.stdout.write(r.stdout || ''); process.stderr.write(r.stderr || '');
+process.exit(r.status ?? 1);

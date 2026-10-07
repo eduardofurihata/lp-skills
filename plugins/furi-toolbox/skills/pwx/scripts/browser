@@ -1,0 +1,86 @@
+#!/usr/bin/env node
+// browser — Edge de automação, um perfil por papel, controlável via CDP sem pedir "Permitir".
+// Uso: browser up|down|status|add|endpoint [papel]
+const fs = require('fs'), path = require('path'), os = require('os');
+const { spawn, execSync } = require('child_process');
+
+const HOME = path.join(os.homedir(), '.browser-automation');
+const CONFIG = path.join(HOME, 'config.json');
+const cfg = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
+const save = () => fs.writeFileSync(CONFIG, JSON.stringify(cfg, null, 2) + '\n');
+
+const [cmd = 'status', roleArg] = process.argv.slice(2);
+const role = roleArg || cfg.defaultRole;
+const portOf = (r) => {
+  const p = cfg.roles[r];
+  if (!p) { console.error(`papel "${r}" não existe. Papéis: ${Object.keys(cfg.roles).join(', ')}. Crie com: browser add ${r}`); process.exit(1); }
+  return p;
+};
+const endpoint = (r) => `http://127.0.0.1:${portOf(r)}`;
+const alive = async (r) => {
+  try { return (await fetch(`${endpoint(r)}/json/version`, { signal: AbortSignal.timeout(800) })).ok; }
+  catch { return false; }
+};
+const pidOnPort = (port) => {
+  try { return execSync(`lsof -nP -iTCP:${port} -sTCP:LISTEN -t`, { encoding: 'utf8' }).trim().split('\n')[0]; }
+  catch { return null; }
+};
+
+async function up(r) {
+  if (await alive(r)) { console.log(`${r}: já está de pé em ${endpoint(r)}`); return; }
+  if (!fs.existsSync(cfg.browserBinary)) { console.error(`navegador não encontrado: ${cfg.browserBinary}`); process.exit(1); }
+  const profile = path.join(HOME, 'profiles', r);
+  fs.mkdirSync(profile, { recursive: true });
+  fs.mkdirSync(path.join(HOME, 'logs'), { recursive: true });
+  const log = fs.openSync(path.join(HOME, 'logs', `${r}.log`), 'a');
+  spawn(cfg.browserBinary, [
+    `--user-data-dir=${profile}`,
+    ...(cfg.profileDirectory?.[r] ? [`--profile-directory=${cfg.profileDirectory[r]}`] : []),   // o CDP controla só o perfil com que o Edge abre
+    `--remote-debugging-port=${portOf(r)}`,
+    '--remote-debugging-address=127.0.0.1',
+    '--no-first-run',
+    '--no-default-browser-check',
+    // vários clientes trabalham ao mesmo tempo: aba em segundo plano não pode ficar lenta
+    '--disable-background-timer-throttling',
+    '--disable-renderer-backgrounding',
+    '--disable-backgrounding-occluded-windows',
+  ], { detached: true, stdio: ['ignore', log, log] }).unref();
+  for (let i = 0; i < 60; i++) {
+    if (await alive(r)) { console.log(`${r}: de pé em ${endpoint(r)} (perfil ${profile})`); return; }
+    await new Promise((s) => setTimeout(s, 250));
+  }
+  console.error(`${r}: não respondeu em 15 s. Veja ${path.join(HOME, 'logs', `${r}.log`)}`); process.exit(1);
+}
+
+function down(r) {
+  const pid = pidOnPort(portOf(r));
+  if (!pid) { console.log(`${r}: já estava fora do ar`); return; }
+  process.kill(Number(pid), 'SIGTERM');
+  console.log(`${r}: encerrado (pid ${pid}). Os logins continuam salvos no perfil.`);
+}
+
+async function status() {
+  for (const r of Object.keys(cfg.roles)) console.log(`${(await alive(r)) ? '●' : '○'} ${r.padEnd(14)} ${endpoint(r)}`);
+}
+
+function add(r) {
+  if (!roleArg) { console.error('uso: browser add <papel>'); process.exit(1); }
+  if (cfg.roles[r]) { console.log(`${r} já existe na porta ${cfg.roles[r]}`); return; }
+  const used = new Set(Object.values(cfg.roles));
+  let port = 9222; while (used.has(port)) port++;
+  cfg.roles[r] = port; save();
+  console.log(`${r}: criado na porta ${port}. Suba com: browser up ${r}`);
+}
+
+(async () => {
+  switch (cmd) {
+    case 'up': return up(role);
+    case 'down': return down(role);
+    case 'status': return status();
+    case 'add': return add(role);
+    case 'endpoint': return console.log(endpoint(role));
+    default:
+      console.log('uso: browser up|down|status|add|endpoint [papel]');
+      process.exit(cmd === 'help' || cmd === '--help' ? 0 : 1);
+  }
+})();

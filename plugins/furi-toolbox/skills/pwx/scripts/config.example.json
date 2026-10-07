@@ -1,0 +1,8 @@
+{
+  "browserBinary": "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+  "defaultRole": "principal",
+  "roles": {
+    "principal": 9222
+  },
+  "profileDirectory": {}
+}
