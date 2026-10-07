@@ -51,7 +51,7 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 - **Plugins:** marketplace `lp-skills` (furi-build, furi-ship, furi-toolbox) e os da Eduzz/AFL instalados, todos com **auto-update ligado**.
 - **Permissões:** modo bypass por padrão, sem o diálogo de confirmação.
 - **Effort:** definido por modelo, não forçado globalmente.
-- **pwx:** ao encerrar a sessão, a aba do navegador daquela sessão fecha sozinha.
+- **pwx:** toda sessão já começa sabendo que o navegador da máquina é o `pwx`; ao encerrar a sessão, a aba do navegador daquela sessão fecha sozinha.
 - **Atalhos:** `claude` / `claudew` no terminal e os perfis "Claude" / "Claude Ultra" nas IDEs. Ver `/claude-shortcuts`.
 
 ---

@@ -35,19 +35,23 @@ fi
 GI="$HOME/.config/git/ignore"; mkdir -p "$(dirname "$GI")"; touch "$GI"
 grep -qx '.playwright-cli/' "$GI" || echo '.playwright-cli/' >> "$GI"
 
-# fecha a aba do projeto quando a sessão do Claude Code termina
+# hooks do Claude Code: SessionStart avisa a IA que o navegador desta máquina é o pwx; SessionEnd fecha a aba do projeto
+CTX="Navegador desta máquina: pwx (skill furi-toolbox:pwx) — navegador real, já logado, uma aba por sessão. Para abrir, ler, clicar ou testar qualquer site, inclusive conferir um deploy, ver um erro num painel ou reproduzir um bug web, use pwx em vez de Playwright MCP, npx playwright, um navegador novo ou curl/WebFetch em página logada."
 SETTINGS="$HOME/.claude/settings.json"; [ -f "$SETTINGS" ] || echo '{}' > "$SETTINGS"
 node -e '
-const fs=require("fs"),p=process.argv[1],d=JSON.parse(fs.readFileSync(p,"utf8"));
-const cmd=`"${process.argv[2]}" close-tab >/dev/null 2>&1; true`;
-const isPwx=(h)=>/pwx"? close-tab/.test(h.command||"");
-const se=((d.hooks??={}).SessionEnd??=[]);
-if(!se.some(g=>(g.hooks||[]).some(h=>h.command===cmd))){
-  d.hooks.SessionEnd=se.map(g=>({...g,hooks:(g.hooks||[]).filter(h=>!isPwx(h))})).filter(g=>g.hooks.length);   // troca versões antigas do hook
-  d.hooks.SessionEnd.push({hooks:[{type:"command",command:cmd,timeout:15}]});
-  fs.writeFileSync(p,JSON.stringify(d,null,2)+"\n");console.log("hook SessionEnd atualizado");
-}
-' "$SETTINGS" "$BIN/pwx"
+const fs=require("fs"),[p,pwx,ctx]=process.argv.slice(1),d=JSON.parse(fs.readFileSync(p,"utf8"));
+let changed=false;
+const ensure=(event,cmd,isPwx)=>{
+  const gs=((d.hooks??={})[event]??=[]);
+  if(gs.some(g=>(g.hooks||[]).some(h=>h.command===cmd)))return;
+  d.hooks[event]=gs.map(g=>({...g,hooks:(g.hooks||[]).filter(h=>!isPwx(h.command||""))})).filter(g=>g.hooks.length);   // troca versões antigas do hook
+  d.hooks[event].push({hooks:[{type:"command",command:cmd,timeout:15}]});
+  changed=true;console.log(`hook ${event} atualizado`);
+};
+ensure("SessionStart",`echo ${JSON.stringify(ctx)}`,(c)=>c.includes("furi-toolbox:pwx"));
+ensure("SessionEnd",`"${pwx}" close-tab >/dev/null 2>&1; true`,(c)=>/pwx"? close-tab/.test(c));
+if(changed)fs.writeFileSync(p,JSON.stringify(d,null,2)+"\n");
+' "$SETTINGS" "$BIN/pwx" "$CTX"
 
 case ":$PATH:" in *":$BIN:"*) ;; *) echo "adicione $BIN ao PATH";; esac
 echo "pronto: $(command -v pwx || echo "$BIN/pwx") · teste com: pwx goto https://example.com"
