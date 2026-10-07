@@ -107,6 +107,7 @@ lp-skills/
 │   ├── generate-plugins.mjs  # frontmatter → os 3 manifestos de cada pacote + os 2 catálogos
 │   └── validate-plugins.mjs  # falha se um pacote não serve algum dos 3 clientes
 ├── .github/workflows/ci.yml  # roda os dois acima: o que está no GitHub é o que foi gerado
+├── setup/                    # o padrão da minha máquina (o QUÊ, não o como) — ex.: claude-code.md; fora dos pacotes
 ├── app/                      # Next.js App Router (a LP)
 ├── components/               # React components
 └── lib/                      # categorias + leitor de skills + grafo de relações + gerador de comandos
