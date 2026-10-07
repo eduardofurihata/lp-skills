@@ -63,10 +63,10 @@ if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, 
   const s = spawnSync(process.execPath, args.slice(1), { stdio: 'inherit', env: { ...env, PWX_CDP: `http://127.0.0.1:${cfg.roles[role]}` } });
   process.exit(s.status ?? 1);
 }
-if (!isOpen()) attach();
+// roda direto (sem `list` antes: um processo a menos por comando); sessão inexistente ou Edge reiniciado → refaz e tenta de novo
 let r = cli(['-s=' + session, ...args]);
-if (r.status !== 0 && /closed|disconnected|not connected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
-  cli(['-s=' + session, 'detach']);    // o Edge reiniciou: refaz a sessão e tenta de novo
+if (r.status !== 0 && /is not open|closed|disconnected|not connected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
+  cli(['-s=' + session, 'detach']);
   attach();
   r = cli(['-s=' + session, ...args]);
 }
