@@ -31,13 +31,19 @@ if (!args.length || (args[0] === '--help' && args.length === 1)) {
   process.exit(0);
 }
 
-const cli = (a) => spawnSync('playwright-cli', a, { stdio: 'pipe', encoding: 'utf8' });
+// sem depender do PATH do chamador (hook SessionEnd, shell sem nvm): playwright-cli mora ao lado deste node, browser ao lado deste script
+const env = {
+  ...process.env,
+  PATH: `${path.dirname(process.execPath)}${path.delimiter}${process.env.PATH || ''}`,
+  NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require "${path.join(__dirname, 'pwx-background.cjs')}"`.trim(),   // aba nova sem roubar o foco
+};
+const cli = (a) => spawnSync('playwright-cli', a, { stdio: 'pipe', encoding: 'utf8', env });
 const isOpen = () => {
   try { return JSON.parse(cli(['list', '--json']).stdout).browsers.some((b) => b.name === session && b.status === 'open'); }
   catch { return false; }
 };
 function attach() {
-  const up = spawnSync('browser', ['up', role], { stdio: 'pipe', encoding: 'utf8' });   // sobe o Edge do papel se não estiver de pé
+  const up = spawnSync(process.execPath, [path.join(__dirname, 'browser'), 'up', role], { stdio: 'pipe', encoding: 'utf8', env });   // sobe o Edge do papel se não estiver de pé
   if (up.status !== 0) { process.stderr.write(up.stdout + up.stderr); process.exit(1); }
   const r = cli(['attach', `--cdp=http://127.0.0.1:${cfg.roles[role]}`, `--session=${session}`]);
   if (r.status !== 0) { process.stderr.write(r.stdout + r.stderr); process.exit(r.status || 1); }

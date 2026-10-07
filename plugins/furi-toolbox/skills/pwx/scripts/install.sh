@@ -8,8 +8,12 @@ mkdir -p "$BIN" "$HOME_BA/logs" "$HOME_BA/profiles"
 command -v node >/dev/null || { echo "node não encontrado (precisa de Node >= 20)"; exit 1; }
 command -v playwright-cli >/dev/null || npm i -g @playwright/cli@latest
 
-install -m 0755 "$HERE/pwx" "$BIN/pwx"
-install -m 0755 "$HERE/browser" "$BIN/browser"
+# shebang com o node absoluto: pwx roda mesmo onde o nvm não está no PATH (o hook SessionEnd do Claude Code)
+NODE="$(command -v node)"
+for f in pwx browser; do
+  sed "1s|.*|#!$NODE|" "$HERE/$f" > "$BIN/$f"; chmod 0755 "$BIN/$f"
+done
+install -m 0644 "$HERE/pwx-background.cjs" "$BIN/pwx-background.cjs"
 
 if [ ! -f "$HOME_BA/config.json" ]; then
   BROWSER="${1:-}"
@@ -35,10 +39,15 @@ grep -qx '.playwright-cli/' "$GI" || echo '.playwright-cli/' >> "$GI"
 SETTINGS="$HOME/.claude/settings.json"; [ -f "$SETTINGS" ] || echo '{}' > "$SETTINGS"
 node -e '
 const fs=require("fs"),p=process.argv[1],d=JSON.parse(fs.readFileSync(p,"utf8"));
-const cmd="command -v pwx >/dev/null && pwx close-tab >/dev/null 2>&1; true";
+const cmd=`"${process.argv[2]}" close-tab >/dev/null 2>&1; true`;
+const isPwx=(h)=>/pwx"? close-tab/.test(h.command||"");
 const se=((d.hooks??={}).SessionEnd??=[]);
-if(!se.some(g=>(g.hooks||[]).some(h=>h.command===cmd))){se.push({hooks:[{type:"command",command:cmd,timeout:15}]});fs.writeFileSync(p,JSON.stringify(d,null,2)+"\n");console.log("hook SessionEnd adicionado");}
-' "$SETTINGS"
+if(!se.some(g=>(g.hooks||[]).some(h=>h.command===cmd))){
+  d.hooks.SessionEnd=se.map(g=>({...g,hooks:(g.hooks||[]).filter(h=>!isPwx(h))})).filter(g=>g.hooks.length);   // troca versões antigas do hook
+  d.hooks.SessionEnd.push({hooks:[{type:"command",command:cmd,timeout:15}]});
+  fs.writeFileSync(p,JSON.stringify(d,null,2)+"\n");console.log("hook SessionEnd atualizado");
+}
+' "$SETTINGS" "$BIN/pwx"
 
 case ":$PATH:" in *":$BIN:"*) ;; *) echo "adicione $BIN ao PATH";; esac
 echo "pronto: $(command -v pwx || echo "$BIN/pwx") · teste com: pwx goto https://example.com"
