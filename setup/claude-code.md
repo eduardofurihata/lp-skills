@@ -14,7 +14,7 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 
 | Situação | Mensagem | Som | Some em |
 |---|---|---|---|
-| Terminou a resposta | Resposta concluída | "concluído" | ~2 min |
+| Terminou a resposta | Resposta concluída | "concluído" | ~5 min |
 | Pergunta (Ask tool) | ❓ Preciso da sua resposta | "pergunta" | ~5 min |
 | Plano pronto (plan mode) | 📋 Plano pronto — aprova? | "pergunta" | ~5 min |
 | Pedindo permissão | a mensagem do próprio Claude | "pergunta" | ~5 min |
@@ -37,7 +37,8 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 
 **Armadilhas já pagas.**
 - *macOS.* Com Não Perturbe ativo, tudo cai calado na Central: o banner nunca aparece, mesmo com permissão dada.
-- *macOS.* O tempo do banner não é configurável: "Temporário" some em ~5 s e "Persistente" fica até o clique. Para ter ~2 e ~5 min, use Persistente e remova a notificação por conta própria.
+- *macOS.* O tempo do banner não é configurável: "Temporário" some em ~5 s e "Persistente" fica até o clique. Para ter ~5 min, use Persistente e remova a notificação por conta própria.
+- *Auto-dismiss.* Cada timer só remove se ainda for o da notificação mais recente da sessão; sem isso, o timer de uma notificação antiga apaga a nova segundos depois de ela aparecer.
 - *macOS.* A notificação nativa do `osascript` não serve: o clique abre o Script Editor.
 - *macOS.* O notificador nasce com notificações bloqueadas. É preciso liberar em Ajustes → Notificações.
 - *IDE (VS Code e forks).* Abrir a pasta só foca a janela, não o terminal. Escolher o terminal exige algo dentro da IDE (uma extensão) que ache o terminal pelo processo da sessão.
