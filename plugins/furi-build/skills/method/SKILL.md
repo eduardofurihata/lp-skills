@@ -7,12 +7,13 @@ requires: solve
 
 # /method — Protocolo de Engenharia Rigorosa
 
-/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa; combinada, é o final dela que vence o do /method. Vontade de pular ou comprimir um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado — comprimir um doc nunca é pular story nem use case. Não cria branch/worktree/subagente nem faz push/merge. Cada step 1-10 invoca /solve (Skill tool real) e fecha publicando o Gateway → próximo: uma linha, barata e obrigatória — ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO: `<motivo>` (refaz o step). Cada linha é uma ação fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog.
+/method é a espinha: combinado com outra skill, os 11 steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa; combinada, é o final dela que vence o do /method. Vontade de pular ou comprimir um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado — comprimir um doc nunca é pular story nem use case. Não cria branch/worktree/subagente nem faz push/merge. Os steps 0-10 invocam /solve (Skill tool real), o do 0 antes de tudo; os 1-10 fecham publicando o Gateway → próximo: uma linha, barata e obrigatória — ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO: `<motivo>` (refaz o step). Cada linha é uma ação fechada antes da próxima. Docs 1-6 no presente, sem `Round N` nem changelog.
 
 ## Step 0 — Start
+- Invocar /solve (Skill tool) antes de qualquer leitura, pergunta ou item de outra skill — é a 1ª ação do run
 - Rotear cada parte do pedido ao doc dono em `docs/` (novo só sem dono, com motivo, nomeado pela capacidade) e publicar Roteamento
-- Declarar o plano combinado quando houver outra skill
-- Criar `track/<objetivo>.md`: os 11 steps como `- [ ]`
+- Declarar o plano combinado quando houver outra skill, no argumento ou como outro /comando no mesmo prompt — o Step 0 roda antes do 1º item dela
+- Criar `track/<objetivo>.md`: os 11 steps como `- [ ]` e, sob cada step 1-10, `- [ ] /solve` e `- [ ] Gateway`
 - Retomar do primeiro `- [ ]`, se o `<objetivo>.md` já existe em `track/`
 
 ## Step 1 — Problem
