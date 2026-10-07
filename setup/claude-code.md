@@ -23,9 +23,9 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 - Pergunta e plano avisam **na hora** em que aparecem, sem esperar o tempo ocioso.
 - O título traz o **nome do projeto**.
 - Há dois sons distintos: "terminou" e "precisa de você". Dá para saber qual é sem olhar.
-- Uma notificação nova do mesmo projeto **substitui** a anterior, sem empilhar.
+- Uma notificação nova da mesma **sessão** substitui a anterior, sem empilhar. Duas sessões no mesmo projeto não se apagam.
 - Some sozinha no tempo da tabela. Não pode sumir em 5 s (curto demais) nem ficar para sempre.
-- **Clique** leva ao app de onde a sessão roda: numa IDE, a janela **daquele projeto**; num terminal, o app do terminal.
+- **Clique** leva ao app de onde a sessão roda: numa IDE, a janela **daquele projeto** e o **terminal daquela sessão** (mesmo com vários Claude abertos na janela); num terminal, o app do terminal.
 - Vale para **toda** sessão do Claude Code CLI, em qualquer terminal ou IDE. A config é global, não por projeto.
 - Passa pelo Não Perturbe / Foco: o notificador é exceção, o resto continua silenciado.
 - Nunca atrasa nem bloqueia o Claude. Se falhar, falha calada.
@@ -33,13 +33,14 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 **Pronto quando.** Com outro app em foco:
 - os quatro casos tocam o som certo e mostram o banner na tela, não só na Central;
 - os banners somem no tempo certo;
-- o clique volta à janela do projeto.
+- o clique volta à janela do projeto e ao terminal exato da sessão, com dois Claude abertos na mesma janela.
 
 **Armadilhas já pagas.**
 - *macOS.* Com Não Perturbe ativo, tudo cai calado na Central: o banner nunca aparece, mesmo com permissão dada.
 - *macOS.* O tempo do banner não é configurável: "Temporário" some em ~5 s e "Persistente" fica até o clique. Para ter ~2 e ~5 min, use Persistente e remova a notificação por conta própria.
 - *macOS.* A notificação nativa do `osascript` não serve: o clique abre o Script Editor.
 - *macOS.* O notificador nasce com notificações bloqueadas. É preciso liberar em Ajustes → Notificações.
+- *IDE (VS Code e forks).* Abrir a pasta só foca a janela, não o terminal. Escolher o terminal exige algo dentro da IDE (uma extensão) que ache o terminal pelo processo da sessão.
 - *Linux/KDE.* O clique precisa de uma ação na notificação e de algo que foque a janela por classe.
 
 ---
@@ -58,5 +59,5 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 
 | Máquina | Notificações |
 |---|---|
-| Mac | `~/.claude/hooks/notify.sh` + terminal-notifier; hooks `Stop`, `PreToolUse` (AskUserQuestion\|ExitPlanMode), `Notification` (permissão) |
+| Mac | `~/.claude/hooks/notify.sh` + terminal-notifier + extensão `furi.focus-terminal` na IDE (URI com os PIDs da sessão); hooks `Stop`, `PreToolUse` (AskUserQuestion\|ExitPlanMode), `Notification` (permissão) |
 | Nobara (antigo) | `~/.claude/hooks/claude-notify.sh` + notify-send; hooks `Stop`, `PreToolUse` (AskUserQuestion, ExitPlanMode) |
