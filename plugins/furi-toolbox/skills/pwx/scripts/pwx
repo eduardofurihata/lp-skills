@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // pwx — playwright-cli no Edge de automação (perfil próprio em ~/.browser-automation), via CDP.
-// Uso: pwx [papel] <comando playwright-cli...>   ex.: pwx goto https://x.com · pwx snapshot · pwx click e12 · pwx close-tab
-// Cada projeto ganha a PRÓPRIA aba; os logins são os do perfil do papel, compartilhados por todos.
-// Duas janelas no mesmo projeto: PWX_SESSION=<nome> pwx …   Papel padrão do projeto: .pwx.json { "defaultRole": "admin" }
+// Uso: pwx [papel] <comando playwright-cli...>   ex.: pwx goto https://x.com · pwx snapshot · pwx click e12 · pwx close-tab · pwx gc
+// Cada sessão do Claude (ou projeto, fora dele) ganha a PRÓPRIA aba, fechada quando o Claude termina; os logins são os do perfil do papel, compartilhados por todos.
+// Duas janelas na mesma sessão: PWX_SESSION=<nome> pwx …   Papel padrão do projeto: .pwx.json { "defaultRole": "admin" }
 const fs = require('fs'), path = require('path'), os = require('os');
-const { spawnSync, execSync } = require('child_process');
+const { spawn, spawnSync, execSync } = require('child_process');
 
 const HOME = path.join(os.homedir(), '.browser-automation');
 const cfg = JSON.parse(fs.readFileSync(path.join(HOME, 'config.json'), 'utf8'));
@@ -23,7 +23,10 @@ function projectName() {
 
 let role = process.env.PWX_ROLE || projectDefaultRole() || cfg.defaultRole;
 if (cfg.roles[args[0]]) role = args.shift();
-const session = `${role}-${(process.env.PWX_SESSION || projectName()).replace(/[^\w.-]/g, '_')}`;
+// cada sessão do Claude ganha a própria aba: duas sessões no mesmo projeto não dividem (nem fecham) a janela uma da outra
+const OWNER = process.env.CLAUDE_CODE_SESSION_ID || null, OWNER_PID = Number(process.env.CLAUDE_PID) || null;
+const base = process.env.PWX_SESSION || (OWNER ? `${projectName()}-${OWNER.slice(0, 6)}` : projectName());
+const session = `${role}-${base.replace(/[^\w.-]/g, '_')}`;
 
 if (!args.length || (args[0] === '--help' && args.length === 1)) {
   console.log('uso: pwx [papel] <comando playwright-cli...>   ·   pwx [papel] run <script> [args...]\npapéis: ' + Object.keys(cfg.roles).join(', ') +
@@ -38,23 +41,55 @@ const env = {
   NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require "${path.join(__dirname, 'pwx-background.cjs')}"`.trim(),   // aba nova sem roubar o foco
 };
 const cli = (a) => spawnSync('playwright-cli', a, { stdio: 'pipe', encoding: 'utf8', env });
-const isOpen = () => {
-  try { return JSON.parse(cli(['list', '--json']).stdout).browsers.some((b) => b.name === session && b.status === 'open'); }
-  catch { return false; }
-};
 function browserUp() {   // sobe o Edge do papel se não estiver de pé
   const up = spawnSync(process.execPath, [path.join(__dirname, 'browser'), 'up', role], { stdio: 'pipe', encoding: 'utf8', env });
   if (up.status !== 0) { process.stderr.write(up.stdout + up.stderr); process.exit(1); }
 }
-// a aba de cada sessão fica registrada: ao reconectar (daemon caiu, Edge reiniciou), volta para ela em vez de abrir outra janela
-const CDP = `http://127.0.0.1:${cfg.roles[role]}`;
-const REG = path.join(HOME, 'sessions', `${session}.json`);
+// a aba de cada sessão fica registrada com o dono: ao reconectar volta para ela; quando o Claude que a abriu termina, ela fecha
+const cdpOf = (r) => `http://127.0.0.1:${cfg.roles[r]}`;
+const CDP = cdpOf(role);
+const SESSIONS = path.join(HOME, 'sessions');
+const REG = path.join(SESSIONS, `${session}.json`);
 const targets = async () => (await (await fetch(`${CDP}/json/list`)).json()).filter((t) => t.type === 'page');
-const registered = () => { try { return JSON.parse(fs.readFileSync(REG, 'utf8')).targetId; } catch { return null; } };
-const register = (targetId) => { fs.mkdirSync(path.dirname(REG), { recursive: true }); fs.writeFileSync(REG, JSON.stringify({ targetId }) + '\n'); };
+const read = (f) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return null; } };
+const registered = () => read(REG)?.targetId ?? null;
+const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
+function register(targetId) {
+  fs.mkdirSync(SESSIONS, { recursive: true });
+  fs.writeFileSync(REG, JSON.stringify({ targetId, role, session, owner: OWNER, pid: OWNER_PID }) + '\n');
+  if (OWNER_PID) watch(OWNER_PID);
+}
+// fecha pela id da janela registrada, nunca pela "aba atual" do daemon (que muda para a aba de outro quando a nossa é fechada à mão)
+async function closeWhere(match) {
+  let files = [];
+  try { files = fs.readdirSync(SESSIONS).filter((f) => f.endsWith('.json')); } catch {}
+  for (const f of files) {
+    const file = path.join(SESSIONS, f), rec = read(file);
+    if (!rec || !match(rec, file)) continue;
+    const r = rec.role || f.split('-')[0];
+    if (cfg.roles[r] && rec.targetId) await fetch(`${cdpOf(r)}/json/close/${rec.targetId}`, { signal: AbortSignal.timeout(2000) }).catch(() => {});
+    cli(['-s=' + (rec.session || f.slice(0, -5)), 'detach']);
+    fs.rmSync(file, { force: true });
+  }
+}
+// órfãs: dono morreu (crash, reboot, vigia morto) ou registro sem dono parado há mais de 12 h
+async function gc() {
+  await closeWhere((rec, file) => rec.pid ? !alive(rec.pid) : Date.now() - fs.statSync(file).mtimeMs > 12 * 3600e3);
+  try { for (const f of fs.readdirSync(SESSIONS)) if (/^\.watch-\d+$/.test(f) && !alive(Number(f.slice(7)))) fs.rmSync(path.join(SESSIONS, f), { force: true }); } catch {}
+}
+// vigia, um por processo do Claude: quando ele some (/exit, Ctrl+C, terminal fechado, crash), fecha todas as janelas que abriu
+function watch(pid) {
+  const lock = path.join(SESSIONS, `.watch-${pid}`);
+  const w = Number(read(lock));
+  if (w && alive(w)) return;
+  const child = spawn(process.execPath, [__filename, '__watch', String(pid)], { detached: true, stdio: 'ignore', env });
+  fs.writeFileSync(lock, String(child.pid));
+  child.unref();
+}
 
 async function attach() {
   browserUp();
+  await gc();
   const r = cli(['attach', `--cdp=${CDP}`, `--session=${session}`]);
   if (r.status !== 0) { process.stderr.write(r.stdout + r.stderr); process.exit(r.status || 1); }
   const before = await targets();
@@ -70,21 +105,28 @@ async function attach() {
   if (old && !/^(about|edge|chrome):/.test(old.url)) cli(['-s=' + session, 'goto', old.url]);
 }
 
-if (args[0] === 'close-tab') {
-  if (isOpen()) { cli(['-s=' + session, 'tab-close']); cli(['-s=' + session, 'detach']); }
-  fs.rmSync(REG, { force: true });
-  console.log(`aba da sessão ${session} fechada`);
-  process.exit(0);
-}
-if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, pelo preload, abre página sem roubar o foco
-  browserUp();
-  const s = spawnSync(process.execPath, args.slice(1), { stdio: 'inherit', env: { ...env, PWX_CDP: `http://127.0.0.1:${cfg.roles[role]}` } });
-  process.exit(s.status ?? 1);
-}
-// roda direto (sem `list` antes: um processo a menos por comando); sessão inexistente ou Edge reiniciado → refaz e tenta de novo
 (async () => {
+  if (args[0] === '__watch') {
+    const pid = Number(args[1]);
+    while (alive(pid)) await new Promise((s) => setTimeout(s, 2000));
+    await closeWhere((rec) => rec.pid === pid);
+    fs.rmSync(path.join(SESSIONS, `.watch-${pid}`), { force: true });
+    process.exit(0);
+  }
+  if (args[0] === 'gc') { await gc(); process.exit(0); }
+  if (args[0] === 'close-tab') {   // todas as janelas desta sessão do Claude, de todos os papéis e worktrees; fora do Claude ou com PWX_SESSION, só a desta sessão
+    await closeWhere((rec, file) => file === REG || (OWNER && !process.env.PWX_SESSION && rec.owner === OWNER));
+    console.log(`janelas da sessão ${OWNER && !process.env.PWX_SESSION ? OWNER : session} fechadas`);
+    process.exit(0);
+  }
+  if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, pelo preload, abre página sem roubar o foco
+    browserUp();
+    const s = spawnSync(process.execPath, args.slice(1), { stdio: 'inherit', env: { ...env, PWX_CDP: CDP } });
+    process.exit(s.status ?? 1);
+  }
+  // roda direto (sem `list` antes: um processo a menos por comando); sessão inexistente ou Edge reiniciado → refaz e tenta de novo
   let r = cli(['-s=' + session, ...args]);
-  if (r.status !== 0 && /is not open|closed|disconnected|not connected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
+  if (r.status !== 0 && /is not open|not connected|Browser has been closed|Target page, context or browser has been closed|disconnected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
     cli(['-s=' + session, 'detach']);
     await attach();
     r = cli(['-s=' + session, ...args]);

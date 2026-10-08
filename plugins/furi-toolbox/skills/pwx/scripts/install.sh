@@ -35,7 +35,8 @@ fi
 GI="$HOME/.config/git/ignore"; mkdir -p "$(dirname "$GI")"; touch "$GI"
 grep -qx '.playwright-cli/' "$GI" || echo '.playwright-cli/' >> "$GI"
 
-# hooks do Claude Code: SessionStart avisa a IA que o navegador desta máquina é o pwx; SessionEnd fecha a aba do projeto
+# hooks do Claude Code: SessionStart avisa a IA que o navegador desta máquina é o pwx e recolhe janelas órfãs; SessionEnd fecha as janelas da sessão na hora
+# (o vigia que o pwx sobe fecha mesmo sem hook: terminal fechado, crash)
 CTX="Navegador desta máquina: pwx (skill furi-toolbox:pwx) — navegador real, já logado, uma aba por sessão. Para abrir, ler, clicar ou testar qualquer site, inclusive conferir um deploy, ver um erro num painel ou reproduzir um bug web, use pwx em vez de Playwright MCP, npx playwright, um navegador novo ou curl/WebFetch em página logada."
 SETTINGS="$HOME/.claude/settings.json"; [ -f "$SETTINGS" ] || echo '{}' > "$SETTINGS"
 node -e '
@@ -49,6 +50,7 @@ const ensure=(event,cmd,isPwx)=>{
   changed=true;console.log(`hook ${event} atualizado`);
 };
 ensure("SessionStart",`echo ${JSON.stringify(ctx)}`,(c)=>c.includes("furi-toolbox:pwx"));
+ensure("SessionStart",`"${pwx}" gc >/dev/null 2>&1; true`,(c)=>/pwx"? gc/.test(c));
 ensure("SessionEnd",`"${pwx}" close-tab >/dev/null 2>&1; true`,(c)=>/pwx"? close-tab/.test(c));
 if(changed)fs.writeFileSync(p,JSON.stringify(d,null,2)+"\n");
 ' "$SETTINGS" "$BIN/pwx" "$CTX"
