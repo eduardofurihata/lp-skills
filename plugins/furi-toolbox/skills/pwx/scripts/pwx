@@ -46,15 +46,33 @@ function browserUp() {   // sobe o Edge do papel se não estiver de pé
   const up = spawnSync(process.execPath, [path.join(__dirname, 'browser'), 'up', role], { stdio: 'pipe', encoding: 'utf8', env });
   if (up.status !== 0) { process.stderr.write(up.stdout + up.stderr); process.exit(1); }
 }
-function attach() {
+// a aba de cada sessão fica registrada: ao reconectar (daemon caiu, Edge reiniciou), volta para ela em vez de abrir outra janela
+const CDP = `http://127.0.0.1:${cfg.roles[role]}`;
+const REG = path.join(HOME, 'sessions', `${session}.json`);
+const targets = async () => (await (await fetch(`${CDP}/json/list`)).json()).filter((t) => t.type === 'page');
+const registered = () => { try { return JSON.parse(fs.readFileSync(REG, 'utf8')).targetId; } catch { return null; } };
+const register = (targetId) => { fs.mkdirSync(path.dirname(REG), { recursive: true }); fs.writeFileSync(REG, JSON.stringify({ targetId }) + '\n'); };
+
+async function attach() {
   browserUp();
-  const r = cli(['attach', `--cdp=http://127.0.0.1:${cfg.roles[role]}`, `--session=${session}`]);
+  const r = cli(['attach', `--cdp=${CDP}`, `--session=${session}`]);
   if (r.status !== 0) { process.stderr.write(r.stdout + r.stderr); process.exit(r.status || 1); }
+  const before = await targets();
+  const old = before.find((t) => t.id === registered());
+  if (old) {   // a aba ainda existe: seleciona pela URL quando ela é única entre as abas
+    const hits = [...cli(['-s=' + session, 'tab-list']).stdout.matchAll(/^- (\d+):.*\]\((.*)\)\s*$/gm)].filter((m) => m[2] === old.url);
+    if (hits.length === 1 && cli(['-s=' + session, 'tab-select', hits[0][1]]).status === 0) return;
+    await fetch(`${CDP}/json/close/${old.id}`);   // não deu para achar: fecha a janela antiga e reabre no mesmo lugar
+  }
   cli(['-s=' + session, 'tab-new']);   // aba própria: nunca mexe nas abas de outra sessão
+  const created = (await targets()).find((t) => !before.some((b) => b.id === t.id));
+  if (created) register(created.id);
+  if (old && !/^(about|edge|chrome):/.test(old.url)) cli(['-s=' + session, 'goto', old.url]);
 }
 
 if (args[0] === 'close-tab') {
   if (isOpen()) { cli(['-s=' + session, 'tab-close']); cli(['-s=' + session, 'detach']); }
+  fs.rmSync(REG, { force: true });
   console.log(`aba da sessão ${session} fechada`);
   process.exit(0);
 }
@@ -64,11 +82,13 @@ if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, 
   process.exit(s.status ?? 1);
 }
 // roda direto (sem `list` antes: um processo a menos por comando); sessão inexistente ou Edge reiniciado → refaz e tenta de novo
-let r = cli(['-s=' + session, ...args]);
-if (r.status !== 0 && /is not open|closed|disconnected|not connected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
-  cli(['-s=' + session, 'detach']);
-  attach();
-  r = cli(['-s=' + session, ...args]);
-}
-process.stdout.write(r.stdout || ''); process.stderr.write(r.stderr || '');
-process.exit(r.status ?? 1);
+(async () => {
+  let r = cli(['-s=' + session, ...args]);
+  if (r.status !== 0 && /is not open|closed|disconnected|not connected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
+    cli(['-s=' + session, 'detach']);
+    await attach();
+    r = cli(['-s=' + session, ...args]);
+  }
+  process.stdout.write(r.stdout || ''); process.stderr.write(r.stderr || '');
+  process.exit(r.status ?? 1);
+})();
