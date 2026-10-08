@@ -1,6 +1,6 @@
 ---
 name: card
-description: 'Use ONLY when the user explicitly invokes /card (bare /card = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:card` via the Skill tool. NEVER activate on your own initiative. — first truly understands the problem and the project, then writes the card as PM/PO and creates it on the right board with destination, owner and images. With other skills in the argument it understands and combines them in one pass. Refuses without Jira.'
+description: 'Use ONLY when the user explicitly invokes /card (bare /card = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:card` via the Skill tool. NEVER activate on your own initiative. — first truly understands the problem and the project, then writes the card as PM/PO and creates it on the right board with destination, owner and images. With other skills in the argument or the same prompt it combines them in one pass: doctrine skills (/solve, /principles, /front, /method) shape the card and never implement it; only delivery targets (/work, /pull-request, /homolog, /prod) carry the work forward. Refuses without Jira.'
 effort: max
 requires: [work, pull-request, homolog, prod]
 handoff: work
@@ -9,7 +9,7 @@ argument-hint: "[KEY] <descrição> [/skill…]"
 
 # /card — uma linha vira um card que o dev pega sem perguntar
 
-Quem lê o card não viu esta conversa: ele vale o que valeu o entendimento antes dele. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem Jira → recuse. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
+Quem lê o card não viu esta conversa: ele vale o que valeu o entendimento antes dele. Com outras skills no argumento ou como outro /comando no mesmo prompt, numa passada só — nunca uma antes ou depois da outra: skill de doutrina (/solve, /principles, /front, /method) é régua do entendimento e do card, não ordem de resolver — o run termina no card, nenhum código muda e o card nasce na coluna do setup; só um alvo de entrega (/work, /pull-request, /homolog, /prod) leva o trabalho adiante, e o card nasce antes do 1º item dele. Dúvida se o pedido também é resolver → pergunte antes de tocar no código. Sem Jira → recuse. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Entender o problema do prompt
 - [ ] Entender os arquivos do projeto e o projeto como um todo
