@@ -3,7 +3,7 @@ name: brain
 description: 'Use when user invokes /brain to understand a problem or decide between paths — thinking, not building. Assumes the request is WRONG and restates it; seven phases, blind judge on one-way doors, ONE recommendation as an ADR in docs/decisions/.'
 effort: max
 argument-hint: "[o problema ou a decisão — escreva torto mesmo]"
-allowed-tools: Bash, Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Agent, AskUserQuestion, TaskCreate, TaskUpdate
+allowed-tools: Bash, Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Agent, AskUserQuestion
 disable-model-invocation: true
 ---
 

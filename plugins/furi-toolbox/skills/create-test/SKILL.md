@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # /create-test — delimitar o tema, suprir a pirâmide, rodar até verde
 
-O tema entra pelo argumento ou pelo que esta conversa mudou; sai a pirâmide dele suprida: o que falta em cada nível, escrito e verde. Nunca conserta código de produção. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+O tema entra pelo argumento ou pelo que esta conversa mudou; sai a pirâmide dele suprida: o que falta em cada nível, escrito e verde. Nunca conserta código de produção. Trabalhe os `- [ ]` abaixo na ordem: um por vez, fechando antes de abrir o próximo.
 
 - [ ] Delimitar o tema: o que o prompt pede ou o que mudou aqui — arquivos, regras, rotas, telas; ambiguidade real → pergunte
 - [ ] Ler como o projeto testa hoje: stack, runner, config, scripts, pastas, fixtures e o comando da suíte
