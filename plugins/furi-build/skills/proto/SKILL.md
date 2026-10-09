@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # /proto — a mesma tela em 3 versões, pra escolher uma
 
-O entregável não é uma tela, é uma **escolha**. Não commita e não cria `docs/` nem `track/` — isso é o `/method`, depois da escolha. **Cada `- [ ]` é uma tarefa:** `TaskCreate` um por item, `TaskUpdate` fecha antes da próxima.
+O entregável não é uma tela, é uma **escolha**. Não commita e não cria `docs/` nem `track/` — isso é o `/method`, depois da escolha. **Cada `- [ ]` é uma tarefa:** feche uma antes da próxima.
 
 - [ ] Invocar `furi-build:solve` via Skill tool — traz o `/principles` e o `/front`
 - [ ] Perguntar qual tela, se não ficou claro
