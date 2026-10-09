@@ -17,4 +17,5 @@ Mire ser a **referência #1 do mercado**, no calibre dos **big pop tech apps**. 
 - [ ] Reescrever no lugar o que já existe — nunca `-v2`, `-new` ou paralelo "pra limpar depois"; arquivo novo só quando nada cobre
 - [ ] Refazer do zero se a base atual não chega ao nível #1
 - [ ] Igualar ou superar a referência
+- [ ] Pensar os TCs como o usuário final: o caminho feliz, o erro e a borda que ele vive de verdade — cada um coberto por um teste, nunca só pelo olhar
 - [ ] Perguntar antes de entregar: "um líder do domínio assinaria isto — e esta tela?" Não → refazer
