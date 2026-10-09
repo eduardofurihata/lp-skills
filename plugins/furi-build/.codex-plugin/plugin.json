@@ -1,7 +1,7 @@
 {
   "name": "furi-build",
   "version": "0.1.0+codex.d74ab13afd5e",
-  "description": "Skills de construção do Furihata — /solve, /principles, /front, /method e /proto: do problema ao commit local, com QA. Funciona sozinho, em qualquer repositório.",
+  "description": "Skills de construção do Furihata — /solve, /principles, /front, /method, /proto e /qa: do problema ao commit local, com QA. Funciona sozinho, em qualquer repositório.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata"
