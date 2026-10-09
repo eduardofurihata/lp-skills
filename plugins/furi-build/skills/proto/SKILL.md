@@ -1,7 +1,6 @@
 ---
 name: proto
 description: 'Use when user invokes /proto to recreate a screen in 3 versions, each on a temporary parallel route in the same app ({rota-original}-v1/-v2/-v3), respecting the app design system, mobile and desktop, at /solve quality — as the screen SHOULD be, not as it is. Ends with the 3 URLs and a recommendation so the user picks one; the chosen version is implemented later by /method.'
-effort: max
 requires: solve
 argument-hint: "[rota, tela ou print]"
 disable-model-invocation: true

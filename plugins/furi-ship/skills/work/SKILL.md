@@ -1,7 +1,6 @@
 ---
 name: work
 description: 'Use ONLY when the user explicitly invokes /work (bare /work = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:work` via the Skill tool. NEVER activate on your own initiative. — the ground (setup, card, branch, status), then the commit with the front screens proven on the card. Never pushes.'
-effort: max
 handoff: pull-request
 argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 ---

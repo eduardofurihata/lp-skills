@@ -4,7 +4,6 @@ description: Use when user invokes /save in a git repo to commit current work, w
 argument-hint: "[mensagem opcional]"
 context: fork
 background: false
-effort: low
 disable-model-invocation: true
 ---
 
@@ -12,7 +11,7 @@ disable-model-invocation: true
 
 Commit autônomo de tudo que está no repo. Lida com lixo (delete) e com o que deve ser ignorado (`.gitignore`). **Nunca pusha.** É aqui que termina quem corrige sem commitar: passada de princípios, refactor e limpeza deixam o trabalho no working tree de propósito, para o commit ser um ato separado e revisável.
 
-Roda em **fork** (`effort: low`, sem `model:` fixo; `background: false` devolve o relatório inline). Um fork **não pergunta**: por isso existe o bucket **HOLD** — no ambíguo, não age. Fora do Claude Code roda inline, mesmo fluxo.
+Roda em **fork** (sem `effort` nem `model:` fixos; `background: false` devolve o relatório inline). Um fork **não pergunta**: por isso existe o bucket **HOLD** — no ambíguo, não age. Fora do Claude Code roda inline, mesmo fluxo.
 
 ## Fluxo
 

@@ -1,7 +1,6 @@
 ---
 name: homolog
 description: 'Use ONLY when the user explicitly invokes /homolog (bare /homolog = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:homolog` via the Skill tool. NEVER activate on your own initiative. — homolog live with what shipped: /pull-request guaranteed → PR approved (reviewed and fixed if you are not the author) and merged → environment configured from the infra map → checked live → Jira card → return. Never touches production.'
-effort: max
 requires: [work, pull-request, infra]
 handoff: prod
 argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo pronto)"

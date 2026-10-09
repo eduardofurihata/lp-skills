@@ -1,7 +1,6 @@
 ---
 name: make-skill
 description: 'Use when user invokes /make-skill <what the skill must do | path to a SKILL.md> — writes (or rewrites) one SKILL.md under the rule: simple, clean, minimal, readable by a human and by the model, efficient, written as an order (never a how-to), under 3333 chars; places it where this repo keeps skills and proves it.'
-effort: max
 argument-hint: "<o que a skill faz | caminho de um SKILL.md> [nome]"
 disable-model-invocation: true
 ---

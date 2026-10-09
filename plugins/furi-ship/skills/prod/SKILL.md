@@ -1,7 +1,6 @@
 ---
 name: prod
 description: 'Use ONLY when the user explicitly invokes /prod (bare /prod = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:prod` via the Skill tool. NEVER activate on your own initiative. — /homolog guaranteed → homolog promoted (PR reviewed and fixed, or merge and push) → configured, checked live, Jira card. Single owner of production.'
-effort: max
 requires: [homolog, infra]
 boundary: sync
 argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo pronto)"

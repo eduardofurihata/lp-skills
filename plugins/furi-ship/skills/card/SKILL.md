@@ -1,7 +1,6 @@
 ---
 name: card
 description: 'Use ONLY when the user explicitly invokes /card (bare /card = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:card` via the Skill tool. NEVER activate on your own initiative. — first truly understands the problem and the project, then writes the card as PM/PO and creates it on the right board with destination, owner and images. With other skills in the argument or the same prompt it combines them in one pass: only delivery targets (/work, /pull-request, /homolog, /prod) carry the work forward; any other skill shapes the card and never implements it. Refuses without Jira.'
-effort: max
 requires: [work, pull-request, homolog, prod]
 handoff: work
 argument-hint: "[KEY] <descrição> [/skill…]"

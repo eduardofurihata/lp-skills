@@ -1,7 +1,6 @@
 ---
 name: infra
 description: 'Use ONLY when the user explicitly invokes /infra (bare /infra = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:infra` via the Skill tool. NEVER activate on your own initiative. — the infra map of THIS project in `.claude/ship/infra.md`: accounts, accesses, where each secret lives (never a value), homolog and prod environments. `audit` reports only.'
-effort: max
 boundary: [homolog, prod]
 argument-hint: "(vazio = reconferir e mostrar o diff) | <provedor> | audit"
 ---

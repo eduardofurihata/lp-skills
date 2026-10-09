@@ -1,7 +1,6 @@
 ---
 name: recard
 description: 'Use when user invokes /recard <KEY> (bare /recard = the card the conversation is already about) — rewrites an existing Jira card''s real description from everything analysed in the conversation, as PM/PO, with screenshots, posted ONLY as a comment: the description is never edited. With other skills in the argument or the same prompt it combines them in one pass as the bar of the understanding; it never implements. Refuses without Jira.'
-effort: max
 argument-hint: "<KEY> [/skill…]"
 disable-model-invocation: true
 handoff: card

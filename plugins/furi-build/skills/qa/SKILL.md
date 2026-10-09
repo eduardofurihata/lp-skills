@@ -1,7 +1,6 @@
 ---
 name: qa
 description: 'Use ONLY when the user explicitly invokes /qa (bare /qa = o tema é o que a conversa já mudou), or when another skill invokes `furi-build:qa` via the Skill tool. NEVER activate on your own initiative. — estratégia de testes holística e autônoma 360° sobre o que foi feito: entende o escopo, completa a pirâmide (unidade, integração, E2E no padrão do projeto), roda os testes do escopo até verde e faz a passada exploratória agêntica completa no navegador real. Nunca conserta código de produção.'
-effort: max
 argument-hint: "[tema | arquivo | rota | tela] (vazio = o que esta conversa mudou)"
 ---
 

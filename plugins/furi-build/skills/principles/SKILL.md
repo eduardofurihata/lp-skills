@@ -1,7 +1,6 @@
 ---
 name: principles
 description: 'Use ONLY when the user explicitly invokes /principles (bare /principles = the target is whatever the conversation is already about), or when another skill invokes `furi-build:principles` via the Skill tool. NEVER activate on your own initiative. — the engineering doctrine: SOLID (all five), DRY, KISS, YAGNI, Law of Demeter, Motores (one owner per capability) and continuous refactoring (everything the work touches goes up). With a target (folder, file, diff, commit) it raises it without changing behaviour; `audit` = report only. Never commits, never creates a branch.'
-effort: max
 argument-hint: "[pasta/ | arquivo | diff | commit <sha>] [audit]"
 ---
 

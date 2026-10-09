@@ -1,7 +1,6 @@
 ---
 name: repro
 description: 'Use ONLY when the user explicitly invokes /repro (bare /repro = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:repro` via the Skill tool. NEVER activate on your own initiative. — reproduces the report on the front as the user, judged ≥ 90; the dev sees the bug and the fix BEFORE the commit.'
-effort: max
 argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 ---
 

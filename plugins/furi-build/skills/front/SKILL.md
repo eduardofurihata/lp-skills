@@ -1,7 +1,6 @@
 ---
 name: front
 description: 'Use ONLY when the user explicitly invokes /front (bare /front = the target is whatever the conversation is already about), or when another skill invokes `furi-build:front` via the Skill tool. NEVER activate on your own initiative. — design doctrine, UX and UI: #1 reference, wow, anyone uses it unaided, every screen by clicks and URL; raises a target, behaviour unchanged, `audit` = report only; never commits nor branches.'
-effort: max
 argument-hint: "[tela | componente | rota | pasta/ | diff] [audit]"
 ---
 

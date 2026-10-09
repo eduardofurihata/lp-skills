@@ -1,7 +1,6 @@
 ---
 name: pull-request
 description: 'Use ONLY when the user explicitly invokes /pull-request (bare /pull-request = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:pull-request` via the Skill tool. NEVER activate on your own initiative. — publishes the work: /work complete → target merged in → push → PR where the setup says (or push only) → title, description, comment → Jira card → return. Never merges.'
-effort: max
 requires: [work]
 handoff: homolog
 boundary: prod

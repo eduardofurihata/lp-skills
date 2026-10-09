@@ -1,7 +1,6 @@
 ---
 name: sync
 description: 'Use when user invokes /sync with a branch expression like "main > dev", "dev = main" or "A = B > C gh = local" — a notation for synchronizing git branches: `=` converges to the same commit (nobody loses work), `>` flows one way (right never flows back), `gh = local` means local and GitHub identical. Conflicts resolved by understanding both sides; never --force, reset --hard, rebase or branch deletion.'
-effort: max
 handoff: prod
 argument-hint: "<expressão> — ex: main > dev | dev = main | A = B > C gh = local"
 disable-model-invocation: true

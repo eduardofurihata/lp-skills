@@ -1,7 +1,6 @@
 ---
 name: solve
 description: 'Use ONLY when the user explicitly invokes /solve (bare /solve = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:solve` via the Skill tool. NEVER activate on your own initiative. — takes whatever the request targets (an answer, a plan, a brainstorm or the work itself) to world-class level, benchmarking against the leading big pop tech apps in the relevant domain as the quality floor, aiming to make us the #1 reference in the market; a question gets an answer, not an implementation. Invokes /principles (the engineering doctrine) and, with a visual surface, /front (the design doctrine) via the Skill tool.'
-effort: max
 argument-hint: "[o que resolver]"
 requires: [principles, front, qa]
 ---

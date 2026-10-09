@@ -3,7 +3,7 @@
 # Uso: blind-pair.sh <criterios.md> <problema.md> <recomendacao.md> <alternativa.md> [saida]
 # Quatro arquivos escritos de verdade, nunca texto digitado. Códigos: 0 ok · 1 entrada ausente · 2 binário `claude` ausente · 3 a sessão cega falhou
 set -u
-CRIT="${1:?uso: blind-pair.sh <criterios> <problema> <A> <B> [saida]}"; IN="${2:?}"; A="${3:?}"; B="${4:?}"; OUT="${5:-/tmp/brain-pair.md}"; EFFORT="${EFFORT:-max}"
+CRIT="${1:?uso: blind-pair.sh <criterios> <problema> <A> <B> [saida]}"; IN="${2:?}"; A="${3:?}"; B="${4:?}"; OUT="${5:-/tmp/brain-pair.md}"
 command -v claude >/dev/null 2>&1 || { echo "brain: binário 'claude' ausente — rode inline e declare 'independência: NÃO' no gate." >&2; exit 2; }
 for f in "$CRIT" "$IN" "$A" "$B"; do [ -s "$f" ] || { echo "brain: entrada ausente ou vazia: $f" >&2; exit 1; }; done
 SYS="$(cat <<'PROMPT'
@@ -37,7 +37,7 @@ round() {
     echo "# O problema (o que os dois textos respondem)"; cat "$IN"; echo
     echo "# Texto 1"; cat "$1"; echo
     echo "# Texto 2"; cat "$2"; echo
-  } | ( cd "$(mktemp -d)" && env -u CLAUDECODE claude -p --safe-mode --effort "$EFFORT" --system-prompt "$SYS" --tools "" )
+  } | ( cd "$(mktemp -d)" && env -u CLAUDECODE claude -p --safe-mode ${EFFORT:+--effort "$EFFORT"} --system-prompt "$SYS" --tools "" )
 }
 # última linha `VENCEDOR:` da saída → 1 | 2 | EMPATE | INDETERMINADO
 winner() {

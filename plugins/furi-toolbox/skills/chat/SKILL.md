@@ -1,7 +1,6 @@
 ---
 name: chat
 description: 'Use when user invokes /chat — activates read-only guru mode: deep analysis and smart answers with no file or system modification. The mode ends when the user types `chat out`; nothing else ends it.'
-effort: max
 argument-hint: "(vazio = entra no modo read-only) | out"
 disable-model-invocation: true
 ---
