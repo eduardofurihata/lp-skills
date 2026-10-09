@@ -1,6 +1,6 @@
 {
   "name": "furi-ship",
-  "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /infra mapeia a infra do projeto; o processo mora em .claude/ship/setup.md, uma seção por skill. Funciona sozinho, sem depender de outro pacote.",
+  "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /recard comenta num card existente a descrição real, com telas; /infra mapeia a infra do projeto; o processo mora em .claude/ship/setup.md, uma seção por skill. Funciona sozinho, sem depender de outro pacote.",
   "author": {
     "name": "Eduardo Furihata"
   }

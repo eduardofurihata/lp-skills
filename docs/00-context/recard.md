@@ -1,0 +1,1 @@
+Em comentario (somente comentário, nao descrição), comentar a descrição real do card, considerando tudo que analisamos aqui, seguindo a skill /card e /solve, com screenshots

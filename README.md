@@ -1,6 +1,6 @@
 # lp-skills
 
-Skills do [Furihata](https://github.com/eduardofurihata), distribuídas como plugins que **Claude Code**, **Codex**, **Cursor**, **Copilot** e **VS Code** instalam direto do GitHub — igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em três categorias: **Build** (o método: `/solve`, `/principles`, `/front`, `/method`, `/proto`), **Ship** (a entrega — um pipeline só: os alvos `/work`, `/pull-request`, `/homolog`, `/prod`, que levam o trabalho de onde estiver até o próprio estágio; os modificadores `/repro` e `/card`, que compõem com qualquer alvo; e `/setup`, `/jira`, `/infra`, que configuram o processo, o Jira e a infra do projeto) e **Toolbox** (ferramentas avulsas: `/brain`, o parecer que entende o problema antes de decidir, `/blind`, a sessão que não vê nada, `/ask`, `/chat`, `/save`, `/sync`…).
+Skills do [Furihata](https://github.com/eduardofurihata), distribuídas como plugins que **Claude Code**, **Codex**, **Cursor**, **Copilot** e **VS Code** instalam direto do GitHub — igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em três categorias: **Build** (o método: `/solve`, `/principles`, `/front`, `/method`, `/proto`), **Ship** (a entrega — um pipeline só: os alvos `/work`, `/pull-request`, `/homolog`, `/prod`, que levam o trabalho de onde estiver até o próprio estágio; os modificadores `/repro` e `/card`, que compõem com qualquer alvo; `/recard`, que comenta num card existente a descrição real, com telas; e `/setup`, `/jira`, `/infra`, que configuram o processo, o Jira e a infra do projeto) e **Toolbox** (ferramentas avulsas: `/brain`, o parecer que entende o problema antes de decidir, `/blind`, a sessão que não vê nada, `/ask`, `/chat`, `/save`, `/sync`…).
 
 Este repo é as duas coisas ao mesmo tempo: os **pacotes** (`plugins/<pacote>/`, três, um por categoria) com os catálogos que cada cliente lê, e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
 
@@ -24,7 +24,7 @@ O marketplace tem **3 pacotes** (plugins), um por categoria — você instala o 
 
 # 2) instale o pacote que quiser (um, alguns ou todos)
 /plugin install furi-build@lp-skills       # o método (/solve, /principles, /front, /method, /proto)
-/plugin install furi-ship@lp-skills        # a entrega (alvos: /work, /pull-request, /homolog, /prod · modificadores: /repro, /card · config: /setup, /jira, /infra)
+/plugin install furi-ship@lp-skills        # a entrega (alvos: /work, /pull-request, /homolog, /prod · modificadores: /repro, /card · /recard · config: /setup, /jira, /infra)
 /plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/brain, /blind, /ask, /chat, /save, /sync, /make-dev, /make-skill, /video-teams…)
 ```
 
