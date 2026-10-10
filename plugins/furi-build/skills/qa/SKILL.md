@@ -1,12 +1,12 @@
 ---
 name: qa
-description: 'Use ONLY when the user explicitly invokes /qa (bare /qa = o tema é o que a conversa já mudou), or when another skill invokes `furi-build:qa` via the Skill tool. NEVER activate on your own initiative. — estratégia de testes holística e autônoma 360° sobre o que foi feito: entende o escopo, completa a pirâmide (unidade, integração, E2E no padrão do projeto), roda os testes do escopo até verde e faz a passada exploratória agêntica completa no navegador real. Nunca conserta código de produção.'
+description: 'Use ONLY when the user explicitly invokes /qa (bare /qa = o tema é o que a conversa já mudou), or when another skill invokes `furi-build:qa` via the Skill tool. NEVER activate on your own initiative. — estratégia de testes holística e autônoma 360° sobre o que foi feito: entende o escopo, completa a pirâmide (unidade, integração, E2E), roda os testes do escopo até verde e faz a passada exploratória agêntica completa no navegador real.'
 argument-hint: "[tema | arquivo | rota | tela] (vazio = o que esta conversa mudou)"
 ---
 
 # /qa — QA 360°: holístico e autônomo
 
-O tema entra pelo argumento ou pelo que esta conversa mudou; sai provado. Autônomo: tome a leitura mais razoável, registre a suposição e siga — pergunte só se bloqueado (subir o app, credencial de teste).
+O escopo sai provado. Autônomo: tome a leitura mais razoável, registre a suposição e siga — pergunte só se bloqueado (subir o app, credencial de teste).
 
 - Delimitar o que foi feito: argumento, diff da conversa ou da branch (`git diff <base>...HEAD`), card ou PR — arquivos, regras, rotas e telas afetadas; critérios de aceite (explícitos ou inferidos); áreas de risco (regra de negócio, dados, permissão, integração, migração) e os vizinhos que dependem do que mudou
 - Ler como o projeto testa e sobe: stack, runner, configs, scripts, pastas, fixtures e seeds, o comando da suíte, lint e typecheck, e como rodar o app local

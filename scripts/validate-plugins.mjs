@@ -31,6 +31,9 @@
 //      na description quando é usada
 //   9. build e ship não se conhecem — nem por nome, nem por pasta, nem por
 //      vocabulário: cada pacote é instalável e utilizável sozinho
+//  10. todo SKILL.md cabe no limite de caracteres do pacote dele
+//      (LIMITE_POR_PACOTE) — o arquivo inteiro, frontmatter incluído, contado
+//      por code point; pacote sem limite declarado também falha
 //
 // Uso: node scripts/validate-plugins.mjs   (exit 1 em qualquer falha)
 import fs from "node:fs";
@@ -60,6 +63,14 @@ const AGENT_PLUGINS_FIELDS = new Set([
 const AGENT_PLUGINS_AUTHOR_FIELDS = new Set(["name", "email", "url"]);
 // name: 1-64 chars, lowercase alfanumérico com . e -, sem -- nem .. consecutivos.
 const NAME_RE = /^(?!.*(--|\.\.))[a-z0-9]([a-z0-9.-]{0,62}[a-z0-9])?$/;
+
+// (10) Limite de caracteres por SKILL.md, por pacote — a fonte única do número.
+// Skill curta é skill que o modelo lê inteira e o humano entende de relance.
+const LIMITE_POR_PACOTE = {
+  "furi-build": 3333,
+  "furi-toolbox": 3333,
+  "furi-ship": 4444,
+};
 
 const errors = [];
 const fail = (where, msg) => errors.push(`${where}: ${msg}`);
@@ -94,6 +105,9 @@ if (packages.length === 0) fail("plugins/", "nenhum pacote encontrado");
 
 for (const pkg of packages) {
   const root = path.join(PLUGINS_DIR, pkg);
+  const limite = LIMITE_POR_PACOTE[pkg];
+  if (!limite)
+    fail(`plugins/${pkg}/`, "sem limite de caracteres em LIMITE_POR_PACOTE (regra 10)");
 
   // (1) Agent Plugins v1 — o manifesto da raiz.
   const apPath = path.join(root, "plugin.json");
@@ -153,7 +167,11 @@ for (const pkg of packages) {
       fail(r, "faltando — a pasta não é uma skill");
       continue;
     }
-    const { data } = matter(fs.readFileSync(md, "utf8"));
+    const texto = fs.readFileSync(md, "utf8");
+    const caracteres = [...texto].length;
+    if (limite && caracteres > limite)
+      fail(r, `${caracteres} caracteres — o limite do ${pkg} é ${limite} (regra 10)`);
+    const { data } = matter(texto);
     if (typeof data.name !== "string" || !data.name.trim())
       fail(r, "frontmatter sem `name` (é o nome de invocação)");
     if (typeof data.description !== "string" || !data.description.trim())
@@ -390,5 +408,5 @@ console.log(
   `validate-plugins: ok — ${packages.length} pacotes, ${total} skills, ` +
     `3 manifestos cada, 2 marketplaces, caminhos citados e relações resolvem, ` +
     `internas têm quem as leia, só as auto-invoke se ativam sozinhas, ` +
-    `build e ship não se conhecem.`,
+    `build e ship não se conhecem, toda skill no limite do pacote.`,
 );
