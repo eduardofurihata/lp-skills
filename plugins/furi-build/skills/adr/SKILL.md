@@ -1,19 +1,20 @@
 ---
 name: adr
-description: 'Use ONLY when the user explicitly invokes /adr (bare /adr = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:adr` via the Skill tool. NEVER activate on your own initiative. — the whole decision record in ONE file, docs/adr/NNNN-<slug>.md: problem, user stories, use cases, spec, design and test cases. Never edited: a new decision is a new ADR. Invokes no other skill; never implements nor commits.'
+description: 'Use when the user invokes /adr (bare /adr = the objective is whatever the conversation is already about) — the whole decision record in ONE file, docs/adr/NNNN-<slug>.md: problem, user stories, use cases, spec, design and test cases. Never edited: a new decision is a new ADR. Invokes no other skill; never implements nor commits.'
 argument-hint: "[objetivo]"
+disable-model-invocation: true
 ---
 
 # /adr — do problema aos test cases, num arquivo só
 
-O registro de decisão inteiro, do problema aos test cases, num único `docs/adr/NNNN-<slug>.md`, avulso. Funciona sozinha: não invoca outra skill, não cria `track/`, não implementa, não commita. **Cada `- [ ]` é uma tarefa:** feche uma antes da próxima.
+O registro de decisão inteiro, do problema aos test cases, num único `docs/adr/NNNN-<slug>.md`, avulso. Funciona sozinha: não invoca outra skill, não implementa, não commita.
 
-- [ ] Entender o objetivo: o argumento ou, sem ele, o que a conversa já discute; ambíguo → pergunte
-- [ ] Ler os docs e o código que o objetivo toca — a spec decide com base no que existe, não no que se imagina
-- [ ] Criar `docs/adr/NNNN-<slug>.md` (próximo número livre, 4 dígitos, slug pela capacidade); se muda a decisão de um ADR anterior, no antigo só o status vira `Substituído por ADR-NNNN`
-- [ ] Escrever o arquivo no formato abaixo, as 6 seções na ordem
-- [ ] Reler: problema sem solução e dentro dos limites, cada story com use case, cada UC e cada decisão da spec cobertos por um TC
-- [ ] Encerrar com o caminho do arquivo e um resumo de 3 linhas, sem implementar nem commitar; invocada por outra skill → devolve só o caminho, e o final dela vence
+- Entender o objetivo: o argumento ou, sem ele, o que a conversa já discute; ambíguo → pergunte
+- Ler os docs e o código que o objetivo toca — a spec decide com base no que existe, não no que se imagina
+- Criar `docs/adr/NNNN-<slug>.md` (próximo número livre, 4 dígitos, slug pela capacidade); se muda a decisão de um ADR anterior, no antigo só o status vira `Substituído por ADR-NNNN`
+- Escrever o arquivo no formato abaixo, as 6 seções na ordem
+- Reler: problema sem solução e dentro dos limites, cada story com use case, cada UC e cada decisão da spec cobertos por um TC
+- Encerrar com o caminho do arquivo e um resumo de 3 linhas, sem implementar nem commitar; invocada por outra skill → devolve só o caminho, e o final dela vence
 
 ## Formato
 
