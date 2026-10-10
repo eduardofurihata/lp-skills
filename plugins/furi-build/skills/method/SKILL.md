@@ -9,8 +9,8 @@ requires: [solve, principles, front, qa]
 
 /method é doutrina, não sugestão: cada linha deste arquivo e das skills que ele invoca vale inteira — nenhuma se pula, se comprime ou se cumpre de memória. Vontade de pular ("o pedido já tem", "é cerimônia") = dizer qual e por quê e ter o sim, não decidir calado. Combinado com outra skill, a dela vale junto, sem rebaixar esta. Invocar é chamada real pela Skill tool; mencionar não é invocar. Não cria branch/worktree, não commita, não faz push/merge.
 
-- /solve e /principles invocados de fato; /front também, se o alvo toca o que o usuário do produto vê — tela, texto de interface, e-mail, notificação; na dúvida, invocar
+- /solve, /principles e /qa invocados de fato; /front também, se o alvo toca o que o usuário do produto vê — tela, texto de interface, e-mail, notificação; na dúvida, invocar
 - Cada linha delas vale contra o alvo: na resposta, no plano e no código
-- Todo código que mudou passa pelo /qa, invocado de fato; bug que ele provar se conserta e ele roda de novo, até ✅ ou o motivo declarado
+- Os critérios do /qa valem para todo código que mudar: bug que ele provar se conserta e a bateria roda de novo, até ✅ ou o motivo declarado
 - A entrega fecha com uma conferência só, cada critério numa linha: ✅ ou ❌ `<motivo>` — as invocações reais, o veredito do /qa se houve mudança, o fechamento do /solve e os arquivos mudados, no working tree
 - Sozinho, sem próximo passo nem sugestão; combinado, o final da skill-alvo vence
