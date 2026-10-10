@@ -351,7 +351,7 @@ for (const pkg of packages) {
 const VOCABULARIO_DO_IRMAO = {
   // termos do furi-build, proibidos numa skill do furi-ship
   "furi-ship":
-    /\btracks?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|solve|principles|front|proto)\b/gi,
+    /\btracks?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|adr|ticrd|solve|principles|front|proto)\b/gi,
   // e o simétrico: termos do furi-ship, proibidos numa skill do furi-build
   "furi-build":
     /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|card|repro|infra)\b/gi,
