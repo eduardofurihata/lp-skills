@@ -12,6 +12,6 @@ Mire ser a **referência #1 do mercado**, no calibre dos **big pop tech apps**. 
 - Nomear a referência: os líderes deste domínio e o que eles fazem, concretamente, neste ponto — do tamanho do pedido, pesquisando só a dúvida que muda a decisão; o não conferido vai como suposição. É o piso, nunca o teto: sem ela, "um líder assinaria?" sempre responde sim
 - Respondendo, planejando ou em brainstorm: fundamentar na referência e nos cenários que o usuário final vive — o caminho feliz, o erro e a borda —, sem implementar; o plano leva os três e o que falta para o nível vira recomendação
 - Fazendo: igualar ou superar a referência, na causa e não no sintoma — base abaixo do nível se refaz do zero; o que a referência tem além do pedido também entra, avisando
-- Fechar a entrega com a comparação à referência, item a item: atende (com a prova) · abaixo · fora por decisão — e o que foi além do pedido. Um líder do domínio assinaria isto — e a tela, se houver? Não → refazer
+- Fechar a entrega — resposta, plano ou código — com a comparação à referência, item a item: atende (com a prova) · abaixo · fora por decisão — e o que foi além do pedido. Um líder do domínio assinaria isto — e a tela, se houver? Não → refazer
 
 Uma referência por trabalho: nomeada uma vez, vale para cada artefato dele.

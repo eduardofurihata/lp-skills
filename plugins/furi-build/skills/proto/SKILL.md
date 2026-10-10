@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 O entregável não é uma tela, é uma **escolha**. Não commita nem implementa a escolhida — isso é o `/method`, depois da escolha.
 
-- Invocar `furi-build:solve` e `furi-build:front` via Skill tool — o `/front` traz o `/principles`
+- Primeiro ato: invocar `furi-build:solve` e `furi-build:front` via Skill tool — o `/front` traz o `/principles`
 - Perguntar qual tela, se não ficou claro
 - Ler a tela atual pelos dados, estados e o que a pessoa vem fazer — não pelo layout
 - Criar 3 versões que competem de verdade

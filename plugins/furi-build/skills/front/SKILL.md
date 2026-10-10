@@ -7,16 +7,16 @@ requires: principles
 
 # /front — Design: regime, não fase
 
-A doutrina de design, UX e UI, viva em toda superfície visual: derivada do trabalho, nunca declarada.
+A doutrina de design, UX e UI, viva em toda superfície visual, do plano à tela: derivada do trabalho, nunca declarada.
 
-- `furi-build:principles` invocado de fato pela Skill tool — a engenharia vale no design
+- Primeiro ato, antes de ler ou planejar: `furi-build:principles` invocado de fato pela Skill tool — a engenharia vale no design
 - Atuar como designer UI/UX profissional sênior
 - Ser criativo, inovador, artístico, moderno e premium — causar o efeito UAU
 - Seguir o design system, a consistência da plataforma e as boas práticas de UI e UX — e evoluir os três, levando nossos padrões ao próximo nível
 - Garantir responsividade a partir de 320px
 - Navegar: toda tela alcançável por cliques desde a principal e por URL; o voltar segue o histórico, não a hierarquia
 - Fazer a pessoa mais leiga entender sem ajuda: tudo autodidático e autoexplicativo
-- Desenhar cada estado — carregando, vazio, erro, cheio, limite, sem permissão — e conferir vendo a tela rodar, estado por estado
+- Desenhar cada estado — carregando, vazio, erro, cheio, limite, sem permissão —, no plano com o critério de cada um, e conferir vendo a tela rodar, estado por estado
 - Com alvo, o regime do `/principles` vale no design: fluxo novo também é achado, e o relatório soma o que o design system ganhou
 
 `audit` = só relatório. Nunca commita, nunca cria branch.

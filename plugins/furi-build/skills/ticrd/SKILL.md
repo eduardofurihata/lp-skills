@@ -8,7 +8,7 @@ requires: [solve]
 
 # /ticrd — do ADR ao commit
 
-Recebe um ADR e leva a decisão até um commit. Sem ADR → pedir o caminho (o `/adr` o cria). Cada linha é uma ação fechada antes da próxima. Não cria branch/worktree/subagente nem faz push/merge. Os steps T-R invocam /solve (Skill tool real) e fecham publicando o Gateway → próximo: uma linha, barata e obrigatória — ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO: `<motivo>` (refaz o step); o D fecha com o commit.
+Recebe um ADR e leva a decisão até um commit. Sem ADR → pedir o caminho (o `/adr` o cria). Cada linha é uma ação fechada antes da próxima. Não cria branch/worktree/subagente nem faz push/merge. Os steps T-R invocam /solve (Skill tool real) ao abrir o step e fecham publicando o Gateway → próximo: uma linha, barata e obrigatória — ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO: `<motivo>` (refaz o step); o D fecha com o commit.
 
 Abertura: rotear cada parte do ADR ao doc dono em `docs/` (novo só sem dono, com motivo, nomeado pela capacidade) e publicar o Roteamento; criar `track/<objetivo>.md` com `- [ ] T`, `- [ ] I`, `- [ ] C`, `- [ ] R`, `- [ ] D` e, sob T-R, `- [ ] /solve` e `- [ ] Gateway`. Retomada: se o `<objetivo>.md` já existe em `track/`, começa do primeiro `- [ ]`.
 
