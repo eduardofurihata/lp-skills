@@ -68,7 +68,7 @@ const PACKAGES = [
     name: "furi-build",
     category: "build",
     description:
-      "Skills de construção do Furihata — /solve, /principles, /front, /method, /adr e /proto: do alvo à entrega no nível #1, provada por QA, sem commit. Funciona sozinho, em qualquer repositório.",
+      "Skills de construção do Furihata — /solve, /principles, /front, /method, /adr, /ticrd e /proto: do alvo à entrega no nível #1, provada por QA, sem commit. Funciona sozinho, em qualquer repositório.",
     keywords: ["development", "planning", "quality", "workflow"],
     codex: {
       displayName: "Furi Build",

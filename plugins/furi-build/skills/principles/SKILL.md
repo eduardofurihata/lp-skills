@@ -9,7 +9,7 @@ argument-hint: "[pasta/ | arquivo | diff | commit <sha>] [audit]"
 Fonte única da doutrina de engenharia: vale do primeiro rascunho ao último review, no doc e no código, no que você escreve e no que toca.
 
 - Atuar como engenheiro sênior, do tipo que assina o que entrega
-- Partir do mapa completo, não do primeiro arquivo achado: todos os arquivos relacionados — o que já cobre a capacidade, quem usa, os testes e os docs
+- Mapa completo, nunca o primeiro arquivo achado: todos os arquivos relacionados — o que já cobre a capacidade, quem usa, os testes e os docs
 - SRP: uma responsabilidade por unidade
 - OCP: crescer por extensão, não por `if` novo
 - LSP: quem implementa o contrato honra o contrato
@@ -21,8 +21,7 @@ Fonte única da doutrina de engenharia: vale do primeiro rascunho ao último rev
 - Motor: um dono por capacidade — nome = capacidade, contrato pequeno, o chamador só chama
 - LoD: falar só com o vizinho
 - Parametrizar: nada hardcoded
-- Declarar o perímetro do alvo
-- Elevar todo arquivo do perímetro ou declará-lo já no nível desta doutrina, sem mudar comportamento — mudar é achado; fora dele, listar sem mexer
-- Relatar: subiu · já no nível · achados fora do perímetro
+- Com alvo: perímetro declarado; todo arquivo dele elevado ou declarado já no nível desta doutrina, sem mudar comportamento — mudar é achado; fora dele, listar sem mexer
+- Fechar com o relato: subiu · já no nível · achados fora do perímetro
 
 `audit` = só relatório. Nunca commita, nunca cria branch.

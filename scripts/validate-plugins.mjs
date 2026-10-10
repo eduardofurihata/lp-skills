@@ -279,7 +279,7 @@ function walk(dir, out = []) {
 // moram lá NO PROJETO (`.claude/ship/setup.md`, `.claude/ship/infra.md`,
 // `.github/pull_request_template.md`, `.secrets/README.md`) — sem isso a regex
 // abaixo os trataria como caminho de skill e cobraria existência aqui.
-// `track` foi a pasta da esteira do /method: caminho legítimo do projeto-alvo,
+// `track` é a pasta da esteira do /ticrd: caminho legítimo do projeto-alvo,
 // mas SÓ para o furi-build — no furi-ship quem a barra é a regra (9).
 const TARGET_PROJECT_ROOTS = new Set([
   "docs",
@@ -351,7 +351,7 @@ for (const pkg of packages) {
 const VOCABULARIO_DO_IRMAO = {
   // termos do furi-build, proibidos numa skill do furi-ship
   "furi-ship":
-    /\btracks?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|adr|solve|principles|front|proto)\b/gi,
+    /\btracks?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|adr|ticrd|solve|principles|front|proto)\b/gi,
   // e o simétrico: termos do furi-ship, proibidos numa skill do furi-build
   "furi-build":
     /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|card|repro|infra)\b/gi,
