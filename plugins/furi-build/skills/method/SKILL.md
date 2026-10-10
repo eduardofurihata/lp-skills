@@ -1,26 +1,20 @@
 ---
 name: method
-description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — rigorous engineering protocol: Step 0, then the decision record via /adr, then /ticrd (Todo, Implementation, Code review, Run test, Done) from the ADR to one commit, living docs in place.'
+description: 'Use ONLY when the user explicitly invokes /method (bare /method = the objective is whatever the conversation is already about), or when another skill invokes `furi-build:method` via the Skill tool. NEVER activate on your own initiative. — the binding doctrine: invokes /solve, /principles, /front (with a visual surface) and /qa via the Skill tool and holds every line of them, and of itself, as mandatory; closes with one ✅/❌ check of every criterion; no tracking file, never commits nor branches.'
 argument-hint: "[objetivo]"
-requires: [solve, adr, ticrd]
+requires: [solve, principles, front, qa]
 ---
 
-# /method — Protocolo de Engenharia Rigorosa
+# /method — Doutrina obrigatória
 
-/method é a espinha: Step 0 → /adr → /ticrd. Combinado com outra skill, os steps rodam inteiros — ela intercala o que pede, não a substitui nem rebaixa; combinada, é o final dela que vence o do /method. Vontade de pular ou comprimir um step ("o pedido já tem", "é cerimônia") = declarar o plano combinado e ter o sim, não decidir calado — comprimir o ADR nunca é pular story nem use case. Não cria branch/worktree/subagente nem faz push/merge. O Step 0, o Step 1 e cada step T-R da /ticrd invocam /solve (Skill tool real), o do 0 antes de tudo; o Step 1 e cada step T-R da /ticrd fecham publicando o Gateway → próximo: uma linha, barata e obrigatória — ✅ LIBERADO (marca `- [x]` o step no `track/<objetivo>.md`) ou ❌ BLOQUEADO: `<motivo>` (refaz o step). Cada linha é uma ação fechada antes da próxima.
+/method é doutrina, não sugestão: cada linha deste arquivo e das skills que ele invoca vale inteira — nenhuma se pula, se comprime ou se cumpre de memória. Vontade de pular ("o pedido já tem", "é cerimônia") = dizer qual e por quê e ter o sim, não decidir calado. Combinado com outra skill, a dela vale junto, sem rebaixar esta; o final dela vence o do /method. Invocar é chamada real pela Skill tool; mencionar não é invocar. Não cria branch/worktree, não commita, não faz push/merge.
 
-## Step 0 — Start
-- Invocar /solve (Skill tool) antes de qualquer leitura, pergunta ou item de outra skill — é a 1ª ação do run
-- Rotear cada parte do pedido ao doc dono em `docs/` (novo só sem dono, com motivo, nomeado pela capacidade) e publicar Roteamento
-- Declarar o plano combinado quando houver outra skill, no argumento ou como outro /comando no mesmo prompt — o Step 0 roda antes do 1º item dela
-- Criar `track/<objetivo>.md`: `- [ ] Step 0`, `- [ ] Step 1 — ADR`, `- [ ] Step 2 — TICRD` com `- [ ] T`, `- [ ] I`, `- [ ] C`, `- [ ] R`, `- [ ] D`; sob o Step 1 e sob T-R, `- [ ] /solve` e `- [ ] Gateway`
-- Retomar do primeiro `- [ ]`, se o `<objetivo>.md` já existe em `track/` — caindo entre T e D, é o Step 2
-
-## Step 1 — ADR
-- Invocar /adr (Skill tool) com o objetivo e o Roteamento → `docs/adr/NNNN-<slug>.md`: problema, user stories, use cases, spec, design e test cases
-- O Gateway confere as 6 seções: problema em 1 frase (≤150) e contexto (≤300), sem solução; cada story com UC; cada UC e decisão da spec com TC; até 10 TCs
-- BLOQUEADO → corrigir o mesmo arquivo; ainda não é decisão
-
-## Step 2 — TICRD
-- Invocar /ticrd (Skill tool) com o caminho do ADR e o do `track/<objetivo>.md` — Todo, Implementation, Code review, Run test e Done, do ADR ao commit
-- Encerrar com o que foi feito — hash e placar que a /ticrd devolveu —, sem pendência; sozinho, sem próximo passo nem sugestão; combinado, o final da skill-alvo vence
+- /solve invocado de fato — ele lê o alvo e nomeia a referência
+- /principles invocado de fato, pelo /solve ou aqui
+- /front invocado de fato se o alvo toca o que o usuário do produto vê — na dúvida, invocar
+- Cada linha delas vale contra o alvo: na resposta, no plano e no código
+- Todo código que mudou passa pelo /qa, invocado de fato — pelo /solve ou aqui
+- Bug que o /qa provar se conserta e o /qa roda de novo, até ✅ ou o motivo declarado
+- A entrega fecha com uma conferência só, cada critério numa linha: ✅ ou ❌ `<motivo>` — as invocações reais, o veredito do /qa se houve mudança
+- Com ela, a comparação à referência do /solve, item a item, e os arquivos mudados — tudo no working tree, sem commit
+- Sozinho, sem próximo passo nem sugestão; combinado, o final da skill-alvo vence

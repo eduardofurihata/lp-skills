@@ -6,31 +6,31 @@ argument-hint: "[tela | componente | rota | pasta/ | diff] [audit]"
 
 # /front — Design: regime, não fase
 
-A doutrina de design, UX e UI, viva em toda superfície visual: derivada do trabalho, nunca declarada. **Cada `- [ ]` é uma tarefa:** feche uma antes da próxima.
+A doutrina de design, UX e UI, viva em toda superfície visual: derivada do trabalho, nunca declarada.
 
-- [ ] Atuar como designer UI/UX profissional sênior
-- [ ] Ser criativo
-- [ ] Ser inovador
-- [ ] Ser artístico
-- [ ] Ser moderno
-- [ ] Ser premium
-- [ ] Alcançar o nível da referência #1
-- [ ] Causar o efeito UAU
-- [ ] Seguir o design system — e evoluí-lo sempre
-- [ ] Seguir a consistência da plataforma — e evoluí-la
-- [ ] Seguir as boas práticas de UI e UX
-- [ ] Garantir responsividade a partir de 320px
-- [ ] Aplicar as boas práticas do `/principles` no design
-- [ ] Elevar nossos padrões ao próximo nível
-- [ ] Tornar toda tela alcançável por cliques desde a principal
-- [ ] Garantir navegação completa por URL
-- [ ] Fazer o voltar seguir o histórico, não a hierarquia
-- [ ] Parametrizar tudo — nada hardcoded
-- [ ] Fazer a pessoa mais leiga entender sem ajuda
-- [ ] Tornar tudo autodidático e autoexplicativo
-- [ ] Declarar o perímetro do alvo
-- [ ] Conferir vendo a tela rodar, estado por estado
-- [ ] Elevar o que está abaixo sem mudar comportamento — fluxo novo é achado
-- [ ] Relatar: subiu · já no nível · o que o design system ganhou · ficou fora
+- Atuar como designer UI/UX profissional sênior
+- Ser criativo
+- Ser inovador
+- Ser artístico
+- Ser moderno
+- Ser premium
+- Alcançar o nível da referência #1
+- Causar o efeito UAU
+- Seguir o design system — e evoluí-lo sempre
+- Seguir a consistência da plataforma — e evoluí-la
+- Seguir as boas práticas de UI e UX
+- Garantir responsividade a partir de 320px
+- Aplicar as boas práticas do `/principles` no design
+- Elevar nossos padrões ao próximo nível
+- Tornar toda tela alcançável por cliques desde a principal
+- Garantir navegação completa por URL
+- Fazer o voltar seguir o histórico, não a hierarquia
+- Parametrizar tudo — nada hardcoded
+- Fazer a pessoa mais leiga entender sem ajuda
+- Tornar tudo autodidático e autoexplicativo
+- Declarar o perímetro do alvo
+- Conferir vendo a tela rodar, estado por estado
+- Elevar o que está abaixo sem mudar comportamento — fluxo novo é achado
+- Relatar: subiu · já no nível · o que o design system ganhou · ficou fora
 
 `audit` = só relatório. Nunca commita, nunca cria branch.

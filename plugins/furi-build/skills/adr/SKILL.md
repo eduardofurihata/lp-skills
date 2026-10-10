@@ -6,7 +6,7 @@ argument-hint: "[objetivo]"
 
 # /adr — do problema aos test cases, num arquivo só
 
-O registro de decisão inteiro, do problema aos test cases, num único `docs/adr/NNNN-<slug>.md` — o Step 1 do `/method`, ou avulso. Funciona sozinha: não invoca outra skill, não cria `track/`, não implementa, não commita. **Cada `- [ ]` é uma tarefa:** feche uma antes da próxima.
+O registro de decisão inteiro, do problema aos test cases, num único `docs/adr/NNNN-<slug>.md`, avulso. Funciona sozinha: não invoca outra skill, não cria `track/`, não implementa, não commita. **Cada `- [ ]` é uma tarefa:** feche uma antes da próxima.
 
 - [ ] Entender o objetivo: o argumento ou, sem ele, o que a conversa já discute; ambíguo → pergunte
 - [ ] Ler os docs e o código que o objetivo toca — a spec decide com base no que existe, não no que se imagina
