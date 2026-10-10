@@ -1,8 +1,8 @@
 import { CATEGORY_PACKAGE, type Category } from "./categories";
 
 // Bundle ("builder") — o plugin que empacota uma categoria inteira de skills.
-// Um por categoria: furi-build (o método: /solve, /principles, /front, /method, /proto),
-// furi-ship (a entrega: /setup, /jira, /infra, /card, /recard, /repro, /work,
+// Um por categoria: furi-build (o método: /solve, /principles, /front, /method, /adr, /proto),
+// furi-ship (a entrega: /setup, /jira, /infra, /card, /recard, /update-jira, /repro, /work,
 // /pull-request, /homolog, /prod) e furi-toolbox (ferramentas avulsas). Não se
 // instala skill isolada — instala-se o pacote, que já traz todas dentro.
 export interface Bundle {

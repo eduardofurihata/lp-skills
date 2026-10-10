@@ -10,13 +10,13 @@
     {
       "name": "furi-build",
       "source": "./plugins/furi-build",
-      "description": "Skills de construção do Furihata — /solve, /principles, /front, /method e /proto: do problema ao commit local, com QA. Funciona sozinho, em qualquer repositório.",
+      "description": "Skills de construção do Furihata — /solve, /principles, /front, /method, /adr e /proto: do problema ao commit local, com QA. Funciona sozinho, em qualquer repositório.",
       "category": "build"
     },
     {
       "name": "furi-ship",
       "source": "./plugins/furi-ship",
-      "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /recard comenta num card existente a descrição real, com telas; /infra mapeia a infra do projeto; o processo mora em .claude/ship/setup.md, uma seção por skill. Funciona sozinho, sem depender de outro pacote.",
+      "description": "Skills de entrega do Furihata — uma escada só: os alvos /work, /pull-request, /homolog e /prod levam o trabalho de onde estiver até o próprio estágio, cada um invocando o anterior quando falta algo atrás; os modificadores /repro e /card compõem com qualquer alvo, em qualquer ordem; /recard comenta num card existente a descrição real, com telas; /update-jira confere o estado real dos meus cards abertos (GitHub, deploy, configurações) e o registra neles; /pwx é o navegador real, já logado, por onde o /repro reproduz; /infra mapeia a infra do projeto; o processo mora em .claude/ship/setup.md, uma seção por skill. Funciona sozinho, sem depender de outro pacote.",
       "category": "ship"
     },
     {

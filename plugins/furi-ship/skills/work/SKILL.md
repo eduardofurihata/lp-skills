@@ -1,14 +1,14 @@
 ---
 name: work
-description: 'Use ONLY when the user explicitly invokes /work (bare /work = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:work` via the Skill tool. NEVER activate on your own initiative. — the ground (setup, card, branch, status), then the commit with the front screens proven on the card. Never pushes.'
+description: 'Use ONLY when the user explicitly invokes /work (bare /work = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:work` via the Skill tool. NEVER activate on your own initiative. — the ground (setup, card, branch, status), then one local commit. Never pushes.'
 handoff: pull-request
 argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 ---
 
 
-# /work — o terreno, o commit, a prova na tela
+# /work — o terreno e o commit
 
-Não pusha nem mergeia: o alvo é um commit local com a tela provando o que mudou. Com outras skills no argumento ou no mesmo prompt: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra; o que uma delas manda fazer antes de tudo vem antes do 1º `- [ ]` daqui, e a que traz protocolo próprio de implementação e commit roda inteira dentro de "Implementar" e "Fechar um commit". Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
+Não pusha nem mergeia: o alvo é um commit local. Com outras skills no argumento ou no mesmo prompt: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra; o que uma delas manda fazer antes de tudo vem antes do 1º `- [ ]` daqui, e a que traz protocolo próprio de implementação e commit roda inteira dentro de "Implementar" e "Fechar um commit". Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/setup.md § Work`: o status da etapa e qual branch — `main`, `dev`, `homolog`, a do card (`<prefixo>-##-##-…`) ou outra que o projeto use; falta → pergunte e grave ali
 - [ ] Ler o card ou o prompt — descrição, critérios, anexos, comentários; vazio = o card da branch
@@ -17,9 +17,6 @@ Não pusha nem mergeia: o alvo é um commit local com a tela provando o que mudo
 - [ ] Mover o card para o status da etapa
 - [ ] Implementar o que o card pede
 - [ ] Fechar **um** commit
-- [ ] Listar todas as telas de front mexidas — nenhuma, diga e siga
-- [ ] Tirar o print de cada tela mexida com zoom out, para dar contexto
-- [ ] Subir no card cada print separado e, além deles, um único arquivo com todos empilhados na vertical (um abaixo do outro), sem perder qualidade na junção (empilhe sem recomprimir, ex. `convert -append`)
-- [ ] Retornar branch, commit, telas, anexos e status; próximo: `/pull-request`
+- [ ] Retornar branch, commit e status; próximo: `/pull-request`
 
 Nunca rebase, force nem branch sobre integração stale.
