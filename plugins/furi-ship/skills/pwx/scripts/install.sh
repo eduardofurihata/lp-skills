@@ -37,7 +37,7 @@ grep -qx '.playwright-cli/' "$GI" || echo '.playwright-cli/' >> "$GI"
 
 # hooks do Claude Code: SessionStart avisa a IA que o navegador desta máquina é o pwx e recolhe janelas órfãs; SessionEnd fecha as janelas da sessão na hora
 # (o vigia que o pwx sobe fecha mesmo sem hook: terminal fechado, crash)
-CTX="Navegador desta máquina: pwx (skill furi-ship:pwx) — navegador real, já logado, uma aba por sessão. Para abrir, ler, clicar ou testar qualquer site, inclusive conferir um deploy, ver um erro num painel ou reproduzir um bug web, use pwx em vez de Playwright MCP, npx playwright, um navegador novo ou curl/WebFetch em página logada."
+CTX="Navegador desta máquina: pwx — navegador real, já logado, uma aba por sessão. Antes de abrir, ler, clicar ou testar qualquer site, inclusive conferir um deploy, ver um erro num painel ou reproduzir um bug web, invoque a skill furi-ship:pwx (Skill tool) e siga-a; não use Playwright MCP, npx playwright, um navegador novo nem curl/WebFetch em página logada."
 SETTINGS="$HOME/.claude/settings.json"; [ -f "$SETTINGS" ] || echo '{}' > "$SETTINGS"
 node -e '
 const fs=require("fs"),[p,pwx,ctx]=process.argv.slice(1),d=JSON.parse(fs.readFileSync(p,"utf8"));
