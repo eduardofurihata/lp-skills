@@ -25,7 +25,7 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 - Há dois sons distintos: "terminou" e "precisa de você". Dá para saber qual é sem olhar.
 - Uma notificação nova da mesma **sessão** substitui a anterior, sem empilhar. Duas sessões no mesmo projeto não se apagam.
 - Some sozinha no tempo da tabela. Não pode sumir em 5 s (curto demais) nem ficar para sempre.
-- **Clique** leva ao app de onde a sessão roda: numa IDE, a janela **daquele projeto** e o **terminal daquela sessão** (mesmo com vários Claude abertos na janela); num terminal, o app do terminal.
+- **Clique** leva ao app de onde a sessão roda: numa IDE, a janela **daquele projeto** e o **terminal daquela sessão** (mesmo com vários Claude abertos na janela); num ADE com abas de agente (Orca), a **aba/pane daquela sessão**; num terminal, o app do terminal.
 - Vale para **toda** sessão do Claude Code CLI, em qualquer terminal ou IDE. A config é global, não por projeto.
 - Passa pelo Não Perturbe / Foco: o notificador é exceção, o resto continua silenciado.
 - Nunca atrasa nem bloqueia o Claude. Se falhar, falha calada.
@@ -33,7 +33,8 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 **Pronto quando.** Com outro app em foco:
 - os quatro casos tocam o som certo e mostram o banner na tela, não só na Central;
 - os banners somem no tempo certo;
-- o clique volta à janela do projeto e ao terminal exato da sessão, com dois Claude abertos na mesma janela.
+- o clique volta à janela do projeto e ao terminal exato da sessão, com dois Claude abertos na mesma janela;
+- o mesmo vale no Orca: com duas sessões em abas diferentes, o clique cai na aba de quem notificou, e a IDE continua funcionando igual.
 
 **Armadilhas já pagas.**
 - *macOS.* Com Não Perturbe ativo, tudo cai calado na Central: o banner nunca aparece, mesmo com permissão dada.
@@ -43,6 +44,7 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 - *macOS.* O notificador nasce com notificações bloqueadas. É preciso liberar em Ajustes → Notificações.
 - *IDE (VS Code e forks).* Abrir a pasta só foca a janela, não o terminal. Escolher o terminal exige algo dentro da IDE (uma extensão) que ache o terminal pelo processo da sessão.
 - *Linux/KDE.* O clique precisa de uma ação na notificação e de algo que foque a janela por classe.
+- *ADE (Orca).* Só ativar o app abre a última aba vista, não a da sessão. Cada app hospedeiro precisa do seu ramo: identifique o hospedeiro pelo app que lançou a sessão e use o jeito dele de focar a aba (no Orca, o próprio CLI, com o identificador do terminal que ele injeta na sessão). Um ramo novo não pode mexer no das IDEs.
 
 ---
 
@@ -60,5 +62,5 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 
 | Máquina | Notificações |
 |---|---|
-| Mac | `~/.claude/hooks/notify.sh` + terminal-notifier + extensão `furi.focus-terminal` na IDE (URI com os PIDs da sessão); hooks `Stop`, `PreToolUse` (AskUserQuestion\|ExitPlanMode), `Notification` (permissão) |
+| Mac | `~/.claude/hooks/notify.sh` + terminal-notifier + extensão `furi.focus-terminal` na IDE (URI com os PIDs da sessão); no Orca (`com.stablyai.orca`), `orca terminal switch --terminal $ORCA_TERMINAL_HANDLE`; hooks `Stop`, `PreToolUse` (AskUserQuestion\|ExitPlanMode), `Notification` (permissão) |
 | Nobara (antigo) | `~/.claude/hooks/claude-notify.sh` + notify-send; hooks `Stop`, `PreToolUse` (AskUserQuestion, ExitPlanMode) |
