@@ -22,12 +22,12 @@ Abertura: rotear cada parte do ADR ao doc dono em `docs/` (novo só sem dono, co
 ## C — Code review
 - Revisar as mudanças
 - Invocar 1x /code-review [medium] pela Skill tool — é do harness (lista de skills), não do cache de plugins; não rodou = ❌
-- Voltar ao I com cada achado dos dois como `- [ ]` no plano
+- Voltar ao I com cada achado dos dois como `- [ ]` no plano; C roda uma vez só: corrigidos os achados, segue ao R sem novo review
 
 ## R — Run test
 - Rodar build, a pirâmide inteira, regressão e TCs como usuário (Playwright na instância livre), criando as condições de cada TC; dado que vive em prod = e2e com fixtures mockados é a forma canônica, declarar ao substituir a rota de navegador
 - Marcar cada TC com screenshot ao lado do `<objetivo>.md`, ou `❌ motivo`; workaround que faz passar é FAILED
-- Voltar ao I com cada falha como `- [ ]` no plano, só depois de rodar todos, resetando os TCs
+- Voltar ao I com cada falha como `- [ ]` no plano, só depois de rodar todos, resetando os TCs; do I volta direto ao R, sem C; teto de 3 rodadas de R — na 3ª ainda com falha, ❌ BLOQUEADO com as falhas abertas e parar
 
 ## D — Done
 - Levar ao ADR e aos docs do Roteamento o que foi decidido; marcar o ADR `Aceito`
