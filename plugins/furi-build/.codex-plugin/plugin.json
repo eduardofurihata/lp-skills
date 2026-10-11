@@ -1,6 +1,6 @@
 {
   "name": "furi-build",
-  "version": "0.1.0+codex.6dc7d8ad2edc",
+  "version": "0.1.0+codex.4e7797cdac83",
   "description": "Skills de construção do Furihata — /solve, /principles, /front, /method, /adr, /ticrd e /proto: do alvo à entrega no nível #1, provada por QA, sem commit. Funciona sozinho, em qualquer repositório.",
   "author": {
     "name": "Eduardo Furihata",
