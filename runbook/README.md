@@ -49,19 +49,26 @@ passos:
 - **Validação antes de rodar:** ids únicos, referências só a entradas declaradas e a passos anteriores, `volta_para` só para um `faca` anterior, tipos e campos conhecidos. Processo inválido não começa.
 - **Permissão:** `livre` (o padrão) roda com `bypassPermissions`; `leitura` roda com `dontAsk` — só leitura e comandos de leitura passam. `ferramentas` libera nomes a mais (ex.: o MCP do Jira num passo de leitura) e aceita variáveis: uma que vale uma lista se espalha (`["{ler.ferramentas}"]` → um nome por item).
 
+## Modo chat
+
+**O padrão de dentro de um Claude Code** (a variável `CLAUDECODE` presente; `--chat` força em qualquer lugar, `--fundo` desliga): cada passo `faca` é feito **no chat que chamou o run**, à vista do dev, e não num agente em segundo plano. O motor continua dono da sequência: ele pede o passo (`✋ SUA VEZ`, saída 11), o chat o faz e devolve os campos com `runbook entregar <run>` (o JSON pelo argumento ou pelo stdin), e o motor confere o `exige` (faltou → pede de novo, dizendo o quê), roda os juízes cegos em sessão limpa, para nas paradas e decide o próximo passo. Uma entrega que não é objeto JSON é recusada sem mexer no run.
+
+No modo chat, `permissao`, `ferramentas` e `limite` dos passos `faca` não se aplicam: valem as permissões do chat, e o navegador é a aba do pwx do próprio chat. O trabalhador espera a entrega sem limite de tempo; `parar` o encerra.
+
 ## Comandos
 
 ```text
-runbook run <processo.yaml> [--dir <pasta>] [--<entrada> <valor>…]   começa e acompanha até a próxima parada ou o fim
+runbook run <processo.yaml> [--chat|--fundo] [--dir <pasta>] [--<entrada> <valor>…]   começa e acompanha até a próxima parada ou o fim
+runbook entregar <run> '<json>'         modo chat: entrega o passo pedido (ou o JSON pelo stdin)
 runbook seguir [run]                     volta a acompanhar — sair não para o trabalho
 runbook responder <run> "<resposta>"     responde a uma parada, ou orienta e refaz um passo escalado
 runbook pular <run> "<motivo>"           segue sem o passo parado — fica no relatório
 runbook status [run] · lista · retomar <run> · parar <run> · validar <processo.yaml>
 ```
 
-Saída: `0` fim · `10` parada (espera você) · `1` erro · `2` uso inválido.
+Saída: `0` fim · `10` parada (espera você) · `11` sua vez (modo chat) · `1` erro · `2` uso inválido.
 
-Cada linha impressa é um evento: `▶` passo começou · `✓` passo feito (tempo, custo) · `↺` nova tentativa · `⚖` nota do juiz e volta · `✗` falha · `⏸ PARADA` (com o comando para responder) · `⏸ PERGUNTA` (o agente perguntando, com as opções) · `■ FIM` (relatório).
+Cada linha impressa é um evento: `▶` passo começou · `✓` passo feito (tempo, custo) · `↺` nova tentativa · `⚖` nota do juiz e volta · `✗` falha · `⏸ PARADA` (com o comando para responder) · `⏸ PERGUNTA` (o agente perguntando, com as opções) · `✋ SUA VEZ` (modo chat: o pedido do passo, com o comando para entregar) · `↳` entrega ou resposta · `■ FIM` (relatório).
 
 ## O agente pergunta
 

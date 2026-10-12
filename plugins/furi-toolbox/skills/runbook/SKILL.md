@@ -1,19 +1,23 @@
 ---
 name: runbook
-description: 'Use when user invokes /runbook — runs a process written in YAML step by step through the `runbook` engine of this machine: every step goes to the same agent conversation and only advances when the answer brings what the step requires, judges run in clean sessions, stops wait for the dev. The chat starts the run, relays each event and carries the dev''s answers to the stops; it never does the steps.'
-argument-hint: "<processo.yaml> [--dir <projeto>] [--<entrada> <valor>…] | status [run]"
+description: 'Use when user invokes /runbook — runs a YAML process step by step through the `runbook` engine, by default here in the chat: the engine hands out one step at a time, the chat does it in front of the dev and delivers it, and the engine only advances when the delivery brings what the step requires; judges run blind in clean sessions; stops wait for the dev. "Em fundo" runs the steps in a background agent and the chat only relays events.'
+argument-hint: "<processo.yaml> [--dir <projeto>] [--<entrada> <valor>…] [em fundo] | status [run]"
 disable-model-invocation: true
 ---
 
-# /runbook — o processo roda no motor; o chat só acompanha
+# /runbook — o motor conduz; o passo é feito aqui, à vista do dev
 
-O `runbook` executa um processo (YAML) passo a passo: manda cada passo para a mesma conversa do agente, só avança quando a resposta traz o que o passo exige, roda juízes em sessão limpa e para quando precisa do dev. **Quem decide o próximo passo é o motor.** Você não executa passo nenhum, não resume, não pula e não responde a uma parada no lugar do dev.
+**Quem decide o próximo passo é o motor**: pede um por vez, só avança quando a entrega traz o que o passo exige, julga em sessão cega e para quando precisa do dev. Você faz o passo pedido nesta conversa — nunca adianta, pula ou responde a uma parada no lugar do dev.
 
-1. **Garantir o comando.** `runbook --version` responde; não → rode `runbook/install.sh` no checkout do lp-skills (Node ≥ 20) e repita.
-2. **Validar.** `runbook validar <processo.yaml>`; erro → mostre ao dev e pare.
-3. **Rodar.** `runbook run <processo.yaml> [--dir <projeto>] --<entrada> <valor>…` pelo **Monitor**, com o timeout máximo — cada linha que ele imprime é um evento; a primeira traz o id do run. O trabalho segue em segundo plano: se o Monitor expirar, rearme com `runbook seguir <run>` (pode repetir linhas já vistas). Sem Monitor (outro cliente): rode em segundo plano e consulte `runbook status <run>`.
-4. **Repassar.** Cada linha `▶ ✓ ↺ ⚖` vira uma frase curta para o dev — sem comentar o mérito, sem antecipar passos.
-5. **Paradas.** Linha `⏸ PARADA` (o comando sai com 10): mostre a mensagem literal e pergunte ao dev. Linha `⏸ PERGUNTA`: é o agente do run perguntando — pergunte ao dev com **AskUserQuestion**, a pergunta literal; as `opções:` da linha são as escolhas e, sem elas, as escolhas são `Pular este passo` (→ `runbook pular`) e `Parar o run` (→ `runbook parar`); a resposta livre vem no campo de texto dele. Com a resposta, `runbook responder <run> "<fala literal do dev>"`, também pelo Monitor. Escalada (`✗` antes do `⏸`: juiz abaixo da nota, resposta incompleta, comando que falhou): mostre o motivo e pergunte — `responder` refaz o passo com a orientação dele; `runbook pular <run> "<motivo>"` só quando o dev mandar pular, com as palavras dele.
-6. **Fim.** `■ FIM` (sai com 0): mostre o relatório. Saída 1 (erro ou queda): mostre a linha e `runbook status <run>`; o dev decide entre `runbook retomar <run>` e `runbook parar <run>`.
+1. `runbook --version` responde; não → `runbook/install.sh` no checkout do lp-skills. `runbook validar <processo.yaml>`; erro → mostre e pare.
+2. `runbook run <processo.yaml> [--dir <projeto>] --<entrada> <valor>…` pelo Bash, timeout máximo — daqui do chat, o modo é chat por padrão. A 1ª linha traz o id: passe-o **sempre** — pode haver outro run aberto.
+3. **`✋ SUA VEZ`** (saída 11): faça só esse passo, por completo, aqui, dizendo numa frase o que vai fazer; sem inventar campo. Precisa do dev → AskUserQuestion, e siga no mesmo passo; orientação dele no meio vale para este passo. Entregue com `runbook entregar <id> <<'JSON'` + o objeto com os campos + `JSON` (Bash, timeout máximo): acompanha até o próximo `✋ ⏸ ■`; expirou → `runbook seguir <id>`. Novo `✋` com `faltou` ou lacunas do juiz → refaça fechando cada uma.
+4. `✓ ⚖ ⤼` → uma frase curta ao dev, sem comentar o mérito.
+5. **`⏸ PARADA`** (saída 10) → AskUserQuestion com a mensagem literal. Escalada (`✗` antes do `⏸`) → mostre o motivo e pergunte. Resposta → `runbook responder <id> "<fala literal>"`; `runbook pular <id> "<motivo>"` só se ele mandar.
+6. **`■ FIM`** (0) → o relatório. Saída 1 → a linha e `runbook status <id>`; o dev escolhe `retomar` ou `parar`.
 
-O estado é do motor, em `~/.runbook/runs/<run>/`: nunca edite os arquivos dele nem o processo durante um run.
+**Retomar, em outro chat:** `runbook lista` → `runbook seguir <id>` traz o `✋` pendente; trabalhador caído → `runbook retomar <id>`. O entregue fica salvo; a conversa anterior, não.
+
+**Em fundo** (o dev pediu; `--fundo`): um agente em segundo plano faz os passos. Acompanhe pelo **Monitor** (expirou → `runbook seguir <id>`), repasse `▶ ✓ ↺ ⚖`; `⏸ PERGUNTA` → AskUserQuestion com as `opções:` da linha (sem elas: pular ou parar o run).
+
+O estado é do motor, em `~/.runbook/runs/<id>/`: nunca o edite, nem o processo, durante um run.

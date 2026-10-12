@@ -5,7 +5,8 @@ import path from "node:path";
 import { pastaDoRun } from "./estado.mjs";
 
 // o evento que encerra uma execução, e o código de saída de quem acompanha
-export const TERMINAIS = { fim: 0, parada: 10, pergunta: 10, escalada: 10, erro: 1, caiu: 1, parado: 1 };
+// tarefa (modo chat): quem acompanha sai, o trabalhador continua esperando a entrega do chat
+export const TERMINAIS = { fim: 0, parada: 10, pergunta: 10, escalada: 10, tarefa: 11, erro: 1, caiu: 1, parado: 1 };
 
 const arqEventos = (id) => path.join(pastaDoRun(id), "eventos.jsonl");
 

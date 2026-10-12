@@ -15,7 +15,7 @@ export const pastaRuns = () => path.join(raizRunbook(), "runs");
 export const pastaDoRun = (id) => path.join(pastaRuns(), id);
 export const pastaArquivos = (id) => path.join(pastaDoRun(id), "arquivos");
 
-export function novoRun(processo, entrada, cwd) {
+export function novoRun(processo, entrada, cwd, { modo = "fundo" } = {}) {
   const agora = new Date();
   const carimbo = agora.toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15);
   const id = `${processo.nome}-${carimbo}-${randomBytes(2).toString("hex")}`;
@@ -29,6 +29,7 @@ export function novoRun(processo, entrada, cwd) {
     processo: { nome: processo.nome, origem: processo.origem, hash: processo.hash, passos: processo.passos.length },
     entrada,
     cwd,
+    modo, // fundo: o `faca` roda num agente em segundo plano · chat: no chat que chamou o run
     criado: agora.toISOString(),
     atualizado: agora.toISOString(),
     status: "novo", // novo · rodando · parada · fim · erro · interrompido · parado

@@ -3,7 +3,10 @@
 //
 // O trabalho roda num processo próprio, em segundo plano; quem acompanha (terminal, chat) só lê os
 // eventos. Fechar o terminal ou o Monitor do chat expirar não derruba o run: `runbook seguir` volta a
-// acompanhar. `run`, `responder`, `pular` e `retomar` acompanham até a próxima parada ou o fim.
+// acompanhar. `run`, `responder`, `pular`, `retomar` e `entregar` acompanham até a próxima parada ou o fim.
+// Chamado de dentro de um Claude Code (CLAUDECODE), o modo é chat: cada passo `faca` é feito no chat que chamou
+// — o motor pede (`✋ SUA VEZ`), o chat faz à vista do dev e devolve com `runbook entregar`; o motor confere,
+// julga e decide o próximo, como sempre. De um terminal comum, ou com `--fundo`, um agente em segundo plano faz.
 import fs from "node:fs";
 import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
@@ -25,6 +28,7 @@ import {
 import { TERMINAIS, emissor, lerEventos } from "../src/eventos.mjs";
 import { aplicarResposta, executar } from "../src/motor.mjs";
 import { adaptadorClaude } from "../src/adaptadores/claude.mjs";
+import { adaptadorChat, arqEntrega, arqTarefa } from "../src/adaptadores/chat.mjs";
 
 const ESTE = fileURLToPath(import.meta.url);
 const VERSAO = JSON.parse(fs.readFileSync(new URL("../package.json", import.meta.url), "utf8")).version;
@@ -37,6 +41,9 @@ class Uso extends Error {
   }
 }
 
+// opções que nunca levam valor: `run --chat x.yaml` não pode engolir o x.yaml
+const BOOLEANAS = new Set(["chat", "fundo"]);
+
 function analisarOpcoes(args) {
   const posicionais = [];
   const opcoes = {};
@@ -48,6 +55,7 @@ function analisarOpcoes(args) {
     }
     const [chave, ...valor] = a.slice(2).split("=");
     if (valor.length) opcoes[chave] = valor.join("=");
+    else if (BOOLEANAS.has(chave)) opcoes[chave] = true;
     else if (k + 1 < args.length && !args[k + 1].startsWith("--")) opcoes[chave] = args[++k];
     else opcoes[chave] = true;
   }
@@ -67,9 +75,11 @@ function processoDoRun(id) {
   return processo;
 }
 
-function adaptadorDe(processo) {
-  if (processo.sessao.cli === "claude") return adaptadorClaude();
-  throw new Error(`sem adaptador para ${processo.sessao.cli}`);
+function adaptadorDe(processo, estado, emitir) {
+  if (processo.sessao.cli !== "claude") throw new Error(`sem adaptador para ${processo.sessao.cli}`);
+  const claude = adaptadorClaude();
+  if (estado.modo !== "chat") return claude;
+  return adaptadorChat({ pasta: pastaDoRun(estado.id), emitir, id: estado.id, juiz: claude });
 }
 
 // uma janela do pwx por run; fecha quando o run termina (no meio, numa parada, o dev pode precisar dela)
@@ -123,6 +133,14 @@ function pidDoTrabalhador(id) {
   }
 }
 
+// onde volta a acompanhar: no modo chat, um segmento tem várias entregas — o que vale é o depois da última
+function inicioCorrente(id, estado) {
+  const eventos = lerEventos(id);
+  let i = estado.segmento ?? 0;
+  for (let k = i; k < eventos.length; k++) if (eventos[k].tipo === "entrega") i = k;
+  return i;
+}
+
 async function seguir(id, desde = 0) {
   let i = desde;
   let vistoVivo = Date.now();
@@ -152,7 +170,12 @@ const comandos = {
     const { processo, erros } = lerProcesso(posicionais[0]);
     if (erros.length) throw new Uso(`processo inválido:\n${erros.map((e) => `  ✗ ${e}`).join("\n")}`, 1);
     const dir = path.resolve(typeof opcoes.dir === "string" ? opcoes.dir : process.cwd());
+    if (opcoes.chat && opcoes.fundo) throw new Uso("--chat ou --fundo, não os dois");
+    // de dentro de um Claude Code, quem chamou é um chat: ele faz os passos, à vista do dev
+    const modo = opcoes.fundo ? "fundo" : opcoes.chat || process.env.CLAUDECODE ? "chat" : "fundo";
     delete opcoes.dir;
+    delete opcoes.chat;
+    delete opcoes.fundo;
     const faltam = processo.entrada.filter((e) => typeof opcoes[e] !== "string");
     const sobram = Object.keys(opcoes).filter((k) => !processo.entrada.includes(k));
     if (faltam.length || sobram.length)
@@ -163,24 +186,56 @@ const comandos = {
         ].join("\n"),
       );
     if (!fs.existsSync(dir)) throw new Uso(`a pasta ${dir} não existe`);
-    const estado = novoRun(processo, opcoes, dir);
-    iniciarSegmento(estado, `● RUN ${estado.id} — ${processo.nome}, ${processo.passos.length} passos · acompanhar: runbook seguir ${estado.id}`);
+    const estado = novoRun(processo, opcoes, dir, { modo });
+    iniciarSegmento(
+      estado,
+      `● RUN ${estado.id} — ${processo.nome}, ${processo.passos.length} passos${modo === "chat" ? " · modo chat" : ""} · acompanhar: runbook seguir ${estado.id}`,
+    );
     iniciarTrabalhador(estado);
     return seguir(estado.id, estado.segmento);
   },
 
   async seguir([pedido]) {
     const id = runPedido(pedido ?? "ultimo");
-    return seguir(id, lerEstado(id).segmento);
+    return seguir(id, inicioCorrente(id, lerEstado(id)));
   },
 
   responder: (args) => responder(args, false),
   pular: (args) => responder(args, true),
 
+  // modo chat: a resposta do chat ao passo pedido no `✋ SUA VEZ`. O JSON vem no argumento ou no stdin.
+  async entregar([pedido, ...resto]) {
+    if (!pedido) throw new Uso("uso: runbook entregar <run> '<json>'   (ou o JSON pelo stdin)");
+    const fonte = resto.length ? resto.join(" ") : process.stdin.isTTY ? "" : fs.readFileSync(0, "utf8");
+    let entrega;
+    try {
+      entrega = JSON.parse(fonte);
+    } catch (e) {
+      throw new Uso(`a entrega não é JSON válido — ${e.message}`);
+    }
+    if (!entrega || typeof entrega !== "object" || Array.isArray(entrega))
+      throw new Uso('a entrega tem de ser um objeto JSON com os campos do passo: { "campo": … }');
+    const id = runPedido(pedido);
+    const pasta = pastaDoRun(id);
+    if (!quemTrava(id) || !fs.existsSync(arqTarefa(pasta))) {
+      const e = lerEstado(id);
+      if (e.status === "parada") throw new Uso(`o run ${id} espera uma resposta, não uma entrega: runbook responder ${id} "<resposta>"`);
+      if (["fim", "parado"].includes(e.status)) throw new Uso(`o run ${id} já está ${e.status}`);
+      throw new Uso(`o run ${id} não está esperando entrega${quemTrava(id) ? " (está trabalhando)" : ` — se caiu: runbook retomar ${id}`}`);
+    }
+    // o estado.json é do trabalhador: aqui só se anexa o evento e se deixa o arquivo que ele espera
+    const desde = lerEventos(id).length;
+    emissor(id)("entrega", { campos: Object.keys(entrega) }, `↳ entregue: ${Object.keys(entrega).join(", ") || "(nada)"}`);
+    const tmp = `${arqEntrega(pasta)}.${process.pid}.tmp`;
+    fs.writeFileSync(tmp, JSON.stringify(entrega));
+    fs.renameSync(tmp, arqEntrega(pasta));
+    return seguir(id, desde);
+  },
+
   async retomar([pedido]) {
     const id = runPedido(pedido);
     const estado = lerEstado(id);
-    if (quemTrava(id)) return seguir(id, estado.segmento);
+    if (quemTrava(id)) return seguir(id, inicioCorrente(id, estado));
     if (estado.status === "fim") throw new Uso(`o run ${id} já terminou`, 0);
     if (estado.status === "parado") throw new Uso(`o run ${id} foi parado`);
     if (estado.status === "parada") throw new Uso(`o run ${id} espera você: runbook responder ${id} "<resposta>" (ou runbook pular)`);
@@ -226,11 +281,12 @@ const comandos = {
     const e = lerEstado(id);
     const processo = processoDoRun(id);
     const trabalhando = Boolean(quemTrava(id));
+    const esperandoChat = trabalhando && fs.existsSync(arqTarefa(pastaDoRun(id)));
     const total = processo.passos.length;
     const linhas = [
       `run      ${id}`,
-      `processo ${e.processo.nome} · ${e.processo.origem}`,
-      `status   ${e.status}${trabalhando ? " (trabalhando agora)" : ""}`,
+      `processo ${e.processo.nome} · ${e.processo.origem}${e.modo === "chat" ? " · modo chat" : ""}`,
+      `status   ${e.status}${trabalhando ? (esperandoChat ? " (esperando o chat)" : " (trabalhando agora)") : ""}`,
       `passo    ${e.status === "fim" ? `todos os ${total}` : `${e.cursor + 1}/${total} ${processo.passos[e.cursor]?.id ?? ""}`}`,
     ];
     if (e.parada) {
@@ -239,6 +295,7 @@ const comandos = {
       if (e.parada.opcoes?.length) linhas.push(`opções   ${e.parada.opcoes.join(" · ")}`);
       linhas.push(`         responder: runbook responder ${id} "<resposta>"${e.parada.tipo === "parada" ? "" : ` · pular: runbook pular ${id} "<motivo>"`}`);
     }
+    if (esperandoChat) linhas.push(`sua vez  faça o passo no chat e entregue: runbook entregar ${id} '<json>'`);
     if (e.custo.total) linhas.push(`custo    $${e.custo.total.toFixed(2)}`);
     linhas.push(`pasta    ${pastaDoRun(id)}`);
     const ultimos = lerEventos(id).filter((ev) => ev.linha).slice(-6);
@@ -299,7 +356,7 @@ const comandos = {
       fim = await executar({
         estado,
         processo,
-        adaptador: adaptadorDe(processo),
+        adaptador: adaptadorDe(processo, estado, emitir),
         emitir,
         salvar: salvarEstado,
         ambiente,
@@ -319,8 +376,11 @@ const comandos = {
   async ajuda() {
     console.log(`runbook ${VERSAO} — executa processos passo a passo
 
-  runbook run <processo.yaml> [--dir <pasta>] [--<entrada> <valor>…]
-                                           começa um run e acompanha até a próxima parada ou o fim
+  runbook run <processo.yaml> [--chat|--fundo] [--dir <pasta>] [--<entrada> <valor>…]
+                                           começa um run e acompanha até a próxima parada ou o fim;
+                                           de dentro de um Claude Code, cada passo \`faca\` é feito no
+                                           chat que chamou (--chat força); --fundo: um agente em segundo plano
+  runbook entregar <run> '<json>'          modo chat: entrega o passo pedido (o JSON também pelo stdin)
   runbook seguir [run]                     volta a acompanhar (sair não para o trabalho)
   runbook responder <run> "<resposta>"     responde a uma parada, ou orienta e refaz um passo escalado
   runbook pular <run> "<motivo>"           segue sem o passo parado — fica no relatório
@@ -330,7 +390,7 @@ const comandos = {
   runbook parar <run>                      encerra um run
   runbook validar <processo.yaml>          confere um processo sem rodar
 
-Saída: 0 fim · 10 parada (espera você) · 1 erro · 2 uso inválido. Runs em ~/.runbook/runs/.`);
+Saída: 0 fim · 10 parada (espera você) · 11 sua vez (modo chat) · 1 erro · 2 uso inválido. Runs em ~/.runbook/runs/.`);
     return 0;
   },
 };
