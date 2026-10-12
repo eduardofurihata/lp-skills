@@ -230,6 +230,7 @@ async function julgar(ctx, passo, rot) {
     ferramentas,
     minimo: passo.ate,
     modelo: processo.sessao.modelo,
+    esforco: processo.sessao.esforco,
     env: ctx.ambiente,
     limiteMs: passo.limiteMs,
   });

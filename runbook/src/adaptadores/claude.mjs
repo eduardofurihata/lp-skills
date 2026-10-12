@@ -10,7 +10,7 @@
 // Interface de um adaptador (a mesma para codex, gemini, agy depois):
 //   trabalhar({ sessao, iniciar, preambulo, prompt, esquema, permissao, ferramentas, modelo, esforco, cwd, env, limiteMs })
 //     → { ok, texto, estruturada, sessaoCriada, custoTotal, erro, registro }
-//   julgar({ entrada, ferramentas, minimo, modelo, env, limiteMs }) → { ok, veredito: { nota, lacunas }, custo, erro, registro }
+//   julgar({ entrada, ferramentas, minimo, modelo, esforco, env, limiteMs }) → { ok, veredito: { nota, lacunas }, custo, erro, registro }
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -169,6 +169,7 @@ export function adaptadorClaude({ bin = process.env.RUNBOOK_CLAUDE_BIN || "claud
         "--json-schema",
         JSON.stringify(ESQUEMA_DO_JUIZ),
         ...(op.modelo ? ["--model", op.modelo] : []),
+        ...(op.esforco ? ["--effort", op.esforco] : []), // o mesmo do processo: o juiz não herda o settings.json no --safe-mode
         "--tools", // variádica: vem por último, como no /brain
         "",
       ];

@@ -117,6 +117,13 @@ test("juiz com ferramentas: recebe os nomes renderizados, e a lista de um passo 
   assert.deepEqual(juiz.ferramentas, ["mcp__j__get", "mcp__j__comments", "mcp__x__get"]);
 });
 
+test("o esforço da sessão vale para o faca e para o juiz", async () => {
+  const p = preparar("nome: t\nsessao: { esforco: medium }\npassos:\n  - id: a\n    faca: x\n  - id: j\n    juiz: avalie\n");
+  const a = adaptadorFalso([{ estruturada: { resposta: "r" } }, { nota: 95 }]);
+  assert.equal(await rodar(p, a), "fim");
+  assert.deepEqual(a.chamadas.map((c) => [c.tipo, c.esforco]), [["trabalhar", "medium"], ["julgar", "medium"]]);
+});
+
 test("juiz sem ferramentas: segue cego", async () => {
   const p = preparar("nome: t\npassos:\n  - id: a\n    faca: x\n  - id: j\n    juiz: avalie\n");
   const a = adaptadorFalso([{ estruturada: { resposta: "r" } }, { nota: 95 }]);

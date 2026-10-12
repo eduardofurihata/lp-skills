@@ -16,6 +16,7 @@ const RESERVADOS = new Set(["entrada", "item", "run"]);
 const CAMPOS_DA_PERGUNTA = { pergunta: { type: "string" }, opcoes: { type: "array", items: { type: "string" } } };
 const PERMISSOES = ["livre", "leitura"];
 const CLIS = ["claude"];
+const ESFORCOS = ["low", "medium", "high", "xhigh", "max"];
 const CAMPOS_DO_PROCESSO = ["nome", "descricao", "entrada", "sessao", "resultado", "passos"];
 const CAMPOS_DA_SESSAO = ["cli", "permissao", "modelo", "esforco", "ferramentas"];
 const CAMPOS_POR_TIPO = {
@@ -95,6 +96,7 @@ function normalizar(d, erros) {
   };
   if (!CLIS.includes(sessao.cli)) erros.push(`sessao.cli: "${sessao.cli}" ainda não tem adaptador (por ora: ${CLIS.join(", ")})`);
   if (!PERMISSOES.includes(sessao.permissao)) erros.push(`sessao.permissao: ${PERMISSOES.join(" | ")}`);
+  if (sessao.esforco !== null && !ESFORCOS.includes(sessao.esforco)) erros.push(`sessao.esforco: ${ESFORCOS.join(" | ")}`);
   if (!Array.isArray(sessao.ferramentas) || sessao.ferramentas.some((f) => typeof f !== "string"))
     erros.push("sessao.ferramentas é uma lista de nomes de ferramenta");
 

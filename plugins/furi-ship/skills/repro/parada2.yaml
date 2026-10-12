@@ -7,6 +7,7 @@ entrada: [reproducao]
 sessao:
   cli: claude
   permissao: livre
+  esforco: medium
 
 resultado: "Parada 2 confirmada pelo dev: {confirmar.resposta}"
 

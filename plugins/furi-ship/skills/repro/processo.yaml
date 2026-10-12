@@ -8,6 +8,7 @@ entrada: [relato]
 sessao:
   cli: claude
   permissao: livre
+  esforco: medium
 
 resultado: |
   Reprodução, um por defeito: {reproduzir}

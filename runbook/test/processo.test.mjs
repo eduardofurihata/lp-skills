@@ -52,6 +52,11 @@ test("juiz e comando voltam só para um faca anterior", () => {
   umErro("nome: x\npassos:\n  - id: a\n    faca: x\n  - id: j\n    juiz: y\n    ate: 120\n", "`ate` é a nota mínima");
 });
 
+test("sessao.esforco só aceita os níveis do claude", () => {
+  umErro("nome: x\nsessao: { esforco: altissimo }\npassos:\n  - id: a\n    faca: x\n", "sessao.esforco");
+  assert.deepEqual(erros("nome: x\nsessao: { esforco: medium }\npassos:\n  - id: a\n    faca: x\n"), []);
+});
+
 test("juiz aceita ferramentas, e as variáveis delas só apontam para passos anteriores", () => {
   assert.deepEqual(erros("nome: x\npassos:\n  - id: a\n    faca: x\n    exige: { f: lista }\n  - id: j\n    juiz: y\n    ferramentas: ['{a.f}', 'Read']\n"), []);
   umErro("nome: x\npassos:\n  - id: a\n    faca: x\n  - id: j\n    juiz: y\n    ferramentas: Read\n", "`ferramentas` é uma lista de nomes");
