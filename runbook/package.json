@@ -1,0 +1,20 @@
+{
+  "name": "runbook",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Executa processos passo a passo: cada passo vai para a mesma conversa do agente e só avança quando a resposta traz o que o passo exige.",
+  "type": "module",
+  "bin": {
+    "runbook": "bin/runbook.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  },
+  "license": "MIT"
+}

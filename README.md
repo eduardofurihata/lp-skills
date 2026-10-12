@@ -1,6 +1,6 @@
 # lp-skills
 
-Skills do [Furihata](https://github.com/eduardofurihata), distribuídas como plugins que **Claude Code**, **Codex**, **Cursor**, **Copilot** e **VS Code** instalam direto do GitHub — igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em três categorias: **Build** (o método: `/solve`, `/principles`, `/front`, `/method`, `/adr`, `/ticrd`, `/proto`), **Ship** (a entrega — um pipeline só: os alvos `/work`, `/pull-request`, `/homolog`, `/prod`, que levam o trabalho de onde estiver até o próprio estágio; os modificadores `/repro` e `/card`, que compõem com qualquer alvo; `/recard`, que comenta num card existente a descrição real, com telas; `/update-jira`, que confere o estado real dos meus cards abertos e o registra neles; e `/setup`, `/jira`, `/infra`, que configuram o processo, o Jira e a infra do projeto) e **Toolbox** (ferramentas avulsas: `/brain`, o parecer que entende o problema antes de decidir, `/blind`, a sessão que não vê nada, `/ask`, `/chat`, `/save`, `/sync`…).
+Skills do [Furihata](https://github.com/eduardofurihata), distribuídas como plugins que **Claude Code**, **Codex**, **Cursor**, **Copilot** e **VS Code** instalam direto do GitHub — igual em **Windows, macOS e Linux**, sem symlink e sem hook. As skills são separadas em três categorias: **Build** (o método: `/solve`, `/principles`, `/front`, `/method`, `/adr`, `/ticrd`, `/proto`), **Ship** (a entrega — um pipeline só: os alvos `/work`, `/pull-request`, `/homolog`, `/prod`, que levam o trabalho de onde estiver até o próprio estágio; os modificadores `/repro` e `/card`, que compõem com qualquer alvo; `/recard`, que comenta num card existente a descrição real, com telas; `/update-jira`, que confere o estado real dos meus cards abertos e o registra neles; e `/setup`, `/jira`, `/infra`, que configuram o processo, o Jira e a infra do projeto) e **Toolbox** (ferramentas avulsas: `/brain`, o parecer que entende o problema antes de decidir, `/blind`, a sessão que não vê nada, `/runbook`, um processo em YAML executado passo a passo, `/ask`, `/chat`, `/save`, `/sync`…).
 
 Este repo é as duas coisas ao mesmo tempo: os **pacotes** (`plugins/<pacote>/`, três, um por categoria) com os catálogos que cada cliente lê, e a **landing page** (Next.js) que ajuda a montar os comandos de instalação.
 
@@ -25,7 +25,7 @@ O marketplace tem **3 pacotes** (plugins), um por categoria — você instala o 
 # 2) instale o pacote que quiser (um, alguns ou todos)
 /plugin install furi-build@lp-skills       # o método (/solve, /principles, /front, /method, /adr, /ticrd, /proto)
 /plugin install furi-ship@lp-skills        # a entrega (alvos: /work, /pull-request, /homolog, /prod · modificadores: /repro, /card · /recard · /update-jira · navegador: /pwx · config: /setup, /jira, /infra)
-/plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/brain, /blind, /ask, /chat, /save, /sync, /make-dev, /make-skill, /video-teams…)
+/plugin install furi-toolbox@lp-skills     # ferramentas avulsas (/brain, /blind, /runbook, /ask, /chat, /save, /sync, /make-dev, /make-skill, /video-teams…)
 ```
 
 **3) ligue o auto-update — ele nasce DESLIGADO.** Marketplace de terceiro não atualiza sozinho por default; só os oficiais. Ligue de um dos dois jeitos:
@@ -108,10 +108,13 @@ lp-skills/
 │   └── validate-plugins.mjs  # falha se um pacote não serve algum dos 3 clientes
 ├── .github/workflows/ci.yml  # roda os dois acima: o que está no GitHub é o que foi gerado
 ├── setup/                    # o padrão da minha máquina (o QUÊ, não o como) — ex.: claude-code.md; fora dos pacotes
+├── runbook/                  # o motor que executa processos passo a passo (comando `runbook`) — ver runbook/README.md
 ├── app/                      # Next.js App Router (a LP)
 ├── components/               # React components
 └── lib/                      # categorias + leitor de skills + grafo de relações + gerador de comandos
 ```
+
+**`runbook/` é o motor dos processos que não podem pular passo.** Uma skill em texto é um pedido: o modelo segura o plano e decide o que pular. O `runbook` tira essa decisão dele — lê um processo em YAML e manda **um passo por vez** para a mesma conversa do agente (`claude -p --resume`), só avançando quando a resposta traz o que o passo exige; juiz em sessão cega, parada que espera o dev, comando sem IA. Fica fora dos pacotes, instalado na máquina como comando (`runbook/install.sh`), para qualquer skill de qualquer pacote poder usá-lo sem um depender do outro; o `/runbook` (toolbox) é a porta no chat. Detalhes em [`runbook/README.md`](runbook/README.md).
 
 Cada pasta em `plugins/` **é** a raiz de um pacote, e as skills dela moram em `plugins/<pacote>/skills/<slug>/`. A categoria de cada skill é derivada do pacote (`furi-build` → `build`), e o mapa categoria↔pacote sai do catálogo gerado — a LP não repete essa lista. O nome de invocação (`/homolog`) vem do `name` no frontmatter do `SKILL.md`. Dependência entre pacotes seria derivada do `requires` — e **não há nenhuma**: os três são independentes.
 

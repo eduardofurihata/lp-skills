@@ -1,0 +1,126 @@
+# processo.yaml — o /repro executado pelo runbook, um passo por vez, na mesma conversa do agente;
+# com card, termina no /recard: a descrição real vira um comentário no card, com as telas.
+# Fonte única dos passos do /repro: com o runbook, o motor os executa; sem ele, são seguidos na ordem
+# (ver SKILL.md). Uso: runbook run <esta pasta>/processo.yaml --dir <projeto> --relato "<KEY ou descrição>"
+nome: repro
+descricao: reproduz o relato no front como o usuário, julgado ≥ 90, e — com card — comenta nele a descrição real com as telas
+entrada: [relato]
+sessao:
+  cli: claude
+  permissao: livre
+
+resultado: |
+  {descricao.descricao}
+
+  Card: {entender.card} · comentário: {publicar.url_comentario}
+
+passos:
+  # ── o /repro ──────────────────────────────────────────────────────────────
+
+  - id: setup
+    faca: |
+      Leia o § Repro de `.claude/ship/setup.md` (e do `setup.local.md`, se existir; o do time vence) — só ele: o board, o status para onde o card vai quando o repro começa, onde reproduzir (local | homolog | prod), a conta base, se pode criar contas de teste e em qual ambiente, o acesso de leitura aos dados reais (skill, CLI ou MCP · ambiente · o que lê).
+      Falta algum → devolva `pergunta` pedindo só o que falta; com a resposta, grave no § Repro — só identificadores e caminhos, nunca senha ou token — e responda.
+    exige: { board: texto, status: texto, ambiente: texto, conta_base: texto, criar_contas: texto, acesso_leitura: texto }
+
+  - id: infra
+    faca: |
+      Leia `.claude/ship/infra.md`: a URL e como subir o ambiente {setup.ambiente}. Falta → rode a skill `furi-ship:infra` (Skill tool) e leia de novo.
+    exige: { url: texto, como_subir: texto }
+
+  - id: entender
+    faca: |
+      O relato: {entrada.relato}
+      É a KEY de um card → leia no board {setup.board} o card inteiro, tudo o que ele tem, e mova-o para "{setup.status}".
+      É uma descrição → ela é o relato: sem Jira e sem criar card.
+      Entenda o problema, ainda sem abrir o navegador: quem, onde, o que faz, o que vê, o que esperava, e a causa provável — no código e nos dados, se precisar.
+      Ambiguidade que só o dev resolve → `pergunta`.
+      Devolva: tem_card; card (a KEY, ou "nenhum"); ferramentas_card — os nomes exatos das ferramentas de leitura que você usou para ler o card (vazio sem card); o relato literal — o card como está, tudo o que ele diz, sem resumir; a lista dos defeitos que o relato descreve, um por item; e o entendimento.
+    exige: { tem_card: booleano, card: texto, ferramentas_card: lista, relato_literal: texto, defeitos: lista, quem: texto, onde: texto, faz: texto, ve: texto, esperava: texto, causa: texto }
+
+  - id: julgar-entendimento
+    ferramentas: ["{entender.ferramentas_card}"]
+    juiz: |
+      Critério: o entendimento explica o relato inteiro — cada defeito, quem, onde, o que faz, o que vê e o que esperava — sem contradizê-lo nem acrescentar o que ele não diz; a causa é plausível pelo que está escrito.
+      O relato, como o dev mandou: {entrada.relato}
+      É a KEY de um card → leia-o você mesmo, inteiro, pelas ferramentas, e julgue contra ele. É uma descrição → ela é a fonte: julgue contra ela.
+      Defeitos: {entender.defeitos}
+      Entendimento: quem {entender.quem} · onde {entender.onde} · faz {entender.faz} · vê {entender.ve} · esperava {entender.esperava} · causa {entender.causa}
+    ate: 90
+    max: 4
+
+  - id: navegador
+    faca: |
+      Abra o navegador pela skill `furi-ship:pwx` (Skill tool) — todo passo no front, daqui em diante, é por ele.
+      Vá ao ambiente {setup.ambiente} ({infra.url}); se ele precisar subir: {infra.como_subir}
+    exige: { url_aberta: texto }
+
+  - id: cenario
+    faca: |
+      Monte o cenário igual ao do relato.
+      - Dados reais, só leitura, pelo acesso do § Repro ({setup.acesso_leitura}), se houver: só consulta (SELECT, GET, logs); nenhum INSERT/UPDATE/DELETE, migration, job, e-mail ou ação em nome de usuário real; em prod, nada que mude estado — nem pelo front com a conta de alguém. O passo exige escrever → `pergunta` antes.
+      - A conta: procure em `.secrets/test-accounts.md` uma que sirva e reutilize; crie só se nenhuma serve e o § Repro permite ({setup.criar_contas}), e registre a nova lá (ambiente · papel · login · senha · para quê · criada em). A senha nunca vai na resposta.
+    exige: { conta_papel: texto, dados: texto }
+
+  - id: reproduzir
+    para_cada: entender.defeitos
+    faca: |
+      Reproduza no front, como o usuário, pelo pwx, este defeito: {item}
+      Cenário exato, uma evidência por passo (prints em {run.dir}). Não reproduziu → outro caminho, até reproduzir — "não consegui" não existe.
+      Pare um passo antes do trigger, sem dispará-lo.
+    exige: { ambiente: texto, conta_papel: texto, dados: texto, passos: lista, trigger: texto, evidencias: lista }
+    limite: 60m
+
+  - id: julgar-reproducao
+    juiz: |
+      Critério: cada defeito do relato foi reproduzido no front, com cenário, passos e evidência que o mostram; o registro diz o ambiente, a conta (papel, nunca a senha), os dados e o trigger; e o trigger NÃO foi disparado — parou um passo antes. Defeito sem reprodução, ou trigger disparado, reprova.
+      Relato (literal):
+      {entender.relato_literal}
+      Defeitos: {entender.defeitos}
+      Registro da reprodução, um por defeito: {reproduzir}
+    ate: 90
+    volta_para: reproduzir
+    max: 5
+
+  - id: mostrar
+    faca: |
+      Deixe o navegador um passo antes do trigger e escreva a mensagem para o dev: "👉 Clique em: [elemento exato]", o que vai acontecer, e onde está a evidência.
+    exige: { mensagem: texto }
+
+  - id: parada-1
+    parada: "{mostrar.mensagem}"
+
+  - id: descricao
+    faca: |
+      Com o que o dev viu (a resposta dele está acima), devolva a descrição oficial:
+      superfície · ambiente · conta e dados · partida → passos → trigger · atual × esperado · evidência · causa.
+    exige: { descricao: texto }
+
+  # ── o /recard: com card, a descrição real vira um comentário nele ─────────
+
+  - id: telas
+    se: entender.tem_card
+    faca: |
+      Capture as telas como o usuário, no navegador: o atual e, quando existe, o esperado; uma por passo que importa, com nome que diz o que mostra. Reaproveite as evidências da reprodução em {run.dir}.
+    exige: { telas: lista }
+
+  - id: comentario
+    se: entender.tem_card
+    faca: |
+      Escreva, como PM/PO, no idioma do card que você leu, o comentário para quem não viu esta conversa.
+      Abre com `Descrição real — <data de hoje>` e segue: Contexto (quem, onde, impacto) · Problema real (o que o card diz × o que acontece, a causa) · Objetivo (o pronto observável) · Critérios de aceite · Referências visuais (as telas) · Como testar (pré-condição → passos → resultado).
+      Diz o quê, por quê e como se confere, nunca como se faz.
+    exige: { comentario: texto }
+
+  - id: publicar
+    se: entender.tem_card
+    faca: |
+      No card {entender.card}: anexe as telas e publique o comentário com elas inline. A descrição, o título e os campos ficam intocados.
+      O MCP do Jira só aceita arquivo de dentro do projeto: copie as telas para uma pasta temporária do projeto e apague-a depois.
+    exige: { url_comentario: texto, anexos: lista }
+
+  - id: reler
+    se: entender.tem_card
+    faca: |
+      Releia o card {entender.card} publicado: o comentário renderiza, as telas aparecem, a descrição não mudou. Achou problema → corrija e releia antes de responder.
+    exige: { conferencia: texto }

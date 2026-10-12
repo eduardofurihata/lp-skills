@@ -1,3 +1,6 @@
+packages:
+  - runbook
+
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver

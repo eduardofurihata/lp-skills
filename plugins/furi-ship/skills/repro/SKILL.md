@@ -1,33 +1,31 @@
 ---
 name: repro
-description: 'Use ONLY when the user explicitly invokes /repro (bare /repro = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:repro` via the Skill tool. NEVER activate on your own initiative. — reproduces the report on the front as the user, judged ≥ 90; the dev sees the bug and the fix BEFORE the commit.'
+description: 'Use ONLY when the user explicitly invokes /repro (bare /repro = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:repro` via the Skill tool. NEVER activate on your own initiative. — reproduces the report on the front as the user, judged ≥ 90; the dev sees the bug and the fix BEFORE the commit; with a card, it ends by commenting the real description on it, with screenshots.'
 requires: [infra, pwx]
 argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 ---
 
 # /repro — reproduzir, julgar, mostrar
 
-Reproduz o bug no front como o usuário, antes de codar; o dev o vê com o bug (parada 1) e sem (parada 2). Não coda. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra; quem codar deve a parada 2. Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
+Reproduz o bug no front como o usuário, antes de codar; o dev o vê com o bug (parada 1) e sem (parada 2). Não coda. Com card, termina no recard: a descrição real vira um comentário no card, com as telas. Sem card: o mesmo processo, sem Jira e sem criar card.
 
-- [ ] Ler `.claude/ship/setup.md § Repro` (formato abaixo): board, onde reproduzir, conta base, se pode criar contas, acesso de leitura; falta → pergunte só o que faltar e grave ali
-- [ ] Ler `.claude/ship/infra.md`: URL e como subir o ambiente do § Repro; falta → `Skill(skill: "infra")`
-- [ ] Ler o card e anexos (no board do § Repro), ou a descrição; mover o card ao status de `/work`
-- [ ] Entender o problema: quem, onde, o que faz, vê e esperava, causa; ambiguidade → pergunte
-- [ ] Julgar o entendimento num subagente limpo (relato verbatim + entendimento → 0–100); ≥ 90 avança, senão de novo, sem limite
-- [ ] Abrir o navegador: `Skill(skill: "pwx")` — todo passo no front, aqui e na parada 2, é por ele
-- [ ] Montar o cenário: o dado real do relato pelo acesso de leitura do § Repro, se houver; a conta pelas regras de contas abaixo
-- [ ] Reproduzir no front como usuário, pelo pwx: cenário exato, evidência por passo; não reproduziu → outro caminho, em loop até reproduzir — "não consegui" não existe; registrar ambiente, conta (papel, nunca a senha), dados, passos, trigger
-- [ ] Julgar a reprodução noutro subagente (relato + registro + evidência → 0–100); ≥ 90 avança, senão de novo
-- [ ] Parar um passo antes do trigger e mostrar: "👉 Clique em: [elemento exato]", o que vai acontecer, a evidência; esperar o dev
-- [ ] Devolver a descrição oficial: superfície · ambiente · conta e dados · partida → passos → trigger · atual × esperado · evidência · causa
+**Os passos moram em `processo.yaml`, nesta pasta — fonte única.** Com o `runbook` instalado (`runbook --version` responde), quem os executa é o motor, um por vez, na mesma conversa; você só acompanha:
 
-Parada 2, de quem fecha o commit, antes dele: reproduzir pelo pwx, mesmo ambiente, trigger disparado: o bug não aparece, com evidência; apareceu → sem commit; parada 1 de novo, `## ✅ Human check`; pare até o dev confirmar.
+1. `runbook run <esta pasta>/processo.yaml --dir <projeto> --relato "<KEY ou descrição>"` pelo **Monitor**, timeout máximo — cada linha é um evento. Monitor expirou → `runbook seguir <run>`.
+2. Repasse cada linha ao dev numa frase curta. Você não executa passo nenhum, não resume e não pula.
+3. `⏸ PARADA` ou `⏸ PERGUNTA` → pergunte ao dev com AskUserQuestion: as `opções:` da linha; sem elas, `Pular este passo` (→ `runbook pular`) e `Parar o run` (→ `runbook parar`). A fala literal dele vai com `runbook responder <run> "…"`, pelo Monitor. Escalada (`✗`): mostre o motivo — `responder` refaz o passo com a orientação dele; `pular` só se ele mandar, com as palavras dele.
+4. `■ FIM` → mostre o resultado: a descrição oficial e, com card, o link do comentário.
+
+Sem `runbook` (outra máquina ou cliente), ou com outras skills no argumento: siga os passos do `processo.yaml` na ordem, um por um — com outras skills, numa passada só com os delas, nunca uma antes ou depois da outra. Os passos são o checklist do run, em `.claude/ship/run.md`: escreva cada um como `- [ ]`, marque `- [x]` ao fechar, retome do primeiro aberto; quem o criou apaga ao fim. Passo `juiz` → um subagente novo (Agent tool), que recebe só o texto do passo, nunca a conversa; no `julgar-entendimento`, ele recebe o relato como o dev mandou e, sendo um card, lê o card ele mesmo.
+
+**Parada 2**, de quem fecha o commit, antes dele: `runbook run <esta pasta>/parada2.yaml --dir <projeto> --descricao "<descrição oficial>"` (sem runbook: os passos de `parada2.yaml`). O bug apareceu → sem commit.
 
 **§ Repro** no `setup.md` — só identificadores e caminhos, nunca senha ou token:
 
 ```
 ## Repro
-- Board: <projeto ou board do Jira> (ou: o do § Card · sem Jira: nenhum)
+- Board: <projeto ou board do Jira> (sem Jira: nenhum)
+- Status: <coluna para onde o card vai quando o repro começa> (sem Jira: nenhum)
 - Ambiente: local | homolog | prod
 - Conta base: <papel> · `.secrets/test-accounts.md` (ou: nenhuma)
 - Criar contas de teste: sim, em <ambiente> | não

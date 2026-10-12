@@ -1,0 +1,41 @@
+# parada2.yaml — a parada 2 do /repro: de quem fecha o commit, antes dele. Refaz o relato no mesmo
+# ambiente, agora disparando o trigger: o bug não pode aparecer. Apareceu → o juiz reprova e não há commit.
+# Uso: runbook run <esta pasta>/parada2.yaml --dir <projeto> --descricao "<a descrição oficial do /repro>"
+nome: parada2
+descricao: o dev vê a correção antes do commit — mesmo ambiente, trigger disparado, o bug não aparece
+entrada: [descricao]
+sessao:
+  cli: claude
+  permissao: livre
+
+resultado: "Parada 2 confirmada pelo dev: {confirmar.resposta}"
+
+passos:
+  - id: reproduzir
+    faca: |
+      A descrição oficial do /repro:
+      {entrada.descricao}
+      Pela skill `furi-ship:pwx` (Skill tool), no mesmo ambiente, com a mesma conta e os mesmos dados, refaça a partida e os passos e DISPARE o trigger. Uma evidência por passo (prints em {run.dir}).
+    exige: { passos: lista, evidencias: lista, o_que_aconteceu: texto }
+
+  - id: julgar
+    juiz: |
+      Critério: com o trigger disparado, o comportamento é o esperado da descrição — o bug NÃO aparece — e a evidência mostra isso. O bug aparece → reprova.
+      Descrição oficial:
+      {entrada.descricao}
+      O que aconteceu: {reproduzir.o_que_aconteceu}
+      Passos: {reproduzir.passos}
+      Evidências: {reproduzir.evidencias}
+    ate: 90
+    max: 2
+
+  - id: mostrar
+    faca: |
+      Escreva para o dev a seção `## ✅ Human check`: o que ele olha no navegador para confirmar que o bug sumiu, e onde está a evidência.
+    exige: { human_check: texto }
+
+  - id: confirmar
+    parada: |
+      {mostrar.human_check}
+
+      O bug sumiu? Sem a sua confirmação, não há commit.

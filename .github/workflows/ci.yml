@@ -63,5 +63,10 @@ jobs:
       - name: pacotes válidos para os 3 clientes
         run: pnpm validate:plugins
 
+      # 4) O runbook executa processos passo a passo: os testes provam a ordem, as voltas do juiz,
+      #    as paradas, retomar e parar — com um claude falso, sem gastar token.
+      - name: testes do runbook
+        run: pnpm test:runbook
+
       - name: typecheck da LP
         run: pnpm typecheck

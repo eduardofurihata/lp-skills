@@ -1,0 +1,17 @@
+# pergunta.yaml — prova o canal de pergunta: o passo depende de um dado que só o dev tem,
+# então o agente devolve a pergunta em vez de chutar; a resposta volta à mesma conversa.
+# Uso: runbook run exemplos/pergunta.yaml
+nome: pergunta
+descricao: o agente pergunta ao dev o que só ele sabe, e continua o mesmo passo com a resposta
+sessao:
+  cli: claude
+  permissao: leitura
+
+passos:
+  - id: saudar
+    faca: "Escreva uma saudação curta e calorosa para a pessoa a quem o dev quer agradecer hoje, citando o nome dela e o motivo. Você não sabe nem o nome nem o motivo."
+    exige: { saudacao: texto, nome: texto }
+
+  - id: conferir
+    comando: "printf '%s' {saudar.saudacao} | grep -qF {saudar.nome}"
+    espera: 0

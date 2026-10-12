@@ -1,0 +1,39 @@
+# ola.yaml — o processo de teste do runbook. Prova, num run curto e barato:
+#   a conversa contínua (o passo `lembrar` acerta o título sem recebê-lo de novo), o juiz cego com
+#   volta, a parada que espera o dev, o comando sem IA e o para_cada.
+# Uso: runbook run exemplos/ola.yaml --tema "café"
+nome: ola
+descricao: teste do motor — escreve, é julgado, lembra sem receber de novo, para para o dev, confere e traduz
+entrada: [tema]
+sessao:
+  cli: claude
+  permissao: leitura # este teste não escreve nada no projeto
+
+passos:
+  - id: escrever
+    faca: "Escreva 3 frases curtas sobre {entrada.tema} e dê um título ao conjunto."
+    exige: { frases: lista, titulo: texto }
+
+  - id: julgar
+    juiz: |
+      Critério: três frases claras, corretas e sobre o tema "{entrada.tema}", com um título que resume as três.
+      Título: {escrever.titulo}
+      Frases: {escrever.frases}
+    ate: 90
+    max: 3
+
+  - id: lembrar
+    faca: "Sem eu repetir: qual título você deu no primeiro passo? Copie exatamente, caractere por caractere."
+    exige: { titulo: texto }
+
+  - id: confirmar
+    parada: "Título: {escrever.titulo} — a conversa devolveu: {lembrar.titulo}. Sigo para a conferência e a tradução?"
+
+  - id: conferir # sem IA: os dois títulos têm de ser idênticos
+    comando: "test {escrever.titulo} = {lembrar.titulo}"
+    espera: 0
+
+  - id: traduzir
+    para_cada: escrever.frases
+    faca: "Traduza esta frase para o inglês: {item}"
+    exige: { traducao: texto }

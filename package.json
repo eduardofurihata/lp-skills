@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "gen:plugins": "node scripts/generate-plugins.mjs",
     "validate:plugins": "node scripts/validate-plugins.mjs",
-    "check": "pnpm gen:plugins && pnpm validate:plugins && pnpm typecheck"
+    "test:runbook": "node --test \"runbook/test/*.test.mjs\"",
+    "check": "pnpm gen:plugins && pnpm validate:plugins && pnpm test:runbook && pnpm typecheck"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
