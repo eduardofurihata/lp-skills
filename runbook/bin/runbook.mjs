@@ -92,7 +92,15 @@ function iniciarSegmento(estado, linha) {
   emissor(estado.id)("segmento", {}, linha);
 }
 
+// dois saltos: um intermediário lança o trabalhador e sai na hora. O trabalhador fica órfão (adotado pelo init),
+// fora da árvore de processos de quem acompanha — o Monitor do chat expirar, ou o terminal fechar, não o derruba —
+// e segue líder da própria sessão (detached), para o parar o encerrar com o agente que ele chamou.
 function iniciarTrabalhador(estado) {
+  const r = spawnSync(process.execPath, [ESTE, "_lancar", estado.id], { stdio: "ignore", cwd: estado.cwd, env: process.env });
+  if (r.status !== 0) throw new Error(`não consegui lançar o trabalhador do run ${estado.id} (saída ${r.status})`);
+}
+
+function lancarTrabalhador(estado) {
   const log = fs.openSync(path.join(pastaDoRun(estado.id), "trabalhador.log"), "a");
   const filho = spawn(process.execPath, [ESTE, "_trabalhar", estado.id], {
     detached: true,
@@ -255,6 +263,12 @@ const comandos = {
     if (erros.length) throw new Uso(`✗ ${arquivo}\n${erros.map((e) => `  ✗ ${e}`).join("\n")}`, 1);
     const tipos = processo.passos.reduce((a, p) => ({ ...a, [p.tipo]: (a[p.tipo] ?? 0) + 1 }), {});
     console.log(`✓ ${processo.nome}: ${processo.passos.length} passos (${Object.entries(tipos).map(([t, n]) => `${n} ${t}`).join(", ")})`);
+    return 0;
+  },
+
+  // o intermediário dos dois saltos: lança o trabalhador e sai (ver iniciarTrabalhador)
+  async _lancar([id]) {
+    lancarTrabalhador(lerEstado(id));
     return 0;
   },
 

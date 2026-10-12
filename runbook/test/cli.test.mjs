@@ -39,7 +39,7 @@ function cenario(roteiro, yaml) {
     },
     emSegundoPlano: (...args) => {
       const filho = spawn(process.execPath, [BIN, ...args], { env });
-      const r = { saida: "", codigo: null };
+      const r = { saida: "", codigo: null, pid: filho.pid };
       filho.stdout.on("data", (d) => (r.saida += d));
       r.fim = new Promise((res) => filho.on("close", (c) => res((r.codigo = c))));
       return r;
@@ -150,6 +150,22 @@ test("o trabalhador cai no meio de um passo: quem acompanha avisa, e retomar ref
   assert.equal(r.codigo, 0, r.erro);
   assert.match(r.saida, /↻ retomando/);
   assert.deepEqual(c.estado(id).saidas.a, { t: "refeito" });
+});
+
+test("o trabalhador não é filho de quem acompanha: matar quem acompanha não derruba o run", async () => {
+  const c = cenario([{ dormir: 1500, estruturada: { t: "feito" } }], "nome: o\npassos:\n  - id: a\n    faca: x\n    exige: { t: texto }\n");
+  const bg = c.emSegundoPlano("run", c.yaml, "--dir", c.projeto);
+  assert.ok(await ate(() => idDo(bg.saida) && c.chamadas().length === 1));
+  const id = idDo(bg.saida);
+  const pid = Number(fs.readFileSync(path.join(c.env.RUNBOOK_HOME, "runs", id, "pid"), "utf8"));
+  const pai = Number(spawnSync("ps", ["-o", "ppid=", "-p", String(pid)], { encoding: "utf8" }).stdout.trim());
+  assert.notEqual(pai, process.pid);
+  const seguidor = spawnSync("pgrep", ["-P", String(process.pid)], { encoding: "utf8" }).stdout.split("\n").filter(Boolean).map(Number);
+  assert.ok(!seguidor.includes(pid), "o trabalhador não pode estar entre os filhos do teste");
+  assert.notEqual(pai, bg.pid);
+  process.kill(bg.pid, "SIGKILL"); // como o Monitor do chat ao expirar: derruba quem acompanha
+  assert.ok(await ate(() => c.estado(id).status === "fim", 15_000), "o run tem de terminar sozinho");
+  assert.deepEqual(c.estado(id).saidas.a, { t: "feito" });
 });
 
 test("parar encerra o trabalhador e o agente; o run fica parado", async () => {
