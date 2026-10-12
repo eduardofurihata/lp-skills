@@ -264,7 +264,9 @@ const comandos = {
     const estado = lerEstado(id);
     const processo = processoDoRun(id);
     const emitir = emissor(id);
-    const ambiente = { ...process.env, PWX_SESSION: `runbook-${id}` };
+    // uma janela do pwx por run, de dono nenhum: o claude de cada passo morre no fim dele, e a janela tem de
+    // sobreviver aos passos e às paradas (o dev olha nela); fecha no fim ou no parar (fecharPwx)
+    const ambiente = { ...process.env, PWX_SESSION: `runbook-${id}`, PWX_OWNER_PID: "0" };
     delete ambiente.CLAUDECODE;
     const encerrar = (sinal) => {
       const pedidoDoDev = fs.existsSync(path.join(pastaDoRun(id), "parar"));

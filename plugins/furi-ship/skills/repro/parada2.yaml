@@ -1,9 +1,9 @@
 # parada2.yaml — a parada 2 do /repro: de quem fecha o commit, antes dele. Refaz o relato no mesmo
 # ambiente, agora disparando o trigger: o bug não pode aparecer. Apareceu → o juiz reprova e não há commit.
-# Uso: runbook run <esta pasta>/parada2.yaml --dir <projeto> --descricao "<a descrição oficial do /repro>"
+# Uso: runbook run <esta pasta>/parada2.yaml --dir <projeto> --reproducao "<o resultado do /repro>"
 nome: parada2
 descricao: o dev vê a correção antes do commit — mesmo ambiente, trigger disparado, o bug não aparece
-entrada: [descricao]
+entrada: [reproducao]
 sessao:
   cli: claude
   permissao: livre
@@ -13,16 +13,16 @@ resultado: "Parada 2 confirmada pelo dev: {confirmar.resposta}"
 passos:
   - id: reproduzir
     faca: |
-      A descrição oficial do /repro:
-      {entrada.descricao}
+      A reprodução do /repro:
+      {entrada.reproducao}
       Pela skill `furi-ship:pwx` (Skill tool), no mesmo ambiente, com a mesma conta e os mesmos dados, refaça a partida e os passos e DISPARE o trigger. Uma evidência por passo (prints em {run.dir}).
     exige: { passos: lista, evidencias: lista, o_que_aconteceu: texto }
 
   - id: julgar
     juiz: |
-      Critério: com o trigger disparado, o comportamento é o esperado da descrição — o bug NÃO aparece — e a evidência mostra isso. O bug aparece → reprova.
-      Descrição oficial:
-      {entrada.descricao}
+      Critério: com o trigger disparado, o comportamento é o esperado da reprodução — o bug NÃO aparece — e a evidência mostra isso. O bug aparece → reprova.
+      A reprodução do /repro:
+      {entrada.reproducao}
       O que aconteceu: {reproduzir.o_que_aconteceu}
       Passos: {reproduzir.passos}
       Evidências: {reproduzir.evidencias}

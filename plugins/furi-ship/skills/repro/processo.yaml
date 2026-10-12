@@ -10,7 +10,9 @@ sessao:
   permissao: livre
 
 resultado: |
-  {descricao.descricao}
+  Reprodução, um por defeito: {reproduzir}
+  Esperado: {entender.esperava} · causa: {entender.causa}
+  Revisão: {telas.revisao} · dev na parada 1: {parada-1.resposta}
 
   Card: {entender.card} · comentário: {publicar.url_comentario}
 
@@ -49,60 +51,68 @@ passos:
     ate: 90
     max: 4
 
-  - id: navegador
-    faca: |
-      Abra o navegador pela skill `furi-ship:pwx` (Skill tool) — todo passo no front, daqui em diante, é por ele.
-      Vá ao ambiente {setup.ambiente} ({infra.url}); se ele precisar subir: {infra.como_subir}
-    exige: { url_aberta: texto }
-
   - id: cenario
     faca: |
-      Monte o cenário igual ao do relato.
-      - Dados reais, só leitura, pelo acesso do § Repro ({setup.acesso_leitura}), se houver: só consulta (SELECT, GET, logs); nenhum INSERT/UPDATE/DELETE, migration, job, e-mail ou ação em nome de usuário real; em prod, nada que mude estado — nem pelo front com a conta de alguém. O passo exige escrever → `pergunta` antes.
-      - A conta: procure em `.secrets/test-accounts.md` uma que sirva e reutilize; crie só se nenhuma serve e o § Repro permite ({setup.criar_contas}), e registre a nova lá (ambiente · papel · login · senha · para quê · criada em). A senha nunca vai na resposta.
-    exige: { conta_papel: texto, dados: texto }
+      Monte o cenário que o relato pede e abra o navegador nele — um não anda sem o outro. Montar é fazer: criar grupo, usuário, compra, mudar status, o que o bug precisar para acontecer. Primeiro decida o que montar, com qual conta e a tela de partida; o navegador abre já para montá-lo.
+      - Onde pode escrever: local e homolog → monte o que precisar. Prod → só dentro do cenário de teste — contas e dados de teste, reaproveitados ou criados para isso —, nunca em usuário ou dado real.
+      - Dados reais, só leitura, pelo acesso do § Repro ({setup.acesso_leitura}), se houver: para achar o usuário e o dado do relato e copiar o cenário dele para o de teste. Só consulta (SELECT, GET, logs); nada em nome de usuário real.
+      - Efeito que sai do sistema (cobrança real, e-mail ou mensagem a terceiros, nota fiscal) → `pergunta` antes, em qualquer ambiente.
+      - A conta: procure em `.secrets/test-accounts.md` uma que sirva e reutilize; crie só se nenhuma serve e o § Repro permite ({setup.criar_contas}), e registre a nova lá (ambiente · papel · login · senha · para quê · criada em), e também o que criou para o cenário (grupo, usuário, pedido), para o próximo run reutilizar. A senha nunca vai na resposta.
+      - Acessos (token de MCP ou de API, chave, login): use os de `.secrets/` liberados para teste. Todo acesso que o dev mandar — no relato, numa resposta ou no chat — salve em `.secrets/` na hora (`.secrets/<provedor>.env`, pelo nome da variável; conta em `test-accounts.md`), com `.secrets/` no `.gitignore`. O valor nunca vai na resposta, em print, log ou commit; a resposta cita só o nome.
+      - O navegador: pela skill `furi-ship:pwx` (Skill tool) — todo passo no front, daqui em diante, é por ele. Ambiente {setup.ambiente} ({infra.url}); se ele precisar subir: {infra.como_subir}. Entre com a conta do cenário e pare na tela de partida.
+    exige: { conta_papel: texto, dados: texto, montagem: lista, acessos: texto, partida: texto }
 
   - id: reproduzir
     para_cada: entender.defeitos
     faca: |
       Reproduza no front, como o usuário, pelo pwx, este defeito: {item}
-      Cenário exato, uma evidência por passo (prints em {run.dir}). Não reproduziu → outro caminho, até reproduzir — "não consegui" não existe.
-      Pare um passo antes do trigger, sem dispará-lo.
-    exige: { ambiente: texto, conta_papel: texto, dados: texto, passos: lista, trigger: texto, evidencias: lista }
+      Cenário exato, e DISPARE o trigger: o bug tem de acontecer na sua frente. Uma evidência por passo, inclusive o antes e o depois do trigger (prints em {run.dir}). Não reproduziu → outro caminho, até reproduzir — "não consegui" não existe.
+      Em prod, o trigger roda só no cenário de teste; fora dele, em nome de usuário real, ou com efeito que sai do sistema → `pergunta` antes de disparar.
+    exige: { ambiente: texto, conta_papel: texto, dados: texto, passos: lista, trigger: texto, aconteceu: texto, evidencias: lista }
     limite: 60m
 
   - id: julgar-reproducao
     juiz: |
-      Critério: cada defeito do relato foi reproduzido no front, com cenário, passos e evidência que o mostram; o registro diz o ambiente, a conta (papel, nunca a senha), os dados e o trigger; e o trigger NÃO foi disparado — parou um passo antes. Defeito sem reprodução, ou trigger disparado, reprova.
+      Critério: cada defeito foi reproduzido no front com o trigger disparado, e o que aconteceu é o bug que o entendimento descreve — quem, onde, o que faz, o que vê —, não outro; cenário, passos e evidência o mostram; o registro diz o ambiente, a conta (papel, nunca a senha), os dados e o trigger. Defeito sem reprodução, trigger não disparado, ou resultado que não bate com o entendimento, reprova.
       Relato (literal):
       {entender.relato_literal}
       Defeitos: {entender.defeitos}
+      Entendimento: quem {entender.quem} · onde {entender.onde} · faz {entender.faz} · vê {entender.ve} · esperava {entender.esperava} · causa {entender.causa}
       Registro da reprodução, um por defeito: {reproduzir}
     ate: 90
     volta_para: reproduzir
-    max: 5
+    max: 4
+
+  - id: telas
+    faca: |
+      Capture o bug, não o caminho: a tela em que ele aparece — e a do esperado, se ajuda a entender —, como o usuário, no navegador. Em cada uma, marque o ponto do bug com `pwx mark <ref> "BUG"` antes do `pwx screenshot` e tire a marca depois (`pwx mark --hide`). O ponto marcado tem de ser legível sem zoom: se some na tela inteira, capture o recorte em volta dele (`pwx screenshot <ref do container>`). Nome que diz o que mostra; prints em {run.dir}.
+      Monte `{run.dir}/revisao.html`, para o dev aprovar batendo o olho: para cada print, o número grande (`Imagem N`), o print com o ponto do bug marcado e, embaixo, em vermelho, o defeito e o que a imagem mostra. Imagens por caminho relativo, na mesma pasta; página simples, legível, sem dependência externa.
+    exige: { telas: lista, revisao: texto }
 
   - id: mostrar
     faca: |
-      Deixe o navegador um passo antes do trigger e escreva a mensagem para o dev: "👉 Clique em: [elemento exato]", o que vai acontecer, e onde está a evidência.
-    exige: { mensagem: texto }
+      Mostre ao dev as duas coisas, antes da parada:
+      1. A revisão: abra {telas.revisao} no navegador padrão do dev (`open` no macOS, `xdg-open` no Linux) — os prints com o bug marcado, numerados.
+      2. O bug ao vivo: no pwx, remonte o cenário — desfaça no front o que o trigger mudou, se precisar — e deixe o navegador um passo antes do trigger.
+      Escreva a mensagem para o dev: a revisão aberta e onde está; as imagens, uma por linha (`Imagem N — o que mostra`); e "👉 Para ver ao vivo, clique em: [elemento exato]".
+    exige: { revisao_aberta: texto, ao_vivo: texto, mensagem: texto }
 
   - id: parada-1
-    parada: "{mostrar.mensagem}"
+    parada: |
+      {mostrar.mensagem}
 
-  - id: descricao
-    faca: |
-      Com o que o dev viu (a resposta dele está acima), devolva a descrição oficial:
-      superfície · ambiente · conta e dados · partida → passos → trigger · atual × esperado · evidência · causa.
-    exige: { descricao: texto }
+      Responda por imagem — "1 ok, 2 ok, 3 reprovada: <por quê>" —, "tudo ok" ou "tudo reprovado". Ok = a imagem mostra o bug.
 
-  # ── o /recard: com card, a descrição real vira um comentário nele ─────────
+  - id: aprovar
+    juiz: |
+      Critério: o dev aprovou todas as imagens da revisão. Imagem reprovada, ou sem resposta clara, reprova; cada lacuna diz qual imagem e o motivo, nas palavras dele.
+      Imagens: {telas.telas}
+      Resposta do dev: {parada-1.resposta}
+    ate: 90
+    volta_para: reproduzir
+    max: 3
 
-  - id: telas
-    se: entender.tem_card
-    faca: |
-      Capture as telas como o usuário, no navegador: o atual e, quando existe, o esperado; uma por passo que importa, com nome que diz o que mostra. Reaproveite as evidências da reprodução em {run.dir}.
-    exige: { telas: lista }
+  # ── o /recard: com card e as telas aprovadas, a descrição real vira um comentário nele ─
 
   - id: comentario
     se: entender.tem_card
@@ -115,7 +125,7 @@ passos:
   - id: publicar
     se: entender.tem_card
     faca: |
-      No card {entender.card}: anexe as telas e publique o comentário com elas inline. A descrição, o título e os campos ficam intocados.
+      No card {entender.card}: anexe as telas aprovadas ({telas.telas}) e publique o comentário com elas inline. A descrição, o título e os campos ficam intocados.
       O MCP do Jira só aceita arquivo de dentro do projeto: copie as telas para uma pasta temporária do projeto e apague-a depois.
     exige: { url_comentario: texto, anexos: lista }
 

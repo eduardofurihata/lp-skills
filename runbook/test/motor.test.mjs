@@ -176,6 +176,28 @@ test("parada: para, e a resposta do dev chega ao próximo faca", async () => {
   assert.equal(p.estado.pendente, null);
 });
 
+test("juiz depois de uma parada: reprova, refaz o faca, a parada pergunta de novo e, aprovado, segue", async () => {
+  const p = preparar("nome: t\npassos:\n  - id: a\n    faca: capture\n    exige: { t: lista }\n  - id: p\n    parada: 'aprova {a.t}?'\n  - id: j\n    juiz: 'o dev aprovou? {p.resposta}'\n    volta_para: a\n  - id: b\n    faca: publique\n");
+  const a = adaptadorFalso([
+    { estruturada: { t: ["1.png", "2.png"] } },
+    { nota: 20, lacunas: ["imagem 2 reprovada: não mostra o erro"] },
+    { estruturada: { t: ["1.png", "2b.png"] } },
+    { nota: 100 },
+    { estruturada: { resposta: "publicado" } },
+  ]);
+  assert.equal(await rodar(p, a), "parada");
+  aplicarResposta(p.estado, p.processo, "1 ok, 2 reprovada: não mostra o erro");
+  assert.equal(await rodar(p, a), "parada");
+  assert.match(prompts(a)[1], /imagem 2 reprovada/);
+  assert.equal(p.estado.parada.passo, "p");
+  assert.match(p.estado.parada.mensagem, /2b\.png/);
+  aplicarResposta(p.estado, p.processo, "tudo ok");
+  assert.equal(await rodar(p, a), "fim");
+  const juizes = a.chamadas.filter((c) => c.tipo === "julgar").map((c) => c.entrada);
+  assert.deepEqual(juizes, ["o dev aprovou? 1 ok, 2 reprovada: não mostra o erro", "o dev aprovou? tudo ok"]);
+  assert.equal(p.estado.saidas.b.resposta, "publicado");
+});
+
 test("para_cada: um pedido por item, com {item}, e a saída é a lista", async () => {
   const p = preparar("nome: t\npassos:\n  - id: a\n    faca: liste\n    exige: { l: lista }\n  - id: b\n    faca: 'traduza {item}'\n    para_cada: a.l\n    exige: { t: texto }\n");
   const a = adaptadorFalso([{ estruturada: { l: ["um", "dois"] } }, { estruturada: { t: "one" } }, { estruturada: { t: "two" } }]);

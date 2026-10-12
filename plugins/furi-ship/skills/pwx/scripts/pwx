@@ -3,6 +3,8 @@
 // Uso: pwx [papel] <comando playwright-cli...>   ex.: pwx goto https://x.com · pwx snapshot · pwx click e12 · pwx close-tab · pwx gc
 // Cada sessão do Claude (ou projeto, fora dele) ganha a PRÓPRIA aba, fechada quando o Claude termina; os logins são os do perfil do papel, compartilhados por todos.
 // Duas janelas na mesma sessão: PWX_SESSION=<nome> pwx …   Papel padrão do projeto: .pwx.json { "defaultRole": "admin" }
+// Janela que passa de uma sessão do Claude para a próxima (um run de orquestrador): PWX_SESSION=<run> PWX_OWNER_PID=<pid do orquestrador>;
+// fecha com PWX_SESSION=<run> pwx close-tab (todos os papéis) ou quando o orquestrador morre.
 const fs = require('fs'), path = require('path'), os = require('os');
 const { spawn, spawnSync, execSync } = require('child_process');
 
@@ -24,7 +26,9 @@ function projectName() {
 let role = process.env.PWX_ROLE || projectDefaultRole() || cfg.defaultRole;
 if (cfg.roles[args[0]]) role = args.shift();
 // cada sessão do Claude ganha a própria aba: duas sessões no mesmo projeto não dividem (nem fecham) a janela uma da outra
-const OWNER = process.env.CLAUDE_CODE_SESSION_ID || null, OWNER_PID = Number(process.env.CLAUDE_PID) || null;
+// PWX_OWNER_PID: a janela vive enquanto esse processo viver, não a sessão do Claude que a abriu (o run de um orquestrador que encadeia sessões);
+// PWX_OWNER_PID=0: de processo nenhum — só fecha com close-tab (ou pelo gc, 12 h parada)
+const OWNER = process.env.CLAUDE_CODE_SESSION_ID || null, OWNER_PID = Number(process.env.PWX_OWNER_PID || process.env.CLAUDE_PID) || null;
 const base = process.env.PWX_SESSION || (OWNER ? `${projectName()}-${OWNER.slice(0, 6)}` : projectName());
 const session = `${role}-${base.replace(/[^\w.-]/g, '_')}`;
 
@@ -114,8 +118,9 @@ async function attach() {
     process.exit(0);
   }
   if (args[0] === 'gc') { await gc(); process.exit(0); }
-  if (args[0] === 'close-tab') {   // todas as janelas desta sessão do Claude, de todos os papéis e worktrees; fora do Claude ou com PWX_SESSION, só a desta sessão
-    await closeWhere((rec, file) => file === REG || (OWNER && !process.env.PWX_SESSION && rec.owner === OWNER));
+  if (args[0] === 'close-tab') {   // todas as janelas desta sessão do Claude, de todos os papéis e worktrees; com PWX_SESSION, as dessa sessão em todos os papéis
+    const named = process.env.PWX_SESSION ? `-${process.env.PWX_SESSION.replace(/[^\w.-]/g, '_')}` : null;
+    await closeWhere((rec, file) => file === REG || (named ? String(rec.session).endsWith(named) : OWNER && rec.owner === OWNER));
     console.log(`janelas da sessão ${OWNER && !process.env.PWX_SESSION ? OWNER : session} fechadas`);
     process.exit(0);
   }
@@ -123,6 +128,22 @@ async function attach() {
     browserUp();
     const s = spawnSync(process.execPath, args.slice(1), { stdio: 'inherit', env: { ...env, PWX_CDP: CDP } });
     process.exit(s.status ?? 1);
+  }
+  // mark: destaca um ponto da página para o print — quadrado vermelho com rótulo; `mark --hide` tira todas as marcas
+  if (args[0] === 'mark') {
+    if (args[1] === '--hide') args.splice(0, args.length, 'eval', `() => document.querySelectorAll('[data-pwx-mark]').forEach((m) => m.remove())`);
+    else if (!args[1]) { console.error('uso: pwx mark <ref|seletor> [texto]   ·   pwx mark --hide'); process.exit(2); }
+    else args.splice(0, args.length, 'eval', `(el) => {
+      const r = el.getBoundingClientRect(), f = 6;
+      const box = document.createElement('div'); box.setAttribute('data-pwx-mark', '');
+      Object.assign(box.style, { position: 'absolute', left: (r.left + scrollX - f) + 'px', top: (r.top + scrollY - f) + 'px',
+        width: (r.width + 2 * f) + 'px', height: (r.height + 2 * f) + 'px', border: '3px solid #e00', borderRadius: '4px',
+        boxSizing: 'border-box', pointerEvents: 'none', zIndex: '2147483647' });
+      const tag = document.createElement('span'); tag.textContent = ${JSON.stringify(args[2] || 'BUG')};
+      Object.assign(tag.style, { position: 'absolute', left: '-3px', bottom: '100%', background: '#e00', color: '#fff',
+        font: 'bold 13px/1.4 system-ui, sans-serif', padding: '1px 6px', borderRadius: '3px 3px 0 0', whiteSpace: 'nowrap' });
+      box.append(tag); document.documentElement.append(box);
+    }`, args[1]);
   }
   // roda direto (sem `list` antes: um processo a menos por comando); sessão inexistente ou Edge reiniciado → refaz e tenta de novo
   let r = cli(['-s=' + session, ...args]);

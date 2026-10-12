@@ -73,7 +73,7 @@ Dentro da sessão do runbook não há quem responda o AskUserQuestion (o `claude
 - **Um schema por run:** a união dos campos de todos os `faca`, nenhum obrigatório — o mesmo em todo passo, porque um schema diferente refaz o cache da conversa inteira (medido: US$ 0,26 num passo de uma linha). Quem cobra os campos de cada passo é o motor, e o pedido diz quais são. Um `faca` sem `exige` devolve `resposta` (texto). O primeiro pedido leva um preâmbulo: faça só o passo pedido, por completo.
 - **Juiz cego:** o bloco de sessão cega do `/brain` — diretório vazio, `--safe-mode`, `--tools ""`, sem persistência — com o schema `{nota, lacunas}`.
 - **Seus hooks ficam de fora** (`--settings '{"disableAllHooks":true}'`): sem notificação a cada passo e sem o `close-tab` do pwx fechando o navegador entre passos.
-- **Navegador:** `PWX_SESSION=runbook-<run>` — uma janela do pwx por run, fechada no fim (não nas paradas: o dev pode precisar dela).
+- **Navegador:** `PWX_SESSION=runbook-<run>` e `PWX_OWNER_PID=0` — uma janela do pwx por run, de nenhum processo: sobrevive ao `claude` de cada passo e às paradas (o dev pode precisar dela) e fecha só no fim ou no `parar`.
 - **Segundo plano:** o trabalho roda num processo próprio; `run`, `responder`, `pular` e `retomar` só acompanham os eventos. Fechar o terminal, ou o Monitor do chat expirar, não derruba o run.
 - **Estado** em `~/.runbook/runs/<run>/` (`RUNBOOK_HOME` muda a raiz): `estado.json`, `processo.yaml` (o retrato do processo no início — retomar usa este), `eventos.jsonl`, `chamadas/` (a resposta bruta de cada chamada, para auditoria), `arquivos/` (`{run.dir}`).
 
