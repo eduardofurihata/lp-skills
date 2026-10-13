@@ -40,6 +40,7 @@ async function up(r) {
     '--remote-debugging-address=127.0.0.1',
     '--no-first-run',
     '--no-default-browser-check',
+    '--no-startup-window',   // sem a janela inicial: ela não teria dono e ninguém a fecharia; cada sessão abre a sua
     // vários clientes trabalham ao mesmo tempo: aba em segundo plano não pode ficar lenta
     '--disable-background-timer-throttling',
     '--disable-renderer-backgrounding',
@@ -52,10 +53,25 @@ async function up(r) {
   console.error(`${r}: não respondeu em 15 s. Veja ${path.join(HOME, 'logs', `${r}.log`)}`); process.exit(1);
 }
 
-function down(r) {
+// pelo CDP (Browser.close) o perfil sai limpo — SIGTERM o marca como travado e a próxima abertura pede "Restaurar páginas?"
+async function closeViaCdp(r) {
+  try {
+    const { webSocketDebuggerUrl } = await (await fetch(`${endpoint(r)}/json/version`, { signal: AbortSignal.timeout(800) })).json();
+    const ws = new WebSocket(webSocketDebuggerUrl);
+    await new Promise((ok, fail) => { ws.onopen = ok; ws.onerror = fail; setTimeout(fail, 2000); });
+    ws.send(JSON.stringify({ id: 1, method: 'Browser.close' }));
+  } catch { return false; }
+  for (let i = 0; i < 40; i++) {
+    if (!pidOnPort(portOf(r))) return true;
+    await new Promise((s) => setTimeout(s, 250));
+  }
+  return false;
+}
+
+async function down(r) {
   const pid = pidOnPort(portOf(r));
   if (!pid) { console.log(`${r}: já estava fora do ar`); return; }
-  process.kill(Number(pid), 'SIGTERM');
+  if (!(await closeViaCdp(r))) process.kill(Number(pid), 'SIGTERM');
   console.log(`${r}: encerrado (pid ${pid}). Os logins continuam salvos no perfil.`);
 }
 

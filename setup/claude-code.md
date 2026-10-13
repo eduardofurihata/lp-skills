@@ -48,19 +48,54 @@ Repo público: aqui entram só intenções. Nunca token, caminho de credencial o
 
 ---
 
-## 2. O resto do setup (intenções já em uso)
+## 2. Navegador: pwx, uma janela por sessão
+
+**Intenção.** O Claude usa um navegador real, já logado, sem me atrapalhar: não aparece onde não pedi, não rouba o foco e não deixa janela nem navegador para trás.
+
+**Comportamento esperado.**
+- Um navegador de automação por **papel**, que é uma conta/login. Os logins ficam salvos no perfil do papel e valem para todas as sessões.
+- Cada sessão do Claude ganha **uma** janela por papel que usa, aberta em segundo plano. Nenhuma outra janela: nada de janela inicial vazia nem aba sem dono.
+- A janela da sessão fecha quando a sessão acaba: `/exit`, terminal ou janela do app fechados, ou crash.
+- O navegador do papel **fecha sozinho** quando fica sem janela de sessão e sem aba minha. O próximo uso o religa em segundos, ainda logado. Uma aba que eu abri nele o mantém ligado.
+- Um comando nunca age na janela de outra sessão. Se a janela da sessão sumiu, ela é reaberta antes do comando.
+- Toda sessão começa sabendo que o navegador da máquina é o `pwx` e recolhe janelas órfãs de sessões que morreram.
+- Papel novo só para um login que nenhum papel tem.
+
+**Pronto quando.**
+- Sem nenhuma sessão usando o pwx, não há navegador de automação de pé.
+- Uma sessão que abre uma página mostra exatamente 1 janela, em segundo plano.
+- Fechar o terminal da sessão fecha a janela dela e, se era a última daquele papel, o navegador também. Ao reabrir, não aparece "Restaurar páginas?".
+- Duas sessões no mesmo papel: fechar uma não mexe na janela da outra.
+- Fechar a janela da sessão à mão e mandar outro comando reabre a janela da própria sessão.
+- Uma aba aberta por mim no navegador de automação o mantém ligado depois que as sessões acabam.
+
+**Armadilhas já pagas.**
+- *Chromium.* Ele abre uma janela inicial vazia ao ligar, que não pertence a nenhuma sessão. Ligue sem janela inicial.
+- *playwright-cli.* Num navegador sem nenhuma aba, conectar já cria uma. Essa aba é a janela da sessão; abrir outra dobra as janelas.
+- *playwright-cli.* Quando a aba da sessão some, a "aba atual" do daemon passa para outra aba qualquer, inclusive a de outra sessão. Confira a janela registrada antes de cada comando.
+- *macOS.* O app continua vivo sem nenhuma janela. Encerrar o navegador ocioso é trabalho do pwx.
+- *Encerrar.* Matar o processo marca o perfil como travado, e a próxima abertura pede "Restaurar páginas?". Encerre pelo protocolo do navegador (CDP `Browser.close`).
+- *Foco.* Aba nova criada sem `background` traz o navegador para a frente. Aba de fundo numa janela alheia fica `hidden` e trava clique e animação. Por isso cada sessão tem uma janela própria em segundo plano.
+- *Corrida.* Um navegador que acabou de ligar ainda não tem janela registrada. O recolhimento de ociosos tem de esperar a conexão em andamento terminar.
+- *Hooks.* O hook de fim de sessão roda sem nvm no PATH, então o node vai com caminho absoluto. Ele também tem tempo limite, então vários navegadores ociosos fecham em paralelo.
+- *Instalação.* A cópia instalada não se atualiza com o plugin. Depois de atualizar a skill, rode o instalador dela de novo.
+
+---
+
+## 3. O resto do setup (intenções já em uso)
 
 - **Plugins:** marketplace `lp-skills` (furi-build, furi-ship, furi-toolbox) e os da Eduzz/AFL instalados, todos com **auto-update ligado**.
 - **Permissões:** modo bypass por padrão, sem o diálogo de confirmação.
 - **Effort:** definido por modelo, não forçado globalmente.
-- **pwx:** toda sessão já começa sabendo que o navegador da máquina é o `pwx`; ao encerrar a sessão, a aba do navegador daquela sessão fecha sozinha.
 - **Atalhos:** `claude` / `claudew` no terminal e os perfis "Claude" / "Claude Ultra" nas IDEs. Ver `/claude-shortcuts`.
 
 ---
 
-## 3. Onde está implementado hoje (referência, não instrução)
+## 4. Onde está implementado hoje (referência, não instrução)
 
 | Máquina | Notificações |
 |---|---|
 | Mac | `~/.claude/hooks/notify.sh` + terminal-notifier + extensão `furi.focus-terminal` na IDE (URI com os PIDs da sessão); no Orca (`com.stablyai.orca`), `orca terminal switch --terminal $ORCA_TERMINAL_HANDLE`; hooks `Stop`, `PreToolUse` (AskUserQuestion\|ExitPlanMode), `Notification` (permissão) |
 | Nobara (antigo) | `~/.claude/hooks/claude-notify.sh` + notify-send; hooks `Stop`, `PreToolUse` (AskUserQuestion, ExitPlanMode) |
+
+**Navegador (pwx).** Skill `furi-ship:pwx`: `scripts/install.sh` instala `pwx`/`browser` em `~/.local/bin` e os hooks `SessionStart` (`pwx gc`) e `SessionEnd` (`pwx close-tab`); Edge com `--no-startup-window`, um perfil e uma porta CDP por papel (`~/.browser-automation/config.json`).
