@@ -115,6 +115,7 @@ test("juiz com ferramentas: recebe os nomes renderizados, e a lista de um passo 
   assert.equal(await rodar(p, a), "fim");
   const [juiz] = a.chamadas.filter((c) => c.tipo === "julgar");
   assert.deepEqual(juiz.ferramentas, ["mcp__j__get", "mcp__j__comments", "mcp__x__get"]);
+  assert.deepEqual(juiz.pastas, [path.join(projeto, "arq")]);
 });
 
 test("o esforço da sessão vale para o faca e para o juiz", async () => {

@@ -39,7 +39,7 @@ passos:
 | Passo | O que faz | Campos |
 |---|---|---|
 | `faca` | pedido à conversa de trabalho; a resposta tem de trazer cada campo de `exige`, senão nova tentativa dizendo o que faltou; esgotou → para e chama o dev | `exige` (`texto` · `numero` · `booleano` · `lista` · `objeto`), `tentativas` (2), `para_cada`, `permissao`, `ferramentas`, `limite` (30m) |
-| `juiz` | sessão nova, cega, devolve `{nota, lacunas}`; abaixo de `ate` volta ao `volta_para` com as lacunas e refaz dali; passou de `max` → para e chama o dev. Com `ferramentas`, confere na fonte: continua sem ver a conversa, mas usa só as ferramentas listadas (ex.: ler o card no Jira em vez de confiar na cópia) | `ate` (90), `max` (3), `volta_para` (o `faca` anterior), `ferramentas`, `limite` (10m) |
+| `juiz` | sessão nova, cega, devolve `{nota, lacunas}`; abaixo de `ate` volta ao `volta_para` com as lacunas e refaz dali; passou de `max` → para e chama o dev. Com `ferramentas`, confere na fonte: continua sem ver a conversa, mas usa só as ferramentas listadas (ex.: ler o card no Jira em vez de confiar na cópia); as embutidas entre elas (ex.: `Read`) alcançam só a pasta de evidências do run (`{run.dir}`), para o juiz abrir os prints que o registro cita | `ate` (90), `max` (3), `volta_para` (o `faca` anterior), `ferramentas`, `limite` (10m) |
 | `comando` | roda no projeto, sem IA; código ≠ `espera` → volta ao `volta_para` com a saída, ou para e chama o dev | `espera` (0), `volta_para`, `max` (3), `limite` (10m) |
 | `parada` | mostra a mensagem e espera o dev; a resposta vira `{<id>.resposta}` e entra no próximo `faca` | — |
 

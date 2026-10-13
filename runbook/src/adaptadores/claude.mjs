@@ -5,12 +5,13 @@
 // julgar: o juiz cego, o mesmo bloco da sessão cega do /brain — diretório vazio, --safe-mode (sem
 //   CLAUDE.md, skills, plugins, hooks, MCP), sem ferramenta nenhuma, entrada por stdin. Com `ferramentas`,
 //   o juiz confere na fonte: continua sem a conversa, num diretório vazio e sem as ferramentas embutidas,
-//   mas sem --safe-mode (que desliga o MCP) e com só as ferramentas pedidas liberadas (dontAsk).
+//   mas sem --safe-mode (que desliga o MCP) e com só as ferramentas pedidas liberadas (dontAsk). As embutidas
+//   pedidas (ex.: Read) ficam ligadas e só alcançam as `pastas` dadas (a de evidências do run, por --add-dir).
 //
 // Interface de um adaptador (a mesma para codex, gemini, agy depois):
 //   trabalhar({ sessao, iniciar, preambulo, prompt, esquema, permissao, ferramentas, modelo, esforco, cwd, env, limiteMs })
 //     → { ok, texto, estruturada, sessaoCriada, custoTotal, erro, registro }
-//   julgar({ entrada, ferramentas, minimo, modelo, esforco, env, limiteMs }) → { ok, veredito: { nota, lacunas }, custo, erro, registro }
+//   julgar({ entrada, ferramentas, pastas, minimo, modelo, esforco, env, limiteMs }) → { ok, veredito: { nota, lacunas }, custo, erro, registro }
 import { spawn } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -40,6 +41,31 @@ const ESQUEMA_DO_JUIZ = {
   properties: { nota: { type: "number" }, lacunas: { type: "array", items: { type: "string" } } },
   required: ["nota", "lacunas"],
 };
+
+// os argumentos do juiz: cego (--safe-mode, nenhuma ferramenta) ou, com `ferramentas`, na fonte — sem a conversa,
+// só as ferramentas pedidas (dontAsk), as embutidas entre elas ligadas em --tools e confinadas às `pastas`
+export function argumentosDoJuiz(op) {
+  const naFonte = op.ferramentas?.length > 0;
+  const embutidas = (op.ferramentas ?? []).filter((f) => !f.startsWith("mcp__"));
+  return [
+    "-p",
+    "--output-format",
+    "json",
+    ...(naFonte
+      ? ["--settings", SEM_HOOKS, "--permission-mode", "dontAsk", "--permission-prompts", "none", "--allowedTools", op.ferramentas.join(",")]
+      : ["--safe-mode"]),
+    ...(naFonte ? (op.pastas ?? []).flatMap((p) => ["--add-dir", p]) : []),
+    "--no-session-persistence",
+    "--system-prompt",
+    naFonte ? SISTEMA_DO_JUIZ_NA_FONTE : SISTEMA_DO_JUIZ,
+    "--json-schema",
+    JSON.stringify(ESQUEMA_DO_JUIZ),
+    ...(op.modelo ? ["--model", op.modelo] : []),
+    ...(op.esforco ? ["--effort", op.esforco] : []), // o mesmo do processo: o juiz não herda o settings.json no --safe-mode
+    "--tools", // variádica: vem por último, como no /brain
+    naFonte ? embutidas.join(",") : "",
+  ];
+}
 
 function semClaudeCode(env) {
   const e = { ...(env ?? process.env) };
@@ -155,24 +181,7 @@ export function adaptadorClaude({ bin = process.env.RUNBOOK_CLAUDE_BIN || "claud
 
     async julgar(op) {
       const vazio = fs.mkdtempSync(path.join(os.tmpdir(), "runbook-juiz-"));
-      const naFonte = op.ferramentas?.length > 0;
-      const args = [
-        "-p",
-        "--output-format",
-        "json",
-        ...(naFonte
-          ? ["--settings", SEM_HOOKS, "--permission-mode", "dontAsk", "--permission-prompts", "none", "--allowedTools", op.ferramentas.join(",")]
-          : ["--safe-mode"]),
-        "--no-session-persistence",
-        "--system-prompt",
-        naFonte ? SISTEMA_DO_JUIZ_NA_FONTE : SISTEMA_DO_JUIZ,
-        "--json-schema",
-        JSON.stringify(ESQUEMA_DO_JUIZ),
-        ...(op.modelo ? ["--model", op.modelo] : []),
-        ...(op.esforco ? ["--effort", op.esforco] : []), // o mesmo do processo: o juiz não herda o settings.json no --safe-mode
-        "--tools", // variádica: vem por último, como no /brain
-        "",
-      ];
+      const args = argumentosDoJuiz(op);
       const bruto = await rodar(bin, args, { entrada: op.entrada, cwd: vazio, env: op.env, limiteMs: op.limiteMs });
       fs.rmSync(vazio, { recursive: true, force: true });
       const r = interpretar(bruto, null);

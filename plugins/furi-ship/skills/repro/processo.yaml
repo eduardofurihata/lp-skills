@@ -23,6 +23,7 @@ passos:
   - id: setup
     faca: |
       Leia o § Repro de `.claude/ship/setup.md` (e do `setup.local.md`, se existir; o do time vence) — só ele: o board, o status para onde o card vai quando o repro começa, onde reproduzir (local | homolog | prod), a conta base, se pode criar contas de teste e em qual ambiente, o acesso de leitura aos dados reais (skill, CLI ou MCP · ambiente · o que lê).
+      A conta base é uma conta de TESTE de `.secrets/test-accounts.md` (papel e ambiente), nunca a conta pessoal do dev nem uma conta de org real. Sem conta de teste que sirva → `pergunta`, e não a pessoal.
       Falta algum → devolva `pergunta` pedindo só o que falta; com a resposta, grave no § Repro — só identificadores e caminhos, nunca senha ou token — e responda.
     exige: { board: texto, status: texto, ambiente: texto, conta_base: texto, criar_contas: texto, acesso_leitura: texto }
 
@@ -66,20 +67,23 @@ passos:
   - id: reproduzir
     para_cada: entender.defeitos
     faca: |
-      Reproduza no front, como o usuário, pelo pwx, este defeito: {item}
+      Reproduza como o usuário este defeito: {item}
+      Pelo front (pwx) quando o trigger tem tela; quando não tem (tool do MCP, API, job), pelo mesmo cliente que o usuário do relato usa, com o antes e o depois que ele vê no front.
       Cenário exato, e DISPARE o trigger: o bug tem de acontecer na sua frente. Uma evidência por passo, inclusive o antes e o depois do trigger (prints em {run.dir}). Não reproduziu → outro caminho, até reproduzir — "não consegui" não existe.
       Em prod, o trigger roda só no cenário de teste; fora dele, em nome de usuário real, ou com efeito que sai do sistema → `pergunta` antes de disparar.
     exige: { ambiente: texto, conta_papel: texto, dados: texto, passos: lista, trigger: texto, aconteceu: texto, evidencias: lista }
     limite: 60m
 
   - id: julgar-reproducao
+    ferramentas: ["Read"]
     juiz: |
-      Critério: cada defeito foi reproduzido no front com o trigger disparado, e o que aconteceu é o bug que o entendimento descreve — quem, onde, o que faz, o que vê —, não outro; cenário, passos e evidência o mostram; o registro diz o ambiente, a conta (papel, nunca a senha), os dados e o trigger. Defeito sem reprodução, trigger não disparado, ou resultado que não bate com o entendimento, reprova.
+      Critério: cada defeito foi reproduzido como o usuário — pelo front ou, se o trigger não tem tela, pelo cliente que o usuário do relato usa — com o trigger disparado, e o que aconteceu é o bug que o entendimento descreve — quem, onde, o que faz, o que vê —, não outro; cenário, passos e evidência o mostram; o registro diz o ambiente, a conta (papel, nunca a senha), os dados e o trigger. Defeito sem reprodução, trigger não disparado, ou resultado que não bate com o entendimento, reprova.
       Relato (literal):
       {entender.relato_literal}
       Defeitos: {entender.defeitos}
       Entendimento: quem {entender.quem} · onde {entender.onde} · faz {entender.faz} · vê {entender.ve} · esperava {entender.esperava} · causa {entender.causa}
       Registro da reprodução, um por defeito: {reproduzir}
+      As evidências estão em {run.dir}: abra (Read) as que o registro cita, inclusive os prints, e julgue pelo que mostram; evidência citada que não abre é lacuna.
     ate: 90
     volta_para: reproduzir
     max: 4
@@ -127,11 +131,12 @@ passos:
     se: entender.tem_card
     faca: |
       No card {entender.card}: anexe as telas aprovadas ({telas.telas}) e publique o comentário com elas inline. A descrição, o título e os campos ficam intocados.
-      O MCP do Jira só aceita arquivo de dentro do projeto: copie as telas para uma pasta temporária do projeto e apague-a depois.
+      Anexe pelo MCP do Jira: ele só aceita arquivo de dentro da pasta da sessão que o chama (o diretório de trabalho do chat ou do agente, não necessariamente o projeto) — copie as telas para uma pasta temporária ali e apague-a depois.
+      Imagem em Markdown pelo MCP não fica embutida: publique o comentário em wiki markup do Jira (`*negrito*`, `{{{{código}}}}`, `*`/`#` listas, `!arquivo.png|width=900!` para o anexo), pela API v2 (`/rest/api/2/issue/<KEY>/comment`), com as credenciais que o MCP do Jira já usa, nunca impressas.
     exige: { url_comentario: texto, anexos: lista }
 
   - id: reler
     se: entender.tem_card
     faca: |
-      Releia o card {entender.card} publicado: o comentário renderiza, as telas aparecem, a descrição não mudou. Achou problema → corrija e releia antes de responder.
+      Releia o card {entender.card} publicado: o comentário renderiza, as telas aparecem, a descrição não mudou. Confira pelo HTML renderizado (API v3, `?expand=renderedBody`), não pelo retorno do MCP, que é uma reconversão: cada tela vira `<img>` do anexo, e não sobra `{{{{`, `\[` ou `!` literal. Achou problema → corrija e releia antes de responder.
     exige: { conferencia: texto }

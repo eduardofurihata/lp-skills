@@ -16,7 +16,7 @@ A descrição fica como está; o que esta conversa entendeu vira um comentário 
 - [ ] Ler `.claude/ship/setup.md § Card`: idioma do board; falta → pergunte e grave ali
 - [ ] Capturar o bug no browser automatizado, como o usuário, não o caminho: a tela em que ele aparece (e a do esperado, se ajuda), com o ponto do bug marcado (`pwx mark <ref> "BUG"`); nome que diz o que mostra
 - [ ] Escrever como PM/PO, para quem não viu a conversa
-- [ ] Anexar as telas ao card e comentar com elas inline; descrição, título e campos intocados
+- [ ] Anexar as telas ao card e comentar com elas inline, em wiki markup (`!arquivo.png!`): Markdown pelo MCP não embute imagem; descrição, título e campos intocados
 - [ ] Reler o card publicado: o comentário renderiza, as telas aparecem, a descrição não mudou
 - [ ] Retornar key, URL do comentário e anexos
 

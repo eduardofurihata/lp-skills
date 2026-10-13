@@ -27,7 +27,7 @@ Sem `runbook` (outra máquina ou cliente), ou com outras skills no argumento: si
 - Board: <projeto ou board do Jira> (sem Jira: nenhum)
 - Status: <coluna para onde o card vai quando o repro começa> (sem Jira: nenhum)
 - Ambiente: local | homolog | prod
-- Conta base: <papel> · `.secrets/test-accounts.md` (ou: nenhuma)
+- Conta base: <papel de teste> · `.secrets/test-accounts.md`, nunca a pessoal do dev (ou: nenhuma)
 - Criar contas de teste: sim, em <ambiente> | não
 - Acesso de leitura: <skill, CLI ou MCP — ex. `Skill(skill: "X")`> · <ambiente> · <o que lê> (ou: nenhum)
 ```

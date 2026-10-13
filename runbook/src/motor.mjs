@@ -228,6 +228,7 @@ async function julgar(ctx, passo, rot) {
   const r = await adaptador.julgar({
     entrada: material,
     ferramentas,
+    pastas: [ctx.dirArquivos], // a pasta de evidências do run ({run.dir}): o que as ferramentas embutidas do juiz alcançam
     minimo: passo.ate,
     modelo: processo.sessao.modelo,
     esforco: processo.sessao.esforco,
