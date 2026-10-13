@@ -20,4 +20,5 @@
 ## Prod
 - Processo de PR: não — o push na `main` é o release
 - Deploy: integração Git da Vercel (a LP) + o próprio GitHub (o marketplace); o CI de Actions só valida os manifestos, não deploya
+- Ao fim (depois da checagem no ar): update all dos plugins desta máquina — comando em `.claude/ship/deploy.md` § Pós-deploy; vale no próximo `claude` (ou `/reload-plugins`)
 - Status da etapa: —

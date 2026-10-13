@@ -48,6 +48,17 @@ Marketplace (a outra metade da produção — é o que `/plugin marketplace upda
 
 Credenciais de teste: **nenhuma** — a LP é pública e sem autenticação.
 
+## Pós-deploy: plugins desta máquina atualizados
+
+O marketplace é este repo: depois do push e da checagem no ar, puxe a versão nova para a máquina — update all, sem escolher plugin:
+
+```bash
+claude plugin marketplace update            # todos os marketplaces
+claude plugin list --json | jq -r '.[] | "\(.id) \(.scope)"' | sort -u |
+  while read -r id scope; do claude plugin update "$id" -s "$scope"; done
+```
+Vale na próxima sessão do `claude` (ou `/reload-plugins` na atual). Se o pwx mudou, rode também o `install.sh` da skill: a cópia em `~/.local/bin` não se atualiza com o plugin.
+
 ## Rollback
 
 ```bash
