@@ -68,7 +68,7 @@ const UP = (r) => path.join(SESSIONS, `.up-${r}-${process.pid}`);
 const touchUp = (r) => { fs.mkdirSync(SESSIONS, { recursive: true }); fs.writeFileSync(UP(r), ''); };
 const untouchUp = (r) => fs.rmSync(UP(r), { force: true });
 const upPid = (f) => Number(f.slice(f.lastIndexOf('-') + 1));
-const connecting = (r) => { try { return fs.readdirSync(SESSIONS).some((f) => f.startsWith(`.up-${r}-`) && alive(upPid(f))); } catch { return false; } };
+const connecting = (r, except) => { try { return fs.readdirSync(SESSIONS).some((f) => f.startsWith(`.up-${r}-`) && upPid(f) !== except && alive(upPid(f))); } catch { return false; } };
 function register(targetId) {
   fs.mkdirSync(SESSIONS, { recursive: true });
   fs.writeFileSync(REG, JSON.stringify({ targetId, role, session, owner: OWNER, pid: OWNER_PID }) + '\n');
@@ -86,13 +86,33 @@ async function quitIdle(roles) {
     await new Promise((ok) => spawn(process.execPath, [path.join(__dirname, 'browser'), 'down', r], { stdio: 'ignore', env }).on('close', ok));
   }));
 }
+// abas do papel com quem as abriu (openerId), que o /json/list não traz
+async function openers(r) {
+  try {
+    const { webSocketDebuggerUrl } = await (await fetch(`${cdpOf(r)}/json/version`, { signal: AbortSignal.timeout(2000) })).json();
+    const ws = new WebSocket(webSocketDebuggerUrl);
+    await new Promise((ok, fail) => { ws.onopen = ok; ws.onerror = fail; setTimeout(fail, 2000); });
+    const res = await new Promise((ok, fail) => { ws.onmessage = (e) => ok(JSON.parse(e.data)); ws.send(JSON.stringify({ id: 1, method: 'Target.getTargets' })); setTimeout(fail, 2000); });
+    ws.close();
+    return res.result.targetInfos.filter((t) => t.type === 'page');
+  } catch { return []; }
+}
+// a aba da sessão e tudo que ela abriu (link target=_blank, window.open), em cadeia: o popup é da sessão e fecha com ela
+const family = (pages, id) => {
+  const ids = [id];
+  for (let i = 0; i < ids.length; i++) for (const t of pages) if (t.openerId === ids[i] && !ids.includes(t.targetId)) ids.push(t.targetId);
+  return ids;
+};
 // fecha pela id da janela registrada, nunca pela "aba atual" do daemon (que muda para a aba de outro quando a nossa é fechada à mão)
 async function closeWhere(match) {
-  const touched = [];
+  const touched = [], pagesByRole = {};
   for (const x of records()) {
     if (!match(x.rec, x.file)) continue;
     const r = roleOf(x);
-    if (cfg.roles[r] && x.rec.targetId) await fetch(`${cdpOf(r)}/json/close/${x.rec.targetId}`, { signal: AbortSignal.timeout(2000) }).catch(() => {});
+    if (cfg.roles[r] && x.rec.targetId) {
+      const ids = family(pagesByRole[r] ??= await openers(r), x.rec.targetId);
+      await Promise.all(ids.map((id) => fetch(`${cdpOf(r)}/json/close/${id}`, { signal: AbortSignal.timeout(2000) }).catch(() => {})));
+    }
     cli(['-s=' + (x.rec.session || x.f.slice(0, -5)), 'detach']);
     fs.rmSync(x.file, { force: true });
     touched.push(r);
@@ -109,7 +129,7 @@ async function gc() {
     if (ids && rec.targetId && !ids.includes(rec.targetId) && ageOf(file) > 60e3) return true;
     return rec.pid ? !alive(rec.pid) : ageOf(file) > 12 * 3600e3;
   });
-  try { for (const f of fs.readdirSync(SESSIONS)) if ((/^\.watch-\d+$/.test(f) && !alive(Number(f.slice(7)))) || (/^\.up-/.test(f) && !alive(upPid(f)))) fs.rmSync(path.join(SESSIONS, f), { force: true }); } catch {}
+  try { for (const f of fs.readdirSync(SESSIONS)) if ((/^\.watch-\d+$/.test(f) && !alive(Number(f.slice(7)))) || (/^\.up-/.test(f) && !alive(upPid(f))) || (/^\.lock-/.test(f) && !alive(Number(read(path.join(SESSIONS, f))) || -1))) fs.rmSync(path.join(SESSIONS, f), { force: true }); } catch {}
   await quitIdle(Object.keys(open));
 }
 // vigia, um por processo do Claude: quando ele some (/exit, Ctrl+C, terminal fechado, crash), fecha todas as janelas que abriu
@@ -124,9 +144,17 @@ function watch(pid) {
 // a janela registrada desta sessão ainda existe (Edge fora do ar conta como não)
 const ours = async () => { const id = registered(); try { return !!id && (await targets()).some((t) => t.id === id); } catch { return false; } };
 
-async function attach() {
+// uma conexão por vez na sessão: comandos em paralelo no começo abriam uma aba cada, e só uma ficava registrada (as outras, em branco e sem dono)
+const LOCK = path.join(SESSIONS, `.lock-${session}`);
+async function attach(force) {
+  fs.mkdirSync(SESSIONS, { recursive: true });
+  for (;;) {
+    try { fs.writeFileSync(LOCK, String(process.pid), { flag: 'wx' }); break; }
+    catch { const p = Number(read(LOCK)); if (p && !alive(p)) fs.rmSync(LOCK, { force: true }); else await new Promise((s) => setTimeout(s, 200)); }
+  }
   touchUp(role);
-  try { await connect(); } finally { untouchUp(role); }
+  try { if (force || !(await ours())) { cli(['-s=' + session, 'detach']); await connect(); } }   // quem esperou a trava encontra a aba pronta
+  finally { untouchUp(role); fs.rmSync(LOCK, { force: true }); }
 }
 async function connect() {
   await gc();
@@ -169,8 +197,15 @@ async function connect() {
   if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, pelo preload, abre página sem roubar o foco
     touchUp(role);
     browserUp();
+    const before = new Set((await targets()).map((t) => t.id));
     const s = spawnSync(process.execPath, args.slice(1), { stdio: 'inherit', env: { ...env, PWX_CDP: CDP } });
+    // página que o script abriu e não fechou (erro no meio, esqueceu o close) fecha aqui: sem dono, seguraria o Edge para sempre como "aba do usuário"
+    if (!connecting(role, process.pid)) {   // outro pwx conectando no papel: a janela nova pode ser a dele, ainda sem registro
+      const mine = new Set(records().map((x) => x.rec.targetId));
+      for (const t of await targets().catch(() => [])) if (!before.has(t.id) && !mine.has(t.id)) await fetch(`${CDP}/json/close/${t.id}`).catch(() => {});
+    }
     untouchUp(role);
+    await quitIdle([role]);
     process.exit(s.status ?? 1);
   }
   // mark: destaca um ponto da página para o print — quadrado vermelho com rótulo; `mark --hide` tira todas as marcas
@@ -190,12 +225,16 @@ async function connect() {
     }`, args[1]);
   }
   // a janela da sessão sumiu (fechada à mão, Edge reiniciado, primeira vez) → refaz antes: senão o daemon roda na aba de outra sessão
-  if (args[0] !== '--help' && !(await ours())) { cli(['-s=' + session, 'detach']); await attach(); }
+  // aba nova seria de ninguém e ficaria aberta: a sessão tem uma aba, e tab-new <url> vira goto nela
+  if (args[0] === 'tab-new') {
+    if (!args[1]) { console.log('pwx: a sessão tem uma aba só; abra outra página com pwx goto <url>'); process.exit(0); }
+    args[0] = 'goto';
+  }
+  if (args[0] !== '--help' && !(await ours())) await attach();
   // erro de conexão no meio (daemon caiu) → refaz e tenta de novo
   let r = cli(['-s=' + session, ...args]);
   if (r.status !== 0 && /is not open|not connected|Browser has been closed|Target page, context or browser has been closed|disconnected|ECONNREFUSED/i.test(r.stdout + r.stderr)) {
-    cli(['-s=' + session, 'detach']);
-    await attach();
+    await attach(true);   // a aba pode estar de pé com o daemon caído: reconecta e volta para ela
     r = cli(['-s=' + session, ...args]);
   }
   process.stdout.write(r.stdout || ''); process.stderr.write(r.stderr || '');
