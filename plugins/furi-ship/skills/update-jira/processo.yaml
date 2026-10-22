@@ -1,0 +1,103 @@
+# processo.yaml — o /update-jira executado pelo runbook, um passo por vez, na mesma conversa do agente;
+# card a card: confere o estado real, comenta nele e move a coluna só com evidência; no fim, as pendências no chat.
+# Fonte única dos passos do /update-jira: com o runbook, o motor os executa; sem ele, são seguidos na ordem
+# (ver SKILL.md). Uso: runbook run <esta pasta>/processo.yaml --dir <projeto> --cards "<KEYs | meus>"
+nome: update-jira
+descricao: card a card, confere o estado real (GitHub, deploy, config, testes do ambiente), comenta e move a coluna só com evidência; no fim, as pendências de todos
+entrada: [cards]
+sessao:
+  cli: claude
+  permissao: livre
+  esforco: medium
+
+resultado: |
+  Pendências, por card:
+  {consolidado.pendencias}
+
+  Publicado, um por card: {consolidado.publicados}
+
+passos:
+
+  - id: setup
+    faca: |
+      Leia o § Card de `.claude/ship/setup.md` (e do `setup.local.md`, se existir; o do time vence) — só ele: o board, o dono, as colunas de andamento e de code review, e as de destino (homolog, concluído).
+      Falta algum → devolva `pergunta` pedindo só o que falta; com a resposta, grave no § Card e responda.
+    exige: { board: texto, dono: texto, colunas: lista, code_review: texto, homolog: texto, concluido: texto }
+
+  - id: cards
+    faca: |
+      Os cards pedidos: {entrada.cards}
+      KEYs → só esses. "meus" → os do dono {setup.dono} no board {setup.board}, nas colunas {setup.colunas}.
+      Devolva um por item: KEY — título — coluna atual.
+    exige: { cards: lista }
+
+  # ── o loop: cada card passa por todas as conferências e é publicado antes de o próximo começar.
+  #    Fora do card, só leitura: nunca deploye, configure, mude código nem rode teste com efeito colateral —
+  #    deploy é do /homolog e do /prod. Fato com link, nunca palpite. Cada pendência sai com o tipo
+  #    (código, infra, config no app, teste no ambiente), o ambiente, o quê e com quem.
+
+  - id: card
+    para_cada: cards.cards
+    passos:
+
+      - id: github
+        faca: |
+          O PR deste card: {item}
+          Fora do card, só leitura; fato com link, nunca palpite.
+          Ache o PR: dev info do Jira, links e comentários do card, a KEY no título ou na branch do PR (`gh search prs <KEY>`). Achou → ele dá o repo, a branch e os commits; confira-o: aberto, review, checks, conflito, mergeado e em qual base.
+          Leia também a conversa do PR, inteira: a descrição, os comentários, as reviews e as threads de review (resolvidas ou não), e o que for útil nela — mudança pedida e ainda não feita, thread sem resposta, pergunta ao autor, decisão tomada, aviso de config, migração, flag ou teste que só o ambiente prova (os passos seguintes usam). Mudança pedida não feita ou thread aberta → pendência de código, com quem.
+          Não achou PR → pr "nenhum"; o próximo passo procura o código.
+        exige: { key: texto, pr: texto, repo: texto, branch: texto, estado: texto, link: texto, conversa: texto, pendencias: lista }
+
+      - id: codigo
+        faca: |
+          O código deste card, quando ele não tem PR: {item} — PR: {github.pr}
+          Fora do card, só leitura; fato com link, nunca palpite. Tem PR → "não se aplica": o PR já disse o repo, a branch e os commits.
+          Sem PR → procure o código: a KEY no nome de uma branch no GitHub, e nos repos locais (branch, commits, mudança não commitada ou não enviada). Achou → o repo, a branch, os commits e onde ele está (só local, ou enviado sem PR), com a pendência "enviar a branch" ou "abrir o PR", com quem. Não achou → repo "nenhum" e a pendência "sem código ligado"; nos passos seguintes, este card é "não se aplica".
+        exige: { key: texto, repo: texto, branch: texto, fonte: texto, pendencias: lista }
+
+      - id: deploy
+        faca: |
+          O deploy deste card: {item}
+          Fora do card, só leitura; fato com link, nunca palpite. Sem código ligado → "não se aplica".
+          Pelo `.claude/ship/infra.md` do repo e pela skill de infra da conta, quando instalada (repo Eduzz/Labzz → aws-prod): está em homolog? em prod? qual commit está publicado. Sem mapa → pendência "/infra".
+        exige: { key: texto, homolog: texto, prod: texto, commit: texto, evidencia: texto, pendencias: lista }
+
+      - id: config-infra
+        faca: |
+          A config de infra deste card: {item}
+          Fora do card, só leitura; fato com link, nunca palpite. Sem código ligado → "não se aplica".
+          Env, secrets, migrations e flags que a mudança exige × o que existe em cada ambiente (homolog e prod).
+        exige: { key: texto, conferido: texto, pendencias: lista }
+
+      - id: config-app
+        faca: |
+          A config no app deste card: {item}
+          Fora do card, só leitura; fato com link, nunca palpite. Sem código ligado → "não se aplica".
+          O que precisa ser feito dentro do app em homolog e em prod para a entrega valer: acesso, permissão ou perfil a liberar, toggle ou parâmetro no admin, cadastro, integração configurada na tela, allowlist, webhook no console de terceiro. Fonte: card e comentários, descrição do PR e o diff (permissão ou role nova, chave de setting nova, seed que não roda em prod, tela admin nova). Confira só lendo (pwx no painel já logado, API, consulta de leitura), nunca configure; não deu para ver → pendência "config no app: o quê, com quem tem o acesso".
+        exige: { key: texto, conferido: texto, pendencias: lista }
+
+      - id: testes-ambiente
+        faca: |
+          Os testes que só o ambiente prova, deste card: {item}
+          Fora do card, só leitura; fato com link, nunca palpite. Sem código ligado → "não se aplica".
+          O que o teste local não cobre e precisa ser visto em homolog ou prod: integração real com terceiro, job ou cron no agendador, e-mail ou webhook de verdade, dado real, domínio e certificado, permissão com usuário real. Fonte: plano de teste do card, seção de testes do PR, comentários e o diff (integração ou job novo). Feito = evidência com link (comentário, log, painel, print); dá para ver só lendo → veja (pwx, log, painel); teste com efeito colateral (compra, envio, escrita) nunca roda aqui → pendência "teste em <ambiente>: o quê, quem roda".
+        exige: { key: texto, feitos: lista, pendencias: lista }
+
+      - id: publicar
+        faca: |
+          Publique este card: {item}
+          O que as conferências dele acharam — PR: {github} · código: {codigo} · deploy: {deploy} · infra: {config-infra} · app: {config-app} · testes do ambiente: {testes-ambiente}
+          1. O comentário, para quem não viu esta conversa: abre com `Status real — <data de hoje>` e segue: Onde está (PR, ambiente, commit) · Feito · Pendente (por tipo e por ambiente: o quê, com quem) · Próximo passo. Fato com link, nunca palpite. Em wiki markup do Jira, pela API v2 (`/rest/api/2/issue/<KEY>/comment`) — pelo MCP ele é reconvertido —, com as credenciais que o MCP do Jira já usa, nunca impressas.
+          2. A coluna, só com evidência, pela transição do MCP do Jira: PR aberto → {setup.code_review}; mergeado e publicado em homolog → {setup.homolog}; publicado em prod e nada pendente em prod → {setup.concluido}; na dúvida não move.
+          A descrição, o título e os outros campos ficam intocados.
+          Devolva: a URL do comentário; a coluna antes → depois, ou "fica" e por quê; e a linha de pendências do card: KEY — coluna — o que falta (por tipo e por ambiente: o quê, com quem), ou "nada pendente".
+        exige: { key: texto, url_comentario: texto, coluna: texto, pendencias: texto }
+
+  # ── fora do loop, uma vez
+
+  - id: consolidado
+    faca: |
+      Junte o que cada card deixou: {card}
+      Devolva as pendências de todos, em texto, um card por linha: KEY — coluna — o que falta (por tipo e por ambiente: o quê, com quem), ou "nada pendente"; e, um por card: KEY — URL do comentário — coluna antes → depois, ou "fica" e por quê.
+    exige: { pendencias: texto, publicados: lista }
