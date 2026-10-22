@@ -46,10 +46,13 @@ test("referências só a entradas declaradas e a passos anteriores", () => {
   assert.deepEqual(erros("nome: x\npassos:\n  - id: a\n    faca: 'mostre {{nome}} literal'\n"), []);
 });
 
-test("juiz e comando voltam só para um faca anterior", () => {
+test("juiz, comando e parada voltam só para um faca anterior", () => {
   umErro("nome: x\npassos:\n  - id: j\n    juiz: avalie\n", "precisa de um passo `faca` antes");
   umErro("nome: x\npassos:\n  - id: a\n    faca: x\n  - id: j\n    juiz: y\n  - id: k\n    juiz: z\n    volta_para: j\n", "volta_para tem de ser um passo `faca` anterior");
   umErro("nome: x\npassos:\n  - id: a\n    faca: x\n  - id: j\n    juiz: y\n    ate: 120\n", "`ate` é a nota mínima");
+  umErro("nome: x\npassos:\n  - id: p\n    parada: ok?\n    segue: ok\n    volta_para: b\n  - id: b\n    faca: x\n", "volta_para tem de ser um passo `faca` anterior");
+  umErro("nome: x\npassos:\n  - id: a\n    faca: x\n  - id: p\n    parada: ok?\n    segue: ok\n", "andam juntos");
+  assert.deepEqual(erros("nome: x\npassos:\n  - id: a\n    faca: x\n  - id: p\n    parada: ok?\n    segue: ok\n    volta_para: a\n"), []);
 });
 
 test("sessao.esforco só aceita os níveis do claude", () => {

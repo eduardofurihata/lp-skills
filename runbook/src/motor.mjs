@@ -22,6 +22,10 @@ const MAX_PERGUNTAS = 3;
 
 const indiceDe = (processo, id) => processo.passos.findIndex((p) => p.id === id);
 
+// "Tudo ok", "tudo ok" e "Tudo ok." são a mesma resposta
+const normalizar = (s) => String(s).trim().replace(/[\s.!]+$/u, "").toLowerCase();
+const mesmaResposta = (a, b) => normalizar(a) === normalizar(b);
+
 // `se:` — o passo só roda se o valor existe: texto não vazio, lista não vazia, true, número ≠ 0
 const existe = (v) =>
   typeof v === "string"
@@ -370,15 +374,19 @@ function perguntarAoDev(ctx, passo, rot, pergunta, opcoes) {
   return { parar: "parada" };
 }
 
-// A resposta do dev a uma parada, pergunta ou escalada. Parada: a fala vira a saída do passo e segue.
-// Pergunta: a fala volta para a conversa e o mesmo passo é refeito. Escalada: refaz o passo (o juiz e
-// o comando voltam ao volta_para) com a orientação dele.
+// A resposta do dev a uma parada, pergunta ou escalada. Parada: a fala vira a saída do passo e segue;
+// com `segue`, só essa resposta segue, e qualquer outra volta ao volta_para com a fala do dev — sem
+// `max`: quem reprova de novo é o próprio dev. Pergunta: a fala volta para a conversa e o mesmo passo
+// é refeito. Escalada: refaz o passo (o juiz e o comando voltam ao volta_para) com a orientação dele.
 // Pular só existe por ordem do dev, com o motivo dele, e aparece no relatório.
 export function aplicarResposta(estado, processo, texto, { pular = false } = {}) {
   const { passo: id, tipo } = estado.parada;
   const i = indiceDe(processo, id);
   const passo = processo.passos[i];
-  if (tipo === "parada") {
+  if (tipo === "parada" && !pular && passo.segue && !mesmaResposta(texto, passo.segue)) {
+    estado.retornos[passo.volta_para] = `O dev reprovou na parada «${id}»: ${texto}\nRefaça levando isso em conta.`;
+    recomecarEm(estado, processo, indiceDe(processo, passo.volta_para));
+  } else if (tipo === "parada") {
     estado.saidas[id] = pular ? { resposta: "", pulado: texto } : { resposta: texto };
     if (pular) estado.pulos[id] = texto;
     else estado.pendente = { passo: id, tipo, texto };

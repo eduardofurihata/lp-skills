@@ -23,7 +23,7 @@ const CAMPOS_POR_TIPO = {
   faca: ["exige", "tentativas", "para_cada", "permissao", "ferramentas", "limite"],
   juiz: ["ate", "max", "volta_para", "ferramentas", "limite"],
   comando: ["espera", "volta_para", "max", "limite"],
-  parada: [],
+  parada: ["segue", "volta_para"],
 };
 const LIMITE_PADRAO = { faca: "30m", juiz: "10m", comando: "10m" };
 
@@ -170,6 +170,14 @@ function normalizarPasso(p, i, ids, erros) {
     passo.max = p.max ?? 3;
     if (!inteiro(passo.max, 1)) erros.push(`${onde}: \`max\` é um inteiro ≥ 1`);
   }
+  if (tipo === "parada") {
+    passo.segue = p.segue ?? null;
+    passo.volta_para = p.volta_para ?? null;
+    if (passo.segue !== null && (typeof passo.segue !== "string" || !passo.segue.trim()))
+      erros.push(`${onde}: \`segue\` é a resposta do dev que aprova (um texto)`);
+    if ((passo.segue === null) !== (passo.volta_para === null))
+      erros.push(`${onde}: \`segue\` e \`volta_para\` andam juntos — a resposta que segue, e para onde volta qualquer outra`);
+  }
   if (tipo !== "parada") {
     passo.limiteMs = duracaoEmMs(p.limite ?? LIMITE_PADRAO[tipo]);
     if (passo.limiteMs === null) erros.push(`${onde}: \`limite\` é uma duração como 90s, 20m ou 1h`);
@@ -202,7 +210,7 @@ function validarLigacoes(processo, erros) {
       else if (campo && a.tipo === "faca" && a.exige && a.exige[campo] !== "lista")
         erros.push(`${onde}: para_cada aponta para ${p.para_cada}, que não é \`lista\` no exige de ${alvo}`);
     }
-    if (p.tipo === "juiz" || p.tipo === "comando") {
+    if (p.tipo === "juiz" || p.tipo === "comando" || p.tipo === "parada") {
       if (p.volta_para) {
         const alvo = anteriores.get(p.volta_para);
         if (!alvo || alvo.tipo !== "faca") erros.push(`${onde}: volta_para tem de ser um passo \`faca\` anterior`);

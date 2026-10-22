@@ -1,9 +1,9 @@
 # processo.yaml — o /repro executado pelo runbook, um passo por vez, na mesma conversa do agente;
-# com card, termina no /recard: a descrição real vira um comentário no card, com as telas.
+# com card, termina num comentário nele, com as telas: só o que a reprodução acrescenta ao card.
 # Fonte única dos passos do /repro: com o runbook, o motor os executa; sem ele, são seguidos na ordem
 # (ver SKILL.md). Uso: runbook run <esta pasta>/processo.yaml --dir <projeto> --relato "<KEY ou descrição>"
 nome: repro
-descricao: reproduz o relato no front como o usuário, julgado ≥ 90, e — com card — comenta nele a descrição real com as telas
+descricao: reproduz o relato no front como o usuário, julgado ≥ 90, e — com card — comenta nele, com as telas, só o que a reprodução acrescenta
 entrada: [relato]
 sessao:
   cli: claude
@@ -13,12 +13,11 @@ sessao:
 resultado: |
   Reprodução, um por defeito: {reproduzir}
   Esperado: {entender.esperava} · causa: {entender.causa}
-  Revisão: {telas.revisao} · dev na parada 1: {parada-1.resposta}
+  Revisão: {revisao.revisao} · dev na parada 1: {parada-1.resposta}
 
   Card: {entender.card} · comentário: {publicar.url_comentario}
 
 passos:
-  # ── o /repro ──────────────────────────────────────────────────────────────
 
   - id: setup
     faca: |
@@ -39,19 +38,8 @@ passos:
       É uma descrição → ela é o relato: sem Jira e sem criar card.
       Entenda o problema, ainda sem abrir o navegador: quem, onde, o que faz, o que vê, o que esperava, e a causa provável — no código e nos dados, se precisar.
       Ambiguidade que só o dev resolve → `pergunta`.
-      Devolva: tem_card; card (a KEY, ou "nenhum"); ferramentas_card — os nomes exatos das ferramentas de leitura que você usou para ler o card (vazio sem card); o relato literal — o card como está, tudo o que ele diz, sem resumir; a lista dos defeitos que o relato descreve, um por item; e o entendimento.
-    exige: { tem_card: booleano, card: texto, ferramentas_card: lista, relato_literal: texto, defeitos: lista, quem: texto, onde: texto, faz: texto, ve: texto, esperava: texto, causa: texto }
-
-  - id: julgar-entendimento
-    ferramentas: ["{entender.ferramentas_card}"]
-    juiz: |
-      Critério: o entendimento explica o relato inteiro — cada defeito, quem, onde, o que faz, o que vê e o que esperava — sem contradizê-lo nem acrescentar o que ele não diz; a causa é plausível pelo que está escrito.
-      O relato, como o dev mandou: {entrada.relato}
-      É a KEY de um card → leia-o você mesmo, inteiro, pelas ferramentas, e julgue contra ele. É uma descrição → ela é a fonte: julgue contra ela.
-      Defeitos: {entender.defeitos}
-      Entendimento: quem {entender.quem} · onde {entender.onde} · faz {entender.faz} · vê {entender.ve} · esperava {entender.esperava} · causa {entender.causa}
-    ate: 90
-    max: 4
+      Devolva: tem_card; card (a KEY, ou "nenhum"); o relato literal — o card como está, tudo o que ele diz, sem resumir; a lista dos defeitos que o relato descreve, um por item; e o entendimento.
+    exige: { tem_card: booleano, card: texto, relato_literal: texto, defeitos: lista, quem: texto, onde: texto, faz: texto, ve: texto, esperava: texto, causa: texto }
 
   - id: cenario
     faca: |
@@ -88,51 +76,37 @@ passos:
     volta_para: reproduzir
     max: 4
 
-  - id: telas
+  - id: revisao
     faca: |
-      Capture o bug, não o caminho: a tela em que ele aparece — e a do esperado, se ajuda a entender —, como o usuário, no navegador. Em cada uma, marque o ponto do bug com `pwx mark <ref> "BUG"` antes do `pwx screenshot` e tire a marca depois (`pwx mark --hide`). O ponto marcado tem de ser legível sem zoom: se some na tela inteira, capture o recorte em volta dele (`pwx screenshot <ref do container>`). Nome que diz o que mostra; prints em {run.dir}.
-      Monte `{run.dir}/revisao.html`, para o dev aprovar batendo o olho: para cada print, o número grande (`Imagem N`), o print com o ponto do bug marcado e, embaixo, em vermelho, o defeito e o que a imagem mostra. Imagens por caminho relativo, na mesma pasta; página simples, legível, sem dependência externa.
-    exige: { telas: lista, revisao: texto }
-
-  - id: mostrar
-    faca: |
-      Mostre ao dev as duas coisas, antes da parada:
-      1. A revisão: abra {telas.revisao} no navegador padrão do dev (`open` no macOS, `xdg-open` no Linux) — os prints com o bug marcado, numerados.
-      2. O bug ao vivo: no pwx, remonte o cenário — desfaça no front o que o trigger mudou, se precisar — e deixe o navegador um passo antes do trigger.
-      Escreva a mensagem para o dev: a revisão aberta e onde está; as imagens, uma por linha (`Imagem N — o que mostra`); e "👉 Para ver ao vivo, clique em: [elemento exato]".
-    exige: { revisao_aberta: texto, ao_vivo: texto, mensagem: texto }
+      Monte numa página só o que o dev aprova na parada: as telas do bug e, com card, o comentário que vai nele. Card: {entender.card}.
+      1. As telas. Capture o bug, não o caminho: a tela em que ele aparece — e a do esperado, se ajuda a entender —, como o usuário, no navegador. Em cada uma, marque o ponto do bug com `pwx mark <ref> "BUG"` antes do `pwx screenshot` e tire a marca depois (`pwx mark --hide`). O ponto marcado tem de ser legível sem zoom: se some na tela inteira, capture o recorte em volta dele (`pwx screenshot <ref do container>`). Nome que diz o que mostra; prints em {run.dir}.
+      2. O comentário — sem card, pule. Escreva, como PM/PO, no idioma do card, para quem lê o card e não viu esta conversa. Ele fica logo abaixo do card: diz só o que a reprodução acrescenta — nada que o card já diz se repete; para apontar algo dele, cite ("o passo 3 do card", "o critério (b)").
+      O card, como está:
+      {entender.relato_literal}
+      Abre com `Reproduzido — <data de hoje>` e o veredito numa linha: ambiente, conta (papel) e se bate com o card. Depois, só as seções que têm o que dizer, nesta ordem:
+      - O que o card não diz: cada diferença ou achado novo, com a evidência — o que acontece diferente, outra causa, outro caso com a mesma causa, o impacto medido, critério já atendido, pré-condição do conserto.
+      - Como reproduzir: os passos que de fato dispararam o bug (pré-condição → passos → resultado), quando os do card faltam, ninguém os executou ou não reproduzem como escritos.
+      - Critérios de aceite: só os novos ou os que mudam, numerados depois dos do card.
+      - Telas: cada uma embutida e, embaixo, o que mostra.
+      Bateu com o card → o comentário é o veredito e as telas. Diz o quê, por quê e como se confere, nunca como se faz.
+      Grave em `{run.dir}/comentario.txt`, já em wiki markup do Jira, como vai ser publicado — Markdown não embute imagem no Jira: `*negrito*`, `{{{{código}}}}`, `*`/`#` listas, `!arquivo.png|width=900!` para cada tela.
+      3. A página. Monte `{run.dir}/revisao.html`, para o dev aprovar tudo batendo o olho: com card, a prévia do comentário — o texto renderizado como o Jira vai mostrá-lo, com cada tela no lugar dela; sem card, só as telas. Em cada tela, o número grande (`Imagem N`), o print com o ponto do bug marcado e, embaixo, em vermelho, o defeito e o que a imagem mostra. Imagens por caminho relativo, na mesma pasta; página simples, legível, sem dependência externa. Abra-a no navegador padrão do dev (`open` no macOS, `xdg-open` no Linux) e escreva a mensagem da parada: onde a revisão está e as imagens, uma por linha (`Imagem N — o que mostra`).
+    exige: { telas: lista, revisao: texto, mensagem: texto }
 
   - id: parada-1
     parada: |
-      {mostrar.mensagem}
+      {revisao.mensagem}
 
-      Responda por imagem — "1 ok, 2 ok, 3 reprovada: <por quê>" —, "tudo ok" ou "tudo reprovado". Ok = a imagem mostra o bug.
-
-  - id: aprovar
-    juiz: |
-      Critério: o dev aprovou todas as imagens da revisão. Imagem reprovada, ou sem resposta clara, reprova; cada lacuna diz qual imagem e o motivo, nas palavras dele.
-      Imagens: {telas.telas}
-      Resposta do dev: {parada-1.resposta}
-    ate: 90
+      "Tudo ok" aprova: cada imagem mostra o bug e, com card, o comentário vai para ele como está na revisão. Qualquer outra resposta volta para a reprodução com o que você disser — diga qual imagem e por quê ("2 reprovada: …").
+    segue: Tudo ok
     volta_para: reproduzir
-    max: 3
-
-  # ── o /recard: com card e as telas aprovadas, a descrição real vira um comentário nele ─
-
-  - id: comentario
-    se: entender.tem_card
-    faca: |
-      Escreva, como PM/PO, no idioma do card que você leu, o comentário para quem não viu esta conversa.
-      Abre com `Descrição real — <data de hoje>` e segue: Contexto (quem, onde, impacto) · Problema real (o que o card diz × o que acontece, a causa) · Objetivo (o pronto observável) · Critérios de aceite · Referências visuais (as telas) · Como testar (pré-condição → passos → resultado).
-      Diz o quê, por quê e como se confere, nunca como se faz.
-    exige: { comentario: texto }
 
   - id: publicar
     se: entender.tem_card
     faca: |
-      No card {entender.card}: anexe as telas aprovadas ({telas.telas}) e publique o comentário com elas inline. A descrição, o título e os campos ficam intocados.
+      No card {entender.card}: anexe as telas ({revisao.telas}) e publique `{run.dir}/comentario.txt` como está — é o texto que o dev aprovou. A descrição, o título e os campos ficam intocados.
       Anexe pelo MCP do Jira: ele só aceita arquivo de dentro da pasta da sessão que o chama (o diretório de trabalho do chat ou do agente, não necessariamente o projeto) — copie as telas para uma pasta temporária ali e apague-a depois.
-      Imagem em Markdown pelo MCP não fica embutida: publique o comentário em wiki markup do Jira (`*negrito*`, `{{{{código}}}}`, `*`/`#` listas, `!arquivo.png|width=900!` para o anexo), pela API v2 (`/rest/api/2/issue/<KEY>/comment`), com as credenciais que o MCP do Jira já usa, nunca impressas.
+      Publique pela API v2 (`/rest/api/2/issue/<KEY>/comment`), que recebe o wiki markup — pelo MCP a imagem não fica embutida —, com as credenciais que o MCP do Jira já usa, nunca impressas.
     exige: { url_comentario: texto, anexos: lista }
 
   - id: reler
