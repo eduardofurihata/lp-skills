@@ -1,6 +1,6 @@
 {
   "name": "runbook",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Executa processos passo a passo: cada passo vai para a mesma conversa do agente e só avança quando a resposta traz o que o passo exige.",
   "type": "module",

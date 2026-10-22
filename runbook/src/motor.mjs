@@ -38,16 +38,17 @@ const existe = (v) =>
           ? v
           : Boolean(v) && typeof v === "object" && Object.keys(v).length > 0;
 
-const contexto = (ctx, item) => ({
+// `local`: dentro de um bloco, as saídas dos passos de dentro já feitos para o item corrente
+const contexto = (ctx, item, local) => ({
   entrada: ctx.estado.entrada,
-  passos: ctx.estado.saidas,
+  passos: local ? { ...ctx.estado.saidas, ...local } : ctx.estado.saidas,
   item,
   run: { dir: ctx.dirArquivos, id: ctx.estado.id },
 });
 
 // `ferramentas` aceita variáveis; a que vale uma lista se espalha: ["{ler.ferramentas}"] → um nome por item
-function ferramentasDe(ctx, passo, item) {
-  const c = contexto(ctx, item);
+function ferramentasDe(ctx, passo, item, local) {
+  const c = contexto(ctx, item, local);
   return passo.ferramentas
     .flatMap((f) => {
       const so = /^\{([^{}]+)\}$/.exec(f.trim());
@@ -102,6 +103,7 @@ export async function executar(ctx) {
 }
 
 function rodarPasso(ctx, passo, rot) {
+  if (passo.tipo === "bloco") return fazerBloco(ctx, passo, rot);
   if (passo.tipo === "faca") return passo.para_cada ? fazerParaCada(ctx, passo, rot) : fazer(ctx, passo, rot);
   if (passo.tipo === "juiz") return julgar(ctx, passo, rot);
   if (passo.tipo === "comando") return comandar(ctx, passo, rot);
@@ -128,7 +130,8 @@ function contarCustoDaSessao(estado, passoId, totalDaSessao) {
   contarCusto(estado, passoId, delta);
 }
 
-function montarPrompt(ctx, passo, item, faltou) {
+// `bloco`: { passo, local, k, n } quando o passo é um dos de dentro de um bloco, no item k de n
+function montarPrompt(ctx, passo, item, faltou, bloco) {
   const { estado, processo } = ctx;
   const partes = [];
   const p = estado.pendente;
@@ -142,15 +145,20 @@ function montarPrompt(ctx, passo, item, faltou) {
     );
   if (estado.retornos[passo.id]) partes.push(estado.retornos[passo.id]);
   if (faltou) partes.push(`Sua resposta anterior não trouxe: ${faltou.join(", ")}. Responda de novo, com todos os campos.`);
-  partes.push(`Passo ${indiceDe(processo, passo.id) + 1}/${processo.passos.length} — ${passo.id}:\n${renderizar(passo.texto, contexto(ctx, item))}`);
+  const nome = bloco
+    ? `Passo ${indiceDe(processo, bloco.passo.id) + 1}/${processo.passos.length} — ${bloco.passo.id}, item ${bloco.k + 1}/${bloco.n} — ${passo.id}`
+    : `Passo ${indiceDe(processo, passo.id) + 1}/${processo.passos.length} — ${passo.id}`;
+  partes.push(`${nome}:\n${renderizar(passo.texto, contexto(ctx, item, bloco?.local))}`);
   partes.push(
     `Campos da resposta: ${Object.entries(exigeDe(passo)).map(([c, t]) => `${c} (${t})`).join(", ")} — ou \`pergunta\`, se o passo depender do dev.`,
   );
   return partes.join("\n\n");
 }
 
-async function fazer(ctx, passo, rot, item, rotItem = "") {
+async function fazer(ctx, passo, rot, item, rotItem = "", bloco = null) {
   const { estado, processo, adaptador, emitir, salvar } = ctx;
+  // parada dentro de um bloco fica no bloco (é ele que o cursor aponta), com o passo de dentro em `sub`
+  const dono = bloco ? [bloco.passo, { sub: passo.id }] : [passo, {}];
   let faltou = null;
   let erro = null;
   for (let t = 1; t <= passo.tentativas; t++) {
@@ -160,7 +168,7 @@ async function fazer(ctx, passo, rot, item, rotItem = "") {
         { passo: passo.id, tentativa: t },
         `↺ ${rot}${rotItem} — tentativa ${t}/${passo.tentativas}: ${faltou ? `faltou ${faltou.join(", ")}` : erro}`,
       );
-    const prompt = montarPrompt(ctx, passo, item, faltou);
+    const prompt = montarPrompt(ctx, passo, item, faltou, bloco);
     const r = await adaptador.trabalhar({
       sessao: estado.sessao.id,
       iniciar: !estado.sessao.iniciada,
@@ -168,7 +176,7 @@ async function fazer(ctx, passo, rot, item, rotItem = "") {
       prompt,
       esquema: processo.esquema, // o mesmo em todo passo: o cache da conversa sobrevive
       permissao: passo.permissao ?? processo.sessao.permissao,
-      ferramentas: [...processo.sessao.ferramentas, ...ferramentasDe(ctx, passo, item)],
+      ferramentas: [...processo.sessao.ferramentas, ...ferramentasDe(ctx, passo, item, bloco?.local)],
       modelo: processo.sessao.modelo,
       esforco: processo.sessao.esforco,
       cwd: estado.cwd,
@@ -187,7 +195,7 @@ async function fazer(ctx, passo, rot, item, rotItem = "") {
     estado.pendente = null; // a fala do dev chegou à conversa
     delete estado.retornos[passo.id]; // e o retorno do juiz ou do comando também
     const pergunta = typeof r.estruturada?.pergunta === "string" ? r.estruturada.pergunta.trim() : "";
-    if (pergunta) return perguntarAoDev(ctx, passo, rot + rotItem, pergunta, r.estruturada.opcoes);
+    if (pergunta) return perguntarAoDev(ctx, passo, rot + rotItem, pergunta, r.estruturada.opcoes, bloco?.passo);
     let saida = r.estruturada;
     if (!passo.exige && typeof saida?.resposta !== "string" && r.texto?.trim()) saida = { resposta: r.texto };
     const faltas = faltasNaSaida(saida, exigeDe(passo));
@@ -197,12 +205,42 @@ async function fazer(ctx, passo, rot, item, rotItem = "") {
   }
   return escalar(
     ctx,
-    passo,
+    dono[0],
     rot + rotItem,
     faltou
       ? `a resposta não trouxe ${faltou.join(", ")} em ${passo.tentativas} tentativa(s)`
       : `o agente falhou ${passo.tentativas} vez(es) — ${erro}`,
+    dono[1],
   );
+}
+
+// Bloco: para cada item, os passos de dentro em ordem; o item fecha antes do próximo começar. O que cada
+// item produziu fica no estado (não só na memória da conversa); a saída do bloco é uma lista, um objeto
+// por item, com a saída de cada passo de dentro: [{ github: {…}, deploy: {…} }, …].
+async function fazerBloco(ctx, bloco, rot) {
+  const { estado, emitir, salvar } = ctx;
+  const lista = valorDe(bloco.para_cada, contexto(ctx));
+  if (!Array.isArray(lista)) return escalar(ctx, bloco, rot, `${bloco.para_cada} não é uma lista`);
+  if (!lista.length) return escalar(ctx, bloco, rot, `${bloco.para_cada} veio vazia — não há o que repetir; confirme`);
+  const p = (estado.parciais[bloco.id] ??= { feitos: [], atual: {} });
+  for (let k = p.feitos.length; k < lista.length; k++) {
+    const rotItem = ` · item ${k + 1}/${lista.length}`;
+    for (const sub of bloco.passos) {
+      if (sub.id in p.atual) continue; // feito antes de uma parada ou de uma retomada
+      const r = await fazer(ctx, sub, rot, lista[k], `${rotItem} · ${sub.id}`, { passo: bloco, local: p.atual, k, n: lista.length });
+      if (r.parar) return r;
+      p.atual[sub.id] = r.saida;
+      delete estado.perguntas?.[sub.id];
+      salvar(estado);
+      emitir("item", { passo: bloco.id, item: k + 1, de: lista.length, sub: sub.id }, `  ✓ ${rot}${rotItem} · ${sub.id}`);
+    }
+    p.feitos.push(p.atual);
+    p.atual = {};
+    salvar(estado);
+    emitir("item", { passo: bloco.id, item: k + 1, de: lista.length }, `  ✓ ${rot}${rotItem} fechado`);
+  }
+  delete estado.parciais[bloco.id];
+  return { saida: p.feitos, resumo: `${p.feitos.length} itens` };
 }
 
 async function fazerParaCada(ctx, passo, rot) {
@@ -352,15 +390,16 @@ function escalar(ctx, passo, rot, motivo, extra = {}) {
 
 // O agente devolveu uma pergunta em vez de chutar: o motor para, o dev responde, e o MESMO passo
 // (o mesmo item, num para_cada) é refeito na mesma conversa, com a resposta no pedido.
-function perguntarAoDev(ctx, passo, rot, pergunta, opcoes) {
+function perguntarAoDev(ctx, passo, rot, pergunta, opcoes, bloco = null) {
   const { estado, emitir } = ctx;
+  const [dono, sub] = bloco ? [bloco, { sub: passo.id }] : [passo, {}];
   estado.perguntas ??= {};
   const n = (estado.perguntas[passo.id] ?? 0) + 1;
   estado.perguntas[passo.id] = n;
   if (n > MAX_PERGUNTAS)
-    return escalar(ctx, passo, rot, `o agente perguntou ${MAX_PERGUNTAS} vezes neste passo sem concluir; a última foi «${pergunta}»`);
+    return escalar(ctx, dono, rot, `o agente perguntou ${MAX_PERGUNTAS} vezes neste passo sem concluir; a última foi «${pergunta}»`, sub);
   const escolhas = Array.isArray(opcoes) ? opcoes.map((o) => String(o).trim()).filter(Boolean).slice(0, 4) : [];
-  estado.parada = { passo: passo.id, tipo: "pergunta", mensagem: pergunta, opcoes: escolhas };
+  estado.parada = { passo: dono.id, ...sub, tipo: "pergunta", mensagem: pergunta, opcoes: escolhas };
   estado.status = "parada";
   emitir(
     "pergunta",
@@ -378,12 +417,21 @@ function perguntarAoDev(ctx, passo, rot, pergunta, opcoes) {
 // com `segue`, só essa resposta segue, e qualquer outra volta ao volta_para com a fala do dev — sem
 // `max`: quem reprova de novo é o próprio dev. Pergunta: a fala volta para a conversa e o mesmo passo
 // é refeito. Escalada: refaz o passo (o juiz e o comando voltam ao volta_para) com a orientação dele.
-// Pular só existe por ordem do dev, com o motivo dele, e aparece no relatório.
+// Pular só existe por ordem do dev, com o motivo dele, e aparece no relatório. Dentro de um bloco, a
+// resposta vale só para o passo de dentro, no item corrente: os itens fechados ficam, pular pula só ele.
 export function aplicarResposta(estado, processo, texto, { pular = false } = {}) {
-  const { passo: id, tipo } = estado.parada;
+  const { passo: id, tipo, sub } = estado.parada;
   const i = indiceDe(processo, id);
   const passo = processo.passos[i];
-  if (tipo === "parada" && !pular && passo.segue && !mesmaResposta(texto, passo.segue)) {
+  if (sub) {
+    const p = (estado.parciais[id] ??= { feitos: [], atual: {} });
+    if (tipo !== "pergunta") delete estado.perguntas?.[sub];
+    if (pular) {
+      p.atual[sub] = { pulado: texto };
+      estado.pulos[`${id} · item ${p.feitos.length + 1} · ${sub}`] = texto;
+    } else estado.pendente = { passo: sub, tipo, texto, pergunta: estado.parada.mensagem };
+    estado.cursor = i;
+  } else if (tipo === "parada" && !pular && passo.segue && !mesmaResposta(texto, passo.segue)) {
     estado.retornos[passo.volta_para] = `O dev reprovou na parada «${id}»: ${texto}\nRefaça levando isso em conta.`;
     recomecarEm(estado, processo, indiceDe(processo, passo.volta_para));
   } else if (tipo === "parada") {
@@ -422,7 +470,10 @@ export function relatorio(estado, processo, dirArquivos) {
     if (estado.pulos[p.id] !== undefined) return `⤼ ${p.id} (pulado pelo dev: ${estado.pulos[p.id]})`;
     if (s?.nao_se_aplica) return `⤼ ${p.id} (não se aplica)`;
     if (p.tipo === "juiz") return `✓ ${p.id} (nota ${s?.nota})`;
-    if (p.para_cada) return `✓ ${p.id} (${Array.isArray(s) ? s.length : 0} itens)`;
+    if (p.para_cada) {
+      const pulados = Object.keys(estado.pulos).filter((k) => k.startsWith(`${p.id} · `)).length;
+      return `✓ ${p.id} (${Array.isArray(s) ? s.length : 0} itens${pulados ? ` · ${pulados} passo(s) de dentro pulado(s)` : ""})`;
+    }
     return `✓ ${p.id}`;
   });
   // o que o processo declara mostrar no fim — é como o chat recebe o produto do run

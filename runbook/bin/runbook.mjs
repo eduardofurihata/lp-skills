@@ -319,7 +319,8 @@ const comandos = {
     const { processo, erros } = lerProcesso(arquivo);
     if (erros.length) throw new Uso(`✗ ${arquivo}\n${erros.map((e) => `  ✗ ${e}`).join("\n")}`, 1);
     const tipos = processo.passos.reduce((a, p) => ({ ...a, [p.tipo]: (a[p.tipo] ?? 0) + 1 }), {});
-    console.log(`✓ ${processo.nome}: ${processo.passos.length} passos (${Object.entries(tipos).map(([t, n]) => `${n} ${t}`).join(", ")})`);
+    const blocos = processo.passos.filter((p) => p.tipo === "bloco").map((p) => `${p.id}: ${p.passos.length} passos por item`);
+    console.log(`✓ ${processo.nome}: ${processo.passos.length} passos (${Object.entries(tipos).map(([t, n]) => `${n} ${t}`).join(", ")})${blocos.length ? ` · bloco ${blocos.join(", ")}` : ""}`);
     return 0;
   },
 
@@ -404,7 +405,7 @@ async function responder(args, pular) {
   const estado = lerEstado(id);
   if (estado.status !== "parada" || !estado.parada) throw new Uso(`o run ${id} não está numa parada (status: ${estado.status})`);
   const processo = processoDoRun(id);
-  const passo = estado.parada.passo;
+  const passo = estado.parada.sub ? `${estado.parada.passo} › ${estado.parada.sub}` : estado.parada.passo;
   aplicarResposta(estado, processo, texto, { pular });
   estado.status = "retomando";
   iniciarSegmento(estado, pular ? `↳ o dev pulou ${passo}: ${texto}` : `↳ resposta do dev em ${passo}: ${texto}`);

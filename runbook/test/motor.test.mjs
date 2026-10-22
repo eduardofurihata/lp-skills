@@ -395,3 +395,92 @@ passos:
   const fim = p.eventos.find((e) => e.tipo === "fim").linha;
   assert.match(fim, /^■ FIM .*\n {2}✓ a · ⤼ b \(não se aplica\)\n\nDescrição: o bug X\nLink:$/);
 });
+
+const BLOCO = `nome: t
+passos:
+  - id: lista
+    faca: liste
+    exige: { itens: lista }
+  - id: card
+    para_cada: lista.itens
+    passos:
+      - id: a
+        faca: "olhe {item}"
+        exige: { pr: texto }
+      - id: b
+        faca: "publique {item} com {a.pr}"
+        exige: { ok: texto }
+  - id: fim
+    faca: "junte {card}"
+`;
+
+test("bloco: cada item passa por todos os passos de dentro antes do próximo, e a saída é um objeto por item", async () => {
+  const p = preparar(BLOCO);
+  const a = adaptadorFalso([
+    { estruturada: { itens: ["X", "Y"] } },
+    { estruturada: { pr: "pr-X" } },
+    { estruturada: { ok: "X publicado" } },
+    { estruturada: { pr: "pr-Y" } },
+    { estruturada: { ok: "Y publicado" } },
+    { texto: "junto" },
+  ]);
+  assert.equal(await rodar(p, a), "fim");
+  const ps = prompts(a);
+  assert.match(ps[1], /Passo 2\/3 — card, item 1\/2 — a:\nolhe X/);
+  assert.match(ps[2], /item 1\/2 — b:\npublique X com pr-X/);
+  assert.match(ps[3], /item 2\/2 — a:\nolhe Y/);
+  assert.match(ps[4], /publique Y com pr-Y/);
+  assert.deepEqual(p.estado.saidas.card, [
+    { a: { pr: "pr-X" }, b: { ok: "X publicado" } },
+    { a: { pr: "pr-Y" }, b: { ok: "Y publicado" } },
+  ]);
+  assert.match(ps[5], /"pr": "pr-Y"/);
+  assert.deepEqual(p.estado.parciais, {});
+  assert.match(relatorio(p.estado, p.processo, "/tmp"), /✓ card \(2 itens\)/);
+});
+
+test("bloco: pergunta num passo de dentro refaz só ele, no mesmo item; os itens fechados ficam", async () => {
+  const p = preparar(BLOCO);
+  const a = adaptadorFalso([
+    { estruturada: { itens: ["X", "Y"] } },
+    { estruturada: { pr: "pr-X" } },
+    { estruturada: { ok: "X publicado" } },
+    { estruturada: { pr: "pr-Y" } },
+    { estruturada: { pergunta: "qual coluna?" } },
+    { estruturada: { ok: "Y publicado" } },
+    { texto: "junto" },
+  ]);
+  assert.equal(await rodar(p, a), "parada");
+  assert.equal(p.estado.parada.passo, "card");
+  assert.equal(p.estado.parada.sub, "b");
+  aplicarResposta(p.estado, p.processo, "a de review");
+  assert.equal(await rodar(p, a), "fim");
+  const ps = prompts(a);
+  assert.match(ps[5], /O dev respondeu à sua pergunta \(«qual coluna\?»\): a de review/);
+  assert.match(ps[5], /item 2\/2 — b:\npublique Y com pr-Y/);
+  assert.equal(ps.length, 7);
+  assert.deepEqual(p.estado.saidas.card[1], { a: { pr: "pr-Y" }, b: { ok: "Y publicado" } });
+});
+
+test("bloco: pular um passo de dentro pula só ele, naquele item, e o relatório conta", async () => {
+  const p = preparar(BLOCO);
+  const a = adaptadorFalso([
+    { estruturada: { itens: ["X", "Y"] } },
+    { estruturada: {} },
+    { estruturada: {} },
+    { estruturada: { pr: "pr-Y" } },
+    { estruturada: { ok: "Y publicado" } },
+    { texto: "junto" },
+  ]);
+  assert.equal(await rodar(p, a), "parada");
+  assert.equal(p.estado.parada.tipo, "escalada");
+  assert.equal(p.estado.parada.sub, "a");
+  aplicarResposta(p.estado, p.processo, "sem PR", { pular: true });
+  // o b do item 1 roda com o a pulado; depois o item 2 inteiro
+  const b = adaptadorFalso([{ estruturada: { ok: "X sem PR" } }, ...[{ estruturada: { pr: "pr-Y" } }, { estruturada: { ok: "Y publicado" } }, { texto: "junto" }]]);
+  assert.equal(await rodar(p, b), "fim");
+  assert.match(prompts(b)[0], /item 1\/2 — b:\npublique X com/);
+  assert.deepEqual(p.estado.saidas.card[0], { a: { pulado: "sem PR" }, b: { ok: "X sem PR" } });
+  assert.equal(p.estado.pulos["card · item 1 · a"], "sem PR");
+  assert.match(relatorio(p.estado, p.processo, "/tmp"), /✓ card \(2 itens · 1 passo\(s\) de dentro pulado\(s\)\)/);
+});

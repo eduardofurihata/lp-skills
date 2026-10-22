@@ -9,7 +9,7 @@ import YAML from "yaml";
 import { referencias } from "./modelo.mjs";
 
 export const TIPOS_EXIGE = { texto: "string", numero: "number", booleano: "boolean", lista: "array", objeto: "object" };
-const TIPOS_PASSO = ["faca", "juiz", "comando", "parada"];
+const TIPOS_PASSO = ["faca", "juiz", "comando", "parada", "passos"];
 const ID = /^[a-z0-9][a-z0-9_-]*$/i;
 const RESERVADOS = new Set(["entrada", "item", "run"]);
 // campos que o agente usa para perguntar ao dev: existem em todo run, nenhum `exige` pode usá-los
@@ -24,6 +24,7 @@ const CAMPOS_POR_TIPO = {
   juiz: ["ate", "max", "volta_para", "ferramentas", "limite"],
   comando: ["espera", "volta_para", "max", "limite"],
   parada: ["segue", "volta_para"],
+  passos: ["para_cada"],
 };
 const LIMITE_PADRAO = { faca: "30m", juiz: "10m", comando: "10m" };
 
@@ -111,8 +112,9 @@ function normalizar(d, erros) {
   return { nome: d.nome, descricao: d.descricao ?? "", entrada, sessao, resultado, passos };
 }
 
-function normalizarPasso(p, i, ids, erros) {
-  const onde = `passo ${i + 1}${typeof p?.id === "string" ? ` (${p.id})` : ""}`;
+// `dentro`: o id do bloco, quando o passo é um dos passos dele
+function normalizarPasso(p, i, ids, erros, dentro = null) {
+  const onde = `${dentro ? `${dentro} › ` : ""}passo ${i + 1}${typeof p?.id === "string" ? ` (${p.id})` : ""}`;
   if (!p || typeof p !== "object" || Array.isArray(p)) {
     erros.push(`${onde}: é um mapa com \`id\` e um de ${TIPOS_PASSO.join(", ")}`);
     return null;
@@ -125,12 +127,15 @@ function normalizarPasso(p, i, ids, erros) {
   else if (ids.has(p.id)) erros.push(`${onde}: id repetido`);
   else ids.add(p.id);
   if (!tipo) return null;
+  if (tipo === "passos") return normalizarBloco(p, i, ids, erros, onde, dentro);
   if (typeof p[tipo] !== "string" || !p[tipo].trim()) erros.push(`${onde}: o texto de \`${tipo}\` é uma string não vazia`);
   desconhecidos(p, ["id", tipo, "se", ...CAMPOS_POR_TIPO[tipo]], onde, erros);
+  if (dentro && tipo !== "faca") erros.push(`${onde}: dentro de um bloco, só passo \`faca\``);
+  if (dentro && (p.se !== undefined || p.para_cada !== undefined))
+    erros.push(`${onde}: dentro de um bloco, o passo não leva \`se\` nem \`para_cada\` — quem repete é o bloco`);
 
   const passo = { id: p.id, tipo, texto: p[tipo], indice: i, se: p.se ?? null };
-  if (passo.se !== null && (typeof passo.se !== "string" || !/^[\w-]+(\.[\w-]+)*$/.test(passo.se)))
-    erros.push(`${onde}: \`se\` é "passo.campo" (ou "entrada.x"): o passo só roda se esse valor existe`);
+  conferirSe(passo, onde, erros);
   if (tipo === "faca") {
     if (p.exige !== undefined) {
       if (!p.exige || typeof p.exige !== "object" || Array.isArray(p.exige) || !Object.keys(p.exige).length)
@@ -185,6 +190,27 @@ function normalizarPasso(p, i, ids, erros) {
   return passo;
 }
 
+function conferirSe(passo, onde, erros) {
+  if (passo.se !== null && (typeof passo.se !== "string" || !/^[\w-]+(\.[\w-]+)*$/.test(passo.se)))
+    erros.push(`${onde}: \`se\` é "passo.campo" (ou "entrada.x"): o passo só roda se esse valor existe`);
+}
+
+// Bloco: `passos` com `para_cada` — os passos de dentro rodam em ordem para um item, e só então vem o
+// próximo item. Cada item fecha antes do seguinte começar. Dentro dele, só `faca`, sem bloco aninhado.
+function normalizarBloco(p, i, ids, erros, onde, dentro) {
+  desconhecidos(p, ["id", "passos", "se", ...CAMPOS_POR_TIPO.passos], onde, erros);
+  if (dentro) erros.push(`${onde}: bloco dentro de bloco não existe`);
+  const passo = { id: p.id, tipo: "bloco", texto: "", indice: i, se: p.se ?? null, para_cada: p.para_cada ?? null };
+  conferirSe(passo, onde, erros);
+  if (typeof passo.para_cada !== "string" || !/^[\w-]+(\.[\w-]+)?$/.test(passo.para_cada))
+    erros.push(`${onde}: o bloco precisa de \`para_cada\`: "passo.campo" (uma lista de um passo anterior)`);
+  if (!Array.isArray(p.passos) || !p.passos.length) {
+    erros.push(`${onde}: \`passos\` é uma lista com pelo menos um passo`);
+    passo.passos = [];
+  } else passo.passos = p.passos.map((s, j) => normalizarPasso(s, j, ids, erros, p.id));
+  return passo;
+}
+
 // o que o passo `faca` tem de devolver: o `exige` dele, ou só a `resposta` em texto
 export const exigeDe = (passo) => passo.exige ?? { resposta: "texto" };
 
@@ -226,6 +252,19 @@ function validarLigacoes(processo, erros) {
       for (const ref of referencias(f))
         conferirReferencia(ref, `ferramentas: ${f}`, { processo, anteriores, onde, erros, item: Boolean(p.para_cada), run: false });
     if (p.se) conferirReferencia(p.se, `se: ${p.se}`, { processo, anteriores, onde, erros, item: false, run: false });
+    if (p.tipo === "bloco") {
+      // dentro: {item}, os passos de fora já feitos e os de dentro anteriores, com campo (valem para o item)
+      const locais = new Map(anteriores);
+      for (const s of p.passos) {
+        if (!s) continue;
+        const ondeS = `${p.id} › ${s.id}`;
+        for (const ref of referencias(s.texto)) conferirReferencia(ref, `{${ref}}`, { processo, anteriores: locais, onde: ondeS, erros, item: true });
+        for (const f of Array.isArray(s.ferramentas) ? s.ferramentas : [])
+          for (const ref of referencias(f))
+            conferirReferencia(ref, `ferramentas: ${f}`, { processo, anteriores: locais, onde: ondeS, erros, item: true, run: false });
+        locais.set(s.id, s);
+      }
+    }
     anteriores.set(p.id, p);
   }
   // o resultado é lido no fim: vale qualquer passo do processo
@@ -257,7 +296,7 @@ function conferirReferencia(ref, rotulo, { processo, anteriores, onde, erros, it
 // cada passo é o motor, com faltasNaSaida, e o pedido diz quais são.
 export function esquemaDoRun(passos) {
   const tipos = new Map();
-  for (const p of passos)
+  for (const p of passos.flatMap((p) => (p?.tipo === "bloco" ? p.passos : [p])))
     if (p?.tipo === "faca")
       for (const [campo, tipo] of Object.entries(exigeDe(p))) tipos.set(campo, (tipos.get(campo) ?? new Set()).add(TIPOS_EXIGE[tipo]));
   const properties = {};

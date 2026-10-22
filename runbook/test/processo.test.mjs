@@ -149,3 +149,42 @@ test("resultado: referências a qualquer passo do processo, conferidas antes de 
   umErro("nome: x\nresultado: '{item}'\npassos:\n  - id: a\n    faca: x\n", "{item} só existe");
   assert.deepEqual(erros("nome: x\nresultado: '{a.resposta} em {run.dir}'\npassos:\n  - id: a\n    faca: x\n"), []);
 });
+
+const BLOCO = `nome: x
+passos:
+  - id: lista
+    faca: liste
+    exige: { itens: lista }
+  - id: card
+    para_cada: lista.itens
+    passos:
+      - id: a
+        faca: "olhe {item}"
+        exige: { pr: texto }
+      - id: b
+        faca: "use {a.pr} e {lista.itens}"
+        exige: { pendencias: lista }
+  - id: fim
+    faca: "junte {card}"
+    exige: { texto: texto }
+`;
+
+test("bloco: passos de dentro veem {item}, os de fora e os de dentro anteriores, com campo", () => {
+  const { processo, erros: e } = interpretarProcesso(BLOCO);
+  assert.deepEqual(e, []);
+  const card = processo.passos.find((p) => p.id === "card");
+  assert.equal(card.tipo, "bloco");
+  assert.deepEqual(card.passos.map((s) => s.id), ["a", "b"]);
+  // o schema do run tem os campos de dentro do bloco
+  assert.deepEqual(Object.keys(processo.esquema.properties), ["itens", "pr", "pendencias", "texto", "pergunta", "opcoes"]);
+});
+
+test("bloco: só faca dentro, sem se nem para_cada, com para_cada no bloco e ids únicos", () => {
+  umErro(BLOCO.replace("    para_cada: lista.itens\n", ""), "o bloco precisa de `para_cada`");
+  umErro(BLOCO.replace("      - id: b\n        faca:", "      - id: b\n        juiz:").replace("        exige: { pendencias: lista }\n", ""), "dentro de um bloco, só passo `faca`");
+  umErro(BLOCO.replace("        exige: { pr: texto }\n", "        exige: { pr: texto }\n        se: lista.itens\n"), "não leva `se` nem `para_cada`");
+  umErro(BLOCO.replace("      - id: b\n", "      - id: lista\n"), "id repetido");
+  umErro(BLOCO.replace("junte {card}", "junte {a.pr}"), '"a" não é um passo anterior');
+  umErro(BLOCO.replace("olhe {item}", "olhe {b.pendencias}"), '"b" não é um passo anterior');
+  umErro(BLOCO.replace("junte {card}", "junte {card.a}"), "repete por item e produz uma lista");
+});
