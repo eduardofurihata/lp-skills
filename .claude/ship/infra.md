@@ -4,7 +4,7 @@
 > Processo de deploy (ambientes, como checar, como setar, rollback): `.claude/ship/deploy.md`.
 > Convenções do time: `.claude/ship/setup.md`.
 >
-> Mapeado em 2026-09-11. Fontes: `.vercel/project.json`, `.github/workflows/ci.yml`, `app/`, `lib/`, `components/` (grep de `process.env`), ausência de `.secrets/`, `.env*`, `.mcp.json`, `prisma/`. Confirmado por `vercel whoami` + `vercel project ls` e `gh repo view`.
+> Mapeado em 2026-09-11. Fontes: `.vercel/project.json`, `.github/workflows/ci.yml`, `app/`, `lib/`, `components/` (grep de `process.env`), ausência de `.env*`, `.mcp.json`, `prisma/`. Confirmado por `vercel whoami` + `vercel project ls` e `gh repo view`. Atualizado em 2026-10-22: acesso à Vercel pela API REST, token em `.secrets/tokens.env`.
 
 ## Provedores e contas
 | Provedor | Conta / projeto (identificador) | Região | Para quê | Confirmado por |
@@ -27,17 +27,18 @@
 ## Onde vive cada segredo
 | Segredo (nome da variável) | Onde mora localmente | Onde mora no ambiente | Como se obtém / renova |
 |---|---|---|---|
-| **nenhum** | — | — | — |
+| `VERCEL_TOKEN` | `.secrets/tokens.env` (fora do git), com `VERCEL_ORG_ID` e `VERCEL_PROJECT_ID` | — (só a máquina do dev; o deploy não usa) | escopo **all projects**, sem expiração — o mesmo do `lp-previsao-tempo` e do `mayanastro`, time `eduardo-furihatas-projects`; renova em vercel.com/account/settings/tokens |
 
-Não há `.secrets/`, `.env*`, `.mcp.json`, nem `process.env` no app; o workflow de CI não referencia `${{ secrets.* }}`. O deploy é a integração Git da Vercel — a autenticação é da conta Vercel ligada ao GitHub, não um token no repositório. Se um dia houver variável: comando para setar no `.claude/ship/deploy.md`; a linha dela entra aqui (nome + onde vive + como se obtém — nunca o valor).
+O acesso à Vercel é pela **API REST** com esse token — a CLI não está instalada; os comandos ficam no `.claude/ship/deploy.md`. O app não tem `.env*`, `.mcp.json` nem `process.env`, e o workflow de CI não referencia `${{ secrets.* }}`. O deploy é a integração Git da Vercel — a autenticação dele é da conta Vercel ligada ao GitHub, não o token. Variável nova: comando para setar no `deploy.md`; a linha dela entra aqui (nome + onde vive + como se obtém — nunca o valor).
 
 ## Dumps e exports em `.secrets/` (não são credencial)
 | Caminho | O que é | De quando | Pode apagar? |
 |---|---|---|---|
-| — | não há `.secrets/` neste projeto | — | — |
+| — | o `.secrets/` só tem o `tokens.env` | — | — |
 
 ## Se vazar — ordem de revogação
-Nada a revogar no escopo do repositório. O acesso que existe é o da conta Vercel (`eduardofurihata`) e do GitHub — credenciais da **máquina**, não do projeto: `vercel logout` / `gh auth logout` e re-login nas contas.
+1. `VERCEL_TOKEN`: revogue em vercel.com/account/settings/tokens e crie outro de escopo all projects; troque-o também no `.secrets/` do `lp-previsao-tempo` e do `mayanastro`, que usam o mesmo.
+2. GitHub: `gh auth logout` e re-login — credencial da **máquina**, não do projeto.
 
 ## Identificadores em uso (não são segredo)
 ```

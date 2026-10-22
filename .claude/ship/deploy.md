@@ -19,13 +19,19 @@ Preview: a Vercel cria um deploy de preview por branch/PR — não usado hoje, j
 
 ## Como checar
 
+O acesso à Vercel é pela **API REST**, com o token de `.secrets/tokens.env` (o `infra.md` diz qual e como renovar) — a CLI não está instalada. Nunca imprima o token.
+
 ```bash
-vercel ls lp-skills                          # deploys recentes, com estado (Ready / Building / Error)
-vercel inspect <deployment-url>              # detalhe de um deploy
-vercel logs <deployment-url>                 # log de build/runtime
-curl -s -o /dev/null -w "%{http_code}" https://lp-skills.vercel.app   # o ar responde?
+set -a; . .secrets/tokens.env; set +a
+V="https://api.vercel.com"; A="Authorization: Bearer $VERCEL_TOKEN"; T="teamId=$VERCEL_ORG_ID"
+# deploys recentes: commit, estado (READY / BUILDING / ERROR / CANCELED), alvo e URL
+curl -s -H "$A" "$V/v6/deployments?projectId=$VERCEL_PROJECT_ID&$T&limit=5" |
+  jq -r '.deployments[] | "\(.meta.githubCommitSha[0:7]) \(.state) \(.target) \(.uid) \(.url)"'
+curl -s -H "$A" "$V/v13/deployments/<uid ou url>?$T"                    # detalhe de um deploy
+curl -s -H "$A" "$V/v3/deployments/<uid ou url>/events?$T&limit=-1" | jq -r '.[].text // empty'   # log de build
+curl -s -o /dev/null -w "%{http_code}" https://lp-skills.vercel.app     # o ar responde?
 ```
-Vercel CLI presente na máquina: `50.32.1`. **Não existe `gh run`** para este projeto — o deploy não passa por GitHub Actions.
+Sem o token, o estado do deploy também aparece no status do commit no GitHub: `gh api repos/eduardofurihata/lp-skills/commits/<sha>/status -q '.statuses[] | "\(.context) \(.state)"'`. **Não existe `gh run`** para este projeto — o deploy não passa por GitHub Actions.
 
 ## Configuração
 
@@ -61,10 +67,11 @@ Vale na próxima sessão do `claude` (ou `/reload-plugins` na atual). Se o pwx m
 
 ## Rollback
 
+Pela API, com as variáveis do "Como checar"; o `<uid>` sai da lista de deploys:
+
 ```bash
-vercel rollback                              # volta ao deploy anterior (promove o último Ready)
-vercel ls lp-skills                          # para escolher um alvo específico
-vercel promote <deployment-url>              # promove um deploy específico a produção
+curl -s -X POST -H "$A" "$V/v1/projects/$VERCEL_PROJECT_ID/rollback/<uid>?$T"   # volta a produção para um deploy anterior
+curl -s -X POST -H "$A" "$V/v10/projects/$VERCEL_PROJECT_ID/promote/<uid>?$T"   # promove um deploy específico a produção
 ```
 Rollback é **oferecido, nunca automático** — mesmo aqui, onde não há banco: o ar é a página que os usuários usam para instalar as skills.
 
@@ -74,4 +81,4 @@ Rollback é **oferecido, nunca automático** — mesmo aqui, onde não há banco
 
 ## Versão no ar
 
-O projeto não expõe endpoint de versão. A prova de que o commit subiu é: deploy `Ready` cujo commit corresponde ao `HEAD` de `main` (`vercel ls` mostra o SHA) **+** o smoke da `/`.
+O projeto não expõe endpoint de versão. A prova de que o commit subiu é: deploy `Ready` cujo commit corresponde ao `HEAD` de `main` (a lista de deploys da API mostra o SHA) **+** o smoke da `/`.

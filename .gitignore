@@ -67,3 +67,6 @@ __pycache__/
 /.claude/ship/*.local.md
 /.claude/plans/
 /.claude/worktrees/
+
+# credenciais locais (token da Vercel para a API) — nunca versionadas
+/.secrets/
