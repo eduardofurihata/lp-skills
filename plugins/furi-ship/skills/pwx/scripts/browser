@@ -32,8 +32,8 @@ async function up(r) {
   const profile = path.join(HOME, 'profiles', r);
   fs.mkdirSync(profile, { recursive: true });
   fs.mkdirSync(path.join(HOME, 'logs'), { recursive: true });
-  const log = fs.openSync(path.join(HOME, 'logs', `${r}.log`), 'a');
-  spawn(cfg.browserBinary, [
+  const logFile = path.join(HOME, 'logs', `${r}.log`);
+  const flags = [
     `--user-data-dir=${profile}`,
     ...(cfg.profileDirectory?.[r] ? [`--profile-directory=${cfg.profileDirectory[r]}`] : []),   // o CDP controla só o perfil com que o Edge abre
     `--remote-debugging-port=${portOf(r)}`,
@@ -45,7 +45,16 @@ async function up(r) {
     '--disable-background-timer-throttling',
     '--disable-renderer-backgrounding',
     '--disable-backgrounding-occluded-windows',
-  ], { detached: true, stdio: ['ignore', log, log] }).unref();
+  ];
+  // macOS: abrir o binário do app o ATIVA e o traz para a frente (o --no-startup-window evita a janela, não a
+  // ativação). `open -g` sobe sem trazer para a frente; `-n`, outra instância ao lado do Edge do usuário.
+  const app = process.platform === 'darwin' ? cfg.browserBinary.match(/^(.*?\.app)\//)?.[1] : null;
+  if (app) {
+    spawn('open', ['-g', '-n', '-a', app, '--stdout', logFile, '--stderr', logFile, '--args', ...flags], { detached: true, stdio: 'ignore' }).unref();
+  } else {
+    const log = fs.openSync(logFile, 'a');
+    spawn(cfg.browserBinary, flags, { detached: true, stdio: ['ignore', log, log] }).unref();
+  }
   for (let i = 0; i < 60; i++) {
     if (await alive(r)) { console.log(`${r}: de pé em ${endpoint(r)} (perfil ${profile})`); return; }
     await new Promise((s) => setTimeout(s, 250));
