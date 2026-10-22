@@ -1,7 +1,7 @@
 ---
 name: ticrd
 description: 'Use when the user invokes /ticrd with an ADR (bare /ticrd = the ADR the conversation is already about) — T·I·C·R·D (Todo, Implementation, Code review, Run test, Done) as a sequence of gated steps, from an ADR to one local commit with every TC PASSED and the docs living in place.'
-argument-hint: "<docs/adr/NNNN-slug.md>"
+argument-hint: "<docs/adr/<unixtime>-slug.md>"
 disable-model-invocation: true
 requires: [solve]
 ---

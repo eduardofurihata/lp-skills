@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 # /brain
 
-Entra um pedido mal escrito; sai **um parecer** — o problema real, uma recomendação, o que a derrubaria, a confiança. 🚫 Não escreve código, não commita; só `docs/decisions/NNNN-<slug>.md`.
+Entra um pedido mal escrito; sai **um parecer** — o problema real, uma recomendação, o que a derrubaria, a confiança. 🚫 Não escreve código, não commita; só `docs/decisions/<unixtime>-<slug>.md` (unixtime em segundos da criação, `date +%s`: identificador único e ordenado).
 
 **O pedido está errado até prova em contrário** — é a primeira solução de alguém incomodado: sintoma, não especificação. Entra **verbatim**, sai **reformulado** e compete como `opção-pedido`. O recorte é revisável até a Fase 6, **por evidência, nunca por conveniência**.
 
