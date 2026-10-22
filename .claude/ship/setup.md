@@ -3,13 +3,13 @@
 > Uma seção por skill do ship; cada uma grava a sua. Mapa da infra: `.claude/ship/infra.md`.
 > Sem Jira: rastreamento local, nenhuma etapa move card.
 
-## Work
+## Local
 - Branch: `main` direto
 - Commit: Conventional Commits (`feat/fix/refactor/docs/chore(<escopo>): …`, escopo = pacote ou área), sem key de card
 - DoD: `pnpm check` verde (README.md § Workflow do autor)
 - Status da etapa: —
 
-## Pull-request
+## GH
 - Destino: sem PR — só push na `main`
 - Status da etapa: —
 

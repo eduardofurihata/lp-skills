@@ -372,7 +372,7 @@ const VOCABULARIO_DO_IRMAO = {
     /\btracks?\b|\bartefatos?\b|\bledger\b|\besteiras?\b|\bfuri-build\b|(?<![\w/-])\/(?:method|adr|ticrd|solve|principles|front|proto)\b/gi,
   // e o simétrico: termos do furi-ship, proibidos numa skill do furi-build
   "furi-build":
-    /\bfuri-ship\b|(?<![\w/-])\/(?:work|pull-request|homolog|prod|card|repro|infra)\b/gi,
+    /\bfuri-ship\b|(?<![\w/-])\/(?:local|gh|homolog|prod|card|repro|infra)\b/gi,
 };
 
 for (const [pkg, proibido] of Object.entries(VOCABULARIO_DO_IRMAO)) {

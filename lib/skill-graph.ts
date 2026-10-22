@@ -51,8 +51,8 @@ export interface GraphEdge {
   /**
    * Existe a recíproca (`homolog → prod` e `prod → homolog`). As duas direções
    * ficam como arestas separadas, cada uma com o SEU tipo — colapsar num traço
-   * de seta dupla perderia que, por exemplo, `pull-request → prod` é fronteira
-   * enquanto `prod → pull-request` é dependência. O par é só deslocado para os
+   * de seta dupla perderia que, por exemplo, `gh → prod` é fronteira
+   * enquanto `prod → gh` é dependência. O par é só deslocado para os
    * traços não caírem um sobre o outro; ver `edgeOffset`.
    */
   mutual: boolean;

@@ -1,7 +1,7 @@
 ---
 name: homolog
-description: 'Use ONLY when the user explicitly invokes /homolog (bare /homolog = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:homolog` via the Skill tool. NEVER activate on your own initiative. — homolog live with what shipped: /pull-request guaranteed → PR approved (reviewed and fixed if you are not the author) and merged → environment configured from the infra map → checked live → Jira card → return. Never touches production.'
-requires: [work, pull-request, infra]
+description: 'Use ONLY when the user explicitly invokes /homolog (bare /homolog = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:homolog` via the Skill tool. NEVER activate on your own initiative. — homolog live with what shipped: /gh guaranteed → PR approved (reviewed and fixed if you are not the author) and merged → environment configured from the infra map → checked live → Jira card → return. Never touches production.'
+requires: [local, gh, infra]
 handoff: prod
 argument-hint: "[PR | KEY-N | descrição] [/skill…] | (vazio = tudo pronto)"
 ---
@@ -13,7 +13,7 @@ Aprova e põe no ar; produção é o `/prod`. Com outras skills no argumento: en
 - [ ] Ler `.claude/ship/setup.md § Homolog`: tem homolog? tem processo de PR? deploy (vazio = GitHub Actions self-hosted)? status da etapa; falta → pergunte e grave ali
 - [ ] Parar se não tem homolog: nada a fazer — diga e retorne
 - [ ] Ler `.claude/ship/infra.md`, o ambiente: branch que publica, URL, workflow e runner, como configurar, checar, rollback; falta → `Skill(skill: "infra")`
-- [ ] Garantir o `/pull-request` completo: sem PR ou push → `Skill(skill: "pull-request")`
+- [ ] Garantir o `/gh` completo: sem PR ou push → `Skill(skill: "gh")`
 - [ ] Aprovar a PR, se há processo de PR: PR sua → só mergear; PR de outro → revisar (o card faz sentido e o código o atende? bugs, edge cases, padrões, segurança, regressão), corrigir as pendências na branch da PR e commitar, aprovar, mergear
 - [ ] Configurar o ambiente pelo mapa do infra: migrations (depois do código), env, secrets, flags, seeds
 - [ ] Checar no ar o que subimos: responde, commit no ar, rotas críticas sem erro
