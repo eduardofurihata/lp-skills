@@ -1,13 +1,13 @@
 ---
 name: repro
-description: 'Use ONLY when the user explicitly invokes /repro (bare /repro = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:repro` via the Skill tool. NEVER activate on your own initiative. — reproduces the report on the front as the user, judged ≥ 90; the dev approves, before any code, the bug screens image by image and, with a card, the comment for it (only what the reproduction adds); then it posts that comment with the screenshots.'
+description: 'Use ONLY when the user explicitly invokes /repro (bare /repro = the objective is whatever the conversation is already about), or when another skill invokes `furi-ship:repro` via the Skill tool. NEVER activate on your own initiative. — reproduces the report on the front as the user, judged ≥ 90; the dev approves, before any code, the bug screens image by image and, with a card, the comment for it (the full real card); then it posts that comment with the screenshots.'
 requires: [infra, pwx]
 argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = card ativo)"
 ---
 
 # /repro — reproduzir, julgar, mostrar
 
-Reproduz o bug no front como o usuário, antes de codar; numa parada só (parada 1), o dev aprova as telas do bug, imagem por imagem, e, com card, o comentário para ele: só o que a reprodução acrescenta ao card. Não coda. Com card, termina publicando esse comentário, com as telas. Sem card: o mesmo processo, sem Jira e sem criar card.
+Reproduz o bug no front como o usuário, antes de codar; numa parada só (parada 1), o dev aprova as telas do bug, imagem por imagem, e, com card, o comentário para ele: o card real, completo, reescrito com o que a reprodução mostrou. Não coda. Com card, termina publicando esse comentário, com as telas. Sem card: o mesmo processo, sem Jira e sem criar card.
 
 **Os passos moram em `processo.yaml`, nesta pasta — fonte única.** Com o `runbook` instalado (`runbook --version` responde), o motor conduz e o run é feito **aqui, à vista do dev**, como no `/runbook`:
 

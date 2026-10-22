@@ -8,7 +8,7 @@ boundary: [homolog, prod]
 
 # /update-jira — o estado real de cada card meu, no card
 
-O board diz o que alguém lembrou de mover; o GitHub e os ambientes dizem o que aconteceu — cada card passa a dizer o mesmo que eles. Fora do card, só leitura: deploy é do /homolog e do /prod, descrição é do /recard. Sem Jira → recuse. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; quem o criou apaga ao fim.
+O board diz o que alguém lembrou de mover; o GitHub e os ambientes dizem o que aconteceu — cada card passa a dizer o mesmo que eles. Fora do card, só leitura: deploy é do /homolog e do /prod, a descrição real é do /repro. Sem Jira → recuse. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/setup.md § Card`: board, dono, colunas de andamento e de code review, e as de destino (homolog, concluído); falta → pergunte e grave ali
 - [ ] Listar os cards do dono nessas colunas; KEY no argumento → só esses

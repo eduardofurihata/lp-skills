@@ -1,9 +1,9 @@
 # processo.yaml — o /repro executado pelo runbook, um passo por vez, na mesma conversa do agente;
-# com card, termina num comentário nele, com as telas: só o que a reprodução acrescenta ao card.
+# com card, termina num comentário nele com as telas: o card real, completo, reescrito com o que a reprodução mostrou.
 # Fonte única dos passos do /repro: com o runbook, o motor os executa; sem ele, são seguidos na ordem
 # (ver SKILL.md). Uso: runbook run <esta pasta>/processo.yaml --dir <projeto> --relato "<KEY ou descrição>"
 nome: repro
-descricao: reproduz o relato no front como o usuário, julgado ≥ 90, e — com card — comenta nele, com as telas, só o que a reprodução acrescenta
+descricao: reproduz o relato no front como o usuário, julgado ≥ 90, e — com card — comenta nele a descrição real, completa, com as telas
 entrada: [relato]
 sessao:
   cli: claude
@@ -80,15 +80,10 @@ passos:
     faca: |
       Monte numa página só o que o dev aprova na parada: as telas do bug e, com card, o comentário que vai nele. Card: {entender.card}.
       1. As telas. Capture o bug, não o caminho: a tela em que ele aparece — e a do esperado, se ajuda a entender —, como o usuário, no navegador. Em cada uma, marque o ponto do bug com `pwx mark <ref> "BUG"` antes do `pwx screenshot` e tire a marca depois (`pwx mark --hide`). O ponto marcado tem de ser legível sem zoom: se some na tela inteira, capture o recorte em volta dele (`pwx screenshot <ref do container>`). Nome que diz o que mostra; prints em {run.dir}.
-      2. O comentário — sem card, pule. Escreva, como PM/PO, no idioma do card, para quem lê o card e não viu esta conversa. Ele fica logo abaixo do card: diz só o que a reprodução acrescenta — nada que o card já diz se repete; para apontar algo dele, cite ("o passo 3 do card", "o critério (b)").
+      2. O comentário — sem card, pule. É o card real, completo: o card inteiro reescrito como PM/PO, no idioma dele, com o que a reprodução mostrou, para quem não viu esta conversa. O que o card já diz certo entra também; o que ele diz errado ou não diz entra corrigido.
       O card, como está:
       {entender.relato_literal}
-      Abre com `Reproduzido — <data de hoje>` e o veredito numa linha: ambiente, conta (papel) e se bate com o card. Depois, só as seções que têm o que dizer, nesta ordem:
-      - O que o card não diz: cada diferença ou achado novo, com a evidência — o que acontece diferente, outra causa, outro caso com a mesma causa, o impacto medido, critério já atendido, pré-condição do conserto.
-      - Como reproduzir: os passos que de fato dispararam o bug (pré-condição → passos → resultado), quando os do card faltam, ninguém os executou ou não reproduzem como escritos.
-      - Critérios de aceite: só os novos ou os que mudam, numerados depois dos do card.
-      - Telas: cada uma embutida e, embaixo, o que mostra.
-      Bateu com o card → o comentário é o veredito e as telas. Diz o quê, por quê e como se confere, nunca como se faz.
+      Abre com `Descrição real — <data de hoje>` e segue: Contexto (quem, onde, impacto) · Problema real (o que o card diz × o que acontece, a causa) · Objetivo (o pronto observável) · Critérios de aceite · Referências visuais (cada tela embutida e, embaixo, o que mostra) · Como testar (pré-condição → passos → resultado — os que de fato reproduziram). Diz o quê, por quê e como se confere, nunca como se faz.
       Grave em `{run.dir}/comentario.txt`, já em wiki markup do Jira, como vai ser publicado — Markdown não embute imagem no Jira: `*negrito*`, `{{{{código}}}}`, `*`/`#` listas, `!arquivo.png|width=900!` para cada tela.
       3. A página. Monte `{run.dir}/revisao.html`, para o dev aprovar tudo batendo o olho: com card, a prévia do comentário — o texto renderizado como o Jira vai mostrá-lo, com cada tela no lugar dela; sem card, só as telas. Em cada tela, o número grande (`Imagem N`), o print com o ponto do bug marcado e, embaixo, em vermelho, o defeito e o que a imagem mostra. Imagens por caminho relativo, na mesma pasta; página simples, legível, sem dependência externa. Abra-a no navegador padrão do dev (`open` no macOS, `xdg-open` no Linux) e escreva a mensagem da parada: onde a revisão está e as imagens, uma por linha (`Imagem N — o que mostra`).
     exige: { telas: lista, revisao: texto, mensagem: texto }
