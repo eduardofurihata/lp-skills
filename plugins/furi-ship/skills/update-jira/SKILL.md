@@ -1,6 +1,6 @@
 ---
 name: update-jira
-description: 'Use when user invokes /update-jira [KEY…] (bare /update-jira = all my cards in progress and code review) — checks each card''s real state (GitHub, deploy, infra config and in-app config such as access to grant or admin settings, tests only the environment can prove, pending items); posts it as a comment, moves the column only on clear evidence and returns the pending items in the chat. Read-only everywhere but the card: never deploys, never edits the description. Refuses without Jira.'
+description: 'Use when user invokes /update-jira [KEY…] (bare /update-jira = all my cards in progress and code review) — checks each card''s real state (GitHub, deploy, infra config and in-app config such as access to grant or admin settings, tests only the environment can prove, pending items); posts it as a comment, moves the column only on clear evidence and returns the pending items in the chat. Read-only everywhere but the card, except for one step that resolves the non-code pending items (infra, in-app config, environment tests) of cards in code review: never touches code, never deploys, never edits the description. Refuses without Jira.'
 requires: [pwx]
 argument-hint: "[KEY…] [/skill…]"
 disable-model-invocation: true
@@ -9,7 +9,7 @@ boundary: [homolog, prod]
 
 # /update-jira — o estado real de cada card meu, no card
 
-O board diz o que alguém lembrou de mover; o GitHub e os ambientes dizem o que aconteceu — cada card passa a dizer o mesmo que eles. Card a card: confere, comenta e move a coluna só com evidência, e só então o próximo; no fim, devolve no chat as pendências de todos. Fora do card, só leitura: deploy é do /homolog e do /prod, a descrição real é do /repro. Sem Jira → recuse.
+O board diz o que alguém lembrou de mover; o GitHub e os ambientes dizem o que aconteceu — cada card passa a dizer o mesmo que eles. Card a card: confere, comenta e move a coluna só com evidência, e só então o próximo; no fim, devolve no chat as pendências de todos. Fora do card, só leitura — exceto o passo `resolver`, que, em card de code review, resolve as pendências que não são código (infra, config no app, testes do ambiente); código, merge e deploy ficam pendentes: deploy é do /homolog e do /prod, a descrição real é do /repro. Sem Jira → recuse.
 
 **Os passos moram em `processo.yaml`, nesta pasta — fonte única.** Com o `runbook` instalado (`runbook --version` responde), o motor conduz e o run é feito **aqui, à vista do dev**, como no `/runbook`:
 

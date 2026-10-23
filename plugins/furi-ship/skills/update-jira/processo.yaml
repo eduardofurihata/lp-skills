@@ -35,6 +35,7 @@ passos:
   #    Fora do card, só leitura: nunca deploye, configure, mude código nem rode teste com efeito colateral —
   #    deploy é do /homolog e do /prod. Fato com link, nunca palpite. Cada pendência sai com o tipo
   #    (código, infra, config no app, teste no ambiente), o ambiente, o quê e com quem.
+  #    As conferências só leem; só o `resolver` age — e só no que não é código, em card de code review.
 
   - id: card
     para_cada: cards.cards
@@ -84,11 +85,22 @@ passos:
           O que o teste local não cobre e precisa ser visto em homolog ou prod: integração real com terceiro, job ou cron no agendador, e-mail ou webhook de verdade, dado real, domínio e certificado, permissão com usuário real. Fonte: plano de teste do card, seção de testes do PR, comentários e o diff (integração ou job novo). Feito = evidência com link (comentário, log, painel, print); dá para ver só lendo → veja (pwx, log, painel); teste com efeito colateral (compra, envio, escrita) nunca roda aqui → pendência "teste em <ambiente>: o quê, quem roda".
         exige: { key: texto, feitos: lista, pendencias: lista }
 
+      - id: resolver
+        faca: |
+          Resolva as pendências deste card que não são código: {item}
+          Só se o card está em {setup.code_review}; noutra coluna → "não se aplica", resolvidos vazio e pendências vazias.
+          Pendências achadas — infra: {config-infra.pendencias} · app: {config-app.pendencias} · testes do ambiente: {testes-ambiente.pendencias}
+          Resolva cada uma onde o código já está no ar (deploy: {deploy}): config de infra pelo "como configurar" do `.claude/ship/infra.md`; config no app pelo painel (pwx) ou pela API; teste do ambiente rodando-o e guardando a evidência em `{run.dir}`. Confira que pegou.
+          Nunca código, merge nem deploy: o que for disso fica pendente. Secret ou decisão que só o dev tem, ou teste com efeito colateral real (compra, envio, escrita em produção) → devolva `pergunta` antes. Sem acesso → continua pendente, com quem.
+          Devolva o resolvido (o quê, ambiente, evidência) e as pendências não-código que sobraram.
+        exige: { key: texto, resolvidos: lista, pendencias: lista }
+
       - id: publicar
         faca: |
           Publique este card: {item}
           O que as conferências dele acharam — PR: {github} · código: {codigo} · deploy: {deploy} · infra: {config-infra} · app: {config-app} · testes do ambiente: {testes-ambiente}
-          1. O comentário, para quem não viu esta conversa: abre com `Status real — <data de hoje>` e segue: Onde está (PR, ambiente, commit) · Feito · Pendente (por tipo e por ambiente: o quê, com quem) · Próximo passo. Fato com link, nunca palpite. Em wiki markup do Jira, pela API v2 (`/rest/api/2/issue/<KEY>/comment`) — pelo MCP ele é reconvertido —, com as credenciais que o MCP do Jira já usa, nunca impressas.
+          O que o resolver fez: {resolver} — quando ele se aplicou, as pendências de infra, app e testes do ambiente são as que ele devolveu.
+          1. O comentário, para quem não viu esta conversa: abre com `Status real — <data de hoje>` e segue: Onde está (PR, ambiente, commit) · Feito · Resolvido agora (o quê, ambiente, evidência) · Pendente (por tipo e por ambiente: o quê, com quem) · Próximo passo. Fato com link, nunca palpite. Em wiki markup do Jira, pela API v2 (`/rest/api/2/issue/<KEY>/comment`) — pelo MCP ele é reconvertido —, com as credenciais que o MCP do Jira já usa, nunca impressas.
           2. A coluna, só com evidência, pela transição do MCP do Jira: PR aberto → {setup.code_review}; mergeado e publicado em homolog → {setup.homolog}; publicado em prod e nada pendente em prod → {setup.concluido}; na dúvida não move.
           A descrição, o título e os outros campos ficam intocados.
           Devolva: a URL do comentário; a coluna antes → depois, ou "fica" e por quê; e a linha de pendências do card: KEY — coluna — o que falta (por tipo e por ambiente: o quê, com quem), ou "nada pendente".
