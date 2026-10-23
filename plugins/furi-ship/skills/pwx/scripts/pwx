@@ -50,6 +50,24 @@ function browserUp() {   // sobe o Edge do papel se não estiver de pé
   const up = spawnSync(process.execPath, [path.join(__dirname, 'browser'), 'up', role], { stdio: 'pipe', encoding: 'utf8', env });
   if (up.status !== 0) { process.stderr.write(up.stdout + up.stderr); process.exit(1); }
 }
+// macOS: janela aberta pela PÁGINA (window.open, link target=_blank, popup de OAuth) nasce em primeiro plano e ATIVA o Edge — quem
+// decide é o Chromium, não o CDP, então o preload não alcança. Se durante o comando a instância de AUTOMAÇÃO do papel (o pid dono da
+// porta CDP, nunca o Edge do usuário) tomou a frente, o pwx a ESCONDE: o macOS devolve a frente ao último app que o usuário usava,
+// seja qual for, e print/clique seguem funcionando com ela escondida. Se ela já estava na frente (o usuário logando nela), não mexe.
+// `lsappinfo setfront` é negado (permErr); esconder pelo NSRunningApplication não pede permissão.
+const frontPid = () => {
+  if (process.platform !== 'darwin') return null;
+  const asn = spawnSync('lsappinfo', ['front'], { encoding: 'utf8' }).stdout.trim();
+  return Number(/\bpid\s*=\s*(\d+)/.exec(asn ? spawnSync('lsappinfo', ['info', '-only', 'pid', asn], { encoding: 'utf8' }).stdout : '')?.[1]) || null;
+};
+const browserPid = () => process.platform === 'darwin'
+  ? Number(spawnSync('lsof', ['-nP', `-iTCP:${cfg.roles[role]}`, '-sTCP:LISTEN', '-t'], { encoding: 'utf8' }).stdout.split('\n')[0]) || null
+  : null;
+function hideIfStolen(frontBefore) {
+  const pid = browserPid();
+  if (!pid || frontBefore === pid || frontPid() !== pid) return;
+  spawnSync('osascript', ['-l', 'JavaScript', '-e', `ObjC.import('AppKit'); $.NSRunningApplication.runningApplicationWithProcessIdentifier(${pid}).hide`], { stdio: 'ignore' });
+}
 // a aba de cada sessão fica registrada com o dono: ao reconectar volta para ela; quando o Claude que a abriu termina, ela fecha
 const cdpOf = (r) => `http://127.0.0.1:${cfg.roles[r]}`;
 const CDP = cdpOf(role);
@@ -194,6 +212,7 @@ async function connect() {
     console.log(`janelas da sessão ${OWNER && !process.env.PWX_SESSION ? OWNER : session} fechadas`);
     process.exit(0);
   }
+  const front = frontPid();   // quem estava na frente ao começar (ver hideIfStolen)
   if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, pelo preload, abre página sem roubar o foco
     touchUp(role);
     browserUp();
@@ -206,6 +225,7 @@ async function connect() {
     }
     untouchUp(role);
     await quitIdle([role]);
+    hideIfStolen(front);
     process.exit(s.status ?? 1);
   }
   // mark: destaca um ponto da página para o print — quadrado vermelho com rótulo; `mark --hide` tira todas as marcas
@@ -237,6 +257,7 @@ async function connect() {
     await attach(true);   // a aba pode estar de pé com o daemon caído: reconecta e volta para ela
     r = cli(['-s=' + session, ...args]);
   }
+  hideIfStolen(front);
   process.stdout.write(r.stdout || ''); process.stderr.write(r.stderr || '');
   process.exit(r.status ?? 1);
 })();
