@@ -75,14 +75,14 @@ passos:
         faca: |
           A config no app deste card: {item}
           Fora do card, só leitura; fato com link, nunca palpite. Sem código ligado → "não se aplica".
-          O que precisa ser feito dentro do app em homolog e em prod para a entrega valer: acesso, permissão ou perfil a liberar, toggle ou parâmetro no admin, cadastro, integração configurada na tela, allowlist, webhook no console de terceiro. Fonte: card e comentários, descrição do PR e o diff (permissão ou role nova, chave de setting nova, seed que não roda em prod, tela admin nova). Confira só lendo (pwx no painel já logado, API, consulta de leitura), nunca configure; não deu para ver → pendência "config no app: o quê, com quem tem o acesso".
+          O que precisa ser feito dentro do app em homolog e em prod para a entrega valer: acesso, permissão ou perfil a liberar, toggle ou parâmetro no admin, cadastro, integração configurada na tela, allowlist, webhook no console de terceiro. Fonte: card e comentários, descrição do PR e o diff (permissão ou role nova, chave de setting nova, seed que não roda em prod, tela admin nova). Confira só lendo (pwx no painel já logado, API, consulta de leitura), nunca configure; não deu para ver → pendência "config no app: o quê, onde" — quem faz é o `resolver`.
         exige: { key: texto, conferido: texto, pendencias: lista }
 
       - id: testes-ambiente
         faca: |
           Os testes que só o ambiente prova, deste card: {item}
           Fora do card, só leitura; fato com link, nunca palpite. Sem código ligado → "não se aplica".
-          O que o teste local não cobre e precisa ser visto em homolog ou prod: integração real com terceiro, job ou cron no agendador, e-mail ou webhook de verdade, dado real, domínio e certificado, permissão com usuário real. Fonte: plano de teste do card, seção de testes do PR, comentários e o diff (integração ou job novo). Feito = evidência com link (comentário, log, painel, print); dá para ver só lendo → veja (pwx, log, painel); teste com efeito colateral (compra, envio, escrita) nunca roda aqui → pendência "teste em <ambiente>: o quê, quem roda".
+          O que o teste local não cobre e precisa ser visto em homolog ou prod: integração real com terceiro, job ou cron no agendador, e-mail ou webhook de verdade, dado real, domínio e certificado, permissão com usuário real. Fonte: plano de teste do card, seção de testes do PR, comentários e o diff (integração ou job novo). Feito = evidência com link (comentário, log, painel, print); dá para ver só lendo → veja (pwx, log, painel); teste com efeito colateral (compra, envio, escrita) não roda neste passo → pendência "teste em <ambiente>: o quê, o efeito" — quem roda é o `resolver`, com o OK do dev; não decida aqui que fica com alguém.
         exige: { key: texto, feitos: lista, pendencias: lista }
 
       - id: resolver
@@ -90,9 +90,15 @@ passos:
           Resolva as pendências deste card que não são código: {item}
           Só se o card está em {setup.code_review}; noutra coluna → "não se aplica", resolvidos vazio e pendências vazias.
           Pendências achadas — infra: {config-infra.pendencias} · app: {config-app.pendencias} · testes do ambiente: {testes-ambiente.pendencias}
-          Resolva cada uma onde o código já está no ar (deploy: {deploy}): config de infra pelo "como configurar" do `.claude/ship/infra.md`; config no app pelo painel (pwx) ou pela API; teste do ambiente rodando-o e guardando a evidência em `{run.dir}`. Confira que pegou.
-          Nunca código, merge nem deploy: o que for disso fica pendente. Secret ou decisão que só o dev tem, ou teste com efeito colateral real (compra, envio, escrita em produção) → devolva `pergunta` antes. Sem acesso → continua pendente, com quem.
-          Devolva o resolvido (o quê, ambiente, evidência) e as pendências não-código que sobraram.
+          Resolva cada uma onde o código já está no ar (deploy: {deploy}): config de infra (env, flag, migration, secret) pelo "como configurar" do `.claude/ship/infra.md` e pela skill de infra da conta; config no app, no console da nuvem ou no painel de terceiro pelo pwx, já logado, ou pela API; teste do ambiente rodando-o e guardando a evidência em `{run.dir}`. Confira que pegou.
+          Secret: configure-o você. O valor vem de onde ele mora (o `infra.md` diz onde: cofre, Secrets Manager, painel do terceiro pelo pwx); não existe ainda → gere-o e grave nos dois lados (o cofre do ambiente e o painel do terceiro). O valor nunca sai impresso — nem no chat, nem no comentário, nem na evidência: só o nome e onde ficou.
+          O padrão é fazer, não listar. O "com quem" que as conferências escreveram não é veredito: {setup.dono} é o dev desta conversa — pendência "com {setup.dono}" que não passou por pergunta é passo não feito.
+          Antes de agir, junte numa só `pergunta` tudo o que precisa do OK dele: escrita ou teste com efeito em produção, custo (LLM, cobrança), decisão de produto — config e secret não entram: são do resolver. Numere cada ação: o que faz, onde, o efeito e como desfazer; opções: fazer todas · escolher quais · nenhuma. Com a resposta, faça as aprovadas e resolva o resto sem perguntar de novo. Org, conta ou dado de teste (ex.: "QA") é teste, não efeito real — vai na pergunta como recomendado.
+          Credencial, token ou acesso que você "não tem": tente antes — painel logado no pwx (é por ele que se pega token de admin, se gera chave e se cadastra webhook), CLI e perfis da máquina, `.claude/ship/infra.md`. Só sem acesso de verdade fica pendente, com o que tentou.
+          Nunca código, merge nem deploy: o que for disso fica pendente.
+          `resolvidos` são só ações com efeito, cada uma com a evidência de depois (o quê, ambiente, evidência); conferir ou ler não é resolver — vai no comentário como "Feito", não aqui.
+          Cada pendência que sobrar diz por quê, um destes: código/merge/deploy · o dev disse não ou depois · tentado e sem acesso (o que tentou) · data marcada · depende de alguém de fora (quem) — e, neste caso, deixe pronto o que ele precisa (comando, valor, mensagem).
+          Devolva o resolvido e as pendências não-código que sobraram, cada uma com o motivo.
         exige: { key: texto, resolvidos: lista, pendencias: lista }
 
       - id: publicar
