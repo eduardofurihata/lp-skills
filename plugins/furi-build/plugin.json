@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "furi-build",
-  "version": "0.1.0+e0f3f1833bff",
-  "description": "Skills de construção do Furihata — /solve, /principles, /front, /method, /adr, /ticrd e /proto: do alvo à entrega no nível #1, provada por QA, sem commit. Funciona sozinho, em qualquer repositório.",
+  "version": "0.1.0+e53066abb064",
+  "description": "Skills de construção do Furihata — /solve, /principles, /front, /method, /adr, /ticrd, /cr e /proto: do alvo à entrega no nível #1, provada por QA, sem commit. Funciona sozinho, em qualquer repositório.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata/lp-skills"
