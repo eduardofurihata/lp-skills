@@ -50,24 +50,6 @@ function browserUp() {   // sobe o Edge do papel se não estiver de pé
   const up = spawnSync(process.execPath, [path.join(__dirname, 'browser'), 'up', role], { stdio: 'pipe', encoding: 'utf8', env });
   if (up.status !== 0) { process.stderr.write(up.stdout + up.stderr); process.exit(1); }
 }
-// macOS: janela aberta pela PÁGINA (window.open, link target=_blank, popup de OAuth) nasce em primeiro plano e ATIVA o Edge — quem
-// decide é o Chromium, não o CDP, então o preload não alcança. Se durante o comando a instância de AUTOMAÇÃO do papel (o pid dono da
-// porta CDP, nunca o Edge do usuário) tomou a frente, o pwx a ESCONDE: o macOS devolve a frente ao último app que o usuário usava,
-// seja qual for, e print/clique seguem funcionando com ela escondida. Se ela já estava na frente (o usuário logando nela), não mexe.
-// `lsappinfo setfront` é negado (permErr); esconder pelo NSRunningApplication não pede permissão.
-const frontPid = () => {
-  if (process.platform !== 'darwin') return null;
-  const asn = spawnSync('lsappinfo', ['front'], { encoding: 'utf8' }).stdout.trim();
-  return Number(/\bpid\s*=\s*(\d+)/.exec(asn ? spawnSync('lsappinfo', ['info', '-only', 'pid', asn], { encoding: 'utf8' }).stdout : '')?.[1]) || null;
-};
-const browserPid = () => process.platform === 'darwin'
-  ? Number(spawnSync('lsof', ['-nP', `-iTCP:${cfg.roles[role]}`, '-sTCP:LISTEN', '-t'], { encoding: 'utf8' }).stdout.split('\n')[0]) || null
-  : null;
-function hideIfStolen(frontBefore) {
-  const pid = browserPid();
-  if (!pid || frontBefore === pid || frontPid() !== pid) return;
-  spawnSync('osascript', ['-l', 'JavaScript', '-e', `ObjC.import('AppKit'); $.NSRunningApplication.runningApplicationWithProcessIdentifier(${pid}).hide`], { stdio: 'ignore' });
-}
 // a aba de cada sessão fica registrada com o dono: ao reconectar volta para ela; quando o Claude que a abriu termina, ela fecha
 const cdpOf = (r) => `http://127.0.0.1:${cfg.roles[r]}`;
 const CDP = cdpOf(role);
@@ -174,6 +156,32 @@ async function attach(force) {
   try { if (force || !(await ours())) { cli(['-s=' + session, 'detach']); await connect(); } }   // quem esperou a trava encontra a aba pronta
   finally { untouchUp(role); fs.rmSync(LOCK, { force: true }); }
 }
+// A página da sessão não abre janela nem aba nova: link `target=_blank`, `window.open` e form com target vão na
+// MESMA aba. No macOS, aba/janela aberta pela página ATIVA o Edge e o traz para a frente — com o modo visível
+// (`browser show`) isso arrancava a janela da frente do usuário a cada clique. Prevenir em vez de esconder depois:
+// sem janela nova, nada a ativar. De quebra a página nova fica na aba que o agente lê. Instalado pelo daemon do
+// playwright-cli (`run-code`), que segue de pé entre os comandos e reaplica a cada navegação (`addInitScript`).
+const SAME_TAB = `async (page) => {
+  const sameTab = () => {
+    if (window.__pwxSameTab) return;
+    window.__pwxSameTab = true;
+    const go = (u) => { try { location.assign(new URL(String(u), location.href).href); } catch {} };
+    window.open = function (url) { if (url) go(url); return window; };
+    const elsewhere = (t) => !!t && !/^(_self|_top|_parent)$/i.test(t);
+    document.addEventListener('click', (e) => {
+      const a = e.target instanceof Element ? e.target.closest('a[href]') : null;
+      if (!a || !elsewhere(a.target)) return;
+      e.preventDefault(); e.stopImmediatePropagation(); go(a.href);
+    }, true);
+    document.addEventListener('submit', (e) => {
+      if (e.target instanceof HTMLFormElement && elsewhere(e.target.target)) e.target.target = '_self';
+    }, true);
+  };
+  await page.addInitScript(sameTab);
+  await page.evaluate(sameTab).catch(() => {});
+}`;
+const sameTab = () => cli(['-s=' + session, 'run-code', SAME_TAB]);
+
 async function connect() {
   await gc();
   browserUp();
@@ -185,7 +193,7 @@ async function connect() {
   const old = before.find((t) => t.id === registered());
   if (old) {   // a aba ainda existe: seleciona pela URL quando ela é única entre as abas
     const hits = [...cli(['-s=' + session, 'tab-list']).stdout.matchAll(/^- (\d+):.*\]\((.*)\)\s*$/gm)].filter((m) => m[2] === old.url);
-    if (hits.length === 1 && cli(['-s=' + session, 'tab-select', hits[0][1]]).status === 0) return;
+    if (hits.length === 1 && cli(['-s=' + session, 'tab-select', hits[0][1]]).status === 0) { sameTab(); return; }
     await fetch(`${CDP}/json/close/${old.id}`);   // não deu para achar: fecha a janela antiga e reabre no mesmo lugar
   }
   let created = opened;
@@ -194,6 +202,7 @@ async function connect() {
     created = (await targets()).find((t) => !attached.some((b) => b.id === t.id));
   }
   if (created) register(created.id);
+  sameTab();
   if (old && !/^(about|edge|chrome):/.test(old.url)) cli(['-s=' + session, 'goto', old.url]);
 }
 
@@ -212,7 +221,6 @@ async function connect() {
     console.log(`janelas da sessão ${OWNER && !process.env.PWX_SESSION ? OWNER : session} fechadas`);
     process.exit(0);
   }
-  const front = frontPid();   // quem estava na frente ao começar (ver hideIfStolen)
   if (args[0] === 'run') {   // script Playwright próprio: conecta em PWX_CDP e, pelo preload, abre página sem roubar o foco
     touchUp(role);
     browserUp();
@@ -225,7 +233,6 @@ async function connect() {
     }
     untouchUp(role);
     await quitIdle([role]);
-    hideIfStolen(front);
     process.exit(s.status ?? 1);
   }
   // mark: destaca um ponto da página para o print — quadrado vermelho com rótulo; `mark --hide` tira todas as marcas
@@ -257,7 +264,6 @@ async function connect() {
     await attach(true);   // a aba pode estar de pé com o daemon caído: reconecta e volta para ela
     r = cli(['-s=' + session, ...args]);
   }
-  hideIfStolen(front);
   process.stdout.write(r.stdout || ''); process.stderr.write(r.stderr || '');
   process.exit(r.status ?? 1);
 })();

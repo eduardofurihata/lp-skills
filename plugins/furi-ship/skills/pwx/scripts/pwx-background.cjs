@@ -1,4 +1,6 @@
 // pwx-background.cjs — pré-carregado (NODE_OPTIONS, via pwx) no daemon do playwright-cli e nos scripts de `pwx run`.
+// O navegador é headless por padrão (`browser`), e aí nada disto importa. Vale no modo VISÍVEL (`browser show`, a
+// pedido do usuário): enquanto ele assiste, sessão nova ou reconexão não arrancam a janela da frente dele.
 // O Playwright cria aba com Target.createTarget sem `background`, e no macOS isso traz o navegador para a frente
 // a cada sessão nova. Aqui cada sessão nasce numa janela própria em segundo plano: não rouba o foco e a aba,
 // sendo a ativa da janela, segue visível (aba de fundo numa janela alheia fica `hidden` e trava o rAF/clique).

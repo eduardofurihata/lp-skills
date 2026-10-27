@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // browser — Edge de automação, um perfil por papel, controlável via CDP sem pedir "Permitir".
-// Uso: browser up|down|status|add|endpoint [papel]
+// INVISÍVEL por padrão (headless): sem janela não há o que roubar o foco. Janela só quando o usuário pede (show).
+// Uso: browser up|down|show|hide|status|add|endpoint [papel] [url]   ·   status: ● invisível · ◉ com janela · ○ fora do ar
 const fs = require('fs'), path = require('path'), os = require('os');
 const { spawn, execSync } = require('child_process');
 
@@ -9,7 +10,7 @@ const CONFIG = path.join(HOME, 'config.json');
 const cfg = JSON.parse(fs.readFileSync(CONFIG, 'utf8'));
 const save = () => fs.writeFileSync(CONFIG, JSON.stringify(cfg, null, 2) + '\n');
 
-const [cmd = 'status', roleArg] = process.argv.slice(2);
+const [cmd = 'status', roleArg, urlArg] = process.argv.slice(2);
 const role = roleArg || cfg.defaultRole;
 const portOf = (r) => {
   const p = cfg.roles[r];
@@ -26,8 +27,26 @@ const pidOnPort = (port) => {
   catch { return null; }
 };
 
-async function up(r) {
-  if (await alive(r)) { console.log(`${r}: já está de pé em ${endpoint(r)}`); return; }
+// modo visível do papel: marca que só `show` cria e todo `down` apaga — a próxima subida volta invisível
+const VISIBLE = (r) => path.join(HOME, 'sessions', `.visible-${r}`);
+const visible = (r) => fs.existsSync(VISIBLE(r));
+// o modo REAL do Edge de pé (a marca diz o pedido; um Edge subido antes desta versão tem janela sem marca)
+const headless = (r) => {
+  const pid = pidOnPort(portOf(r));
+  try { return !!pid && /--headless/.test(execSync(`ps -o command= -p ${pid}`, { encoding: 'utf8' })); } catch { return false; }
+};
+
+// headless manda "HeadlessEdg"/"HeadlessChrome" no user agent, e site com anti-bot estranha: o UA é o do Edge comum
+function userAgent() {
+  let version = '';
+  try { version = execSync(`"${cfg.browserBinary}" --version`, { encoding: 'utf8', timeout: 5000 }).match(/(\d+(?:\.\d+)+)/)?.[1] || ''; } catch {}
+  if (!version) return null;
+  const os_ = process.platform === 'darwin' ? 'Macintosh; Intel Mac OS X 10_15_7' : process.platform === 'win32' ? 'Windows NT 10.0; Win64; x64' : 'X11; Linux x86_64';
+  return `Mozilla/5.0 (${os_}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version.split('.')[0]}.0.0.0 Safari/537.36 Edg/${version}`;
+}
+
+async function up(r, url) {
+  if (await alive(r)) { console.log(`${r}: já está de pé em ${endpoint(r)}, ${headless(r) ? 'invisível' : 'VISÍVEL'}`); return; }
   if (!fs.existsSync(cfg.browserBinary)) { console.error(`navegador não encontrado: ${cfg.browserBinary}`); process.exit(1); }
   const profile = path.join(HOME, 'profiles', r);
   fs.mkdirSync(profile, { recursive: true });
@@ -40,23 +59,28 @@ async function up(r) {
     '--remote-debugging-address=127.0.0.1',
     '--no-first-run',
     '--no-default-browser-check',
-    '--no-startup-window',   // sem a janela inicial: ela não teria dono e ninguém a fecharia; cada sessão abre a sua
     // vários clientes trabalham ao mesmo tempo: aba em segundo plano não pode ficar lenta
     '--disable-background-timer-throttling',
     '--disable-renderer-backgrounding',
     '--disable-backgrounding-occluded-windows',
   ];
-  // macOS: abrir o binário do app o ATIVA e o traz para a frente (o --no-startup-window evita a janela, não a
-  // ativação). `open -g` sobe sem trazer para a frente; `-n`, outra instância ao lado do Edge do usuário.
+  const show = visible(r);
   const app = process.platform === 'darwin' ? cfg.browserBinary.match(/^(.*?\.app)\//)?.[1] : null;
-  if (app) {
-    spawn('open', ['-g', '-n', '-a', app, '--stdout', logFile, '--stderr', logFile, '--args', ...flags], { detached: true, stdio: 'ignore' }).unref();
+  if (show && app) {
+    // pedido do usuário: janela na frente, com a página que ele vai usar (login, conferir); `-n` = instância
+    // ao lado do Edge pessoal dele
+    spawn('open', ['-n', '-a', app, '--stdout', logFile, '--stderr', logFile, '--args', ...flags, ...(url ? [url] : [])], { detached: true, stdio: 'ignore' }).unref();
   } else {
+    // headless: processo sem janela, sem Dock e sem ativação — pelo binário, nunca pelo `open` (que registra o
+    // app e o traz para a frente). Mesmo perfil = mesmos logins.
+    const ua = userAgent();
+    if (!show) flags.push('--headless=new', '--window-size=1440,900', '--no-startup-window', ...(ua ? [`--user-agent=${ua}`] : []));
+    else if (url) flags.push(url);
     const log = fs.openSync(logFile, 'a');
     spawn(cfg.browserBinary, flags, { detached: true, stdio: ['ignore', log, log] }).unref();
   }
   for (let i = 0; i < 60; i++) {
-    if (await alive(r)) { console.log(`${r}: de pé em ${endpoint(r)} (perfil ${profile})`); return; }
+    if (await alive(r)) { console.log(`${r}: de pé em ${endpoint(r)}, ${show ? 'VISÍVEL' : 'invisível'} (perfil ${profile})`); return; }
     await new Promise((s) => setTimeout(s, 250));
   }
   console.error(`${r}: não respondeu em 15 s. Veja ${path.join(HOME, 'logs', `${r}.log`)}`); process.exit(1);
@@ -78,14 +102,30 @@ async function closeViaCdp(r) {
 }
 
 async function down(r) {
+  fs.rmSync(VISIBLE(r), { force: true });   // a próxima subida volta invisível
   const pid = pidOnPort(portOf(r));
   if (!pid) { console.log(`${r}: já estava fora do ar`); return; }
   if (!(await closeViaCdp(r))) process.kill(Number(pid), 'SIGTERM');
   console.log(`${r}: encerrado (pid ${pid}). Os logins continuam salvos no perfil.`);
 }
 
+// janela só a pedido do usuário: reinicia o papel com janela (as sessões de pé reconectam sozinhas, na mesma URL)
+async function showWindow(r, url) {
+  await down(r);
+  fs.mkdirSync(path.dirname(VISIBLE(r)), { recursive: true });
+  fs.writeFileSync(VISIBLE(r), '');
+  await up(r, url);
+}
+async function hideWindow(r) {
+  await down(r);
+  await up(r);
+}
+
 async function status() {
-  for (const r of Object.keys(cfg.roles)) console.log(`${(await alive(r)) ? '●' : '○'} ${r.padEnd(14)} ${endpoint(r)}`);
+  for (const r of Object.keys(cfg.roles)) {
+    const on = await alive(r), hidden = on && headless(r);
+    console.log(`${on ? (hidden ? '●' : '◉') : '○'} ${r.padEnd(14)} ${endpoint(r)}${on ? (hidden ? '  invisível' : '  VISÍVEL') : ''}`);
+  }
 }
 
 function add(r) {
@@ -101,11 +141,13 @@ function add(r) {
   switch (cmd) {
     case 'up': return up(role);
     case 'down': return down(role);
+    case 'show': return showWindow(role, urlArg);
+    case 'hide': return hideWindow(role);
     case 'status': return status();
     case 'add': return add(role);
     case 'endpoint': return console.log(endpoint(role));
     default:
-      console.log('uso: browser up|down|status|add|endpoint [papel]');
+      console.log('uso: browser up|down|status|add|endpoint [papel]  ·  browser show <papel> [url] (janela, só a pedido do usuário)  ·  browser hide <papel>');
       process.exit(cmd === 'help' || cmd === '--help' ? 0 : 1);
   }
 })();
