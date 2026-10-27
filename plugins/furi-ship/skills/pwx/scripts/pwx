@@ -161,12 +161,16 @@ async function attach(force) {
 // (`browser show`) isso arrancava a janela da frente do usuário a cada clique. Prevenir em vez de esconder depois:
 // sem janela nova, nada a ativar. De quebra a página nova fica na aba que o agente lê. Instalado pelo daemon do
 // playwright-cli (`run-code`), que segue de pé entre os comandos e reaplica a cada navegação (`addInitScript`).
+// Exceção: popup de login (Google, Apple, Microsoft, Facebook, GitHub…) abre como popup de verdade — o fluxo
+// devolve o login à página que o abriu (window.opener); na mesma aba ele fica preso em branco (gsi/transform).
 const SAME_TAB = `async (page) => {
   const sameTab = () => {
     if (window.__pwxSameTab) return;
     window.__pwxSameTab = true;
     const go = (u) => { try { location.assign(new URL(String(u), location.href).href); } catch {} };
-    window.open = function (url) { if (url) go(url); return window; };
+    const open = window.open;
+    const login = (u) => { try { const x = new URL(String(u), location.href); return /(^|\\.)(accounts\\.google\\.com|appleid\\.apple\\.com|login\\.microsoftonline\\.com|login\\.live\\.com)$/i.test(x.hostname) || /oauth|\\/authorize/i.test(x.pathname); } catch { return false; } };
+    window.open = function (url, ...rest) { if (!url || login(url)) return open.call(window, url, ...rest); go(url); return window; };
     const elsewhere = (t) => !!t && !/^(_self|_top|_parent)$/i.test(t);
     document.addEventListener('click', (e) => {
       const a = e.target instanceof Element ? e.target.closest('a[href]') : null;
