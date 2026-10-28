@@ -59,6 +59,10 @@ async function up(r, url) {
     '--remote-debugging-address=127.0.0.1',
     '--no-first-run',
     '--no-default-browser-check',
+    // troca de perfil do Edge (Guided/Smart Switch): login em login.microsoftonline.com de uma conta que outro perfil
+    // do mesmo user-data-dir conhece (ex.: OAuth no tenant da empresa) é desviado para aquele perfil — a aba do pwx não
+    // navega e o callback do OAuth cai num perfil sem a sessão do app. O CDP controla um perfil só: nada de desvio.
+    '--disable-features=msGuidedSwitchAllowed,msGuidedSwitchLoginMicrosoftOnline,msGuidedSwitchLoginMicrosoftOnlineOrganizations,msGuidedSwitchToSmartSwitch,msGuidedSwitchToSmartSwitchPersonal,msSmartSwitch',
     // vários clientes trabalham ao mesmo tempo: aba em segundo plano não pode ficar lenta
     '--disable-background-timer-throttling',
     '--disable-renderer-backgrounding',
