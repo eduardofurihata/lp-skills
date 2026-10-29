@@ -1,7 +1,7 @@
 {
   "name": "furi-toolbox",
-  "version": "0.1.0+codex.7e6dfdd957bf",
-  "description": "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /runbook (um processo em YAML executado passo a passo, sem pular), /ask, /chat, /save, /sync, /make-dev, /make-skill, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
+  "version": "0.1.0+codex.c685a9c7acfe",
+  "description": "Ferramentas avulsas do Furihata — /brain (o parecer: entender o problema e decidir), /blind (a sessão que não vê nada: só o texto que você mandou), /runbook (um processo em YAML executado passo a passo, sem pular), /prompts (tudo o que você digitou nesta conversa, texto exato), /ask, /chat, /save, /sync, /make-dev, /make-skill, /video-teams e mais. Cada uma funciona sozinha, sem depender de outra skill.",
   "author": {
     "name": "Eduardo Furihata",
     "url": "https://github.com/eduardofurihata"
