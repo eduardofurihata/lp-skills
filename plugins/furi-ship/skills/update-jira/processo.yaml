@@ -99,7 +99,7 @@ passos:
           O que mudou só para o teste volta ao que era (papel rebaixado volta, convite de teste sai) e o que o roteiro manda limpar é limpo; a evidência registra o antes e o depois.
           Só conta real serviria, ou o login é só do dev (SSO, 2FA, conta pessoal) → pendência "tentado e sem acesso" (o que tentou); decisão de produto que o card não resolve → pendência "depende de alguém de fora (quem)". Nenhuma vira pergunta.
           Credencial, token ou acesso que você "não tem": tente antes — painel logado no pwx (é por ele que se pega token de admin, se gera chave e se cadastra webhook), CLI e perfis da máquina, `.claude/ship/infra.md`. Só sem acesso de verdade fica pendente, com o que tentou.
-          Nunca código, merge nem deploy: o que for disso fica pendente.
+          Nunca aprove code review (approve de PR, nem pelo `gh`, nem pela tela) nem envie commit (commit, push, PR) — nem para destravar um teste. Também nunca código, merge nem deploy: o que for disso fica pendente.
           `resolvidos` são só ações com efeito, cada uma com a evidência de depois (o quê, ambiente, evidência); conferir ou ler não é resolver — vai no comentário como "Feito", não aqui.
           Cada pendência que sobrar diz por quê, um destes: código/merge/deploy · o dev disse não ou depois (por conta própria, na conversa — nunca perguntado por você) · tentado e sem acesso (o que tentou) · data marcada · depende de alguém de fora (quem) — e, neste caso, deixe pronto o que ele precisa (comando, valor, mensagem).
           Devolva o resolvido e as pendências não-código que sobraram, cada uma com o motivo.

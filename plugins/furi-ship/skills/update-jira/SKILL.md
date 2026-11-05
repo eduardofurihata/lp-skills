@@ -9,7 +9,7 @@ boundary: [homolog, prod]
 
 # /update-jira — o estado real de cada card meu, no card
 
-O board diz o que alguém lembrou de mover; o GitHub e os ambientes dizem o que aconteceu — cada card passa a dizer o mesmo que eles. Card a card: confere, comenta e move a coluna só com evidência, e só então o próximo; no fim, devolve no chat as pendências de todos. Fora do card, só leitura — exceto o passo `resolver`, que, em card de code review, resolve as pendências que não são código (infra, config no app, testes do ambiente) sem pedir, mesmo com custo ou montando cenário, sempre em contas de teste; código, merge e deploy ficam pendentes: deploy é do /homolog e do /prod, a descrição real é do /repro. Sem Jira → recuse.
+O board diz o que alguém lembrou de mover; o GitHub e os ambientes dizem o que aconteceu — cada card passa a dizer o mesmo que eles. Card a card: confere, comenta e move a coluna só com evidência, e só então o próximo; no fim, devolve no chat as pendências de todos. Fora do card, só leitura — exceto o passo `resolver`, que, em card de code review, resolve as pendências que não são código (infra, config no app, testes do ambiente) sem pedir, mesmo com custo ou montando cenário, sempre em contas de teste; nunca aprova code review nem envia commit; código, merge e deploy ficam pendentes: deploy é do /homolog e do /prod, a descrição real é do /repro. Sem Jira → recuse.
 
 **Os passos moram em `processo.yaml`, nesta pasta — fonte única.** Com o `runbook` instalado (`runbook --version` responde), o motor conduz e o run é feito **aqui, à vista do dev**, como no `/runbook`:
 
