@@ -31,6 +31,7 @@
 // (`/method` resolve sem ambiguidade); a namespaced `/furi-build:method` também.
 import fs from "node:fs";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
@@ -155,12 +156,26 @@ function writeJson(filePath, obj) {
   fs.writeFileSync(filePath, JSON.stringify(obj, null, 2) + "\n");
 }
 
+// O hash só vê o que o git vê (rastreado ou novo, nunca ignorado): resíduo local
+// ignorado — logs do pwx, .DS_Store — mudava a versão aqui e não no CI.
+const GIT_IGNORED = new Set(
+  execFileSync(
+    "git",
+    ["ls-files", "--others", "--ignored", "--exclude-standard", "--directory", "-z", "plugins"],
+    { cwd: ROOT, encoding: "utf8" },
+  )
+    .split("\0")
+    .filter(Boolean)
+    .map((p) => path.join(ROOT, p.replace(/\/$/, ""))),
+);
+
 function hashDirectory(directory, hash, base = directory) {
   const entries = fs
     .readdirSync(directory, { withFileTypes: true })
     .sort((a, b) => a.name.localeCompare(b.name));
   for (const entry of entries) {
     const entryPath = path.join(directory, entry.name);
+    if (GIT_IGNORED.has(entryPath)) continue;
     if (entry.isDirectory()) {
       hashDirectory(entryPath, hash, base);
       continue;
