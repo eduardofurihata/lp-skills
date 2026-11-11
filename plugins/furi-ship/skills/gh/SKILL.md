@@ -12,7 +12,7 @@ argument-hint: "[KEY-N | descrição] [/skill…] | (vazio = a branch atual)"
 O alvo: a branch em `origin` com a PR no destino que o setup manda — ou só o push, se o time não abre PR. Não mergeia nem deploya. Com outras skills no argumento: entenda o que cada uma pede e execute tudo combinado, numa passada só — nunca uma antes ou depois da outra. Sem card: o mesmo processo, sem Jira e sem criar card. **Os `- [ ]` são o checklist do run, em `.claude/ship/run.md`:** escreva cada um, marque `- [x]` ao fechar, retome do primeiro aberto; um arquivo por run (mesmo encadeando skills), quem o criou apaga ao fim.
 
 - [ ] Ler `.claude/ship/setup.md § GH` (projeto antigo: `§ Pull-request` — renomeie): destino da PR (`main`, `dev`, `homolog`, outra branch, stacked PR ou sem PR — só push), status da etapa; falta → pergunte e grave ali
-- [ ] Garantir o `/local` completo: mudança sem commit → `Skill(skill: "local")`, vai tudo junto; só se commita o inteiro, nunca pela metade
+- [ ] Garantir o `/local` completo: mudança sem commit → `Skill(skill: "local")`, que commita tudo em quantos commits precisar; nada fica sem commit
 - [ ] Trazer a branch destino para a atual, para não ficar desatualizada
 - [ ] Fazer push
 - [ ] Abrir ou atualizar a PR no destino que o § GH manda; sem PR → fica no push
